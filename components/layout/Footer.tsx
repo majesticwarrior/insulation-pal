@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react'
 
 const Footer = () => {
@@ -8,7 +9,15 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
-            <div className="text-2xl font-bold mb-4">InsulationPal</div>
+            <div className="mb-4">
+              <Image
+                src="/insulation-pal-footer-logo-large.png"
+                alt="InsulationPal Logo"
+                width={350}
+                height={140}
+                className="h-24 w-auto"
+              />
+            </div>
             <p className="text-gray-300 mb-6">
               Connecting homeowners with trusted insulation contractors nationwide. 
               Save money, improve comfort, and reduce energy costs.

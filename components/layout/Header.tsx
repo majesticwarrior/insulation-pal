@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Menu, X, Phone, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -35,9 +36,14 @@ const Header = () => {
         {/* Main header */}
         <div className="flex justify-between items-center py-4">
           <Link href="/" className="flex items-center">
-            <div className="text-2xl font-bold text-[#2c3c50]">
-              InsulationPal
-            </div>
+            <Image
+              src="/insulation-pal-logo.png"
+              alt="InsulationPal Logo"
+              width={400}
+              height={160}
+              className="h-24 w-auto"
+              priority
+            />
           </Link>
 
           {/* Desktop navigation */}
