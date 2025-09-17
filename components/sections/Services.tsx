@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
@@ -10,7 +11,8 @@ const Services = () => {
       description: 'Professional attic insulation installation. Reduce energy costs and improve comfort.',
       features: ['Blown-in insulation', 'Batt insulation', 'Radiant barriers'],
       price: 'Starting at $1.00/sq ft',
-      disclaimer: 'Based on material & region'
+      disclaimer: 'Based on material & region',
+      link: '/services/attic-insulation'
     },
     {
       icon: '/wall-insulation-icon.jpg',
@@ -18,7 +20,8 @@ const Services = () => {
       description: 'Complete wall insulation services for new construction and retrofits.',
       features: ['Injection foam', 'Blown-in cellulose', 'Fiberglass batts'],
       price: 'Starting at $1.00/sq ft',
-      disclaimer: 'Based on material & region'
+      disclaimer: 'Based on material & region',
+      link: '/services/wall-insulation'
     },
     {
       icon: '/spray-foam-icon.jpg',
@@ -26,7 +29,8 @@ const Services = () => {
       description: 'Premium spray foam insulation for maximum energy efficiency and air sealing.',
       features: ['Open-cell spray foam', 'Closed-cell spray foam', 'Air sealing'],
       price: 'Starting at $1.00/sq ft',
-      disclaimer: 'Based on material & region'
+      disclaimer: 'Based on material & region',
+      link: '/services/spray-foam'
     },
     {
       icon: '/crawl-space-insulation-icon.jpg',
@@ -34,7 +38,8 @@ const Services = () => {
       description: 'Protect your crawl space from moisture and temperature extremes.',
       features: ['Vapor barriers', 'Floor joist insulation', 'Encapsulation'],
       price: 'Starting at $.30/board ft',
-      disclaimer: 'Based on material & region'
+      disclaimer: 'Based on material & region',
+      link: '/services/crawl-space'
     },
     {
       icon: '/basement-insulation-icon.jpg',
@@ -42,7 +47,8 @@ const Services = () => {
       description: 'Complete basement insulation solutions for comfort and energy savings.',
       features: ['Foundation walls', 'Rim joists', 'Ceiling insulation'],
       price: 'Starting at $1.45/sq ft',
-      disclaimer: 'Based on material & region'
+      disclaimer: 'Based on material & region',
+      link: '/services/basement'
     },
     {
       icon: '/insulation-removal-icon.jpg',
@@ -50,7 +56,8 @@ const Services = () => {
       description: 'Safe removal of old, damaged, or contaminated insulation.',
       features: ['Old insulation removal', 'Contaminated material', 'Pest cleanup'],
       price: 'Starting at $1.00/sq ft',
-      disclaimer: 'Based on material & region'
+      disclaimer: 'Based on material & region',
+      link: '/services/removal'
     }
   ]
 
@@ -98,9 +105,11 @@ const Services = () => {
                       <div className="text-lg font-bold text-[#0a4768]">{service.price}</div>
                       <div className="text-gray-500 mt-1" style={{fontSize: '12px'}}>{service.disclaimer}</div>
                     </div>
-                    <Button variant="outline" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
-                      Get Quote
-                    </Button>
+                    <Link href={service.link}>
+                      <Button variant="outline" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
+                        Learn More
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
