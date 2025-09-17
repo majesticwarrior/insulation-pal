@@ -48,20 +48,20 @@ const Header = () => {
 
           {/* Desktop navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
-            <Link href="/services" className="text-gray-700 hover:text-[#2c3c50] transition-colors">
+            <Link href="/services" className="text-gray-700 hover:text-[#0a4768] transition-colors">
               Services
             </Link>
-            <Link href="/how-it-works" className="text-gray-700 hover:text-[#2c3c50] transition-colors">
+            <Link href="/how-it-works" className="text-gray-700 hover:text-[#0a4768] transition-colors">
               How It Works
             </Link>
-            <Link href="/about" className="text-gray-700 hover:text-[#2c3c50] transition-colors">
+            <Link href="/about" className="text-gray-700 hover:text-[#0a4768] transition-colors">
               About
             </Link>
             <div className="flex space-x-3">
-              <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold">
+              <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
                 Find a Pro
               </Button>
-              <Button variant="outline" className="border-[#2c3c50] text-[#2c3c50] hover:bg-[#2c3c50] hover:text-white font-semibold">
+              <Button variant="outline" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white font-semibold">
                 Become a Pro
               </Button>
             </div>
@@ -88,30 +88,30 @@ const Header = () => {
           <nav className="container mx-auto px-4 py-4 space-y-4">
             <Link
               href="/services"
-              className="block text-gray-700 hover:text-[#2c3c50] transition-colors"
+              className="block text-gray-700 hover:text-[#0a4768] transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               Services
             </Link>
             <Link
               href="/how-it-works"
-              className="block text-gray-700 hover:text-[#2c3c50] transition-colors"
+              className="block text-gray-700 hover:text-[#0a4768] transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               How It Works
             </Link>
             <Link
               href="/about"
-              className="block text-gray-700 hover:text-[#2c3c50] transition-colors"
+              className="block text-gray-700 hover:text-[#0a4768] transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               About
             </Link>
             <div className="space-y-3">
-              <Button className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold">
+              <Button className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
                 Find a Pro
               </Button>
-              <Button variant="outline" className="w-full border-[#2c3c50] text-[#2c3c50] hover:bg-[#2c3c50] hover:text-white font-semibold">
+              <Button variant="outline" className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white font-semibold">
                 Become a Pro
               </Button>
             </div>

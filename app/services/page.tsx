@@ -70,7 +70,7 @@ export default function ServicesPage() {
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold text-[#2c3c50] mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold text-[#0a4768] mb-6">
               Professional Insulation Services
             </h1>
             <p className="text-xl text-gray-600 mb-8">
@@ -80,15 +80,15 @@ export default function ServicesPage() {
             <div className="flex flex-wrap justify-center gap-6">
               <div className="flex items-center bg-white rounded-lg px-6 py-3 shadow-md">
                 <Star className="h-5 w-5 text-[#F5DD22] mr-2" />
-                <span className="font-semibold text-[#2c3c50]">4.9/5 Rating</span>
+                <span className="font-semibold text-[#0a4768]">4.9/5 Rating</span>
               </div>
               <div className="flex items-center bg-white rounded-lg px-6 py-3 shadow-md">
                 <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                <span className="font-semibold text-[#2c3c50]">Licensed & Insured</span>
+                <span className="font-semibold text-[#0a4768]">Licensed & Insured</span>
               </div>
               <div className="flex items-center bg-white rounded-lg px-6 py-3 shadow-md">
-                <Home className="h-5 w-5 text-[#2c3c50] mr-2" />
-                <span className="font-semibold text-[#2c3c50]">50,000+ Projects</span>
+                <Home className="h-5 w-5 text-[#0a4768] mr-2" />
+                <span className="font-semibold text-[#0a4768]">50,000+ Projects</span>
               </div>
             </div>
           </div>
@@ -110,16 +110,16 @@ export default function ServicesPage() {
                       className="w-full h-48 object-cover"
                     />
                     <div className="absolute top-4 left-4 bg-[#F5DD22] rounded-full p-3">
-                      <Icon className="h-8 w-8 text-[#2c3c50]" />
+                      <Icon className="h-8 w-8 text-[#0a4768]" />
                     </div>
                   </div>
                   <CardHeader>
-                    <CardTitle className="text-2xl text-[#2c3c50]">{service.title}</CardTitle>
+                    <CardTitle className="text-2xl text-[#0a4768]">{service.title}</CardTitle>
                     <p className="text-gray-600">{service.description}</p>
                   </CardHeader>
                   <CardContent>
                     <div className="mb-6">
-                      <h4 className="font-semibold text-[#2c3c50] mb-3">What's Included:</h4>
+                      <h4 className="font-semibold text-[#0a4768] mb-3">What's Included:</h4>
                       <div className="grid grid-cols-2 gap-2">
                         {service.features.map((feature, featureIndex) => (
                           <div key={featureIndex} className="flex items-center text-sm text-gray-600">
@@ -131,7 +131,7 @@ export default function ServicesPage() {
                     </div>
                     
                     <div className="mb-6">
-                      <h4 className="font-semibold text-[#2c3c50] mb-3">Benefits:</h4>
+                      <h4 className="font-semibold text-[#0a4768] mb-3">Benefits:</h4>
                       <div className="space-y-2">
                         {service.benefits.map((benefit, benefitIndex) => (
                           <div key={benefitIndex} className="flex items-center text-sm text-gray-600">
@@ -143,8 +143,8 @@ export default function ServicesPage() {
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <div className="text-2xl font-bold text-[#2c3c50]">{service.price}</div>
-                      <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold">
+                      <div className="text-2xl font-bold text-[#0a4768]">{service.price}</div>
+                      <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
                         Get Free Quote
                       </Button>
                     </div>
@@ -157,16 +157,16 @@ export default function ServicesPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-[#D6D6D6] text-[#2c3c50]">
+      <section className="py-20 bg-[#D6D6D6] text-[#0a4768]">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-6">
             Ready to Start Your Insulation Project?
           </h2>
-          <p className="text-xl text-[#2c3c50] mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-[#0a4768] mb-8 max-w-2xl mx-auto">
             Get connected with top-rated insulation contractors in your area. 
             Compare quotes and choose the best option for your home.
           </p>
-          <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold px-8 py-4 text-lg">
+          <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
             Get Started Today
           </Button>
         </div>

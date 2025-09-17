@@ -83,7 +83,7 @@ export default function ContactPage() {
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold text-[#2c3c50] mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold text-[#0a4768] mb-6">
               Get in Touch
             </h1>
             <p className="text-xl text-gray-600 mb-8">
@@ -104,12 +104,12 @@ export default function ContactPage() {
                 <Card key={index} className="text-center hover:shadow-xl transition-shadow">
                   <CardContent className="p-8">
                     <div className="bg-[#F5DD22] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Icon className="h-8 w-8 text-[#2c3c50]" />
+                      <Icon className="h-8 w-8 text-[#0a4768]" />
                     </div>
-                    <h3 className="text-xl font-bold text-[#2c3c50] mb-2">{method.title}</h3>
+                    <h3 className="text-xl font-bold text-[#0a4768] mb-2">{method.title}</h3>
                     <p className="text-gray-600 mb-4">{method.description}</p>
-                    <div className="text-lg font-semibold text-[#2c3c50] mb-4">{method.value}</div>
-                    <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold">
+                    <div className="text-lg font-semibold text-[#0a4768] mb-4">{method.value}</div>
+                    <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
                       {method.action}
                     </Button>
                   </CardContent>
@@ -123,7 +123,7 @@ export default function ContactPage() {
             {/* Contact Form */}
             <Card className="shadow-xl">
               <CardHeader>
-                <CardTitle className="text-2xl text-[#2c3c50]">Send Us a Message</CardTitle>
+                <CardTitle className="text-2xl text-[#0a4768]">Send Us a Message</CardTitle>
                 <p className="text-gray-600">
                   Fill out the form below and we'll get back to you within 24 hours.
                 </p>
@@ -207,7 +207,7 @@ export default function ContactPage() {
 
                   <Button 
                     type="submit"
-                    className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold py-3"
+                    className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold py-3"
                   >
                     Send Message
                   </Button>
@@ -220,13 +220,13 @@ export default function ContactPage() {
               {/* Office Info */}
               <Card className="shadow-xl">
                 <CardHeader>
-                  <CardTitle className="text-xl text-[#2c3c50]">Our Office</CardTitle>
+                  <CardTitle className="text-xl text-[#0a4768]">Our Office</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-start">
                     <MapPin className="h-5 w-5 text-[#F5DD22] mr-3 mt-1" />
                     <div>
-                      <div className="font-semibold text-[#2c3c50]">Address</div>
+                      <div className="font-semibold text-[#0a4768]">Address</div>
                       <div className="text-gray-600">
                         14210 N 46th Dr<br />
                         Glendale, AZ 85306
@@ -239,7 +239,7 @@ export default function ContactPage() {
               {/* FAQ */}
               <Card className="shadow-xl">
                 <CardHeader>
-                  <CardTitle className="text-xl text-[#2c3c50] flex items-center">
+                  <CardTitle className="text-xl text-[#0a4768] flex items-center">
                     <HelpCircle className="h-6 w-6 mr-2" />
                     Frequently Asked Questions
                   </CardTitle>
@@ -247,7 +247,7 @@ export default function ContactPage() {
                 <CardContent className="space-y-4">
                   {faqs.map((faq, index) => (
                     <div key={index} className="border-b border-gray-200 pb-4 last:border-b-0">
-                      <h4 className="font-semibold text-[#2c3c50] mb-2">{faq.question}</h4>
+                      <h4 className="font-semibold text-[#0a4768] mb-2">{faq.question}</h4>
                       <p className="text-gray-600 text-sm">{faq.answer}</p>
                     </div>
                   ))}
@@ -268,7 +268,7 @@ export default function ContactPage() {
             Don't wait to improve your home's energy efficiency. Get matched with 
             trusted insulation contractors in your area today.
           </p>
-          <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold px-8 py-4 text-lg">
+          <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
             Get Free Quote Now
           </Button>
         </div>

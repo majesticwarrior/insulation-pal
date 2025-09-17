@@ -58,7 +58,7 @@ const Services = () => {
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#2c3c50] mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
             Professional Insulation Services
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -81,7 +81,7 @@ const Services = () => {
                       className="w-8 h-8 object-cover rounded"
                     />
                   </div>
-                  <CardTitle className="text-xl text-[#2c3c50]">{service.title}</CardTitle>
+                  <CardTitle className="text-xl text-[#0a4768]">{service.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600 mb-4">{service.description}</p>
@@ -95,10 +95,10 @@ const Services = () => {
                   </ul>
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-lg font-bold text-[#2c3c50]">{service.price}</div>
+                      <div className="text-lg font-bold text-[#0a4768]">{service.price}</div>
                       <div className="text-gray-500 mt-1" style={{fontSize: '12px'}}>{service.disclaimer}</div>
                     </div>
-                    <Button variant="outline" className="border-[#2c3c50] text-[#2c3c50] hover:bg-[#2c3c50] hover:text-white">
+                    <Button variant="outline" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
                       Get Quote
                     </Button>
                   </div>
@@ -109,7 +109,7 @@ const Services = () => {
         </div>
 
         <div className="text-center mt-12">
-          <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold px-8 py-3 text-lg">
+          <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
             View All Services
           </Button>
         </div>

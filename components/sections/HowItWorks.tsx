@@ -32,7 +32,7 @@ const HowItWorks = () => {
     <section className="py-20 bg-[#D8E1FF]">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#2c3c50] mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
             How InsulationPal Works
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -53,13 +53,13 @@ const HowItWorks = () => {
                 
                 <div className="relative z-10">
                   <div className="bg-white rounded-full w-32 h-32 mx-auto mb-6 flex items-center justify-center shadow-lg relative">
-                    <div className="absolute -top-2 -right-2 bg-[#F5DD22] text-[#2c3c50] rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+                    <div className="absolute -top-2 -right-2 bg-[#F5DD22] text-[#0a4768] rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
                       {step.step}
                     </div>
-                    <Icon className="h-12 w-12 text-[#2c3c50]" />
+                    <Icon className="h-12 w-12 text-[#0a4768]" />
                   </div>
                   
-                  <h3 className="text-xl font-bold text-[#2c3c50] mb-4">
+                  <h3 className="text-xl font-bold text-[#0a4768] mb-4">
                     {step.title}
                   </h3>
                   
@@ -74,17 +74,17 @@ const HowItWorks = () => {
 
         <div className="text-center mt-16">
           <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
-            <h3 className="text-2xl font-bold text-[#2c3c50] mb-4">
+            <h3 className="text-2xl font-bold text-[#0a4768] mb-4">
               Ready to Get Started?
             </h3>
             <p className="text-gray-600 mb-6">
               Join thousands of homeowners who have saved money and improved their home's comfort with InsulationPal.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold px-8 py-3 rounded-lg transition-colors">
+              <button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 rounded-lg transition-colors">
                 Get Free Quote
               </button>
-              <button className="border-2 border-[#2c3c50] text-[#2c3c50] hover:bg-[#2c3c50] hover:text-white px-8 py-3 rounded-lg transition-colors">
+              <button className="border-2 border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white px-8 py-3 rounded-lg transition-colors">
                 Learn More
               </button>
             </div>

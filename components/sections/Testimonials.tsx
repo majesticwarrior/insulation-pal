@@ -68,7 +68,7 @@ const Testimonials = () => {
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#2c3c50] mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
             What Our Customers Say
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -82,7 +82,7 @@ const Testimonials = () => {
             <Card key={index} className="hover:shadow-xl transition-shadow duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center mb-4">
-                  <Quote className="h-8 w-8 text-[#2c3c50] mr-2" />
+                  <Quote className="h-8 w-8 text-[#0a4768] mr-2" />
                   <div className="flex">{renderStars(testimonial.rating)}</div>
                 </div>
                 
@@ -97,13 +97,13 @@ const Testimonials = () => {
                     className="w-12 h-12 rounded-full mr-4 object-cover"
                   />
                   <div>
-                    <div className="font-semibold text-[#2c3c50]">
+                    <div className="font-semibold text-[#0a4768]">
                       {testimonial.name}
                     </div>
                     <div className="text-sm text-gray-500">
                       {testimonial.location}
                     </div>
-                    <div className="text-sm text-[#2c3c50] font-medium">
+                    <div className="text-sm text-[#0a4768] font-medium">
                       {testimonial.service}
                     </div>
                   </div>
@@ -115,7 +115,7 @@ const Testimonials = () => {
 
         <div className="text-center mt-16">
           <div className="bg-[#D8E1FF] rounded-lg p-8 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold text-[#2c3c50] mb-4">
+            <h3 className="text-2xl font-bold text-[#0a4768] mb-4">
               Join Over 50,000 Satisfied Customers
             </h3>
             <p className="text-gray-600 mb-6">
@@ -124,19 +124,19 @@ const Testimonials = () => {
             </p>
             <div className="flex flex-wrap justify-center gap-8 text-center">
               <div>
-                <div className="text-3xl font-bold text-[#2c3c50]">4.9/5</div>
+                <div className="text-3xl font-bold text-[#0a4768]">4.9/5</div>
                 <div className="text-sm text-gray-600">Average Rating</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-[#2c3c50]">50K+</div>
+                <div className="text-3xl font-bold text-[#0a4768]">50K+</div>
                 <div className="text-sm text-gray-600">Projects Completed</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-[#2c3c50]">98%</div>
+                <div className="text-3xl font-bold text-[#0a4768]">98%</div>
                 <div className="text-sm text-gray-600">Customer Satisfaction</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-[#2c3c50]">24hrs</div>
+                <div className="text-3xl font-bold text-[#0a4768]">24hrs</div>
                 <div className="text-sm text-gray-600">Average Match Time</div>
               </div>
             </div>

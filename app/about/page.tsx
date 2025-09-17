@@ -70,7 +70,7 @@ export default function AboutPage() {
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-[#2c3c50] mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold text-[#0a4768] mb-6">
               About InsulationPal
             </h1>
             <p className="text-xl text-gray-600 mb-8">
@@ -86,7 +86,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-[#2c3c50] mb-6">Our Story</h2>
+              <h2 className="text-4xl font-bold text-[#0a4768] mb-6">Our Story</h2>
               <p className="text-lg text-gray-600 mb-6">
                 InsulationPal was founded in 2020 when our founder, Sarah Johnson, experienced firsthand 
                 the frustration of finding reliable insulation contractors. After calling dozens of companies 
@@ -100,7 +100,7 @@ export default function AboutPage() {
               <div className="grid grid-cols-2 gap-6">
                 {stats.map((stat, index) => (
                   <div key={index} className="text-center">
-                    <div className="text-3xl font-bold text-[#2c3c50]">{stat.number}</div>
+                    <div className="text-3xl font-bold text-[#0a4768]">{stat.number}</div>
                     <div className="text-sm text-gray-600">{stat.label}</div>
                   </div>
                 ))}
@@ -121,7 +121,7 @@ export default function AboutPage() {
       <section className="py-20 bg-[#D6D6D6]">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-[#2c3c50] mb-6">Our Values</h2>
+            <h2 className="text-4xl font-bold text-[#0a4768] mb-6">Our Values</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               These core values guide everything we do and ensure we deliver exceptional 
               experiences for both homeowners and contractors.
@@ -135,9 +135,9 @@ export default function AboutPage() {
                 <Card key={index} className="text-center hover:shadow-xl transition-shadow">
                   <CardContent className="p-8">
                     <div className="bg-[#F5DD22] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Icon className="h-8 w-8 text-[#2c3c50]" />
+                      <Icon className="h-8 w-8 text-[#0a4768]" />
                     </div>
-                    <h3 className="text-xl font-bold text-[#2c3c50] mb-4">{value.title}</h3>
+                    <h3 className="text-xl font-bold text-[#0a4768] mb-4">{value.title}</h3>
                     <p className="text-gray-600">{value.description}</p>
                   </CardContent>
                 </Card>
@@ -151,7 +151,7 @@ export default function AboutPage() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-[#2c3c50] mb-6">Meet Our Team</h2>
+            <h2 className="text-4xl font-bold text-[#0a4768] mb-6">Meet Our Team</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Our passionate team is dedicated to revolutionizing how homeowners 
               connect with trusted insulation contractors.
@@ -167,8 +167,8 @@ export default function AboutPage() {
                     alt={member.name}
                     className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
                   />
-                  <h3 className="text-xl font-bold text-[#2c3c50] mb-2">{member.name}</h3>
-                  <div className="text-[#2c3c50] font-semibold mb-3">{member.role}</div>
+                  <h3 className="text-xl font-bold text-[#0a4768] mb-2">{member.name}</h3>
+                  <div className="text-[#0a4768] font-semibold mb-3">{member.role}</div>
                   <p className="text-gray-600 text-sm">{member.bio}</p>
                 </CardContent>
               </Card>
@@ -178,7 +178,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission Section */}
-      <section className="py-20 bg-[#2c3c50] text-white">
+      <section className="py-20 bg-[#0a4768] text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-8">Our Mission</h2>
@@ -210,7 +210,7 @@ export default function AboutPage() {
       {/* CTA Section */}
       <section className="py-20 bg-[#D8E1FF]">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold text-[#2c3c50] mb-6">
+          <h2 className="text-4xl font-bold text-[#0a4768] mb-6">
             Ready to Join Our Success Story?
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
@@ -218,12 +218,12 @@ export default function AboutPage() {
             wanting to grow your business, we're here to help.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold px-8 py-3">
+            <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3">
               Get Free Quote
             </Button>
             <Button 
               variant="outline" 
-              className="border-[#2c3c50] text-[#2c3c50] hover:bg-[#2c3c50] hover:text-white px-8 py-3"
+              className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white px-8 py-3"
             >
               Join as Contractor
             </Button>
