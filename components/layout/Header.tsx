@@ -60,9 +60,14 @@ const Header = () => {
             <Link href="/contact" className="text-gray-700 hover:text-[#2c3c50] transition-colors">
               Contact
             </Link>
-            <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold">
-              Get Free Quote
-            </Button>
+            <div className="flex space-x-3">
+              <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold">
+                Find a Pro
+              </Button>
+              <Button variant="outline" className="border-[#2c3c50] text-[#2c3c50] hover:bg-[#2c3c50] hover:text-white font-semibold">
+                Become a Pro
+              </Button>
+            </div>
           </nav>
 
           {/* Mobile menu button */}
@@ -112,9 +117,14 @@ const Header = () => {
             >
               Contact
             </Link>
-            <Button className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold">
-              Get Free Quote
-            </Button>
+            <div className="space-y-3">
+              <Button className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold">
+                Find a Pro
+              </Button>
+              <Button variant="outline" className="w-full border-[#2c3c50] text-[#2c3c50] hover:bg-[#2c3c50] hover:text-white font-semibold">
+                Become a Pro
+              </Button>
+            </div>
           </nav>
         </div>
       )}
