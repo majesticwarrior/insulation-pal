@@ -33,7 +33,7 @@ const Coverage = () => {
           <div>
             <div className="bg-white rounded-lg shadow-xl p-8 mb-8">
               <div className="flex items-center mb-6">
-                <MapPin className="h-8 w-8 text-[#F5DD22] mr-3" />
+                <MapPin className="h-8 w-8 text-[#2c3c50] mr-3" />
                 <h3 className="text-2xl font-bold text-[#2c3c50]">
                   We Serve 35+ States
                 </h3>

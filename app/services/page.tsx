@@ -157,12 +157,12 @@ export default function ServicesPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-[#2c3c50] text-white">
+      <section className="py-20 bg-[#D6D6D6] text-[#2c3c50]">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-6">
             Ready to Start Your Insulation Project?
           </h2>
-          <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-[#2c3c50] mb-8 max-w-2xl mx-auto">
             Get connected with top-rated insulation contractors in your area. 
             Compare quotes and choose the best option for your home.
           </p>

@@ -37,14 +37,14 @@ export default function ContactPage() {
       icon: Phone,
       title: 'Call Us',
       description: 'Speak with our customer support team',
-      value: '(555) 123-4567',
+      value: '(888) 357-9555',
       action: 'Call Now'
     },
     {
       icon: Mail,
       title: 'Email Us',
       description: 'Send us a message and we\'ll respond within 24 hours',
-      value: 'hello@insulationpal.com',
+      value: 'help@insulationpal.com',
       action: 'Send Email'
     },
     {
@@ -155,7 +155,7 @@ export default function ContactPage() {
                         type="tel"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        placeholder="(555) 123-4567"
+                        placeholder="(888) 357-9555"
                       />
                     </div>
                   </div>
@@ -228,20 +228,8 @@ export default function ContactPage() {
                     <div>
                       <div className="font-semibold text-[#2c3c50]">Address</div>
                       <div className="text-gray-600">
-                        123 Business Avenue<br />
-                        Suite 100<br />
-                        City, ST 12345
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <Clock className="h-5 w-5 text-[#F5DD22] mr-3" />
-                    <div>
-                      <div className="font-semibold text-[#2c3c50]">Business Hours</div>
-                      <div className="text-gray-600">
-                        Monday - Friday: 8:00 AM - 8:00 PM<br />
-                        Saturday: 9:00 AM - 6:00 PM<br />
-                        Sunday: 10:00 AM - 4:00 PM
+                        14210 N 46th Dr<br />
+                        Glendale, AZ 85306
                       </div>
                     </div>
                   </div>
@@ -271,7 +259,7 @@ export default function ContactPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-[#2c3c50] text-white">
+      <section className="py-20 bg-[#757575] text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-6">
             Ready to Get Started?

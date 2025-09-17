@@ -82,7 +82,7 @@ const Testimonials = () => {
             <Card key={index} className="hover:shadow-xl transition-shadow duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center mb-4">
-                  <Quote className="h-8 w-8 text-[#F5DD22] mr-2" />
+                  <Quote className="h-8 w-8 text-[#2c3c50] mr-2" />
                   <div className="flex">{renderStars(testimonial.rating)}</div>
                 </div>
                 
@@ -103,7 +103,7 @@ const Testimonials = () => {
                     <div className="text-sm text-gray-500">
                       {testimonial.location}
                     </div>
-                    <div className="text-sm text-[#F5DD22] font-medium">
+                    <div className="text-sm text-[#2c3c50] font-medium">
                       {testimonial.service}
                     </div>
                   </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { MapPin, Shield, Star, Users } from 'lucide-react'
@@ -24,7 +25,7 @@ const Hero = () => {
           <div className="text-center lg:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2c3c50] mb-6 leading-tight">
               Professional Insulation Services{' '}
-              <span className="text-[#F5DD22]">Made Simple</span>
+              <span className="text-[#2c3c50] made-simple-text">Made Simple</span>
             </h1>
             <p className="text-xl text-gray-700 mb-8 leading-relaxed">
               Connect with trusted, licensed insulation contractors in your area. 
@@ -95,10 +96,13 @@ const Hero = () => {
 
           <div className="relative">
             <div className="bg-white rounded-lg shadow-2xl p-8">
-              <img
-                src="https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg?auto=compress&cs=tinysrgb&w=600"
-                alt="Professional insulation contractor at work"
-                className="w-full h-64 object-cover rounded-lg mb-6"
+              <Image
+                src="/professional-insulation-contractor-working-on-home.jpg"
+                alt="Professional insulation contractor working on home"
+                width={800}
+                height={600}
+                className="w-full h-96 object-cover rounded-lg mb-6"
+                priority
               />
               <div className="space-y-4">
                 <div className="flex items-center justify-between">

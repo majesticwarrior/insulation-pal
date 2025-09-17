@@ -109,6 +109,11 @@ const Footer = () => {
                   Reviews
                 </Link>
               </li>
+              <li>
+                <Link href="/contact" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  Contact Us
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -118,18 +123,17 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center">
                 <Phone className="h-5 w-5 mr-3 text-[#F5DD22]" />
-                <span className="text-gray-300">(555) 123-4567</span>
+                <span className="text-gray-300">(888) 357-9555</span>
               </div>
               <div className="flex items-center">
                 <Mail className="h-5 w-5 mr-3 text-[#F5DD22]" />
-                <span className="text-gray-300">hello@insulationpal.com</span>
+                <span className="text-gray-300">help@insulationpal.com</span>
               </div>
               <div className="flex items-start">
                 <MapPin className="h-5 w-5 mr-3 text-[#F5DD22] mt-0.5" />
                 <span className="text-gray-300">
-                  123 Business Ave<br />
-                  Suite 100<br />
-                  City, ST 12345
+                  14210 N 46th Dr<br />
+                  Glendale, AZ 85306
                 </span>
               </div>
             </div>

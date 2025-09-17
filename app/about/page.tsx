@@ -37,13 +37,13 @@ export default function AboutPage() {
 
   const team = [
     {
-      name: 'Sarah Johnson',
+      name: 'Shannon Adams',
       role: 'CEO & Founder',
       image: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=300',
-      bio: 'Former construction executive with 15+ years in the insulation industry.'
+      bio: 'Been working in the home improvement industry for over 15 years.'
     },
     {
-      name: 'Michael Chen',
+      name: 'Alex Viderman',
       role: 'CTO',
       image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=300',
       bio: 'Technology leader focused on connecting homeowners with quality contractors.'
@@ -100,7 +100,7 @@ export default function AboutPage() {
               <div className="grid grid-cols-2 gap-6">
                 {stats.map((stat, index) => (
                   <div key={index} className="text-center">
-                    <div className="text-3xl font-bold text-[#F5DD22]">{stat.number}</div>
+                    <div className="text-3xl font-bold text-[#2c3c50]">{stat.number}</div>
                     <div className="text-sm text-gray-600">{stat.label}</div>
                   </div>
                 ))}
@@ -168,7 +168,7 @@ export default function AboutPage() {
                     className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
                   />
                   <h3 className="text-xl font-bold text-[#2c3c50] mb-2">{member.name}</h3>
-                  <div className="text-[#F5DD22] font-semibold mb-3">{member.role}</div>
+                  <div className="text-[#2c3c50] font-semibold mb-3">{member.role}</div>
                   <p className="text-gray-600 text-sm">{member.bio}</p>
                 </CardContent>
               </Card>

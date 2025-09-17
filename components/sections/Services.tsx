@@ -1,50 +1,56 @@
+import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Home, Wind, Snowflake, Flame, Building, Wrench } from 'lucide-react'
 
 const Services = () => {
   const services = [
     {
-      icon: Home,
+      icon: '/attic-insulation-icon.jpg',
       title: 'Attic Insulation',
-      description: 'Professional attic insulation installation and replacement. Reduce energy costs and improve comfort.',
+      description: 'Professional attic insulation installation. Reduce energy costs and improve comfort.',
       features: ['Blown-in insulation', 'Batt insulation', 'Radiant barriers'],
-      price: 'Starting at $1.50/sq ft'
+      price: 'Starting at $1.00/sq ft',
+      disclaimer: 'Based on material & region'
     },
     {
-      icon: Building,
+      icon: '/wall-insulation-icon.jpg',
       title: 'Wall Insulation',
       description: 'Complete wall insulation services for new construction and retrofits.',
       features: ['Injection foam', 'Blown-in cellulose', 'Fiberglass batts'],
-      price: 'Starting at $2.25/sq ft'
+      price: 'Starting at $1.00/sq ft',
+      disclaimer: 'Based on material & region'
     },
     {
-      icon: Wind,
+      icon: '/spray-foam-icon.jpg',
       title: 'Spray Foam Insulation',
       description: 'Premium spray foam insulation for maximum energy efficiency and air sealing.',
       features: ['Open-cell spray foam', 'Closed-cell spray foam', 'Air sealing'],
-      price: 'Starting at $3.50/sq ft'
+      price: 'Starting at $1.00/sq ft',
+      disclaimer: 'Based on material & region'
     },
     {
-      icon: Snowflake,
+      icon: '/crawl-space-insulation-icon.jpg',
       title: 'Crawl Space Insulation',
       description: 'Protect your crawl space from moisture and temperature extremes.',
       features: ['Vapor barriers', 'Floor joist insulation', 'Encapsulation'],
-      price: 'Starting at $2.00/sq ft'
+      price: 'Starting at $.30/board ft',
+      disclaimer: 'Based on material & region'
     },
     {
-      icon: Flame,
+      icon: '/basement-insulation-icon.jpg',
       title: 'Basement Insulation',
       description: 'Complete basement insulation solutions for comfort and energy savings.',
       features: ['Foundation walls', 'Rim joists', 'Ceiling insulation'],
-      price: 'Starting at $2.75/sq ft'
+      price: 'Starting at $1.45/sq ft',
+      disclaimer: 'Based on material & region'
     },
     {
-      icon: Wrench,
+      icon: '/insulation-removal-icon.jpg',
       title: 'Insulation Removal',
       description: 'Safe removal of old, damaged, or contaminated insulation.',
       features: ['Old insulation removal', 'Contaminated material', 'Pest cleanup'],
-      price: 'Starting at $1.25/sq ft'
+      price: 'Starting at $1.00/sq ft',
+      disclaimer: 'Based on material & region'
     }
   ]
 
@@ -63,12 +69,17 @@ const Services = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => {
-            const Icon = service.icon
             return (
               <Card key={index} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 <CardHeader className="pb-4">
-                  <div className="bg-[#F5DD22] w-16 h-16 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Icon className="h-8 w-8 text-[#2c3c50]" />
+                  <div className="bg-[#F5DD22] w-16 h-16 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform overflow-hidden">
+                    <Image
+                      src={service.icon}
+                      alt={`${service.title} icon`}
+                      width={32}
+                      height={32}
+                      className="w-8 h-8 object-cover rounded"
+                    />
                   </div>
                   <CardTitle className="text-xl text-[#2c3c50]">{service.title}</CardTitle>
                 </CardHeader>
@@ -83,7 +94,10 @@ const Services = () => {
                     ))}
                   </ul>
                   <div className="flex items-center justify-between">
-                    <div className="text-lg font-bold text-[#2c3c50]">{service.price}</div>
+                    <div>
+                      <div className="text-lg font-bold text-[#2c3c50]">{service.price}</div>
+                      <div className="text-gray-500 mt-1" style={{fontSize: '12px'}}>{service.disclaimer}</div>
+                    </div>
                     <Button variant="outline" className="border-[#2c3c50] text-[#2c3c50] hover:bg-[#2c3c50] hover:text-white">
                       Get Quote
                     </Button>

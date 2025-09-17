@@ -21,7 +21,7 @@ const Header = () => {
           <div className="flex items-center space-x-6">
             <div className="flex items-center space-x-2 text-gray-600">
               <Phone className="h-4 w-4" />
-              <span>(555) 123-4567</span>
+              <span>(888) 357-9555</span>
             </div>
             <div className="flex items-center space-x-2 text-gray-600">
               <MapPin className="h-4 w-4" />
@@ -56,9 +56,6 @@ const Header = () => {
             </Link>
             <Link href="/about" className="text-gray-700 hover:text-[#2c3c50] transition-colors">
               About
-            </Link>
-            <Link href="/contact" className="text-gray-700 hover:text-[#2c3c50] transition-colors">
-              Contact
             </Link>
             <div className="flex space-x-3">
               <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold">
@@ -109,13 +106,6 @@ const Header = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               About
-            </Link>
-            <Link
-              href="/contact"
-              className="block text-gray-700 hover:text-[#2c3c50] transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Contact
             </Link>
             <div className="space-y-3">
               <Button className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#2c3c50] font-semibold">

@@ -78,6 +78,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-size: calc(1rem + 2px); /* Increase base font size by 2px */
   }
 }
 
@@ -111,4 +112,38 @@ textarea:focus-visible,
 a:focus-visible {
   outline: 2px solid #F5DD22;
   outline-offset: 2px;
+}
+
+/* Increase all font sizes by 2px */
+h1 { font-size: calc(2.25rem + 2px) !important; } /* text-4xl */
+h2 { font-size: calc(1.875rem + 2px) !important; } /* text-3xl */
+h3 { font-size: calc(1.5rem + 2px) !important; } /* text-2xl */
+h4 { font-size: calc(1.25rem + 2px) !important; } /* text-xl */
+h5 { font-size: calc(1.125rem + 2px) !important; } /* text-lg */
+h6 { font-size: calc(1rem + 2px) !important; } /* text-base */
+
+/* Increase button text */
+button { font-size: calc(1rem + 2px) !important; }
+
+/* Increase input and form text */
+input, textarea, select { font-size: calc(1rem + 2px) !important; }
+
+/* Increase navigation text */
+nav a { font-size: calc(1rem + 2px) !important; }
+
+/* Increase paragraph text */
+p { font-size: calc(1rem + 2px) !important; }
+
+/* Increase list text */
+li { font-size: calc(1rem + 2px) !important; }
+
+/* Increase span text */
+span { font-size: calc(1rem + 2px) !important; }
+
+/* Increase div text */
+div { font-size: calc(1rem + 2px) !important; }
+
+/* Custom font size for Made Simple text */
+.made-simple-text { 
+  font-size: 46px !important; 
 }
