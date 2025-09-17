@@ -1,0 +1,153 @@
+import Link from 'next/link'
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react'
+
+const Footer = () => {
+  return (
+    <footer className="bg-[#2c3c50] text-white">
+      <div className="container mx-auto px-4 py-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Company Info */}
+          <div>
+            <div className="text-2xl font-bold mb-4">InsulationPal</div>
+            <p className="text-gray-300 mb-6">
+              Connecting homeowners with trusted insulation contractors nationwide. 
+              Save money, improve comfort, and reduce energy costs.
+            </p>
+            <div className="flex space-x-4">
+              <a href="#" className="text-gray-300 hover:text-[#F5DD22] transition-colors" aria-label="Facebook">
+                <Facebook className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-gray-300 hover:text-[#F5DD22] transition-colors" aria-label="Twitter">
+                <Twitter className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-gray-300 hover:text-[#F5DD22] transition-colors" aria-label="Instagram">
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-gray-300 hover:text-[#F5DD22] transition-colors" aria-label="LinkedIn">
+                <Linkedin className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
+
+          {/* Services */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Services</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/services/attic-insulation" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  Attic Insulation
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/wall-insulation" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  Wall Insulation
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/spray-foam" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  Spray Foam
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/crawl-space" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  Crawl Space
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/basement" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  Basement Insulation
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/removal" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  Insulation Removal
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Company</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/about" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/how-it-works" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  How It Works
+                </Link>
+              </li>
+              <li>
+                <Link href="/contractors" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  Join as Contractor
+                </Link>
+              </li>
+              <li>
+                <Link href="/careers" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  Careers
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link href="/reviews" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  Reviews
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Contact</h3>
+            <div className="space-y-3">
+              <div className="flex items-center">
+                <Phone className="h-5 w-5 mr-3 text-[#F5DD22]" />
+                <span className="text-gray-300">(555) 123-4567</span>
+              </div>
+              <div className="flex items-center">
+                <Mail className="h-5 w-5 mr-3 text-[#F5DD22]" />
+                <span className="text-gray-300">hello@insulationpal.com</span>
+              </div>
+              <div className="flex items-start">
+                <MapPin className="h-5 w-5 mr-3 text-[#F5DD22] mt-0.5" />
+                <span className="text-gray-300">
+                  123 Business Ave<br />
+                  Suite 100<br />
+                  City, ST 12345
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr className="my-8 border-gray-600" />
+
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="text-gray-300 mb-4 md:mb-0">
+            © 2024 InsulationPal. All rights reserved.
+          </div>
+          <div className="flex space-x-6">
+            <Link href="/privacy" className="text-gray-300 hover:text-[#F5DD22] transition-colors text-sm">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="text-gray-300 hover:text-[#F5DD22] transition-colors text-sm">
+              Terms of Service
+            </Link>
+            <Link href="/contact" className="text-gray-300 hover:text-[#F5DD22] transition-colors text-sm">
+              Contact Us
+            </Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
+}
+
+export default Footer
