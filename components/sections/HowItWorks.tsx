@@ -80,12 +80,9 @@ const HowItWorks = () => {
             <p className="text-gray-600 mb-6">
               Join thousands of homeowners who have saved money and improved their home's comfort with InsulationPal.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 rounded-lg transition-colors">
                 Get Free Quote
-              </button>
-              <button className="border-2 border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white px-8 py-3 rounded-lg transition-colors">
-                Learn More
               </button>
             </div>
           </div>
