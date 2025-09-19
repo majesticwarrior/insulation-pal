@@ -5,6 +5,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Search, Users, CheckCircle, Star, MapPin, Clock, Shield, DollarSign } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'How It Works - InsulationPal',
+  description: 'Get connected with trusted insulation contractors in 4 simple steps. Fast, easy, and completely free for homeowners.',
+}
 
 export default function HowItWorksPage() {
   const steps = [

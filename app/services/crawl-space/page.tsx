@@ -5,6 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CheckCircle, Star, Shield, MapPin, Home, Droplet, Wind } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Expert Crawl Space Insulation Services - InsulationPal',
+  description: 'Protect your crawl space from moisture and temperature extremes with professional insulation and encapsulation services.',
+}
 
 export default function CrawlSpacePage() {
   const benefits = [

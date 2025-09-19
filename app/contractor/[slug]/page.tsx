@@ -20,6 +20,12 @@ import {
   DollarSign,
   Wrench
 } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Contractor Profile - InsulationPal',
+  description: 'View contractor profile, reviews, and get free quotes from verified insulation professionals in your area.',
+}
 
 export default function ContractorProfilePage() {
   // Mock data - in a real app, this would come from params and database

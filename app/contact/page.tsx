@@ -8,6 +8,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Phone, Mail, MapPin, Clock, MessageCircle, HelpCircle } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Contact Us - InsulationPal',
+  description: 'Have questions about insulation services? Need help finding the right contractor? Our team is here to help you every step of the way.',
+}
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({

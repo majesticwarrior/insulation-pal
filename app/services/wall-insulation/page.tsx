@@ -5,6 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CheckCircle, Star, Shield, MapPin, Home, Wind, Thermometer } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Expert Wall Insulation Services - InsulationPal',
+  description: 'Improve your home\'s energy efficiency with professional wall insulation. Get free quotes from certified contractors in your area.',
+}
 
 export default function WallInsulationPage() {
   const benefits = [

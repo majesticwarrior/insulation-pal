@@ -8,6 +8,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { CheckCircle, Star, DollarSign, Users, TrendingUp, Shield } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Join Our Contractor Network - InsulationPal',
+  description: 'Join InsulationPal\'s network of trusted contractors and connect with homeowners who need your services. Increase your revenue and expand your customer base.',
+}
 
 export default function JoinContractorPage() {
   const [formData, setFormData] = useState({

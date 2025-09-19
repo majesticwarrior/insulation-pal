@@ -3,6 +3,13 @@ import Footer from '@/components/layout/Footer'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Home, Building, Wind, Snowflake, Flame, Wrench, CheckCircle, Star } from 'lucide-react'
+import Link from 'next/link'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Professional Insulation Services - InsulationPal',
+  description: 'From attic insulation to spray foam applications, our network of certified contractors provides comprehensive insulation solutions for every need and budget.',
+}
 
 export default function ServicesPage() {
   const services = [
@@ -11,54 +18,60 @@ export default function ServicesPage() {
       title: 'Attic Insulation',
       description: 'Professional attic insulation installation and replacement to reduce energy costs and improve comfort.',
       features: ['Blown-in insulation', 'Batt insulation', 'Radiant barriers', 'Air sealing'],
-      price: 'Starting at $1.50/sq ft',
+      price: 'Starting at $1.00/sq ft',
       benefits: ['Up to 30% energy savings', 'Improved comfort', 'Noise reduction'],
-      image: 'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg?auto=compress&cs=tinysrgb&w=400'
+      image: '/attic-insulation-blown-in.jpg',
+      url: '/services/attic-insulation'
     },
     {
       icon: Building,
       title: 'Wall Insulation',
-      description: 'Complete wall insulation services for new construction and retrofits.',
+      description: 'Complete wall insulation services for new construction and retrofits to help reduce energy costs and improve comfort.',
       features: ['Injection foam', 'Blown-in cellulose', 'Fiberglass batts', 'Vapor barriers'],
-      price: 'Starting at $2.25/sq ft',
+      price: 'Starting at $1.00/sq ft',
       benefits: ['Better temperature control', 'Reduced drafts', 'Lower utility bills'],
-      image: 'https://images.pexels.com/photos/6474470/pexels-photo-6474470.jpeg?auto=compress&cs=tinysrgb&w=400'
+      image: '/contractor-installing-wall-insulation.jpg',
+      url: '/services/wall-insulation'
     },
     {
       icon: Wind,
       title: 'Spray Foam Insulation',
       description: 'Premium spray foam insulation for maximum energy efficiency and air sealing.',
       features: ['Open-cell spray foam', 'Closed-cell spray foam', 'Complete air sealing', 'Moisture barrier'],
-      price: 'Starting at $3.50/sq ft',
+      price: 'Starting at $1.00/sq ft',
       benefits: ['Superior R-value', 'Air & moisture seal', 'Long-lasting performance'],
-      image: 'https://images.pexels.com/photos/6474472/pexels-photo-6474472.jpeg?auto=compress&cs=tinysrgb&w=400'
+      image: '/spray-foam-insulation-installed.jpg',
+      url: '/services/spray-foam'
     },
     {
       icon: Snowflake,
       title: 'Crawl Space Insulation',
       description: 'Protect your crawl space from moisture and temperature extremes.',
       features: ['Vapor barriers', 'Floor joist insulation', 'Crawl space encapsulation', 'Moisture control'],
-      price: 'Starting at $2.00/sq ft',
+      price: 'Starting at $.30/board ft',
       benefits: ['Prevent moisture issues', 'Warmer floors', 'Improved indoor air quality'],
-      image: 'https://images.pexels.com/photos/6474473/pexels-photo-6474473.jpeg?auto=compress&cs=tinysrgb&w=400'
+      image: '/crawl-space-insulation-installed.jpg',
+      url: '/services/crawl-space'
     },
     {
       icon: Flame,
       title: 'Basement Insulation',
       description: 'Complete basement insulation solutions for comfort and energy savings.',
       features: ['Foundation walls', 'Rim joists', 'Ceiling insulation', 'Waterproofing'],
-      price: 'Starting at $2.75/sq ft',
+      price: 'Starting at $1.45/sq ft',
       benefits: ['Year-round comfort', 'Prevent condensation', 'Additional living space'],
-      image: 'https://images.pexels.com/photos/6474474/pexels-photo-6474474.jpeg?auto=compress&cs=tinysrgb&w=400'
+      image: '/basement-insulation-installed.jpg',
+      url: '/services/basement-insulation'
     },
     {
       icon: Wrench,
       title: 'Insulation Removal',
       description: 'Safe removal of old, damaged, or contaminated insulation.',
       features: ['Old insulation removal', 'Contaminated material cleanup', 'Pest damage cleanup', 'Safe disposal'],
-      price: 'Starting at $1.25/sq ft',
+      price: 'Starting at $1.00/sq ft',
       benefits: ['Clean slate for new insulation', 'Remove health hazards', 'Pest remediation'],
-      image: 'https://images.pexels.com/photos/6474475/pexels-photo-6474475.jpeg?auto=compress&cs=tinysrgb&w=400'
+      image: '/insulation-removal.jpg',
+      url: '/services/insulation-removal'
     }
   ]
 
@@ -80,7 +93,7 @@ export default function ServicesPage() {
             <div className="flex flex-wrap justify-center gap-6">
               <div className="flex items-center bg-white rounded-lg px-6 py-3 shadow-md">
                 <Star className="h-5 w-5 text-[#F5DD22] mr-2" />
-                <span className="font-semibold text-[#0a4768]">4.9/5 Rating</span>
+                <span className="font-semibold text-[#0a4768]">Highly Rated</span>
               </div>
               <div className="flex items-center bg-white rounded-lg px-6 py-3 shadow-md">
                 <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
@@ -88,7 +101,7 @@ export default function ServicesPage() {
               </div>
               <div className="flex items-center bg-white rounded-lg px-6 py-3 shadow-md">
                 <Home className="h-5 w-5 text-[#0a4768] mr-2" />
-                <span className="font-semibold text-[#0a4768]">50,000+ Projects</span>
+                <span className="font-semibold text-[#0a4768]">1,000's of Projects</span>
               </div>
             </div>
           </div>
@@ -107,7 +120,7 @@ export default function ServicesPage() {
                     <img
                       src={service.image}
                       alt={service.title}
-                      className="w-full h-48 object-cover"
+                      className="w-full h-[300px] object-cover"
                     />
                     <div className="absolute top-4 left-4 bg-[#F5DD22] rounded-full p-3">
                       <Icon className="h-8 w-8 text-[#0a4768]" />
@@ -144,9 +157,16 @@ export default function ServicesPage() {
 
                     <div className="flex items-center justify-between">
                       <div className="text-2xl font-bold text-[#0a4768]">{service.price}</div>
-                      <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
-                        Get Free Quote
-                      </Button>
+                      <div className="flex gap-3">
+                        <Link href={service.url}>
+                          <Button variant="outline" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
+                            Learn More
+                          </Button>
+                        </Link>
+                        <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
+                          Get Free Quote
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

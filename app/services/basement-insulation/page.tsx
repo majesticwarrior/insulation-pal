@@ -5,6 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CheckCircle, Star, Shield, MapPin, Home, Thermometer, Building } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Professional Basement Insulation Services - InsulationPal',
+  description: 'Transform your basement into comfortable, usable space with expert insulation solutions for comfort and energy savings.',
+}
 
 export default function BasementInsulationPage() {
   const benefits = [

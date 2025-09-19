@@ -5,6 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CheckCircle, Star, Shield, MapPin, ThermometerSun, Wind, Droplet } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Premium Spray Foam Insulation Services - InsulationPal',
+  description: 'Achieve maximum energy efficiency with professional spray foam insulation. Superior R-value and complete air sealing in one application.',
+}
 
 export default function SprayFoamPage() {
   const benefits = [

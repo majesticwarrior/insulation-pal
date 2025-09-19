@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Menu, X, Phone, MapPin } from 'lucide-react'
+import { Menu, X, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const Header = () => {
@@ -18,11 +18,7 @@ const Header = () => {
       <div className="container mx-auto px-4">
         {/* Top bar */}
         <div className="hidden md:flex justify-between items-center py-2 text-sm border-b border-gray-100">
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-2 text-gray-600">
-              <Phone className="h-4 w-4" />
-              <span>(888) 357-9555</span>
-            </div>
+          <div className="flex items-center">
             <div className="flex items-center space-x-2 text-gray-600">
               <MapPin className="h-4 w-4" />
               <span>Serving 500+ Cities Nationwide</span>

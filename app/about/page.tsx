@@ -3,6 +3,12 @@ import Footer from '@/components/layout/Footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Shield, Users, Award, Target, CheckCircle, Star } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'About Us - InsulationPal',
+  description: 'Learn about InsulationPal\'s mission to make professional insulation services accessible, affordable, and hassle-free for every homeowner in America.',
+}
 
 export default function AboutPage() {
   const stats = [
@@ -39,13 +45,14 @@ export default function AboutPage() {
     {
       name: 'Shannon Adams',
       role: 'CEO & Founder',
-      image: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=300',
+      image: '/Shannon_Adams_b-w.jpg',
       bio: 'Been working in the home improvement industry for over 15 years.'
     },
     {
       name: 'Alex Viderman',
       role: 'CTO',
       image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=300',
+      image:"/alex.jpg",
       bio: 'Technology leader focused on connecting homeowners with quality contractors.'
     },
     {
@@ -88,14 +95,15 @@ export default function AboutPage() {
             <div>
               <h2 className="text-4xl font-bold text-[#0a4768] mb-6">Our Story</h2>
               <p className="text-lg text-gray-600 mb-6">
-                InsulationPal was founded in 2020 when our founder, Sarah Johnson, experienced firsthand 
+                InsulationPal is a new company founded in 2025 when our founder, Shannon Adams, experienced firsthand 
                 the frustration of finding reliable insulation contractors. After calling dozens of companies 
-                and receiving wildly different quotes, she realized there had to be a better way.
+                and receiving wildly different quotes, he realized there had to be a better way.
               </p>
               <p className="text-lg text-gray-600 mb-6">
-                Today, InsulationPal is the nation's largest network of vetted insulation contractors, 
-                serving over 500 cities across 35+ states. We've helped over 50,000 homeowners save 
-                money on their energy bills while improving their home's comfort.
+                Today, InsulationPal is on a mission to build the nation's largest network of vetted insulation contractors, 
+                serving over 500 cities across all 50 states. Our contractors have helped 1000's  homeowners save 
+                money on their energy bills while improving their home's comfort. Our goal is to make every home in 
+                America more energy-efficient, comfortable, and valuable.
               </p>
               <div className="grid grid-cols-2 gap-6">
                 {stats.map((stat, index) => (

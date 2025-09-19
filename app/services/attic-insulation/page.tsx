@@ -5,6 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CheckCircle, Star, Shield, MapPin, ThermometerSun, Snowflake, Wrench } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Professional Attic Insulation Services - InsulationPal',
+  description: 'Save up to 30% on energy bills with expert attic insulation installation. Connect with licensed contractors in your area for free quotes.',
+}
 
 export default function AtticInsulationPage() {
   const benefits = [
