@@ -18,7 +18,7 @@ export default function HowItWorksPage() {
       step: 1,
       icon: Search,
       title: 'Tell Us Your Needs',
-      description: 'Enter your zip code and describe your insulation project. Our system matches you with qualified contractors in your area.',
+      description: 'Enter your address and describe your insulation project. Our system matches you with qualified contractors in your area.',
       details: [
         'Specify your insulation type',
         'Describe project scope',
@@ -42,7 +42,7 @@ export default function HowItWorksPage() {
       step: 3,
       icon: DollarSign,
       title: 'Compare Free Quotes',
-      description: 'Receive detailed quotes within 24 hours. Compare prices, services, and contractor profiles.',
+      description: 'Receive detailed quotes instantly. Compare prices, services, and contractor profiles.',
       details: [
         'Detailed breakdown of costs',
         'Material specifications',
@@ -81,7 +81,7 @@ export default function HowItWorksPage() {
       icon: Clock,
       title: 'Fast Matching',
       description: 'Get matched with contractors within hours, not days or weeks.',
-      stat: '24 Hour Response'
+      stat: 'Instant Response'
     },
     {
       icon: DollarSign,
@@ -94,7 +94,7 @@ export default function HowItWorksPage() {
   const faqs = [
     {
       question: 'How long does it take to get matched with contractors?',
-      answer: 'Most customers are matched with qualified contractors within 24 hours of submitting their request. The matching time may vary based on location and project complexity.'
+      answer: 'Most customers are matched with qualified contractors instantly upon submitting their request. Response times may vary based on location and project complexity.'
     },
     {
       question: 'Are all contractors licensed and insured?',
@@ -144,7 +144,7 @@ export default function HowItWorksPage() {
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <Input
                     type="text"
-                    placeholder="Enter your zip code"
+                    placeholder="Enter Your Address"
                     className="pl-10 h-12"
                   />
                 </div>

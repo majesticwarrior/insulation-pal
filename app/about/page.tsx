@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { Card, CardContent } from '@/components/ui/card'
@@ -51,8 +52,7 @@ export default function AboutPage() {
     {
       name: 'Alex Viderman',
       role: 'CTO',
-      image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=300',
-      image:"/alex.jpg",
+      image: '/alex.jpg',
       bio: 'Technology leader focused on connecting homeowners with quality contractors.'
     },
     {
@@ -229,12 +229,14 @@ export default function AboutPage() {
             <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3">
               Get Free Quote
             </Button>
-            <Button 
-              variant="outline" 
-              className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white px-8 py-3"
-            >
-              Join as Contractor
-            </Button>
+            <Link href="/join-contractor">
+              <Button 
+                variant="outline" 
+                className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white px-8 py-3"
+              >
+                Join as Contractor
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

@@ -8,21 +8,16 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { CheckCircle, Star, DollarSign, Users, TrendingUp, Shield } from 'lucide-react'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Join Our Contractor Network - InsulationPal',
-  description: 'Join InsulationPal\'s network of trusted contractors and connect with homeowners who need your services. Increase your revenue and expand your customer base.',
-}
 
 export default function JoinContractorPage() {
   const [formData, setFormData] = useState({
     companyName: '',
     firstName: '',
     lastName: '',
+    email: '',
+    phone: '',
     licenseNumber: '',
     rocNumber: '',
-    email: '',
     password: ''
   })
 
@@ -197,6 +192,38 @@ export default function JoinContractorPage() {
                     </div>
 
                     <div>
+                      <Label htmlFor="email" className="text-[#0a4768] font-medium">
+                        Your Email *
+                      </Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        required
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        placeholder="john@abcinsulation.com"
+                        className="mt-1"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="phone" className="text-[#0a4768] font-medium">
+                        Phone Number *
+                      </Label>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        required
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        placeholder="(555) 123-4567"
+                        className="mt-1"
+                      />
+                    </div>
+
+                    <div>
                       <Label htmlFor="licenseNumber" className="text-[#0a4768] font-medium">
                         License # *
                       </Label>
@@ -214,32 +241,15 @@ export default function JoinContractorPage() {
 
                     <div>
                       <Label htmlFor="rocNumber" className="text-[#0a4768] font-medium">
-                        ROC # *
+                        ROC #
                       </Label>
                       <Input
                         id="rocNumber"
                         name="rocNumber"
                         type="text"
-                        required
                         value={formData.rocNumber}
                         onChange={handleInputChange}
                         placeholder="Enter your ROC number"
-                        className="mt-1"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="email" className="text-[#0a4768] font-medium">
-                        Your Email *
-                      </Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        required
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="john@abcinsulation.com"
                         className="mt-1"
                       />
                     </div>
@@ -386,9 +396,6 @@ export default function JoinContractorPage() {
             Join thousands of successful contractors who are growing their business 
             with InsulationPal. Start receiving leads today.
           </p>
-          <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
-            Start Growing My Business
-          </Button>
         </div>
       </section>
 

@@ -5,7 +5,7 @@ const HowItWorks = () => {
     {
       icon: Search,
       title: 'Tell Us Your Needs',
-      description: 'Share your insulation project details and zip code. Our system matches you with qualified contractors in your area.',
+      description: 'Share your insulation project details and address. Our system matches you with qualified contractors in your area.',
       step: '01'
     },
     {

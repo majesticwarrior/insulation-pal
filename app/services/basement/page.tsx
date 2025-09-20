@@ -92,9 +92,9 @@ export default function BasementInsulationPage() {
                     <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <Input
                       type="text"
-                      placeholder="Enter your zip code"
+                      placeholder="Enter Your Address"
                       className="pl-10 h-12"
-                      aria-label="Enter zip code"
+                      aria-label="Enter Your Address"
                     />
                   </div>
                   <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold h-12 px-8">
@@ -115,7 +115,7 @@ export default function BasementInsulationPage() {
             <div className="relative">
               <div className="bg-white rounded-lg shadow-2xl p-8">
                 <Image
-                  src="/basement-insulation-icon.jpg"
+                  src="/basement-insulation-installed.jpg"
                   alt="Professional basement insulation"
                   width={600}
                   height={400}

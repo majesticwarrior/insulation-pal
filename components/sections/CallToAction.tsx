@@ -40,7 +40,7 @@ const CallToAction = () => {
                   <Clock className="h-6 w-6 text-[#0a4768]" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-[#0a4768]">24-Hour Matching</h4>
+                  <h4 className="font-semibold text-[#0a4768]">Instant Matching</h4>
                   <p className="text-sm text-gray-600">Get matched with contractors fast</p>
                 </div>
               </div>
@@ -62,11 +62,11 @@ const CallToAction = () => {
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <Input
                     type="text"
-                    placeholder="Enter your zip code"
+                    placeholder="Enter Your Address"
                     value={zipCode}
                     onChange={handleZipCodeChange}
                     className="pl-10 bg-white border-gray-300 text-[#0a4768] placeholder:text-gray-400"
-                    aria-label="Enter zip code"
+                    aria-label="Enter Your Address"
                   />
                 </div>
                 <div className="relative">

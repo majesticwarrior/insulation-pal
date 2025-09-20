@@ -90,7 +90,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/contractors" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                <Link href="/join-contractor" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
                   Join as Contractor
                 </Link>
               </li>

@@ -57,9 +57,11 @@ const Header = () => {
               <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
                 Find a Pro
               </Button>
-              <Button variant="outline" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white font-semibold">
-                Become a Pro
-              </Button>
+              <Link href="/join-contractor">
+                <Button variant="outline" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white font-semibold">
+                  Become a Pro
+                </Button>
+              </Link>
             </div>
           </nav>
 
@@ -107,9 +109,11 @@ const Header = () => {
               <Button className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
                 Find a Pro
               </Button>
-              <Button variant="outline" className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white font-semibold">
-                Become a Pro
-              </Button>
+              <Link href="/join-contractor">
+                <Button variant="outline" className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white font-semibold">
+                  Become a Pro
+                </Button>
+              </Link>
             </div>
           </nav>
         </div>

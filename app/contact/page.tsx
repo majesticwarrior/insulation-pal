@@ -8,12 +8,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Phone, Mail, MapPin, Clock, MessageCircle, HelpCircle } from 'lucide-react'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Contact Us - InsulationPal',
-  description: 'Have questions about insulation services? Need help finding the right contractor? Our team is here to help you every step of the way.',
-}
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -49,7 +43,7 @@ export default function ContactPage() {
     {
       icon: Mail,
       title: 'Email Us',
-      description: 'Send us a message and we\'ll respond within 24 hours',
+      description: 'Send us a message and we\'ll respond instantly',
       value: 'help@insulationpal.com',
       action: 'Send Email'
     },
@@ -65,7 +59,7 @@ export default function ContactPage() {
   const faqs = [
     {
       question: 'How quickly can I get matched with contractors?',
-      answer: 'Most customers are matched with qualified contractors within 24 hours of submitting their request.'
+      answer: 'Most customers are matched with qualified contractors instantly upon submitting their request.'
     },
     {
       question: 'Are all contractors licensed and insured?',
@@ -131,7 +125,7 @@ export default function ContactPage() {
               <CardHeader>
                 <CardTitle className="text-2xl text-[#0a4768]">Send Us a Message</CardTitle>
                 <p className="text-gray-600">
-                  Fill out the form below and we'll get back to you within 24 hours.
+                  Fill out the form below and we'll get back to you instantly.
                 </p>
               </CardHeader>
               <CardContent>

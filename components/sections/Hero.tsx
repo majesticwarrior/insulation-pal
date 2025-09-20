@@ -42,11 +42,11 @@ const Hero = () => {
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <Input
                     type="text"
-                    placeholder="Enter your zip code"
+                    placeholder="Enter Your Address"
                     value={zipCode}
                     onChange={handleZipCodeChange}
                     className="pl-10 h-12"
-                    aria-label="Enter zip code"
+                    aria-label="Enter Your Address"
                   />
                 </div>
                 <Button 
@@ -57,7 +57,7 @@ const Hero = () => {
                 </Button>
               </div>
               <p className="text-sm text-gray-500 mt-3">
-                No obligations • Get matched in 24 hours
+                No obligations • Get matched instantly
               </p>
             </div>
 
