@@ -63,12 +63,12 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
   ]
 
   const availableInsulationTypes = [
-    'fiberglass',
-    'cellulose',
-    'spray_foam',
-    'rigid_foam',
-    'mineral_wool',
-    'recycled_denim'
+    'Fiberglass',
+    'Cellulose', 
+    'Spray Foam',
+    'Mineral Wool',
+    'Rigid Foam Board',
+    'Roll & Batt'
   ]
 
   useEffect(() => {
