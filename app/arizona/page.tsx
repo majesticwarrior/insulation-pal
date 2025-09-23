@@ -19,12 +19,12 @@ import {
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Arizona Insulation Contractors - InsulationPal | Phoenix, Scottsdale, Mesa',
-  description: 'Find top-rated insulation contractors in Arizona. Get free quotes from licensed professionals in Phoenix, Scottsdale, Mesa, Chandler, and throughout Arizona.',
-  keywords: 'Arizona insulation contractors, Phoenix insulation, Scottsdale insulation, Mesa insulation, Arizona energy efficiency',
+  title: 'Arizona Insulation Contractors - InsulationPal',
+  description: 'Find top-rated insulation contractors in Arizona. Get free quotes from licensed professionals for attic, basement and walls insulation in Arizona.',
+  keywords: 'Arizona insulation contractors, Arizona home energy efficiency',
   openGraph: {
     title: 'Arizona Insulation Contractors - Top-Rated Professionals',
-    description: 'Connect with licensed insulation contractors throughout Arizona. Get free quotes in Phoenix, Scottsdale, Mesa, and all major cities.',
+    description: 'Connect with licensed insulation contractors throughout Arizona. Get free quotes from licensed professionals for attic, basement and walls insulation in Arizona.',
     type: 'website',
   },
 }
