@@ -48,9 +48,7 @@ interface Contractor {
   id: string
   business_name: string
   license_number?: string
-  phone?: string
   bio?: string
-  website_url?: string
   founded_year?: number
   employee_count?: number
   business_address?: string

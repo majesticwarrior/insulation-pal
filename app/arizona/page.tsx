@@ -17,6 +17,7 @@ import {
   Award
 } from 'lucide-react'
 import type { Metadata } from 'next'
+import { supabase } from '@/lib/supabase'
 
 export const metadata: Metadata = {
   title: 'Arizona Insulation Contractors - InsulationPal',
@@ -29,136 +30,59 @@ export const metadata: Metadata = {
   },
 }
 
-// This would come from the database in a real application
-const topContractors = [
-  {
-    id: 1,
-    name: 'Arizona Premier Insulation',
-    rating: 4.9,
-    reviewCount: 127,
-    jobsCompleted: 89,
-    city: 'Phoenix',
-    services: ['Attic', 'Walls', 'Crawl Space', 'Spray Foam'],
-    image: '/alex.jpg',
-    verified: true,
-    bbbAccredited: true
-  },
-  {
-    id: 2,
-    name: 'Desert Shield Insulation',
-    rating: 4.8,
-    reviewCount: 94,
-    jobsCompleted: 67,
-    city: 'Scottsdale',
-    services: ['Attic', 'Basement', 'Spray Foam', 'Foam Board'],
-    image: '/Shannon_Adams_b-w.jpg',
-    verified: true,
-    bbbAccredited: true
-  },
-  {
-    id: 3,
-    name: 'Valley Comfort Solutions',
-    rating: 4.9,
-    reviewCount: 156,
-    jobsCompleted: 112,
-    city: 'Mesa',
-    services: ['Attic', 'Walls', 'Blown-in', 'Roll & Batt'],
-    image: '/alex.jpg',
-    verified: true,
-    bbbAccredited: false
-  },
-  {
-    id: 4,
-    name: 'Cactus Insulation Pros',
-    rating: 4.7,
-    reviewCount: 83,
-    jobsCompleted: 54,
-    city: 'Chandler',
-    services: ['Attic', 'Garage', 'Spray Foam'],
-    image: '/Shannon_Adams_b-w.jpg',
-    verified: true,
-    bbbAccredited: true
-  },
-  {
-    id: 5,
-    name: 'Southwest Energy Savers',
-    rating: 4.8,
-    reviewCount: 71,
-    jobsCompleted: 43,
-    city: 'Tempe',
-    services: ['Walls', 'Basement', 'Blown-in', 'Foam Board'],
-    image: '/alex.jpg',
-    verified: true,
-    bbbAccredited: false
-  },
-  {
-    id: 6,
-    name: 'Grand Canyon Insulation',
-    rating: 4.6,
-    reviewCount: 62,
-    jobsCompleted: 38,
-    city: 'Glendale',
-    services: ['Attic', 'Crawl Space', 'Roll & Batt'],
-    image: '/Shannon_Adams_b-w.jpg',
-    verified: true,
-    bbbAccredited: true
-  }
-]
+// Fetch contractors from Supabase database
+async function getArizonaContractors() {
+  try {
+    const { data: contractors, error } = await (supabase as any)
+      .from('contractors')
+      .select(`
+        id,
+        business_name,
+        business_city,
+        business_state,
+        average_rating,
+        total_reviews,
+        total_completed_projects,
+        status,
+        license_verified,
+        insurance_verified,
+        profile_image
+      `)
+      .eq('business_state', 'AZ')
+      .eq('status', 'active')
+      .order('average_rating', { ascending: false })
+      .limit(20)
 
-const allContractors = [
-  ...topContractors,
-  {
-    id: 7,
-    name: 'Arizona Comfort Control',
-    rating: 4.5,
-    reviewCount: 45,
-    jobsCompleted: 28,
-    city: 'Surprise',
-    services: ['Attic', 'Walls', 'Blown-in'],
-    image: '/alex.jpg',
-    verified: true,
-    bbbAccredited: false
-  },
-  {
-    id: 8,
-    name: 'Desert Thermal Solutions',
-    rating: 4.7,
-    reviewCount: 58,
-    jobsCompleted: 34,
-    city: 'Peoria',
-    services: ['Spray Foam', 'Foam Board', 'Attic'],
-    image: '/Shannon_Adams_b-w.jpg',
-    verified: true,
-    bbbAccredited: true
-  },
-  {
-    id: 9,
-    name: 'Valley Insulation Experts',
-    rating: 4.4,
-    reviewCount: 39,
-    jobsCompleted: 22,
-    city: 'Gilbert',
-    services: ['Walls', 'Basement', 'Roll & Batt'],
-    image: '/alex.jpg',
-    verified: true,
-    bbbAccredited: false
-  },
-  {
-    id: 10,
-    name: 'Arizona Energy Shield',
-    rating: 4.6,
-    reviewCount: 51,
-    jobsCompleted: 31,
-    city: 'Queen Creek',
-    services: ['Attic', 'Garage', 'Blown-in', 'Spray Foam'],
-    image: '/Shannon_Adams_b-w.jpg',
-    verified: true,
-    bbbAccredited: true
-  }
-]
+    if (error) {
+      console.error('Error fetching contractors:', error)
+      return []
+    }
 
-// Arizona cities with 50,000+ population
-const arizonaCities = [
+    return contractors?.map((contractor: any) => ({
+      id: contractor.id,
+      name: contractor.business_name,
+      rating: contractor.average_rating || 4.5,
+      reviewCount: contractor.total_reviews || 0,
+      jobsCompleted: contractor.total_completed_projects || 0,
+      city: contractor.business_city || 'Phoenix',
+      services: ['Attic', 'Walls', 'Spray Foam'], // Default services - could be fetched from contractor_services table
+      image: contractor.profile_image || '/alex.jpg',
+      verified: contractor.license_verified || false,
+      bbbAccredited: contractor.insurance_verified || false
+    })) || []
+  } catch (error) {
+    console.error('Database error:', error)
+    return []
+  }
+}
+
+export default async function ArizonaInsulationContractors() {
+  const contractors = await getArizonaContractors()
+  const topContractors = contractors.slice(0, 6) // Top 6 contractors
+  const allContractors = contractors // All contractors
+
+  // Arizona cities with 50,000+ population
+  const arizonaCities = [
   { name: 'Phoenix', population: '1,608,139', slug: 'phoenix' },
   { name: 'Tucson', population: '548,073', slug: 'tucson' },
   { name: 'Mesa', population: '504,258', slug: 'mesa' },
@@ -181,14 +105,13 @@ const arizonaCities = [
   { name: 'Oro Valley', population: '47,070', slug: 'oro-valley' }
 ]
 
-const stats = {
-  totalContractors: allContractors.length,
-  totalReviews: allContractors.reduce((sum, contractor) => sum + contractor.reviewCount, 0),
-  averageRating: (allContractors.reduce((sum, contractor) => sum + contractor.rating, 0) / allContractors.length).toFixed(1),
-  totalJobsCompleted: allContractors.reduce((sum, contractor) => sum + contractor.jobsCompleted, 0)
-}
+  const stats = {
+    totalContractors: allContractors.length,
+    totalReviews: allContractors.reduce((sum: number, contractor: any) => sum + contractor.reviewCount, 0),
+    averageRating: allContractors.length > 0 ? (allContractors.reduce((sum: number, contractor: any) => sum + contractor.rating, 0) / allContractors.length).toFixed(1) : '0.0',
+    totalJobsCompleted: allContractors.reduce((sum: number, contractor: any) => sum + contractor.jobsCompleted, 0)
+  }
 
-export default function ArizonaInsulationContractors() {
   const getServiceBadges = (services: string[]) => {
     return services.map((service, index) => (
       <Badge key={index} variant="secondary" className="text-xs">
@@ -261,7 +184,7 @@ export default function ArizonaInsulationContractors() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {topContractors.map((contractor, index) => (
+            {topContractors.map((contractor: any, index: number) => (
               <Card key={contractor.id} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
@@ -384,7 +307,7 @@ export default function ArizonaInsulationContractors() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {allContractors.map((contractor) => (
+                {allContractors.map((contractor: any) => (
                   <tr key={contractor.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
@@ -433,7 +356,7 @@ export default function ArizonaInsulationContractors() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex flex-wrap gap-1">
-                        {contractor.services.slice(0, 3).map((service, index) => (
+                        {contractor.services.slice(0, 3).map((service: any, index: number) => (
                           <span key={index} className="text-xs">
                             {service === 'Attic' && <CheckCircle className="w-3 h-3 text-green-500 inline mr-1" />}
                             {service === 'Walls' && <CheckCircle className="w-3 h-3 text-green-500 inline mr-1" />}

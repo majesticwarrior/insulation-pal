@@ -155,9 +155,9 @@ export default function HowItWorksPage() {
                     className="pl-10 h-12"
                   />
                 </div>
-                <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold h-12">
+                <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold h-12">
                   Find Contractors
-                </Button>
+                </QuoteButton>
               </div>
             </div>
           </div>

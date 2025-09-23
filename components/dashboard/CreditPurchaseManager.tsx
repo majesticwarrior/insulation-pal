@@ -48,44 +48,28 @@ export function CreditPurchaseManager({
 
   const creditPackages: CreditPackage[] = [
     {
-      id: 'starter',
-      name: 'Starter Package',
-      credits: 5,
-      price: 100,
-      description: 'Perfect for trying out our lead service'
-    },
-    {
       id: 'basic',
       name: 'Basic Package',
       credits: 10,
-      price: 180,
-      description: 'Great for regular lead flow',
-      savings: 'Save $20'
-    },
-    {
-      id: 'professional',
-      name: 'Professional Package',
-      credits: 25,
-      price: 400,
-      description: 'Ideal for growing businesses',
-      popular: true,
-      savings: 'Save $100'
+      price: 190,
+      description: '$19.00 per credit'
     },
     {
       id: 'premium',
       name: 'Premium Package',
-      credits: 50,
-      price: 700,
-      description: 'Best value for busy contractors',
-      savings: 'Save $300'
+      credits: 25,
+      price: 450,
+      description: '$18.00 per credit',
+      popular: true,
+      savings: 'Save $25'
     },
     {
       id: 'enterprise',
       name: 'Enterprise Package',
-      credits: 100,
-      price: 1200,
-      description: 'Maximum leads for large operations',
-      savings: 'Save $800'
+      credits: 50,
+      price: 850,
+      description: '$17.00 per credit',
+      savings: 'Save $100'
     }
   ]
 

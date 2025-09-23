@@ -14,9 +14,7 @@ interface Contractor {
   id: string
   business_name: string
   license_number?: string
-  phone?: string
   bio?: string
-  website_url?: string
   founded_year?: number
   employee_count?: number
   business_address?: string
@@ -31,15 +29,20 @@ interface ProfileEditFormProps {
   onUpdate: (updatedContractor: Contractor) => void
 }
 
+const availableCities = [
+  'Phoenix', 'Scottsdale', 'Mesa', 'Chandler', 'Glendale', 'Tempe', 'Peoria', 
+  'Surprise', 'Goodyear', 'Avondale', 'Buckeye', 'El Mirage', 'Tolleson',
+  'Litchfield Park', 'Youngtown', 'Fountain Hills', 'Paradise Valley',
+  'Cave Creek', 'Carefree', 'Wickenburg', 'Sun City', 'Sun City West'
+]
+
 export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [formData, setFormData] = useState({
     business_name: contractor.business_name || '',
     license_number: contractor.license_number || '',
-    phone: contractor.phone || '',
     bio: contractor.bio || '',
-    website_url: contractor.website_url || '',
     founded_year: contractor.founded_year?.toString() || '',
     employee_count: contractor.employee_count?.toString() || '',
     business_address: contractor.business_address || '',
@@ -50,7 +53,6 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
 
   const [serviceAreas, setServiceAreas] = useState<string[]>([])
   const [serviceTypes, setServiceTypes] = useState<string[]>([])
-  const [newServiceArea, setNewServiceArea] = useState('')
 
   const availableServiceTypes = [
     'attic',
@@ -112,16 +114,6 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     )
   }
 
-  const addServiceArea = () => {
-    if (newServiceArea.trim() && !serviceAreas.includes(newServiceArea.trim())) {
-      setServiceAreas(prev => [...prev, newServiceArea.trim()])
-      setNewServiceArea('')
-    }
-  }
-
-  const removeServiceArea = (area: string) => {
-    setServiceAreas(prev => prev.filter(a => a !== area))
-  }
 
   const handleSave = async () => {
     setIsSaving(true)
@@ -130,9 +122,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
       const updateData = {
         business_name: formData.business_name,
         license_number: formData.license_number || null,
-        phone: formData.phone || null,
         bio: formData.bio || null,
-        website_url: formData.website_url || null,
         founded_year: formData.founded_year ? parseInt(formData.founded_year) : null,
         employee_count: formData.employee_count ? parseInt(formData.employee_count) : null,
         business_address: formData.business_address || null,
@@ -197,9 +187,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         ...contractor,
         business_name: updateData.business_name,
         license_number: updateData.license_number || undefined,
-        phone: updateData.phone || undefined,
         bio: updateData.bio || undefined,
-        website_url: updateData.website_url || undefined,
         founded_year: updateData.founded_year || undefined,
         employee_count: updateData.employee_count || undefined,
         business_address: updateData.business_address || undefined,
@@ -226,9 +214,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     setFormData({
       business_name: contractor.business_name || '',
       license_number: contractor.license_number || '',
-      phone: contractor.phone || '',
       bio: contractor.bio || '',
-      website_url: contractor.website_url || '',
       founded_year: contractor.founded_year?.toString() || '',
       employee_count: contractor.employee_count?.toString() || '',
       business_address: contractor.business_address || '',
@@ -302,27 +288,6 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                disabled={!isEditing}
-              />
-            </div>
-            <div>
-              <Label htmlFor="website_url">Website URL</Label>
-              <Input
-                id="website_url"
-                value={formData.website_url}
-                onChange={(e) => handleInputChange('website_url', e.target.value)}
-                disabled={!isEditing}
-                placeholder="https://yourwebsite.com"
-              />
-            </div>
-          </div>
 
           <div>
             <Label htmlFor="bio">Business Description</Label>
@@ -411,62 +376,57 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         <CardHeader>
           <CardTitle>Service Areas</CardTitle>
           <CardDescription>
-            Manage the cities and areas where you provide services
+            Select the cities where you provide insulation services
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {isEditing && (
-            <div className="flex space-x-2">
-              <Input
-                value={newServiceArea}
-                onChange={(e) => setNewServiceArea(e.target.value)}
-                placeholder="Enter city, state (e.g., Phoenix, AZ)"
-                onKeyPress={(e) => e.key === 'Enter' && addServiceArea()}
-              />
-              <Button onClick={addServiceArea} type="button">
-                Add Area
-              </Button>
-            </div>
-          )}
-          
-          <div className="flex flex-wrap gap-2">
-            {serviceAreas.map((area, index) => (
-              <div key={index} className="bg-gray-100 px-3 py-1 rounded-full flex items-center space-x-2">
-                <span>{area}</span>
-                {isEditing && (
-                  <button
-                    onClick={() => removeServiceArea(area)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    ×
-                  </button>
-                )}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {availableCities.map((city) => (
+              <div key={city} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`city-${city}`}
+                  checked={serviceAreas.includes(`${city}, AZ`)}
+                  onCheckedChange={(checked) => {
+                    if (isEditing) {
+                      const cityWithState = `${city}, AZ`
+                      if (checked) {
+                        setServiceAreas(prev => [...prev, cityWithState])
+                      } else {
+                        setServiceAreas(prev => prev.filter(area => area !== cityWithState))
+                      }
+                    }
+                  }}
+                  disabled={!isEditing}
+                />
+                <Label htmlFor={`city-${city}`} className="text-sm">
+                  {city}
+                </Label>
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
 
-      {/* Service Types */}
+      {/* Types of Insulation */}
       <Card>
         <CardHeader>
-          <CardTitle>Services Offered</CardTitle>
+          <CardTitle>Types of Insulation</CardTitle>
           <CardDescription>
-            Select the types of insulation services you provide
+            Select the types of insulation materials you work with
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4">
-            {availableServiceTypes.map((serviceType) => (
-              <div key={serviceType} className="flex items-center space-x-2">
+            {availableInsulationTypes.map((insulationType) => (
+              <div key={insulationType} className="flex items-center space-x-2">
                 <Checkbox
-                  id={serviceType}
-                  checked={serviceTypes.includes(serviceType)}
-                  onCheckedChange={() => isEditing && handleServiceTypeToggle(serviceType)}
+                  id={insulationType}
+                  checked={serviceTypes.includes(insulationType)}
+                  onCheckedChange={() => isEditing && handleServiceTypeToggle(insulationType)}
                   disabled={!isEditing}
                 />
-                <Label htmlFor={serviceType} className="capitalize">
-                  {serviceType.replace('_', ' ')} Insulation
+                <Label htmlFor={insulationType} className="text-sm">
+                  {insulationType}
                 </Label>
               </div>
             ))}
