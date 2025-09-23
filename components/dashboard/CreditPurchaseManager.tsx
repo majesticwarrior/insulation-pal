@@ -60,7 +60,8 @@ export function CreditPurchaseManager({
       name: 'Intermediate Package',
       credits: 10,
       price: 190,
-      description: '$19.00 per credit'
+      description: '$19.00 per credit',
+      savings: 'Save $10'
     },
     {
       id: 'premium',
@@ -77,7 +78,7 @@ export function CreditPurchaseManager({
       credits: 50,
       price: 850,
       description: '$17.00 per credit',
-      savings: 'Save $100'
+      savings: 'Save $150'
     }
   ]
 
