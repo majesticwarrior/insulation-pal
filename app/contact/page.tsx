@@ -8,6 +8,18 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Phone, Mail, MapPin, Clock, MessageCircle, HelpCircle } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Contact Us - InsulationPal | Customer Support & Help',
+  description: 'Get in touch with InsulationPal\'s customer support team. Call (888) 357-9555, email help@insulationpal.com, or use our contact form for assistance with insulation services.',
+  keywords: 'contact InsulationPal, customer support, insulation help, contractor support, phone number',
+  openGraph: {
+    title: 'Contact InsulationPal - Customer Support & Help',
+    description: 'Get in touch with InsulationPal\'s customer support team for assistance with insulation services and contractor connections.',
+    type: 'website',
+  },
+}
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({

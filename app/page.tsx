@@ -9,8 +9,14 @@ import Header from '@/components/layout/Header'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Professional Insulation Services Made Simple - InsulationPal',
-  description: 'Connect with trusted insulation contractors in your area. Get quotes for attic insulation, wall insulation, spray foam, and more.',
+  title: 'Professional Insulation Services Made Simple - InsulationPal | Free Contractor Quotes',
+  description: 'Connect with trusted insulation contractors in your area. Get free quotes for attic insulation, wall insulation, spray foam, and more. Save up to 30% on energy bills.',
+  keywords: 'insulation contractors, insulation services, attic insulation, spray foam, wall insulation, energy efficiency, home insulation quotes',
+  openGraph: {
+    title: 'Professional Insulation Services Made Simple - InsulationPal',
+    description: 'Connect with trusted insulation contractors nationwide. Get free quotes and save up to 30% on energy bills.',
+    type: 'website',
+  },
 }
 
 export default function Home() {

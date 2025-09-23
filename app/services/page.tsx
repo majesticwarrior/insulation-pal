@@ -8,8 +8,14 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Professional Insulation Services - InsulationPal',
-  description: 'From attic insulation to spray foam applications, our network of certified contractors provides comprehensive insulation solutions for every need and budget.',
+  title: 'Professional Insulation Services - InsulationPal | Comprehensive Solutions',
+  description: 'From attic insulation to spray foam applications, our network of certified contractors provides comprehensive insulation solutions for every need and budget. Get free quotes today.',
+  keywords: 'insulation services, attic insulation, wall insulation, spray foam, basement insulation, crawl space insulation, insulation contractors',
+  openGraph: {
+    title: 'Professional Insulation Services - Comprehensive Solutions',
+    description: 'Comprehensive insulation solutions from certified contractors. Attic, wall, spray foam, basement, and crawl space insulation services.',
+    type: 'website',
+  },
 }
 
 export default function ServicesPage() {

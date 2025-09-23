@@ -9,8 +9,14 @@ import { CheckCircle, Star, Shield, MapPin, ThermometerSun, Snowflake, Wrench } 
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Professional Attic Insulation Services - InsulationPal',
-  description: 'Save up to 30% on energy bills with expert attic insulation installation. Connect with licensed contractors in your area for free quotes.',
+  title: 'Professional Attic Insulation Services - InsulationPal | Save 30% on Energy Bills',
+  description: 'Save up to 30% on energy bills with expert attic insulation installation. Connect with licensed contractors in your area for free quotes on blown-in, batt, and spray foam insulation.',
+  keywords: 'attic insulation, blown-in insulation, attic insulation cost, energy savings, insulation contractors, attic insulation installation',
+  openGraph: {
+    title: 'Professional Attic Insulation Services - Save 30% on Energy Bills',
+    description: 'Expert attic insulation installation by licensed contractors. Get free quotes for blown-in, batt, and spray foam insulation.',
+    type: 'website',
+  },
 }
 
 export default function AtticInsulationPage() {

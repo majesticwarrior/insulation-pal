@@ -9,8 +9,14 @@ import { CheckCircle, Star, Shield, MapPin, Home, Thermometer, Building } from '
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Professional Basement Insulation Services - InsulationPal',
-  description: 'Transform your basement into comfortable, usable space with expert insulation solutions for comfort and energy savings.',
+  title: 'Professional Basement Insulation Services - InsulationPal | Comfortable Living Space',
+  description: 'Transform your basement into comfortable, usable space with expert insulation solutions for comfort and energy savings. Get free quotes from certified contractors.',
+  keywords: 'basement insulation, basement renovation, foundation insulation, moisture control, basement energy efficiency, basement comfort',
+  openGraph: {
+    title: 'Professional Basement Insulation Services - Comfortable Living Space',
+    description: 'Transform your basement with expert insulation solutions. Create comfortable, energy-efficient living space.',
+    type: 'website',
+  },
 }
 
 export default function BasementInsulationPage() {

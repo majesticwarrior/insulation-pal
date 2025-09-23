@@ -2,14 +2,21 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { QuoteButton } from '@/components/ui/quote-button'
 import { Input } from '@/components/ui/input'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Search, Users, CheckCircle, Star, MapPin, Clock, Shield, DollarSign } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'How It Works - InsulationPal',
-  description: 'Get connected with trusted insulation contractors in 4 simple steps. Fast, easy, and completely free for homeowners.',
+  title: 'How It Works - InsulationPal | 4 Simple Steps to Connect with Contractors',
+  description: 'Get connected with trusted insulation contractors in 4 simple steps. Fast, easy, and completely free for homeowners. Tell us your needs, get matched, compare quotes, and hire the best.',
+  keywords: 'how InsulationPal works, hire insulation contractor, get insulation quotes, contractor matching process',
+  openGraph: {
+    title: 'How InsulationPal Works - Connect with Contractors in 4 Steps',
+    description: 'Learn how InsulationPal connects homeowners with trusted insulation contractors through our simple 4-step process.',
+    type: 'website',
+  },
 }
 
 export default function HowItWorksPage() {
@@ -283,9 +290,9 @@ export default function HowItWorksPage() {
           <p className="text-xl text-[#0a4768] mb-8 max-w-2xl mx-auto">
             Join thousands of homeowners who have found their perfect insulation contractor through InsulationPal.
           </p>
-          <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
+          <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
             Find My Contractor
-          </Button>
+          </QuoteButton>
         </div>
       </section>
 

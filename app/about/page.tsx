@@ -8,8 +8,14 @@ import { Shield, Users, Award, Target, CheckCircle, Star } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'About Us - InsulationPal',
-  description: 'Learn about InsulationPal\'s mission to make professional insulation services accessible, affordable, and hassle-free for every homeowner in America.',
+  title: 'About Us - InsulationPal | Making Insulation Services Accessible',
+  description: 'Learn about InsulationPal\'s mission to make professional insulation services accessible, affordable, and hassle-free for every homeowner in America. Founded in 2025, serving 500+ cities.',
+  keywords: 'about InsulationPal, insulation company, contractor network, energy efficiency, home improvement',
+  openGraph: {
+    title: 'About InsulationPal - Making Insulation Services Accessible',
+    description: 'Learn about our mission to connect homeowners with trusted insulation contractors nationwide.',
+    type: 'website',
+  },
 }
 
 export default function AboutPage() {

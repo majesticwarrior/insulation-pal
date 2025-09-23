@@ -9,8 +9,14 @@ import { CheckCircle, Star, Shield, MapPin, ThermometerSun, Wind, Droplet } from
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Premium Spray Foam Insulation Services - InsulationPal',
-  description: 'Achieve maximum energy efficiency with professional spray foam insulation. Superior R-value and complete air sealing in one application.',
+  title: 'Premium Spray Foam Insulation Services - InsulationPal | Maximum Energy Efficiency',
+  description: 'Achieve maximum energy efficiency with professional spray foam insulation. Superior R-value and complete air sealing in one application. Connect with certified contractors for free quotes.',
+  keywords: 'spray foam insulation, spray foam contractors, closed cell foam, open cell foam, air sealing, energy efficiency, R-value',
+  openGraph: {
+    title: 'Premium Spray Foam Insulation Services - Maximum Energy Efficiency',
+    description: 'Professional spray foam insulation installation by certified contractors. Get superior R-value and complete air sealing in one application.',
+    type: 'website',
+  },
 }
 
 export default function SprayFoamPage() {

@@ -20,6 +20,18 @@ import {
   Play,
   ExternalLink
 } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Phoenix Insulation Contractors - InsulationPal | Top-Rated Professionals',
+  description: 'Find the best insulation contractors in Phoenix, AZ. Get free quotes from licensed professionals for attic, wall, and spray foam insulation services.',
+  keywords: 'Phoenix insulation contractors, Phoenix attic insulation, Phoenix spray foam, Phoenix energy efficiency, Arizona insulation services',
+  openGraph: {
+    title: 'Phoenix Insulation Contractors - Top-Rated Professionals',
+    description: 'Connect with the best licensed insulation contractors in Phoenix, Arizona. Get free quotes for all types of insulation services.',
+    type: 'website',
+  },
+}
 
 // Articles data for carousel
 const articles = [

@@ -2,9 +2,22 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { QuoteButton } from '@/components/ui/quote-button'
 import Link from 'next/link'
 import Image from 'next/image'
 import { BookOpen, Lightbulb, Calculator, CheckCircle } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Learning Center - InsulationPal | Insulation Guides & Resources',
+  description: 'Comprehensive guides on insulation types, energy efficiency, and home improvement. Learn about spray foam, cellulose, fiberglass, and more with expert insights.',
+  keywords: 'insulation guide, energy efficiency, home insulation types, spray foam guide, cellulose insulation, fiberglass insulation',
+  openGraph: {
+    title: 'InsulationPal Learning Center - Expert Insulation Guides',
+    description: 'Access comprehensive guides on insulation types, energy efficiency, and home improvement from InsulationPal experts.',
+    type: 'website',
+  },
+}
 
 const articles = [
   {
@@ -214,12 +227,9 @@ export default function ResourcesPage() {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Use our knowledge to make informed decisions, then connect with trusted contractors in your area for professional installation.
           </p>
-          <Button 
-            asChild
-            className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg"
-          >
-            <Link href="/">Get Free Quotes</Link>
-          </Button>
+          <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+            Get Free Quotes
+          </QuoteButton>
         </div>
       </section>
 

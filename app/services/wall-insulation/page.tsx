@@ -9,8 +9,14 @@ import { CheckCircle, Star, Shield, MapPin, Home, Wind, Thermometer } from 'luci
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Expert Wall Insulation Services - InsulationPal',
-  description: 'Improve your home\'s energy efficiency with professional wall insulation. Get free quotes from certified contractors in your area.',
+  title: 'Expert Wall Insulation Services - InsulationPal | Energy Efficiency Solutions',
+  description: 'Improve your home\'s energy efficiency with professional wall insulation. Get free quotes from certified contractors for injection foam, blown-in cellulose, and fiberglass installation.',
+  keywords: 'wall insulation, injection foam, blown-in wall insulation, wall insulation contractors, energy efficiency, home insulation',
+  openGraph: {
+    title: 'Expert Wall Insulation Services - Energy Efficiency Solutions',
+    description: 'Professional wall insulation installation by certified contractors. Improve energy efficiency with injection foam and blown-in insulation.',
+    type: 'website',
+  },
 }
 
 export default function WallInsulationPage() {
