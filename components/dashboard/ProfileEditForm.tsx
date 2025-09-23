@@ -193,11 +193,19 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
       }
 
       // Update local contractor data
-      const updatedContractor = {
+      const updatedContractor: Contractor = {
         ...contractor,
-        ...updateData,
-        founded_year: updateData.founded_year,
-        employee_count: updateData.employee_count
+        business_name: updateData.business_name,
+        license_number: updateData.license_number || undefined,
+        phone: updateData.phone || undefined,
+        bio: updateData.bio || undefined,
+        website_url: updateData.website_url || undefined,
+        founded_year: updateData.founded_year || undefined,
+        employee_count: updateData.employee_count || undefined,
+        business_address: updateData.business_address || undefined,
+        business_city: updateData.business_city || undefined,
+        business_state: updateData.business_state || undefined,
+        business_zip: updateData.business_zip || undefined
       }
 
       onUpdate(updatedContractor)

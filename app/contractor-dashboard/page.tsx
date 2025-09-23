@@ -437,7 +437,7 @@ export default function ContractorDashboard() {
                 setStats(prev => ({ ...prev, credits: newCredits }))
                 // Also update contractor object if needed
                 if (contractor) {
-                  setContractor(prev => prev ? { ...prev, credits: newCredits } : null)
+                  setContractor((prev: typeof contractor) => prev ? { ...prev, credits: newCredits } : null)
                 }
               }}
             />
