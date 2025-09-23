@@ -6,6 +6,7 @@ import { ContractorRegistration } from '@/components/forms/ContractorRegistratio
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { CheckCircle, Star, DollarSign, Users, TrendingUp, Shield } from 'lucide-react'
+import Link from 'next/link'
 
 export default function JoinContractorPage() {
 
@@ -14,19 +15,19 @@ export default function JoinContractorPage() {
       icon: DollarSign,
       title: 'Increase Revenue',
       description: 'Access a steady stream of qualified leads and grow your business revenue by up to 40%.',
-      stat: 'Up to 40% Revenue Growth'
+      stat: 'Up to X% Revenue Growth'
     },
     {
       icon: Users,
       title: 'Quality Leads',
       description: 'Connect with serious homeowners who are ready to hire and complete their insulation projects.',
-      stat: '95% Lead Quality'
+      stat: 'High Quality Leads'
     },
     {
       icon: TrendingUp,
       title: 'Business Growth',
       description: 'Expand your customer base and build your reputation through our trusted platform.',
-      stat: '3x More Projects'
+      stat: 'More Projects'
     },
     {
       icon: Shield,
@@ -180,9 +181,14 @@ export default function JoinContractorPage() {
                     <TrendingUp className="h-24 w-24 text-[#0a4768]" />
                   </div>
                   <h3 className="text-xl font-bold text-[#0a4768] mb-4">Contractor Dashboard</h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 mb-6">
                     Manage leads, track projects, and grow your business with our intuitive contractor portal.
                   </p>
+                  <Link href="/contractor-login">
+                    <Button className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
+                      Contractor Dashboard
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             </div>
