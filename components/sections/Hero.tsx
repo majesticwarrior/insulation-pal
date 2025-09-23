@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { QuoteButton } from '@/components/ui/quote-button'
 import { MapPin, Shield, Star, Users } from 'lucide-react'
 
 const Hero = () => {
@@ -11,11 +11,6 @@ const Hero = () => {
 
   const handleZipCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setZipCode(e.target.value)
-  }
-
-  const handleGetQuote = () => {
-    // Handle quote request
-    console.log('Get quote for zip:', zipCode)
   }
 
   return (
@@ -49,12 +44,9 @@ const Hero = () => {
                     aria-label="Enter Your Address"
                   />
                 </div>
-                <Button 
-                  onClick={handleGetQuote}
-                  className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold h-12 px-8"
-                >
+                <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold h-12 px-8">
                   Get Free Quote
-                </Button>
+                </QuoteButton>
               </div>
               <p className="text-sm text-gray-500 mt-3">
                 No obligations • Get matched instantly

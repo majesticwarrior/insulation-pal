@@ -20,6 +20,23 @@ import {
   DollarSign,
   Wrench
 } from 'lucide-react'
+
+// This function is required for static export
+export async function generateStaticParams() {
+  // Return some example contractor slugs - in production this would come from database
+  return [
+    { slug: '1' },
+    { slug: '2' },
+    { slug: '3' },
+    { slug: '4' },
+    { slug: '5' },
+    { slug: 'phoenix-1' },
+    { slug: 'phoenix-2' },
+    { slug: 'phoenix-3' },
+    { slug: 'phoenix-4' },
+    { slug: 'phoenix-5' }
+  ]
+}
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {

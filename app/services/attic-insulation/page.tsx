@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { QuoteButton } from '@/components/ui/quote-button'
 import { Input } from '@/components/ui/input'
 import { CheckCircle, Star, Shield, MapPin, ThermometerSun, Snowflake, Wrench } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -97,9 +98,9 @@ export default function AtticInsulationPage() {
                       aria-label="Enter Your Address"
                     />
                   </div>
-                  <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold h-12 px-8">
+                  <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold h-12 px-8">
                     Get Free Quote
-                  </Button>
+                  </QuoteButton>
                 </div>
                 <p className="text-sm text-gray-500 mt-3">
                   No obligations • Licensed contractors only

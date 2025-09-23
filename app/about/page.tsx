@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { QuoteButton } from '@/components/ui/quote-button'
 import { Shield, Users, Award, Target, CheckCircle, Star } from 'lucide-react'
 import type { Metadata } from 'next'
 
@@ -226,9 +227,9 @@ export default function AboutPage() {
             wanting to grow your business, we're here to help.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3">
+            <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3">
               Get Free Quote
-            </Button>
+            </QuoteButton>
             <Link href="/join-contractor">
               <Button 
                 variant="outline" 

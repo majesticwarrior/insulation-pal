@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { QuoteButton } from '@/components/ui/quote-button'
 import { MapPin, Phone, Mail, Clock } from 'lucide-react'
 
 const CallToAction = () => {
@@ -15,10 +15,6 @@ const CallToAction = () => {
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value)
-  }
-
-  const handleGetStarted = () => {
-    console.log('Get started with:', { zipCode, email })
   }
 
   return (
@@ -80,12 +76,9 @@ const CallToAction = () => {
                     aria-label="Enter email address"
                   />
                 </div>
-                <Button 
-                  onClick={handleGetStarted}
-                  className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold py-3"
-                >
+                <QuoteButton className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold py-3">
                   Get My Free Quote
-                </Button>
+                </QuoteButton>
               </div>
               <p className="text-sm text-gray-600 mt-3 text-center">
                 100% free • No spam • Quick response
