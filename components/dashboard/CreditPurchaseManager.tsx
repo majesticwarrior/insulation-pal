@@ -51,7 +51,7 @@ export function CreditPurchaseManager({
       id: 'basic',
       name: 'Basic Package',
       credits: 5,
-      price: 200,
+      price: 100,
       description: '$20.00 per credit',
       savings: 'Save $0'
     },
@@ -70,7 +70,7 @@ export function CreditPurchaseManager({
       price: 450,
       description: '$18.00 per credit',
       popular: true,
-      savings: 'Save $25'
+      savings: 'Save $50'
     },
     {
       id: 'enterprise',
