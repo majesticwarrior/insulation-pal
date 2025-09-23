@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
+import { QuoteButton } from '@/components/ui/quote-button'
 import { 
   Star, 
   MapPin, 
@@ -260,9 +261,9 @@ export default function ContractorProfilePage() {
                         className="min-h-24"
                       />
                     </div>
-                    <Button className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
+                    <QuoteButton className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
                       Request Free Quote
-                    </Button>
+                    </QuoteButton>
                     <div className="text-center space-y-2">
                       <Button variant="outline" className="w-full">
                         <Phone className="h-4 w-4 mr-2" />
@@ -354,7 +355,7 @@ export default function ContractorProfilePage() {
       </section>
 
       {/* Reviews */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-[#D6D6D6]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-[#0a4768] mb-8">Customer Reviews</h2>
           
@@ -425,40 +426,20 @@ export default function ContractorProfilePage() {
         </div>
       </section>
 
-      {/* Contact Info */}
-      <section className="py-12 bg-[#D6D6D6]">
+      {/* Ready to Get Started Section */}
+      <section className="py-16 bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6]">
         <div className="container mx-auto px-4">
-          <Card className="max-w-4xl mx-auto">
-            <CardContent className="p-8">
-              <h2 className="text-3xl font-bold text-[#0a4768] mb-6 text-center">
-                Contact {contractor.name}
-              </h2>
-              
-              <div className="grid md:grid-cols-3 gap-6 text-center">
-                <div className="flex flex-col items-center">
-                  <Phone className="h-8 w-8 text-[#0a4768] mb-2" />
-                  <div className="font-semibold text-[#0a4768]">Phone</div>
-                  <div className="text-gray-700">{contractor.phone}</div>
-                </div>
-                <div className="flex flex-col items-center">
-                  <Mail className="h-8 w-8 text-[#0a4768] mb-2" />
-                  <div className="font-semibold text-[#0a4768]">Email</div>
-                  <div className="text-gray-700">{contractor.email}</div>
-                </div>
-                <div className="flex flex-col items-center">
-                  <MapPin className="h-8 w-8 text-[#0a4768] mb-2" />
-                  <div className="font-semibold text-[#0a4768]">Address</div>
-                  <div className="text-gray-700">{contractor.address}</div>
-                </div>
-              </div>
-              
-              <div className="text-center mt-8">
-                <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
-                  Get Your Free Quote Today
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="text-center max-w-4xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
+              Ready to Get Started?
+            </h2>
+            <p className="text-xl text-gray-700 mb-8">
+              Join thousands of homeowners who have found their perfect insulation contractor through InsulationPal.
+            </p>
+            <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
+              Find My Contractor
+            </QuoteButton>
+          </div>
         </div>
       </section>
 

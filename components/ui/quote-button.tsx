@@ -17,6 +17,7 @@ export function QuoteButton({ children, variant = 'default', size = 'default', c
   return (
     <>
       <Button
+        type="button"
         variant={variant}
         size={size}
         className={className}
