@@ -1,59 +1,74 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { QuoteButton } from '@/components/ui/quote-button'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Clock, Tag } from 'lucide-react'
+import { ArrowLeft, Clock, Tag, CheckCircle, Shield, Home } from 'lucide-react'
 
 export default function FiberglassInsulationArticle() {
   return (
     <main className="min-h-screen">
       <Header />
       
-      <article className="py-12">
-        <div className="container mx-auto px-4 max-w-4xl">
-          {/* Breadcrumb */}
-          <nav className="flex items-center space-x-2 text-sm text-gray-600 mb-8">
-            <Link href="/resources" className="hover:text-[#0a4768]">Resources</Link>
-            <span>/</span>
-            <Link href="/resources/articles" className="hover:text-[#0a4768]">Articles</Link>
-            <span>/</span>
-            <span className="text-[#0a4768]">What is Fibreglass Insulation?</span>
+      {/* Breadcrumb */}
+      <section className="bg-gray-50 py-4">
+        <div className="container mx-auto px-4">
+          <nav className="flex items-center space-x-2 text-sm">
+            <Link href="/" className="text-gray-500 hover:text-[#0a4768]">Home</Link>
+            <span className="text-gray-300">/</span>
+            <Link href="/resources" className="text-gray-500 hover:text-[#0a4768]">Learning Center</Link>
+            <span className="text-gray-300">/</span>
+            <Link href="/resources/articles" className="text-gray-500 hover:text-[#0a4768]">Articles</Link>
+            <span className="text-gray-300">/</span>
+            <span className="text-gray-900">What is Fibreglass Insulation?</span>
           </nav>
+        </div>
+      </section>
 
-          {/* Article Header */}
-          <header className="mb-8">
-            <div className="flex items-center space-x-4 mb-4">
-              <span className="bg-[#F5DD22] text-[#0a4768] px-3 py-1 rounded-full text-sm font-medium flex items-center">
-                <Tag className="w-3 h-3 mr-1" />
+      {/* Article Header */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <Link href="/resources/articles" className="inline-flex items-center text-[#0a4768] hover:underline mb-6">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Articles
+            </Link>
+            
+            <div className="mb-8">
+              <span className="bg-[#F5DD22] text-[#0a4768] px-3 py-1 rounded-full text-sm font-medium">
                 Materials
               </span>
-              <span className="text-gray-500 flex items-center">
-                <Clock className="w-4 h-4 mr-1" />
-                5 min read
-              </span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-4">
+            
+            <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
               What is Fibreglass Insulation?
             </h1>
-            <p className="text-xl text-gray-600 leading-relaxed">
+            
+            <p className="text-xl text-gray-600 mb-8">
               Discover everything you need to know about fibreglass insulation, one of the most popular and cost-effective insulation materials for homes.
             </p>
-          </header>
-
-          {/* Featured Image */}
-          <div className="mb-8">
-            <Image
-              src="/attic-insulation-blown-in.jpg"
-              alt="Fibreglass insulation installation in attic"
-              width={800}
-              height={400}
-              className="w-full h-64 md:h-96 object-cover rounded-lg"
-            />
+            
+            <div className="aspect-video relative rounded-lg overflow-hidden mb-8">
+              <Image
+                src="/attic-insulation-blown-in.jpg"
+                alt="Fibreglass insulation installation in attic"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
+        </div>
+      </section>
 
-          {/* Article Content */}
-          <div className="prose prose-lg max-w-none">
+      {/* Article Content */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2">
+                <div className="prose prose-lg max-w-none">
             <h2 className="text-2xl font-bold text-[#0a4768] mb-4">What is Fibreglass Insulation?</h2>
             <p className="mb-6">
               Fibreglass insulation, also known as glass wool, is one of the most widely used insulation materials in residential and commercial buildings. Made from fine glass fibers, this insulation material is created by melting sand and recycled glass at extremely high temperatures, then spinning the molten material into thin fibers.
@@ -149,25 +164,84 @@ export default function FiberglassInsulationArticle() {
                 While fibreglass insulation can be a DIY project, professional installation ensures optimal performance, proper safety measures, and compliance with local building codes. Get quotes from certified insulation contractors in your area for the best results.
               </p>
             </div>
-          </div>
+                </div>
+              </div>
 
-          {/* Navigation */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <div className="flex justify-between items-center">
-              <Button asChild variant="outline">
-                <Link href="/resources" className="flex items-center">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Resources
-                </Link>
-              </Button>
-              
-              <Button asChild className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]">
-                <Link href="/">Get Free Quotes</Link>
-              </Button>
+              {/* Sidebar */}
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-[#0a4768]">Quick Facts</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-3 text-sm">
+                      <li className="flex justify-between">
+                        <span>Material:</span>
+                        <span className="font-medium">Glass Fibers</span>
+                      </li>
+                      <li className="flex justify-between">
+                        <span>R-Value:</span>
+                        <span className="font-medium">R-2.9-4.3/inch</span>
+                      </li>
+                      <li className="flex justify-between">
+                        <span>Installation:</span>
+                        <span className="font-medium">Batt/Blown-in</span>
+                      </li>
+                      <li className="flex justify-between">
+                        <span>Lifespan:</span>
+                        <span className="font-medium">50+ years</span>
+                      </li>
+                      <li className="flex justify-between">
+                        <span>Fire Resistant:</span>
+                        <span className="font-medium text-green-600">Yes</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-[#0a4768]">Get Professional Installation</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Ready to upgrade your home with fibreglass insulation? Connect with certified contractors in your area.
+                    </p>
+                    <QuoteButton className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
+                      Get Free Quotes
+                    </QuoteButton>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-[#0a4768]">Related Articles</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm">
+                      <li>
+                        <Link href="/resources/articles/what-is-cellulose-insulation" className="text-[#0a4768] hover:underline">
+                          What is Cellulose Insulation?
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/resources/articles/what-is-blown-in-insulation" className="text-[#0a4768] hover:underline">
+                          What is Blown-in Insulation?
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/resources/articles/what-is-an-energy-audit" className="text-[#0a4768] hover:underline">
+                          What is an Energy Audit?
+                        </Link>
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </div>
-      </article>
+      </section>
       
       <Footer />
     </main>
