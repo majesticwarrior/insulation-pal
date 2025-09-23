@@ -20,7 +20,7 @@ const Hero = () => {
           <div className="text-center lg:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0a4768] mb-6 leading-tight">
               Professional Insulation Services{' '}
-              <span className="text-[#0a4768] made-simple-text">Made Simple</span>
+              <span className="text-[#6B7280] made-simple-text">Made Simple</span>
             </h1>
             <p className="text-xl text-gray-700 mb-8 leading-relaxed">
               Connect with trusted, licensed insulation contractors in your area. 
