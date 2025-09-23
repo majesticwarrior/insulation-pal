@@ -44,9 +44,26 @@ interface Lead {
   created_at: string
 }
 
+interface Contractor {
+  id: string
+  business_name: string
+  license_number?: string
+  phone?: string
+  bio?: string
+  website_url?: string
+  founded_year?: number
+  employee_count?: number
+  business_address?: string
+  business_city?: string
+  business_state?: string
+  business_zip?: string
+  credits: number
+  [key: string]: any // For any additional properties
+}
+
 export default function ContractorDashboard() {
   const router = useRouter()
-  const [contractor, setContractor] = useState<any>(null)
+  const [contractor, setContractor] = useState<Contractor | null>(null)
   const [leads, setLeads] = useState<Lead[]>([])
   const [stats, setStats] = useState({
     totalLeads: 0,
@@ -437,7 +454,7 @@ export default function ContractorDashboard() {
                 setStats(prev => ({ ...prev, credits: newCredits }))
                 // Also update contractor object if needed
                 if (contractor) {
-                  setContractor((prev: typeof contractor) => prev ? { ...prev, credits: newCredits } : null)
+                  setContractor((prev: Contractor | null) => prev ? { ...prev, credits: newCredits } : null)
                 }
               }}
             />
