@@ -4,7 +4,7 @@
 import { createCanvas, loadImage } from 'canvas'
 
 export interface WatermarkOptions {
-  text: string
+  text?: string
   fontSize?: number
   opacity?: number
   position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' | 'center'

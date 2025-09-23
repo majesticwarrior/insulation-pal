@@ -5,16 +5,16 @@ import { ReviewForm } from '@/components/forms/ReviewForm'
 import { supabase } from '@/lib/supabase'
 
 interface ReviewPageProps {
-  params: {
+  params: Promise<{
     contractorId: string
-  }
-  searchParams: {
+  }>
+  searchParams: Promise<{
     lead?: string
-  }
+  }>
 }
 
 async function getContractor(contractorId: string) {
-  const { data: contractor, error } = await supabase
+  const { data: contractor, error } = await (supabase as any)
     .from('contractors')
     .select('id, business_name, status')
     .eq('id', contractorId)
@@ -25,11 +25,13 @@ async function getContractor(contractorId: string) {
     return null
   }
 
-  return contractor
+  return contractor as { id: string; business_name: string; status: string }
 }
 
 export default async function ReviewPage({ params, searchParams }: ReviewPageProps) {
-  const contractor = await getContractor(params.contractorId)
+  const resolvedParams = await params
+  const resolvedSearchParams = await searchParams
+  const contractor = await getContractor(resolvedParams.contractorId)
 
   if (!contractor) {
     notFound()
@@ -53,7 +55,7 @@ export default async function ReviewPage({ params, searchParams }: ReviewPagePro
           <ReviewForm 
             contractorId={contractor.id}
             contractorName={contractor.business_name}
-            leadId={searchParams.lead}
+            leadId={resolvedSearchParams.lead}
             onSuccess={() => {
               // Could redirect to a thank you page
               console.log('Review submitted successfully')

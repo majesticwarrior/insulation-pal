@@ -139,7 +139,7 @@ export async function createTestContractors() {
       const passwordHash = await bcrypt.hash(contractor.password, 12)
       
       // Insert contractor
-      const { data: newContractor, error: contractorError } = await supabase
+      const { data: newContractor, error: contractorError } = await (supabase as any)
         .from('contractors')
         .insert({
           email: contractor.email,

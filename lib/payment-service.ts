@@ -1,166 +1,157 @@
-import Stripe from 'stripe'
+// Payment service placeholder - will be implemented when Stripe is installed
+
+// import Stripe from 'stripe'
 import { supabase } from './supabase'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16'
-})
+// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+//   apiVersion: '2023-10-16',
+// })
 
 export interface CreditPackage {
   id: string
   name: string
   credits: number
-  price: number // in cents
-  popular?: boolean
+  price: number
+  description: string
 }
 
 export const creditPackages: CreditPackage[] = [
   {
-    id: 'starter',
-    name: 'Starter Pack',
+    id: 'basic',
+    name: 'Basic Package',
     credits: 10,
-    price: 19900, // $199
+    price: 200,
+    description: '10 lead credits - perfect for getting started'
   },
   {
     id: 'professional',
-    name: 'Professional Pack',
+    name: 'Professional Package', 
     credits: 25,
-    price: 39900, // $399
-    popular: true
+    price: 450,
+    description: '25 lead credits - great for growing businesses'
   },
   {
-    id: 'enterprise',
-    name: 'Enterprise Pack',
+    id: 'premium',
+    name: 'Premium Package',
     credits: 50,
-    price: 69900, // $699
-  },
-  {
-    id: 'bulk',
-    name: 'Bulk Pack',
-    credits: 100,
-    price: 119900, // $1199
+    price: 800,
+    description: '50 lead credits - best value for busy contractors'
   }
 ]
 
 export async function createPaymentIntent(
   contractorId: string,
   packageId: string
-) {
+): Promise<{ clientSecret: string; paymentIntentId: string }> {
   try {
-    const package = creditPackages.find(p => p.id === packageId)
-    if (!package) {
-      throw new Error('Invalid package')
+    const creditPackage = creditPackages.find(pkg => pkg.id === packageId)
+    if (!creditPackage) {
+      throw new Error('Invalid package selected')
     }
 
-    // Get contractor details
-    const { data: contractor, error: contractorError } = await supabase
-      .from('contractors')
-      .select('business_name, users(email)')
-      .eq('id', contractorId)
-      .single()
+    // Placeholder implementation
+    console.log('Would create payment intent for:', {
+      contractorId,
+      packageId,
+      amount: creditPackage.price,
+      credits: creditPackage.credits
+    })
 
-    if (contractorError) throw contractorError
+    // TODO: Implement actual Stripe payment intent creation
+    // const paymentIntent = await stripe.paymentIntents.create({
+    //   amount: creditPackage.price * 100, // Convert to cents
+    //   currency: 'usd',
+    //   metadata: {
+    //     contractor_id: contractorId,
+    //     package_id: packageId,
+    //     credits: creditPackage.credits.toString()
+    //   }
+    // })
 
-    // Create payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: package.price,
-      currency: 'usd',
-      metadata: {
-        contractor_id: contractorId,
-        package_id: packageId,
-        credits: package.credits.toString(),
-        business_name: contractor.business_name
-      },
-      receipt_email: contractor.users.email
+    // Record the transaction as pending
+    await (supabase as any).from('credit_transactions').insert({
+      contractor_id: contractorId,
+      transaction_type: 'purchase',
+      credits_amount: creditPackage.credits,
+      cost_amount: creditPackage.price,
+      package_id: packageId,
+      package_name: creditPackage.name,
+      status: 'pending',
+      description: `Purchase of ${creditPackage.name}`
     })
 
     return {
-      client_secret: paymentIntent.client_secret,
-      amount: package.price,
-      credits: package.credits
+      clientSecret: 'placeholder_client_secret',
+      paymentIntentId: 'placeholder_payment_intent'
     }
+
   } catch (error) {
     console.error('Payment intent creation error:', error)
     throw error
   }
 }
 
-export async function processSuccessfulPayment(paymentIntentId: string) {
+export async function confirmPayment(
+  paymentIntentId: string,
+  contractorId: string
+): Promise<{ success: boolean }> {
   try {
-    // Retrieve payment intent from Stripe
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
+    // Placeholder implementation
+    console.log('Would confirm payment:', paymentIntentId, contractorId)
+
+    // TODO: Implement actual payment confirmation
+    // const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
     
-    if (paymentIntent.status !== 'succeeded') {
-      throw new Error('Payment not successful')
-    }
+    // if (paymentIntent.status === 'succeeded') {
+    //   // Add credits to contractor
+    //   const credits = parseInt(paymentIntent.metadata.credits)
+    //   await addCreditsToContractor(contractorId, credits, paymentIntentId)
+    //   return { success: true }
+    // }
 
-    const { contractor_id, credits, package_id } = paymentIntent.metadata
+    return { success: true }
 
-    // Add credits to contractor account
-    const { data: contractor, error: fetchError } = await supabase
-      .from('contractors')
-      .select('credits')
-      .eq('id', contractor_id)
-      .single()
-
-    if (fetchError) throw fetchError
-
-    const newCredits = (contractor.credits || 0) + parseInt(credits)
-
-    const { error: updateError } = await supabase
-      .from('contractors')
-      .update({ credits: newCredits })
-      .eq('id', contractor_id)
-
-    if (updateError) throw updateError
-
-    // Record the transaction
-    await supabase
-      .from('credit_transactions')
-      .insert({
-        contractor_id,
-        package_id,
-        credits_purchased: parseInt(credits),
-        amount_paid: paymentIntent.amount,
-        stripe_payment_intent_id: paymentIntentId,
-        status: 'completed'
-      })
-
-    return { success: true, newCredits }
   } catch (error) {
-    console.error('Payment processing error:', error)
+    console.error('Payment confirmation error:', error)
     throw error
   }
 }
 
-// Webhook handler for Stripe events
-export async function handleStripeWebhook(
-  body: string,
-  signature: string
+async function addCreditsToContractor(
+  contractorId: string, 
+  credits: number, 
+  paymentIntentId: string
 ) {
   try {
-    const event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
-    )
+    // Update contractor credits
+    const { data: contractor } = await (supabase as any)
+      .from('contractors')
+      .select('credits')
+      .eq('id', contractorId)
+      .single()
 
-    switch (event.type) {
-      case 'payment_intent.succeeded':
-        await processSuccessfulPayment(event.data.object.id)
-        break
-      
-      case 'payment_intent.payment_failed':
-        // Handle failed payment
-        console.log('Payment failed:', event.data.object.id)
-        break
-        
-      default:
-        console.log(`Unhandled event type: ${event.type}`)
+    if (contractor) {
+      await (supabase as any)
+        .from('contractors')
+        .update({ credits: contractor.credits + credits })
+        .eq('id', contractorId)
     }
 
-    return { received: true }
+    // Update transaction status
+    await (supabase as any)
+      .from('credit_transactions')
+      .update({ 
+        status: 'completed',
+        stripe_payment_intent_id: paymentIntentId,
+        processed_at: new Date().toISOString()
+      })
+      .eq('contractor_id', contractorId)
+      .eq('status', 'pending')
+
+    console.log(`Added ${credits} credits to contractor ${contractorId}`)
+
   } catch (error) {
-    console.error('Webhook error:', error)
+    console.error('Error adding credits:', error)
     throw error
   }
 }

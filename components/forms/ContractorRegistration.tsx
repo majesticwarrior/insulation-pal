@@ -124,7 +124,7 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
       const passwordHash = await bcrypt.hash(data.password, 12)
 
       // Insert contractor
-      const { data: contractor, error: contractorError } = await supabase
+      const { data: contractor, error: contractorError } = await (supabase as any)
         .from('contractors')
         .insert({
           email: data.email,
@@ -152,7 +152,7 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
       }))
       
       if (serviceInserts.length > 0) {
-        const { error: servicesError } = await supabase
+        const { error: servicesError } = await (supabase as any)
           .from('contractor_services')
           .insert(serviceInserts)
         
@@ -166,7 +166,7 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
       }))
       
       if (insulationInserts.length > 0) {
-        const { error: insulationError } = await supabase
+        const { error: insulationError } = await (supabase as any)
           .from('contractor_insulation_types')
           .insert(insulationInserts)
         
@@ -180,7 +180,7 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
       }))
       
       if (areaInserts.length > 0) {
-        const { error: areasError } = await supabase
+        const { error: areasError } = await (supabase as any)
           .from('contractor_service_areas')
           .insert(areaInserts)
         

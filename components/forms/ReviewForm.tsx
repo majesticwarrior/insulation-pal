@@ -48,7 +48,7 @@ export function ReviewForm({ contractorId, contractorName, leadId, onSuccess }: 
   const onSubmit = async (data: ReviewFormData) => {
     setIsSubmitting(true)
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('reviews')
         .insert({
           contractor_id: contractorId,

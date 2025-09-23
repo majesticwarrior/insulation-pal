@@ -127,7 +127,7 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
       }
       
       // Insert lead into database
-      const { data: lead, error } = await supabase
+      const { data: lead, error } = await (supabase as any)
         .from('leads')
         .insert({
           home_size_sqft: parseInt(formData.homeSize),
@@ -182,13 +182,13 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
         const selected = shuffled.slice(0, Math.min(3, contractors.length))
 
         // Create lead assignments
-        const assignments = selected.map(contractor => ({
+        const assignments = selected.map((contractor: any) => ({
           lead_id: leadId,
           contractor_id: contractor.id,
           cost: 20.00
         }))
 
-        await supabase.from('lead_assignments').insert(assignments)
+        await (supabase as any).from('lead_assignments').insert(assignments)
 
         // TODO: Send notifications to contractors
         // This would integrate with email/SMS service

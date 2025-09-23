@@ -28,7 +28,7 @@ export interface Contractor {
 export async function assignLeadToContractors(lead: Lead) {
   try {
     // 1. Find contractors in the area with credits
-    const { data: contractors, error: contractorError } = await supabase
+    const { data: contractors, error: contractorError } = await (supabase as any)
       .from('contractors')
       .select(`
         id,
@@ -54,14 +54,14 @@ export async function assignLeadToContractors(lead: Lead) {
       .slice(0, 3)
 
     // 3. Create lead assignments
-    const assignments = selectedContractors.map(contractor => ({
-      lead_id: lead.id,
+    const assignments = selectedContractors.map((contractor: any) => ({
+      lead_id: (lead as any).id,
       contractor_id: contractor.id,
       cost: 20.00, // Cost per lead
       status: 'pending'
     }))
 
-    const { error: assignmentError } = await supabase
+    const { error: assignmentError } = await (supabase as any)
       .from('lead_assignments')
       .insert(assignments)
 
@@ -69,9 +69,9 @@ export async function assignLeadToContractors(lead: Lead) {
 
     // 4. Deduct credits from contractors
     for (const contractor of selectedContractors) {
-      await supabase
+      await (supabase as any)
         .from('contractors')
-        .update({ credits: contractor.credits - 1 })
+        .update({ credits: (contractor as any).credits - 1 })
         .eq('id', contractor.id)
     }
 
@@ -113,7 +113,8 @@ async function notifyContractors(contractors: any[], lead: Lead) {
     if (user.phone) {
       await sendSMS({
         to: user.phone,
-        message: `New lead: ${lead.customer_name} in ${lead.city}, ${lead.state}. View details: ${process.env.NEXT_PUBLIC_SITE_URL}/contractor-dashboard`
+        message: `New lead: ${lead.customer_name} in ${lead.city}, ${lead.state}. View details: ${process.env.NEXT_PUBLIC_SITE_URL}/contractor-dashboard`,
+        type: 'new-lead'
       })
     }
   }
@@ -126,7 +127,7 @@ export async function handleContractorResponse(
   response: 'accept' | 'decline'
 ) {
   try {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('lead_assignments')
       .update({
         status: response === 'accept' ? 'accepted' : 'declined',
@@ -140,7 +141,7 @@ export async function handleContractorResponse(
     // If accepted, notify customer
     if (response === 'accept') {
       // Get lead and contractor details
-      const { data: assignment } = await supabase
+      const { data: assignment } = await (supabase as any)
         .from('lead_assignments')
         .select(`
           leads(customer_name, customer_email),

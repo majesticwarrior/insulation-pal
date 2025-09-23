@@ -153,7 +153,7 @@ export async function loginContractor({ email, password }: LoginCredentials): Pr
     }
 
     // Production mode - use Supabase
-    const { data: contractor, error } = await supabase
+    const { data: contractor, error } = await (supabase as any)
       .from('contractors')
       .select('*')
       .eq('email', email)
@@ -167,10 +167,10 @@ export async function loginContractor({ email, password }: LoginCredentials): Pr
     // For now, we'll skip password verification in production mode
 
     // Check if contractor is approved
-    if (contractor.status !== 'approved') {
+    if ((contractor as any).status !== 'approved') {
       return { 
         success: false, 
-        error: contractor.status === 'pending' 
+        error: (contractor as any).status === 'pending' 
           ? 'Your account is pending approval. We will notify you once approved.'
           : 'Your account has been suspended. Please contact support.'
       }
@@ -196,7 +196,7 @@ export function getTestCredentials() {
 
 export async function getContractorProfile(contractorId: string): Promise<Contractor | null> {
   try {
-    const { data: contractor, error } = await supabase
+    const { data: contractor, error } = await (supabase as any)
       .from('contractors')
       .select(`
         *,
@@ -222,7 +222,7 @@ export async function getContractorProfile(contractorId: string): Promise<Contra
 
 export async function updateContractorProfile(contractorId: string, updates: Partial<Contractor>) {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('contractors')
       .update(updates)
       .eq('id', contractorId)

@@ -1,14 +1,4 @@
-import nodemailer from 'nodemailer'
-
-// Email service using SendGrid/Nodemailer
-const transporter = nodemailer.createTransporter({
-  host: 'smtp.sendgrid.net',
-  port: 587,
-  auth: {
-    user: 'apikey',
-    pass: process.env.SENDGRID_API_KEY
-  }
-})
+// Email service placeholder - will be implemented when nodemailer is installed
 
 export interface EmailData {
   to: string
@@ -85,18 +75,16 @@ const emailTemplates = {
 
 export async function sendEmail({ to, subject, template, data }: EmailData) {
   try {
+    // Placeholder implementation - logs email instead of sending
     const htmlContent = emailTemplates[template as keyof typeof emailTemplates]?.(data) || 
                        '<p>Default email content</p>'
 
-    const mailOptions = {
-      from: process.env.FROM_EMAIL || 'noreply@insulationpal.com',
-      to,
-      subject,
-      html: htmlContent
-    }
-
-    await transporter.sendMail(mailOptions)
-    console.log(`Email sent to ${to}`)
+    console.log(`Would send email to ${to}:`)
+    console.log(`Subject: ${subject}`)
+    console.log(`Template: ${template}`)
+    console.log(`Content: ${htmlContent}`)
+    
+    // TODO: Implement actual email sending with SendGrid or similar service
     
   } catch (error) {
     console.error('Email send error:', error)

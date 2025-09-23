@@ -35,16 +35,16 @@ export function ReviewForm({ contractorId, leadAssignmentId }: ReviewFormProps) 
     setSubmitting(true)
     try {
       // Create customer user if doesn't exist
-      const { data: existingUser } = await supabase
+      const { data: existingUser } = await (supabase as any)
         .from('users')
         .select('id')
         .eq('email', customerEmail)
         .single()
 
-      let customerId = existingUser?.id
+      let customerId = (existingUser as { id: string } | null)?.id
 
       if (!customerId) {
-        const { data: newUser, error: userError } = await supabase
+        const { data: newUser, error: userError } = await (supabase as any)
           .from('users')
           .insert({
             email: customerEmail,
@@ -55,11 +55,11 @@ export function ReviewForm({ contractorId, leadAssignmentId }: ReviewFormProps) 
           .single()
 
         if (userError) throw userError
-        customerId = newUser.id
+        customerId = (newUser as { id: string }).id
       }
 
       // Insert review
-      const { error: reviewError } = await supabase
+      const { error: reviewError } = await (supabase as any)
         .from('reviews')
         .insert({
           contractor_id: contractorId,

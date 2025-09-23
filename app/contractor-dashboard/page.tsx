@@ -154,7 +154,7 @@ export default function ContractorDashboard() {
       }
 
       // Production mode - use Supabase
-      const { data: leadsData, error: leadsError } = await supabase
+      const { data: leadsData, error: leadsError } = await (supabase as any)
         .from('lead_assignments')
         .select(`
           *,
@@ -165,15 +165,15 @@ export default function ContractorDashboard() {
 
       if (leadsError) throw leadsError
 
-      const formattedLeads = leadsData?.map(assignment => ({
+      const formattedLeads = leadsData?.map((assignment: any) => ({
         id: assignment.lead_id,
-        customer_name: assignment.leads.customer_name,
-        customer_email: assignment.leads.customer_email,
-        customer_phone: assignment.leads.customer_phone,
-        city: assignment.leads.city,
-        home_size_sqft: assignment.leads.home_size_sqft,
-        areas_needed: assignment.leads.areas_needed,
-        insulation_types: assignment.leads.insulation_types,
+        customer_name: assignment.leads?.customer_name,
+        customer_email: assignment.leads?.customer_email,
+        customer_phone: assignment.leads?.customer_phone,
+        city: assignment.leads?.city,
+        home_size_sqft: assignment.leads?.home_size_sqft,
+        areas_needed: assignment.leads?.areas_needed,
+        insulation_types: assignment.leads?.insulation_types,
         status: assignment.status,
         cost: assignment.cost,
         created_at: assignment.created_at
@@ -182,11 +182,11 @@ export default function ContractorDashboard() {
       setLeads(formattedLeads)
 
       // Calculate stats
-      const activeLeads = formattedLeads.filter(lead => lead.status === 'sent' || lead.status === 'viewed').length
-      const completedJobs = formattedLeads.filter(lead => lead.status === 'hired').length
+      const activeLeads = formattedLeads.filter((lead: any) => lead.status === 'sent' || lead.status === 'viewed').length
+      const completedJobs = formattedLeads.filter((lead: any) => lead.status === 'hired').length
       const revenue = formattedLeads
-        .filter(lead => lead.status === 'hired')
-        .reduce((sum, lead) => sum + lead.cost, 0)
+        .filter((lead: any) => lead.status === 'hired')
+        .reduce((sum: number, lead: any) => sum + lead.cost, 0)
 
       setStats({
         totalLeads: formattedLeads.length,
