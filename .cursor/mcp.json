@@ -1,0 +1,409 @@
+{
+  "mcpVersion": "2024-11-05",
+  "name": "InsulationPal",
+  "version": "1.0.0",
+  "description": "Professional insulation contractor marketplace connecting homeowners with licensed insulation professionals",
+  "author": "InsulationPal Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/insulation-pal.git"
+  },
+  "homepage": "https://insulationpal.com",
+  "keywords": [
+    "insulation",
+    "contractor",
+    "marketplace",
+    "nextjs",
+    "supabase",
+    "typescript",
+    "tailwindcss"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "runtime": {
+    "name": "nextjs",
+    "version": "14.0.0"
+  },
+  "context": {
+    "projectType": "web-application",
+    "framework": "Next.js",
+    "language": "TypeScript",
+    "database": "PostgreSQL (Supabase)",
+    "styling": "Tailwind CSS",
+    "authentication": "Supabase Auth",
+    "deployment": "Vercel",
+    "architecture": "JAMstack"
+  },
+  "capabilities": [
+    "lead-generation",
+    "contractor-matching",
+    "review-system",
+    "payment-processing",
+    "real-time-notifications",
+    "image-upload",
+    "search-filtering",
+    "geolocation-services"
+  ],
+  "services": {
+    "database": {
+      "provider": "Supabase",
+      "type": "PostgreSQL",
+      "features": [
+        "row-level-security",
+        "real-time-subscriptions",
+        "edge-functions",
+        "storage"
+      ]
+    },
+    "authentication": {
+      "provider": "Supabase Auth",
+      "methods": ["email-password", "oauth"],
+      "features": ["email-verification", "password-reset"]
+    },
+    "storage": {
+      "provider": "Supabase Storage",
+      "buckets": ["contractor-images", "portfolio-images"],
+      "features": ["image-optimization", "cdn-delivery"]
+    },
+    "payments": {
+      "provider": "Stripe",
+      "features": ["credit-purchases", "subscription-billing", "webhooks"]
+    },
+    "communication": {
+      "email": {
+        "provider": "SendGrid",
+        "templates": ["lead-notification", "review-request", "welcome"]
+      },
+      "sms": {
+        "provider": "Twilio",
+        "features": ["lead-alerts", "verification"]
+      }
+    },
+    "monitoring": {
+      "analytics": "Google Analytics",
+      "errors": "Sentry",
+      "performance": "Vercel Analytics"
+    }
+  },
+  "userTypes": [
+    {
+      "type": "customer",
+      "description": "Homeowners seeking insulation services",
+      "permissions": ["create-leads", "review-contractors", "view-quotes"]
+    },
+    {
+      "type": "contractor",
+      "description": "Licensed insulation professionals",
+      "permissions": ["respond-to-leads", "manage-profile", "purchase-credits", "view-analytics"]
+    },
+    {
+      "type": "admin",
+      "description": "Platform administrators",
+      "permissions": ["manage-users", "moderate-reviews", "view-analytics", "system-settings"]
+    }
+  ],
+  "dataFlow": {
+    "leadGeneration": {
+      "input": "Customer submits insulation request",
+      "processing": "System matches with qualified contractors in area",
+      "output": "Contractors receive lead notifications and can respond"
+    },
+    "contractorMatching": {
+      "criteria": [
+        "geographic-location",
+        "service-type",
+        "availability",
+        "credit-balance",
+        "rating-threshold"
+      ],
+      "algorithm": "weighted-random-selection",
+      "maxAssignments": 3
+    },
+    "reviewSystem": {
+      "trigger": "project-completion",
+      "verification": "lead-assignment-reference",
+      "impact": "contractor-rating-update"
+    }
+  },
+  "businessModel": {
+    "revenue": [
+      {
+        "type": "lead-credits",
+        "description": "Contractors purchase credits to receive leads",
+        "pricing": "$20 per lead"
+      },
+      {
+        "type": "subscription",
+        "description": "Premium contractor memberships",
+        "tiers": ["basic", "professional", "enterprise"]
+      }
+    ],
+    "costs": [
+      "infrastructure",
+      "payment-processing",
+      "communication-services",
+      "marketing"
+    ]
+  },
+  "apiEndpoints": {
+    "public": [
+      "/api/contractors/search",
+      "/api/reviews/public",
+      "/api/locations/service-areas"
+    ],
+    "authenticated": [
+      "/api/leads/create",
+      "/api/leads/respond", 
+      "/api/profile/update",
+      "/api/reviews/submit",
+      "/api/payments/create-intent"
+    ],
+    "admin": [
+      "/api/admin/users",
+      "/api/admin/analytics",
+      "/api/admin/system-settings"
+    ]
+  },
+  "database": {
+    "tables": {
+      "core": [
+        "users",
+        "contractors", 
+        "leads",
+        "lead_assignments",
+        "reviews"
+      ],
+      "supporting": [
+        "contractor_service_areas",
+        "contractor_services",
+        "contractor_portfolio",
+        "credit_transactions",
+        "notifications",
+        "system_settings"
+      ]
+    },
+    "relationships": {
+      "users_contractors": "one-to-one",
+      "contractors_lead_assignments": "one-to-many",
+      "leads_lead_assignments": "one-to-many",
+      "contractors_reviews": "one-to-many",
+      "contractors_service_areas": "one-to-many"
+    },
+    "features": [
+      "row-level-security",
+      "automated-triggers",
+      "search-functions",
+      "analytics-views"
+    ]
+  },
+  "ui": {
+    "designSystem": {
+      "colors": {
+        "primary": "#0a4768",
+        "secondary": "#F5DD22", 
+        "accent": "#D8E1FF",
+        "neutral": "#D6D6D6"
+      },
+      "typography": {
+        "primary": "system-ui",
+        "headings": "bold",
+        "body": "regular"
+      },
+      "components": [
+        "buttons",
+        "cards",
+        "forms",
+        "modals",
+        "navigation",
+        "tables"
+      ]
+    },
+    "pages": {
+      "public": [
+        "landing",
+        "about",
+        "services",
+        "resources",
+        "contact",
+        "contractor-profiles"
+      ],
+      "customer": [
+        "lead-submission",
+        "quote-comparison",
+        "review-submission"
+      ],
+      "contractor": [
+        "dashboard",
+        "lead-management",
+        "profile-management",
+        "credit-purchase",
+        "analytics"
+      ]
+    },
+    "responsive": true,
+    "accessibility": "WCAG-2.1-AA"
+  },
+  "security": {
+    "authentication": {
+      "session-management": "JWT",
+      "password-requirements": "strong",
+      "multi-factor": "optional"
+    },
+    "authorization": {
+      "model": "role-based",
+      "enforcement": "row-level-security"
+    },
+    "dataProtection": {
+      "encryption": "at-rest-and-in-transit",
+      "compliance": ["GDPR", "CCPA"],
+      "retention": "user-controlled"
+    },
+    "apiSecurity": [
+      "rate-limiting",
+      "input-validation",
+      "csrf-protection",
+      "cors-configured"
+    ]
+  },
+  "performance": {
+    "targets": {
+      "firstContentfulPaint": "<1.5s",
+      "largestContentfulPaint": "<2.5s",
+      "cumulativeLayoutShift": "<0.1"
+    },
+    "optimizations": [
+      "image-lazy-loading",
+      "code-splitting",
+      "static-generation",
+      "cdn-delivery",
+      "database-indexes"
+    ],
+    "monitoring": [
+      "core-web-vitals",
+      "api-response-times",
+      "error-rates",
+      "user-analytics"
+    ]
+  },
+  "development": {
+    "workflow": {
+      "versionControl": "Git",
+      "branching": "GitFlow",
+      "ci-cd": "Vercel",
+      "testing": ["unit", "integration", "e2e"]
+    },
+    "tools": {
+      "ide": "VS Code",
+      "linting": "ESLint",
+      "formatting": "Prettier",
+      "typeChecking": "TypeScript",
+      "bundling": "Next.js/Webpack"
+    },
+    "environments": [
+      {
+        "name": "development",
+        "url": "http://localhost:3000",
+        "database": "local-supabase"
+      },
+      {
+        "name": "staging", 
+        "url": "https://staging.insulationpal.com",
+        "database": "supabase-staging"
+      },
+      {
+        "name": "production",
+        "url": "https://insulationpal.com", 
+        "database": "supabase-production"
+      }
+    ]
+  },
+  "deployment": {
+    "platform": "Vercel",
+    "strategy": "continuous-deployment",
+    "domains": [
+      "insulationpal.com",
+      "www.insulationpal.com"
+    ],
+    "ssl": "automatic",
+    "cdn": "global",
+    "monitoring": "built-in"
+  },
+  "analytics": {
+    "userTracking": {
+      "provider": "Google Analytics",
+      "events": [
+        "lead-submission",
+        "contractor-signup",
+        "quote-request",
+        "review-submission"
+      ]
+    },
+    "businessMetrics": [
+      "lead-conversion-rate",
+      "contractor-response-time", 
+      "customer-satisfaction",
+      "revenue-per-lead",
+      "contractor-retention"
+    ],
+    "technicalMetrics": [
+      "page-load-times",
+      "api-response-times", 
+      "error-rates",
+      "uptime"
+    ]
+  },
+  "compliance": {
+    "legal": [
+      "terms-of-service",
+      "privacy-policy",
+      "contractor-agreement",
+      "data-processing-agreement"
+    ],
+    "standards": [
+      "PCI-DSS",
+      "SOC-2",
+      "GDPR",
+      "CCPA"
+    ],
+    "licensing": [
+      "contractor-verification",
+      "insurance-validation",
+      "background-checks"
+    ]
+  },
+  "roadmap": {
+    "phase1": {
+      "description": "MVP Launch",
+      "features": [
+        "basic-lead-matching",
+        "contractor-profiles",
+        "review-system",
+        "payment-processing"
+      ],
+      "timeline": "Q1 2024"
+    },
+    "phase2": {
+      "description": "Enhanced Features", 
+      "features": [
+        "mobile-app",
+        "advanced-analytics",
+        "automated-scheduling",
+        "multi-language-support"
+      ],
+      "timeline": "Q2-Q3 2024"
+    },
+    "phase3": {
+      "description": "Scale & Expansion",
+      "features": [
+        "multi-state-expansion",
+        "enterprise-solutions",
+        "ai-powered-matching",
+        "integration-ecosystem"
+      ],
+      "timeline": "Q4 2024 - Q1 2025"
+    }
+  }
+}
