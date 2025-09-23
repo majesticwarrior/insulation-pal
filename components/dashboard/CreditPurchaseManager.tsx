@@ -50,6 +50,14 @@ export function CreditPurchaseManager({
     {
       id: 'basic',
       name: 'Basic Package',
+      credits: 5,
+      price: 200,
+      description: '$20.00 per credit',
+      savings: 'Save $0'
+    },
+    {
+      id: 'intermediate',
+      name: 'Intermediate Package',
       credits: 10,
       price: 190,
       description: '$19.00 per credit'
