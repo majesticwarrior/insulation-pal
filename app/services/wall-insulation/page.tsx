@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { QuoteButton } from '@/components/ui/quote-button'
 import { Input } from '@/components/ui/input'
 import { CheckCircle, Star, Shield, MapPin, Home, Wind, Thermometer } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -246,9 +247,9 @@ export default function WallInsulationPage() {
             Connect with experienced wall insulation contractors in your area. 
             Get competitive quotes and improve your home's comfort today.
           </p>
-          <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
+          <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
             Find Contractors Near Me
-          </Button>
+          </QuoteButton>
         </div>
       </section>
 

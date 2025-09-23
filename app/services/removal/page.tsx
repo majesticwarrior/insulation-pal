@@ -247,9 +247,9 @@ export default function InsulationRemovalPage() {
             Connect with certified removal specialists in your area. 
             Safe, professional service with proper disposal guaranteed.
           </p>
-          <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
+          <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
             Find Contractors Near Me
-          </Button>
+          </QuoteButton>
         </div>
       </section>
 

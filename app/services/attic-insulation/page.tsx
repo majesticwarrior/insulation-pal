@@ -247,9 +247,9 @@ export default function AtticInsulationPage() {
             Get connected with top-rated attic insulation contractors in your area. 
             Compare quotes and start saving on energy costs today.
           </p>
-          <Button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
+          <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
             Find Contractors Near Me
-          </Button>
+          </QuoteButton>
         </div>
       </section>
 
