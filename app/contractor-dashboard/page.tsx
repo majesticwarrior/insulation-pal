@@ -24,6 +24,10 @@ import {
   Award
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { LeadResponseModal } from '@/components/dashboard/LeadResponseModal'
+import { ProfileEditForm } from '@/components/dashboard/ProfileEditForm'
+import { ImageUploadManager } from '@/components/dashboard/ImageUploadManager'
+import { CreditPurchaseManager } from '@/components/dashboard/CreditPurchaseManager'
 import { toast } from 'sonner'
 
 interface Lead {
@@ -53,6 +57,8 @@ export default function ContractorDashboard() {
     rating: 4.8
   })
   const [loading, setLoading] = useState(true)
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
+  const [isResponseModalOpen, setIsResponseModalOpen] = useState(false)
 
   useEffect(() => {
     const contractorData = localStorage.getItem('contractor')
@@ -66,94 +72,13 @@ export default function ContractorDashboard() {
     loadDashboardData(parsedContractor.id)
   }, [router])
 
-  const loadDashboardData = async (contractorId: string) => {
+  const loadDashboardData = async (contractorIdParam?: string) => {
     try {
-      // Check if we're in demo mode
-      const isDemoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-                        process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder')
-
-      if (isDemoMode) {
-        // Demo mode - create mock data with static dates to avoid hydration issues
-        const mockLeads: Lead[] = [
-          {
-            id: 'demo-lead-1',
-            customer_name: 'John Smith',
-            customer_email: 'john.smith@email.com',
-            customer_phone: '(602) 555-1234',
-            city: 'Phoenix',
-            home_size_sqft: 2500,
-            areas_needed: ['Attic', 'Walls'],
-            insulation_types: ['Spray Foam'],
-            status: 'sent',
-            cost: 20,
-            created_at: '2024-09-21T10:30:00.000Z'
-          },
-          {
-            id: 'demo-lead-2',
-            customer_name: 'Sarah Johnson',
-            customer_email: 'sarah.j@email.com',
-            customer_phone: '(602) 555-5678',
-            city: 'Scottsdale',
-            home_size_sqft: 3200,
-            areas_needed: ['Attic', 'Basement'],
-            insulation_types: ['Blown-in', 'Roll & Batt'],
-            status: 'viewed',
-            cost: 20,
-            created_at: '2024-09-18T14:15:00.000Z'
-          },
-          {
-            id: 'demo-lead-3',
-            customer_name: 'Mike Davis',
-            customer_email: 'mike.davis@email.com',
-            customer_phone: '(602) 555-9101',
-            city: 'Mesa',
-            home_size_sqft: 1800,
-            areas_needed: ['Crawl Space'],
-            insulation_types: ['Foam Board'],
-            status: 'hired',
-            cost: 20,
-            created_at: '2024-09-13T09:45:00.000Z'
-          },
-          {
-            id: 'demo-lead-4',
-            customer_name: 'Lisa Chen',
-            customer_email: 'lisa.chen@email.com',
-            customer_phone: '(602) 555-1122',
-            city: 'Tempe',
-            home_size_sqft: 2800,
-            areas_needed: ['Attic', 'Garage'],
-            insulation_types: ['Spray Foam', 'Blown-in'],
-            status: 'hired',
-            cost: 20,
-            created_at: '2024-09-08T16:20:00.000Z'
-          }
-        ]
-
-        // Simulate a delay
-        await new Promise(resolve => setTimeout(resolve, 800))
-
-        setLeads(mockLeads)
-
-        // Calculate stats
-        const activeLeads = mockLeads.filter(lead => lead.status === 'sent' || lead.status === 'viewed').length
-        const completedJobs = mockLeads.filter(lead => lead.status === 'hired').length
-        const revenue = mockLeads
-          .filter(lead => lead.status === 'hired')
-          .reduce((sum, lead) => sum + 850, 0) // Simulate job revenue
-
-        setStats({
-          totalLeads: mockLeads.length,
-          activeLeads,
-          completedJobs,
-          revenue,
-          credits: contractor?.credits || 0,
-          rating: 4.8
-        })
-
-        return
-      }
-
-      // Production mode - use Supabase
+      // Use the contractor ID from sample data for demo purposes
+      // In production, this would come from authentication
+      const contractorId = contractorIdParam || '33333333-3333-3333-3333-333333333331' // Elite Insulation Services
+      
+      // Fetch real data from Supabase
       const { data: leadsData, error: leadsError } = await (supabase as any)
         .from('lead_assignments')
         .select(`
@@ -217,10 +142,24 @@ export default function ContractorDashboard() {
   }
 
   const handleRespond = (lead: Lead) => {
-    toast.success(`Responding to ${lead.customer_name}'s lead`, {
-      description: 'Response functionality will be available soon. You can contact them directly via phone or email.'
-    })
+    setSelectedLead(lead)
+    setIsResponseModalOpen(true)
   }
+
+  const handleLeadResponse = (leadId: string, response: 'accept' | 'decline') => {
+    // Update the lead in the local state
+    setLeads(prev => prev.map(lead => 
+      lead.id === leadId 
+        ? { ...lead, status: response === 'accept' ? 'accepted' : 'declined' }
+        : lead
+    ))
+
+    // Refresh the dashboard data
+    if (contractor) {
+      loadDashboardData(contractor.id)
+    }
+  }
+
 
   const handleUploadImages = () => {
     toast.info('Image Upload Coming Soon!', {
@@ -228,11 +167,6 @@ export default function ContractorDashboard() {
     })
   }
 
-  const handleBuyCredits = () => {
-    toast.info('Credit Purchase Coming Soon!', {
-      description: 'Secure payment integration for lead credits will be available soon. Each lead costs $20.'
-    })
-  }
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -479,180 +413,51 @@ export default function ContractorDashboard() {
           </TabsContent>
 
           <TabsContent value="profile">
-            <Card>
-              <CardHeader>
-                <CardTitle>Business Profile</CardTitle>
-                <CardDescription>
-                  Manage your business information and service offerings
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-8">
-                  {/* Logo and Basic Info */}
-                  <div className="flex items-start space-x-6">
-                    <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center">
-                      <span className="text-xs text-gray-500 text-center">Upload Logo</span>
-                    </div>
-                    <div className="flex-1 space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Business Name</label>
-                          <p className="text-gray-900 font-semibold">{contractor.business_name}</p>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">County</label>
-                          <p className="text-gray-900">{contractor.county}</p>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">License Number</label>
-                          <p className="text-gray-900">{contractor.license_number || 'Not provided'}</p>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">BBB Accredited</label>
-                          <div className="flex items-center">
-                            <p className="text-gray-900">{contractor.bbb_accredited ? 'Yes' : 'No'}</p>
-                            {contractor.bbb_accredited && (
-                              <Badge variant="secondary" className="ml-2 text-xs">
-                                <Award className="w-3 h-3 mr-1" />
-                                BBB
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* About Us */}
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 block mb-2">About Us</label>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-gray-900">{contractor.about || 'No description provided yet.'}</p>
-                    </div>
-                  </div>
-
-                  {/* Services Offered */}
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 block mb-3">Services Offered</label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {['Attic Insulation', 'Wall Insulation', 'Basement Insulation', 'Crawl Space Insulation', 'Garage Insulation'].map((service, index) => (
-                        <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                          <span className="text-sm text-gray-700">{service}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Types of Insulation Offered */}
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 block mb-3">Types of Insulation Offered</label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {['Blown-in Insulation', 'Spray Foam Insulation', 'Roll & Batt Insulation', 'Foam Board Insulation', 'Radiant Barrier Insulation'].map((type, index) => (
-                        <div key={index} className="flex items-center p-3 bg-blue-50 rounded-lg">
-                          <CheckCircle className="w-4 h-4 text-blue-500 mr-2" />
-                          <span className="text-sm text-gray-700">{type}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Service Areas */}
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 block mb-3">Service Areas</label>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                      {['Phoenix', 'Scottsdale', 'Mesa', 'Chandler', 'Gilbert', 'Tempe', 'Glendale', 'Peoria'].map((area, index) => (
-                        <div key={index} className="flex items-center p-2 bg-yellow-50 rounded">
-                          <MapPin className="w-3 h-3 text-yellow-600 mr-1" />
-                          <span className="text-xs text-gray-700">{area}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <Button 
-                    onClick={() => toast.info('Profile editing functionality coming soon!')}
-                    className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]"
-                  >
-                    <Settings className="w-4 h-4 mr-2" />
-                    Edit Profile
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+{contractor && (
+              <ProfileEditForm 
+                contractor={contractor} 
+                onUpdate={(updatedContractor) => {
+                  setContractor(updatedContractor)
+                  // Update localStorage as well
+                  localStorage.setItem('contractor', JSON.stringify(updatedContractor))
+                }}
+              />
+            )}
           </TabsContent>
 
           <TabsContent value="images">
-            <Card>
-              <CardHeader>
-                <CardTitle>Project Gallery</CardTitle>
-                <CardDescription>
-                  Upload and manage photos of your completed projects
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <Image className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                  <p className="text-gray-500 mb-4">No images uploaded yet</p>
-                  <Button 
-                    className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]"
-                    onClick={() => handleUploadImages()}
-                  >
-                    Upload Images
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <ImageUploadManager contractorId={contractor?.id || '33333333-3333-3333-3333-333333333331'} />
           </TabsContent>
 
           <TabsContent value="billing">
-            <Card>
-              <CardHeader>
-                <CardTitle>Credits & Billing</CardTitle>
-                <CardDescription>
-                  Manage your lead credits and payment methods
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h3 className="font-semibold text-blue-900">Current Credits</h3>
-                        <p className="text-blue-700">You have {stats.credits} credits remaining</p>
-                      </div>
-                      <Button 
-                        className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]"
-                        onClick={() => handleBuyCredits()}
-                      >
-                        Buy More Credits
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold mb-2">Lead Pricing</h4>
-                    <p className="text-gray-600 mb-4">Each qualified lead costs $20. Credits are deducted when leads are assigned to you.</p>
-                    
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span>Regular leads</span>
-                        <span className="font-medium">$20 per lead</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Exclusive leads</span>
-                        <span className="font-medium">$40 per lead</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <CreditPurchaseManager 
+              contractorId={contractor?.id || '33333333-3333-3333-3333-333333333331'}
+              currentCredits={stats.credits}
+              onCreditsUpdate={(newCredits) => {
+                setStats(prev => ({ ...prev, credits: newCredits }))
+                // Also update contractor object if needed
+                if (contractor) {
+                  setContractor(prev => prev ? { ...prev, credits: newCredits } : null)
+                }
+              }}
+            />
           </TabsContent>
         </Tabs>
       </div>
       
       <Footer />
+
+      {/* Lead Response Modal */}
+      <LeadResponseModal
+        lead={selectedLead}
+        isOpen={isResponseModalOpen}
+        onClose={() => {
+          setIsResponseModalOpen(false)
+          setSelectedLead(null)
+        }}
+        onResponse={handleLeadResponse}
+        contractorId={contractor?.id || '33333333-3333-3333-3333-333333333331'}
+      />
     </main>
   )
 }
