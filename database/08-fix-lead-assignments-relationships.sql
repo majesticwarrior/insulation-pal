@@ -1,11 +1,11 @@
 -- Fix lead_assignments table relationships and RLS policies
 -- This addresses 500 errors when joining lead_assignments with leads table
 
--- First, let's check if the tables exist and have proper structure
-SELECT table_name, column_name, data_type, is_nullable 
-FROM information_schema.columns 
-WHERE table_name IN ('leads', 'lead_assignments') 
-ORDER BY table_name, ordinal_position;
+-- First, check if the tables exist and have proper structure
+-- SELECT table_name, column_name, data_type, is_nullable 
+-- FROM information_schema.columns 
+-- WHERE table_name IN ('leads', 'lead_assignments') 
+-- ORDER BY table_name, ordinal_position;
 
 -- Ensure lead_assignments table exists with proper structure
 CREATE TABLE IF NOT EXISTS lead_assignments (
