@@ -28,6 +28,7 @@ interface Contractor {
   lead_delivery_preference?: string
   contact_phone?: string
   contact_email?: string
+  certifications?: string[]
 }
 
 interface ProfileEditFormProps {
@@ -217,8 +218,14 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         setServiceTypes([])
       }
 
-      // Load certifications (for now, just set defaults - could be stored in a separate table)
-      setCertifications([])  // Will be enhanced when certifications are stored in database
+      // Load certifications from contractor data
+      if (contractor.certifications && Array.isArray(contractor.certifications)) {
+        console.log('📜 Loading existing certifications:', contractor.certifications)
+        setCertifications(contractor.certifications)
+      } else {
+        console.log('📜 No existing certifications found')
+        setCertifications([])
+      }
 
     } catch (error) {
       console.error('Error loading contractor details:', error)
@@ -280,6 +287,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         lead_delivery_preference: formData.lead_delivery_preference || 'email',
         contact_phone: formData.contact_phone || null,
         contact_email: formData.contact_email || null,
+        certifications: certifications, // Add certifications to save data
         updated_at: new Date().toISOString()
       }
 
@@ -391,7 +399,8 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         business_address: updateData.business_address || undefined,
         business_city: updateData.business_city || undefined,
         business_state: updateData.business_state || undefined,
-        business_zip: updateData.business_zip || undefined
+        business_zip: updateData.business_zip || undefined,
+        certifications: certifications
       }
 
       console.log('🎯 Updated contractor object created:', updatedContractor)
@@ -509,7 +518,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     setServicesOffered([])
     setServiceTypes([])
     setServiceAreas([])
-    setCertifications([])
+    setCertifications(contractor.certifications && Array.isArray(contractor.certifications) ? contractor.certifications : [])
     setSelectedCounty('')
     setAvailableCities([])
     setIsEditing(false)

@@ -55,6 +55,7 @@ interface Contractor {
   business_state?: string
   business_zip?: string
   credits: number
+  certifications?: string[]
   [key: string]: any // For any additional properties
 }
 
