@@ -78,7 +78,7 @@ export default function AdminDashboard() {
       // Calculate stats
       const totalContractors = contractorsData?.length || 0
       const pending = contractorsData?.filter((c: any) => c.status === 'pending')?.length || 0
-      const approved = contractorsData?.filter((c: any) => c.status === 'active')?.length || 0
+      const approved = contractorsData?.filter((c: any) => c.status === 'approved')?.length || 0
       const suspended = contractorsData?.filter((c: any) => c.status === 'suspended')?.length || 0
 
       setStats({
@@ -105,11 +105,58 @@ export default function AdminDashboard() {
 
       if (error) throw error
 
-      toast.success(`Contractor ${newStatus === 'active' ? 'approved' : newStatus}`)
+      toast.success(`Contractor ${newStatus === 'approved' ? 'approved' : newStatus}`)
       loadContractors() // Reload data
     } catch (error) {
       console.error('Error updating contractor status:', error)
       toast.error('Failed to update contractor status')
+    }
+  }
+
+  const deleteContractor = async (contractorId: string, businessName: string) => {
+    // Confirmation dialog
+    const confirmed = window.confirm(
+      `Are you sure you want to permanently delete "${businessName}"?\n\n` +
+      `This will:\n` +
+      `• Remove the contractor from the database\n` +
+      `• Delete all associated data\n` +
+      `• Allow them to re-register with the same email\n\n` +
+      `This action cannot be undone.`
+    )
+
+    if (!confirmed) return
+
+    try {
+      // First, get the user_id to delete from users table too
+      const { data: contractor } = await (supabase as any)
+        .from('contractors')
+        .select('user_id')
+        .eq('id', contractorId)
+        .single()
+
+      if (contractor?.user_id) {
+        // Delete from contractors table (will cascade to related tables)
+        const { error: contractorError } = await (supabase as any)
+          .from('contractors')
+          .delete()
+          .eq('id', contractorId)
+
+        if (contractorError) throw contractorError
+
+        // Delete from users table
+        const { error: userError } = await (supabase as any)
+          .from('users')
+          .delete()
+          .eq('id', contractor.user_id)
+
+        if (userError) throw userError
+      }
+
+      toast.success(`Contractor "${businessName}" has been permanently deleted`)
+      loadContractors() // Reload data
+    } catch (error) {
+      console.error('Error deleting contractor:', error)
+      toast.error('Failed to delete contractor')
     }
   }
 
@@ -122,10 +169,12 @@ export default function AdminDashboard() {
     switch (status) {
       case 'pending':
         return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Pending</Badge>
-      case 'active':
+      case 'approved':
         return <Badge variant="secondary" className="bg-green-100 text-green-800">Approved</Badge>
       case 'suspended':
         return <Badge variant="secondary" className="bg-red-100 text-red-800">Suspended</Badge>
+      case 'rejected':
+        return <Badge variant="secondary" className="bg-gray-100 text-gray-800">Rejected</Badge>
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
@@ -275,17 +324,17 @@ export default function AdminDashboard() {
                             )}
                           </TableCell>
                           <TableCell>
-                            <div className="flex space-x-2">
+                            <div className="flex space-x-2 flex-wrap">
                               {contractor.status === 'pending' && (
                                 <Button
                                   size="sm"
-                                  onClick={() => updateContractorStatus(contractor.id, 'active')}
+                                  onClick={() => updateContractorStatus(contractor.id, 'approved')}
                                   className="bg-green-600 hover:bg-green-700"
                                 >
                                   Approve
                                 </Button>
                               )}
-                              {contractor.status === 'active' && (
+                              {contractor.status === 'approved' && (
                                 <Button
                                   size="sm"
                                   variant="destructive"
@@ -297,12 +346,20 @@ export default function AdminDashboard() {
                               {contractor.status === 'suspended' && (
                                 <Button
                                   size="sm"
-                                  onClick={() => updateContractorStatus(contractor.id, 'active')}
+                                  onClick={() => updateContractorStatus(contractor.id, 'approved')}
                                   className="bg-green-600 hover:bg-green-700"
                                 >
                                   Reactivate
                                 </Button>
                               )}
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => deleteContractor(contractor.id, contractor.business_name)}
+                                className="border-red-300 text-red-600 hover:bg-red-50"
+                              >
+                                Delete
+                              </Button>
                             </div>
                           </TableCell>
                         </TableRow>
@@ -353,7 +410,7 @@ export default function AdminDashboard() {
                             <div className="flex space-x-2">
                               <Button
                                 size="sm"
-                                onClick={() => updateContractorStatus(contractor.id, 'active')}
+                                onClick={() => updateContractorStatus(contractor.id, 'approved')}
                                 className="bg-green-600 hover:bg-green-700"
                               >
                                 <CheckCircle className="h-4 w-4 mr-2" />
@@ -366,6 +423,14 @@ export default function AdminDashboard() {
                               >
                                 <XCircle className="h-4 w-4 mr-2" />
                                 Reject
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => deleteContractor(contractor.id, contractor.business_name)}
+                                className="border-red-300 text-red-600 hover:bg-red-50"
+                              >
+                                Delete
                               </Button>
                             </div>
                           </TableCell>
