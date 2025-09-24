@@ -62,6 +62,8 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
   const [serviceTypes, setServiceTypes] = useState<string[]>([])
   const [logoFile, setLogoFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
+  const [logoUrl, setLogoUrl] = useState<string>('')
+  const [logoMethod, setLogoMethod] = useState<'upload' | 'url'>('upload')
 
   const availableServiceTypes = [
     'attic',
@@ -228,8 +230,10 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         business_zip: updateData.business_zip || undefined
       }
 
-      // Handle logo upload if a new file was selected
-      if (logoFile) {
+      // Handle logo update (either file upload or URL)
+      let logoUpdateError = false
+      
+      if (logoMethod === 'upload' && logoFile) {
         try {
           const fileExt = logoFile.name.split('.').pop()
           const fileName = `${contractor.id}-logo.${fileExt}`
@@ -260,6 +264,21 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         } catch (logoError) {
           console.error('Error uploading logo:', logoError)
           toast.error('Profile updated but logo upload failed. Please try uploading the logo again.')
+          logoUpdateError = true
+        }
+      } else if (logoMethod === 'url' && logoUrl) {
+        try {
+          // Update contractor with logo URL
+          await (supabase as any)
+            .from('contractors')
+            .update({ profile_image: logoUrl })
+            .eq('id', contractor.id)
+          
+          updatedContractor.profile_image = logoUrl
+        } catch (logoError) {
+          console.error('Error updating logo URL:', logoError)
+          toast.error('Profile updated but logo URL update failed. Please check the URL and try again.')
+          logoUpdateError = true
         }
       }
 
@@ -294,6 +313,8 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     })
     setLogoFile(null)
     setLogoPreview(null)
+    setLogoUrl('')
+    setLogoMethod('upload')
     setIsEditing(false)
     loadContractorDetails() // Reload original data
   }
@@ -363,11 +384,11 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
           {/* Logo Upload Section */}
           <div>
             <Label htmlFor="logo">Business Logo</Label>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-start space-x-4">
               <div className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                {logoPreview || contractor.profile_image ? (
+                {logoPreview || logoUrl || contractor.profile_image ? (
                   <img 
-                    src={logoPreview || contractor.profile_image} 
+                    src={logoPreview || logoUrl || contractor.profile_image} 
                     alt="Logo preview" 
                     className="w-full h-full object-cover rounded-lg"
                   />
@@ -376,15 +397,78 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
                 )}
               </div>
               {isEditing && (
-                <div className="flex-1">
-                  <Input
-                    id="logo"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLogoChange}
-                    className="mb-2"
-                  />
-                  <p className="text-xs text-gray-500">Upload JPG, PNG, or GIF. Max 2MB.</p>
+                <div className="flex-1 space-y-4">
+                  {/* Logo Method Selection */}
+                  <div className="flex space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        id="upload-method"
+                        name="logo-method"
+                        value="upload"
+                        checked={logoMethod === 'upload'}
+                        onChange={(e) => setLogoMethod(e.target.value as 'upload' | 'url')}
+                        className="w-4 h-4 text-[#0a4768] border-gray-300 focus:ring-[#0a4768]"
+                      />
+                      <Label htmlFor="upload-method" className="text-sm font-normal">Upload File</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        id="url-method"
+                        name="logo-method"
+                        value="url"
+                        checked={logoMethod === 'url'}
+                        onChange={(e) => setLogoMethod(e.target.value as 'upload' | 'url')}
+                        className="w-4 h-4 text-[#0a4768] border-gray-300 focus:ring-[#0a4768]"
+                      />
+                      <Label htmlFor="url-method" className="text-sm font-normal">Use Image URL</Label>
+                    </div>
+                  </div>
+
+                  {/* Upload File Option */}
+                  {logoMethod === 'upload' && (
+                    <div>
+                      <input
+                        id="logo-file-input"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoChange}
+                        className="hidden"
+                      />
+                      <Button
+                        type="button"
+                        onClick={() => document.getElementById('logo-file-input')?.click()}
+                        className="bg-[#0a4768] hover:bg-[#083a56] text-white"
+                      >
+                        Choose File
+                      </Button>
+                      {logoFile && (
+                        <p className="text-sm text-gray-600 mt-2">Selected: {logoFile.name}</p>
+                      )}
+                      <p className="text-xs text-gray-500 mt-1">Upload JPG, PNG, or GIF. Max 2MB.</p>
+                    </div>
+                  )}
+
+                  {/* URL Option */}
+                  {logoMethod === 'url' && (
+                    <div>
+                      <Input
+                        type="url"
+                        placeholder="https://example.com/logo.png"
+                        value={logoUrl}
+                        onChange={(e) => {
+                          setLogoUrl(e.target.value)
+                          if (e.target.value) {
+                            setLogoPreview(null)
+                            setLogoFile(null)
+                          }
+                        }}
+                        className="mb-2"
+                      />
+                      <p className="text-xs text-gray-500">Enter the direct URL to your logo image.</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
