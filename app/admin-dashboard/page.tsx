@@ -182,35 +182,68 @@ export default function AdminDashboard() {
         console.log('🗑️ Deleting from contractors table...')
         
         // Delete from contractors table (will cascade to related tables)
-        const { error: contractorError } = await (supabase as any)
+        const { data: deletedContractor, error: contractorError, count } = await (supabase as any)
           .from('contractors')
           .delete()
           .eq('id', contractorId)
+          .select()
+
+        console.log('🔍 Delete contractor result:', { deletedContractor, contractorError, count })
 
         if (contractorError) {
           console.error('❌ Error deleting contractor:', contractorError)
           throw contractorError
         }
 
-        console.log('✅ Contractor deleted successfully')
+        // Verify the contractor was actually deleted
+        if (!deletedContractor || deletedContractor.length === 0) {
+          console.error('❌ Contractor was not deleted - no rows affected')
+          throw new Error('Contractor deletion failed - no rows were affected. This may be due to database permissions.')
+        }
+
+        console.log('✅ Contractor deleted successfully:', deletedContractor)
         console.log('🗑️ Deleting from users table...')
 
         // Delete from users table
-        const { error: userError } = await (supabase as any)
+        const { data: deletedUser, error: userError } = await (supabase as any)
           .from('users')
           .delete()
           .eq('id', contractor.user_id)
+          .select()
+
+        console.log('🔍 Delete user result:', { deletedUser, userError })
 
         if (userError) {
           console.error('❌ Error deleting user:', userError)
           throw userError
         }
 
-        console.log('✅ User deleted successfully')
+        // Verify the user was actually deleted
+        if (!deletedUser || deletedUser.length === 0) {
+          console.error('❌ User was not deleted - no rows affected')
+          throw new Error('User deletion failed - no rows were affected. This may be due to database permissions.')
+        }
+
+        console.log('✅ User deleted successfully:', deletedUser)
       } else {
         console.log('⚠️ No user_id found for contractor')
+        throw new Error('No user_id found for contractor')
       }
 
+      // Verify deletion by trying to fetch the contractor again
+      console.log('🔍 Verifying deletion...')
+      const { data: verifyDeleted, error: verifyError } = await (supabase as any)
+        .from('contractors')
+        .select('id')
+        .eq('id', contractorId)
+        .single()
+
+      if (verifyDeleted) {
+        console.error('❌ Verification failed - contractor still exists:', verifyDeleted)
+        throw new Error('Deletion verification failed - contractor still exists in database')
+      }
+
+      console.log('✅ Deletion verified - contractor no longer exists')
       toast.success(`Contractor "${businessName}" has been permanently deleted`)
       console.log('🔄 Reloading contractors...')
       loadContractors() // Reload data
