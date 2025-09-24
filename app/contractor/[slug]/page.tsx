@@ -39,6 +39,8 @@ async function getContractorBySlug(slug: string) {
     
     // First, try to extract ID from slug
     const extractedId = extractIdFromSlug(slug)
+    console.log('🔍 Extracted ID from slug:', extractedId)
+    
     let contractorId = extractedId
     
     // If no ID extracted, try direct lookup by slug (fallback for old URLs)
@@ -47,7 +49,12 @@ async function getContractorBySlug(slug: string) {
       contractorId = slug
     }
     
-    console.log('🔍 Looking up contractor with ID:', contractorId)
+    console.log('🔍 Final contractor ID for lookup:', contractorId)
+    
+    if (!contractorId) {
+      console.log('❌ No valid contractor ID found')
+      return null
+    }
     
     const { data: contractor, error } = await (supabase as any)
       .from('contractors')

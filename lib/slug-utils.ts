@@ -20,16 +20,15 @@ export function generateSlug(businessName: string): string {
 }
 
 /**
- * Generates a unique slug by appending the contractor ID if needed
+ * Generates a unique slug by appending the full contractor ID
  * @param businessName - The business name to convert to a slug
  * @param contractorId - The contractor ID to ensure uniqueness
  * @returns A unique URL-friendly slug
  */
 export function generateUniqueSlug(businessName: string, contractorId: string): string {
   const baseSlug = generateSlug(businessName)
-  // Take first 8 characters of ID for uniqueness while keeping URLs readable
-  const shortId = contractorId.substring(0, 8)
-  return `${baseSlug}-${shortId}`
+  // Use full contractor ID for accurate database lookup
+  return `${baseSlug}--${contractorId}`
 }
 
 /**
@@ -38,14 +37,16 @@ export function generateUniqueSlug(businessName: string, contractorId: string): 
  * @returns The contractor ID or null if not found
  */
 export function extractIdFromSlug(slug: string): string | null {
-  // Slug format: "business-name-shortid"
-  const parts = slug.split('-')
-  if (parts.length < 2) return null
+  // Slug format: "business-name--full-contractor-id"
+  // Using double dash to separate business name from ID
+  const parts = slug.split('--')
+  if (parts.length !== 2) return null
   
-  // The last part should be the short ID (8 characters)
-  const lastPart = parts[parts.length - 1]
-  if (lastPart.length === 8) {
-    return lastPart
+  // The second part should be the full contractor ID (UUID format)
+  const contractorId = parts[1]
+  // Basic UUID validation (36 characters with dashes)
+  if (contractorId.length === 36 && contractorId.includes('-')) {
+    return contractorId
   }
   
   return null
