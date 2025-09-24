@@ -486,9 +486,13 @@ export default function ContractorDashboard() {
               <ProfileEditForm 
                 contractor={contractor} 
                 onUpdate={(updatedContractor) => {
+                  console.log('📢 Dashboard onUpdate callback received:', updatedContractor)
+                  console.log('🔄 Updating contractor state...')
                   setContractor(updatedContractor)
-                  // Update localStorage as well
+                  console.log('💾 Updating localStorage...')
                   localStorage.setItem('contractor', JSON.stringify(updatedContractor))
+                  console.log('✅ Dashboard contractor state and localStorage updated')
+                  console.log('🔍 New localStorage value:', localStorage.getItem('contractor'))
                 }}
               />
             )}

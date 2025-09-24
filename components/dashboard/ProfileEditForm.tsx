@@ -116,6 +116,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
   // Update form data when contractor prop changes (e.g., after credit updates)
   useEffect(() => {
     console.log('🔄 ProfileEditForm contractor prop changed:', contractor)
+    console.log('📝 Current formData before update:', formData)
     console.log('📝 Updating form data with contractor:', {
       business_name: contractor.business_name,
       license_number: contractor.license_number,
@@ -140,6 +141,11 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     })
     
     console.log('✅ Form data updated')
+    console.log('📝 New formData after update:', {
+      business_name: contractor.business_name || '',
+      license_number: contractor.license_number || '',
+      bio: contractor.bio || ''
+    })
   }, [contractor])
 
   const loadContractorDetails = async () => {
@@ -248,6 +254,8 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     try {
       console.log('🔍 Starting profile update for contractor:', contractor.id)
       console.log('📝 Form data:', formData)
+      console.log('📋 Current contractor object:', contractor)
+      console.log('🚀 About to update contractors table...')
       
       // Update contractor profile
       const updateData = {
@@ -349,6 +357,9 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         business_zip: updateData.business_zip || undefined
       }
 
+      console.log('🎯 Updated contractor object created:', updatedContractor)
+      console.log('📞 About to call onUpdate callback...')
+
       // Handle logo update (either file upload or URL)
       let logoUpdateError = false
       
@@ -401,10 +412,13 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         }
       }
 
+      console.log('📞 Calling onUpdate with updated contractor:', updatedContractor)
       onUpdate(updatedContractor)
+      console.log('✅ onUpdate callback completed')
       
       toast.success('Profile updated successfully!')
       setIsEditing(false)
+      console.log('🎉 Profile save process completed successfully')
 
     } catch (error) {
       console.error('💥 Profile update failed:', error)
