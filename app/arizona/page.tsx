@@ -131,14 +131,15 @@ async function getArizonaRecentProjects() {
         project_city,
         project_state,
         completion_date,
+        contractor_id,
         contractors!inner(
           business_name,
           status
         )
       `)
       .eq('project_state', 'AZ')
+      .neq('after_image_url', null)
       .eq('contractors.status', 'approved')
-      .not('after_image_url', 'is', null)
       .order('completion_date', { ascending: false })
       .limit(12)
 

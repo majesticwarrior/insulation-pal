@@ -194,6 +194,7 @@ async function getPhoenixRecentProjects() {
         project_city,
         project_state,
         completion_date,
+        contractor_id,
         contractors!inner(
           business_name,
           status
@@ -201,8 +202,8 @@ async function getPhoenixRecentProjects() {
       `)
       .eq('project_state', 'AZ')
       .ilike('project_city', '%phoenix%')
+      .neq('after_image_url', null)
       .eq('contractors.status', 'approved')
-      .not('after_image_url', 'is', null)
       .order('completion_date', { ascending: false })
       .limit(12)
 
