@@ -171,6 +171,9 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
   const handleSave = async () => {
     setIsSaving(true)
     try {
+      console.log('🔍 Starting profile update for contractor:', contractor.id)
+      console.log('📝 Form data:', formData)
+      
       // Update contractor profile
       const updateData = {
         business_name: formData.business_name,
@@ -182,18 +185,32 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         business_city: formData.business_city || null,
         business_state: formData.business_state || null,
         business_zip: formData.business_zip || null,
-        lead_delivery_preference: formData.lead_delivery_preference,
+        lead_delivery_preference: formData.lead_delivery_preference || 'email',
         contact_phone: formData.contact_phone || null,
         contact_email: formData.contact_email || null,
         updated_at: new Date().toISOString()
       }
 
-      const { error: updateError } = await (supabase as any)
+      console.log('📤 Update data being sent:', updateData)
+
+      const { error: updateError, data: updateResult } = await (supabase as any)
         .from('contractors')
         .update(updateData)
         .eq('id', contractor.id)
+        .select()
 
-      if (updateError) throw updateError
+      console.log('📥 Update result:', { updateResult, updateError })
+
+      if (updateError) {
+        console.error('❌ Profile update error:', updateError)
+        console.error('Error details:', {
+          message: updateError.message,
+          details: updateError.details,
+          hint: updateError.hint,
+          code: updateError.code
+        })
+        throw updateError
+      }
 
       // Update service areas
       // First delete existing areas
@@ -311,8 +328,29 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
       setIsEditing(false)
 
     } catch (error) {
-      console.error('Error updating profile:', error)
-      toast.error('Failed to update profile. Please try again.')
+      console.error('💥 Profile update failed:', error)
+      
+      if (error instanceof Error) {
+        console.error('Error details:', {
+          name: error.name,
+          message: error.message,
+          stack: error.stack
+        })
+        
+        // Provide specific error message based on error type
+        if (error.message.includes('duplicate key') || error.message.includes('unique constraint')) {
+          toast.error('Update failed: Business name or license number already exists.')
+        } else if (error.message.includes('check constraint') || error.message.includes('invalid input')) {
+          toast.error('Update failed: Invalid data format. Please check your input values.')
+        } else if (error.message.includes('foreign key') || error.message.includes('violates')) {
+          toast.error('Update failed: Data validation error. Please contact support.')
+        } else {
+          toast.error(`Update failed: ${error.message}`)
+        }
+      } else {
+        console.error('Unknown error type:', error)
+        toast.error('Failed to update profile. Please try again.')
+      }
     } finally {
       setIsSaving(false)
     }
