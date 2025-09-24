@@ -113,6 +113,24 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     loadContractorDetails()
   }, [contractor.id])
 
+  // Update form data when contractor prop changes (e.g., after credit updates)
+  useEffect(() => {
+    setFormData({
+      business_name: contractor.business_name || '',
+      license_number: contractor.license_number || '',
+      bio: contractor.bio || '',
+      founded_year: contractor.founded_year?.toString() || '',
+      employee_count: contractor.employee_count?.toString() || '',
+      business_address: contractor.business_address || '',
+      business_city: contractor.business_city || '',
+      business_state: contractor.business_state || '',
+      business_zip: contractor.business_zip || '',
+      lead_delivery_preference: contractor.lead_delivery_preference || 'email',
+      contact_phone: contractor.contact_phone || '',
+      contact_email: contractor.contact_email || ''
+    })
+  }, [contractor])
+
   const loadContractorDetails = async () => {
     try {
       // Load service areas

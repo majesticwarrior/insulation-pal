@@ -93,6 +93,22 @@ export default function ContractorDashboard() {
       // In production, this would come from authentication
       const contractorId = contractorIdParam || '33333333-3333-3333-3333-333333333331' // Elite Insulation Services
       
+      // First, fetch fresh contractor data to get updated credits
+      const { data: contractorData, error: contractorError } = await (supabase as any)
+        .from('contractors')
+        .select('*')
+        .eq('id', contractorId)
+        .single()
+
+      if (contractorError) {
+        console.error('Error fetching contractor data:', contractorError)
+      } else if (contractorData) {
+        // Update contractor state with fresh data
+        setContractor(contractorData)
+        // Update localStorage with fresh data
+        localStorage.setItem('contractor', JSON.stringify(contractorData))
+      }
+      
       // Fetch real data from Supabase
       const { data: leadsData, error: leadsError } = await (supabase as any)
         .from('lead_assignments')
@@ -133,7 +149,7 @@ export default function ContractorDashboard() {
         activeLeads,
         completedJobs,
         revenue,
-        credits: contractor?.credits || 0,
+        credits: contractorData?.credits || contractor?.credits || 0,
         rating: 4.8 // This would come from reviews
       })
 
@@ -175,6 +191,12 @@ export default function ContractorDashboard() {
     }
   }
 
+  // Function to refresh contractor data (useful for credit updates)
+  const refreshContractorData = async () => {
+    if (contractor?.id) {
+      await loadDashboardData(contractor.id)
+    }
+  }
 
   const handleUploadImages = () => {
     toast.info('Image Upload Coming Soon!', {
