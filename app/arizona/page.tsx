@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
+import { generateUniqueSlug } from '@/lib/slug-utils'
 
 export const metadata: Metadata = {
   title: 'Arizona Insulation Contractors - InsulationPal',
@@ -76,6 +77,7 @@ async function getArizonaContractors() {
         acc.push({
           id: contractor.id,
           name: contractor.business_name,
+          slug: generateUniqueSlug(contractor.business_name, contractor.id),
           rating: contractor.average_rating || 4.5,
           reviewCount: contractor.total_reviews || 0,
           jobsCompleted: contractor.total_completed_projects || 0,
@@ -282,7 +284,7 @@ export default async function ArizonaInsulationContractors() {
                       size="sm"
                       className="flex-1 text-xs"
                     >
-                      <Link href={`/contractor/${contractor.id}`}>
+                      <Link href={`/contractor/${contractor.slug}`}>
                         View Profile
                       </Link>
                     </Button>
@@ -413,7 +415,7 @@ export default async function ArizonaInsulationContractors() {
                           size="sm"
                           className="text-xs"
                         >
-                          <Link href={`/contractor/${contractor.id}`}>
+                          <Link href={`/contractor/${contractor.slug}`}>
                             Profile
                           </Link>
                         </Button>

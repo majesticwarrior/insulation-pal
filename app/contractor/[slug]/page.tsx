@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { notFound } from 'next/navigation'
+import { extractIdFromSlug } from '@/lib/slug-utils'
 
 // Dynamic route - will be rendered on demand
 import type { Metadata } from 'next'
@@ -31,10 +32,22 @@ interface ContractorPageProps {
   params: Promise<{ slug: string }>
 }
 
-// Fetch contractor data from database by ID
-async function getContractorById(contractorId: string) {
+// Fetch contractor data from database by slug or ID
+async function getContractorBySlug(slug: string) {
   try {
-    console.log('🔍 Fetching contractor by ID:', contractorId)
+    console.log('🔍 Fetching contractor by slug:', slug)
+    
+    // First, try to extract ID from slug
+    const extractedId = extractIdFromSlug(slug)
+    let contractorId = extractedId
+    
+    // If no ID extracted, try direct lookup by slug (fallback for old URLs)
+    if (!contractorId) {
+      console.log('🔍 No ID found in slug, trying direct ID lookup as fallback')
+      contractorId = slug
+    }
+    
+    console.log('🔍 Looking up contractor with ID:', contractorId)
     
     const { data: contractor, error } = await (supabase as any)
       .from('contractors')
@@ -92,7 +105,7 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
   
   console.log('🔍 ContractorProfilePage called with slug:', slug)
   
-  const contractorData = await getContractorById(slug)
+  const contractorData = await getContractorBySlug(slug)
   
   if (!contractorData) {
     console.log('❌ ContractorProfilePage: contractor not found, returning 404')
