@@ -105,17 +105,46 @@ export function ImageUploadManager({ contractorId }: ImageUploadManagerProps) {
     reader.readAsDataURL(file)
   }
 
-  const uploadImageToCloudinary = async (file: File): Promise<string> => {
-    // For demo purposes, we'll simulate image upload
-    // In production, you'd upload to Cloudinary or similar service
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // Generate a mock URL based on file name
-        const mockUrl = `/project-images/${Date.now()}-${file.name}`
-        resolve(mockUrl)
-      }, 1000) // Simulate upload time
-    })
+  const uploadImageToSupabase = async (file: File): Promise<string> => {
+    try {
+      console.log('🔄 Uploading image to Supabase Storage...', file.name)
+      
+      // Generate unique filename
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+      const filePath = `contractor-portfolio/${fileName}`
+
+      // Upload to Supabase Storage
+      const { data, error } = await supabase.storage
+        .from('contractor_images')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        })
+
+      if (error) {
+        console.error('❌ Supabase Storage upload error:', error)
+        throw new Error(`Upload failed: ${error.message}`)
+      }
+
+      console.log('✅ Image uploaded successfully:', data.path)
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('contractor_images')
+        .getPublicUrl(filePath)
+
+      if (!urlData.publicUrl) {
+        throw new Error('Failed to get public URL for uploaded image')
+      }
+
+      console.log('✅ Public URL generated:', urlData.publicUrl)
+      return urlData.publicUrl
+      
+    } catch (error) {
+      console.error('💥 Image upload failed:', error)
+      throw error
+    }
   }
 
   const handleSubmit = async () => {
@@ -136,10 +165,10 @@ export function ImageUploadManager({ contractorId }: ImageUploadManagerProps) {
 
       // Upload images
       if (beforeImageFile) {
-        beforeImageUrl = await uploadImageToCloudinary(beforeImageFile)
+        beforeImageUrl = await uploadImageToSupabase(beforeImageFile)
       }
       if (afterImageFile) {
-        afterImageUrl = await uploadImageToCloudinary(afterImageFile)
+        afterImageUrl = await uploadImageToSupabase(afterImageFile)
       }
 
       // Save to database
