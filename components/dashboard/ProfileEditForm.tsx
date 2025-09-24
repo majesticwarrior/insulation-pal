@@ -174,25 +174,33 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         console.log('📍 No service areas found')
       }
 
-      // Load services offered and insulation types
-      const { data: services } = await (supabase as any)
-        .from('contractor_services')
-        .select('service_type, insulation_types')
-        .eq('contractor_id', contractor.id)
+      // TEMPORARY: Skip contractor_services query to avoid 401 error
+      console.log('⚠️ Temporarily skipping contractor_services query due to RLS 401 error')
+      console.log('💡 Will restore after fixing RLS policies')
+      
+      // Set empty defaults for now
+      setServicesOffered([])
+      setServiceTypes([])
+      
+      // // Load services offered and insulation types
+      // const { data: services } = await (supabase as any)
+      //   .from('contractor_services')
+      //   .select('service_type, insulation_types')
+      //   .eq('contractor_id', contractor.id)
 
-      if (services && services.length > 0) {
-        // Extract unique service areas
-        setServicesOffered(services.map((service: any) => service.service_type))
-        
-        // Extract unique insulation types from all services
-        const allInsulationTypes = services.reduce((acc: string[], service: any) => {
-          if (service.insulation_types && Array.isArray(service.insulation_types)) {
-            return [...acc, ...service.insulation_types]
-          }
-          return acc
-        }, [])
-        setServiceTypes(Array.from(new Set(allInsulationTypes))) // Remove duplicates
-      }
+      // if (services && services.length > 0) {
+      //   // Extract unique service areas
+      //   setServicesOffered(services.map((service: any) => service.service_type))
+      //   
+      //   // Extract unique insulation types from all services
+      //   const allInsulationTypes = services.reduce((acc: string[], service: any) => {
+      //     if (service.insulation_types && Array.isArray(service.insulation_types)) {
+      //       return [...acc, ...service.insulation_types]
+      //     }
+      //     return acc
+      //   }, [])
+      //   setServiceTypes(Array.from(new Set(allInsulationTypes))) // Remove duplicates
+      // }
 
       // Load certifications (for now, just set defaults - could be stored in a separate table)
       setCertifications([])  // Will be enhanced when certifications are stored in database
