@@ -170,12 +170,12 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
 
                   <FormField
                     control={form.control}
-                    name="email"
+                    name="businessName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email Address *</FormLabel>
+                        <FormLabel>Business Name *</FormLabel>
                         <FormControl>
-                          <Input placeholder="contractor@example.com" type="email" {...field} />
+                          <Input placeholder="ABC Insulation Services" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -195,6 +195,36 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email Address *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="contractor@example.com" type="email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="licenseNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>License #</FormLabel>
+                        <FormControl>
+                          <Input placeholder="License Number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div></div>
 
                   <FormField
                     control={form.control}
@@ -218,34 +248,6 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
                         <FormLabel>Confirm Password *</FormLabel>
                         <FormControl>
                           <Input placeholder="Confirm password" type="password" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="businessName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Business Name *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="ABC Insulation Services" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="licenseNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>License # *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="License Number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
