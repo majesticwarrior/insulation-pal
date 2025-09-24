@@ -76,37 +76,56 @@ export default function ContractorDashboard() {
   const [isResponseModalOpen, setIsResponseModalOpen] = useState(false)
 
   useEffect(() => {
+    console.log('🔍 Dashboard useEffect triggered')
     const contractorData = localStorage.getItem('contractor')
+    console.log('📱 localStorage contractor data:', contractorData)
+    
     if (!contractorData) {
+      console.log('❌ No contractor data in localStorage, redirecting to login')
       router.push('/contractor-login')
       return
     }
 
     const parsedContractor = JSON.parse(contractorData)
+    console.log('👤 Parsed contractor from localStorage:', parsedContractor)
+    console.log('💳 Contractor credits from localStorage:', parsedContractor.credits)
+    
     setContractor(parsedContractor)
     loadDashboardData(parsedContractor.id)
   }, [router])
 
   const loadDashboardData = async (contractorIdParam?: string) => {
     try {
+      console.log('🔄 loadDashboardData called with contractorId:', contractorIdParam)
+      
       // Use the contractor ID from sample data for demo purposes
       // In production, this would come from authentication
       const contractorId = contractorIdParam || '33333333-3333-3333-3333-333333333331' // Elite Insulation Services
+      console.log('🎯 Using contractor ID:', contractorId)
       
       // First, fetch fresh contractor data to get updated credits
+      console.log('📡 Fetching contractor data from Supabase...')
       const { data: contractorData, error: contractorError } = await (supabase as any)
         .from('contractors')
         .select('*')
         .eq('id', contractorId)
         .single()
 
+      console.log('📥 Contractor data response:', { contractorData, contractorError })
+
       if (contractorError) {
-        console.error('Error fetching contractor data:', contractorError)
+        console.error('❌ Error fetching contractor data:', contractorError)
       } else if (contractorData) {
+        console.log('✅ Fresh contractor data from database:', contractorData)
+        console.log('💳 Fresh credits from database:', contractorData.credits)
+        
         // Update contractor state with fresh data
         setContractor(contractorData)
         // Update localStorage with fresh data
         localStorage.setItem('contractor', JSON.stringify(contractorData))
+        console.log('📱 Updated localStorage with fresh contractor data')
+      } else {
+        console.log('⚠️ No contractor data returned from database')
       }
       
       // Fetch real data from Supabase
@@ -144,13 +163,28 @@ export default function ContractorDashboard() {
         .filter((lead: any) => lead.status === 'hired')
         .reduce((sum: number, lead: any) => sum + lead.cost, 0)
 
+      const finalCredits = contractorData?.credits || contractor?.credits || 0
+      console.log('📊 Calculating stats:')
+      console.log('💳 Credits from contractorData:', contractorData?.credits)
+      console.log('💳 Credits from contractor state:', contractor?.credits)
+      console.log('💳 Final credits value:', finalCredits)
+
       setStats({
         totalLeads: formattedLeads.length,
         activeLeads,
         completedJobs,
         revenue,
-        credits: contractorData?.credits || contractor?.credits || 0,
+        credits: finalCredits,
         rating: 4.8 // This would come from reviews
+      })
+
+      console.log('📈 Stats updated:', {
+        totalLeads: formattedLeads.length,
+        activeLeads,
+        completedJobs,
+        revenue,
+        credits: finalCredits,
+        rating: 4.8
       })
 
     } catch (error) {

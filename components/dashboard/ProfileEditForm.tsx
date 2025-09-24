@@ -115,6 +115,15 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
 
   // Update form data when contractor prop changes (e.g., after credit updates)
   useEffect(() => {
+    console.log('🔄 ProfileEditForm contractor prop changed:', contractor)
+    console.log('📝 Updating form data with contractor:', {
+      business_name: contractor.business_name,
+      license_number: contractor.license_number,
+      bio: contractor.bio,
+      contact_phone: contractor.contact_phone,
+      contact_email: contractor.contact_email
+    })
+    
     setFormData({
       business_name: contractor.business_name || '',
       license_number: contractor.license_number || '',
@@ -129,27 +138,40 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
       contact_phone: contractor.contact_phone || '',
       contact_email: contractor.contact_email || ''
     })
+    
+    console.log('✅ Form data updated')
   }, [contractor])
 
   const loadContractorDetails = async () => {
     try {
+      console.log('🔄 loadContractorDetails called for contractor:', contractor.id)
+      
       // Load service areas
+      console.log('📍 Loading service areas...')
       const { data: areas } = await (supabase as any)
         .from('contractor_service_areas')
         .select('city, state')
         .eq('contractor_id', contractor.id)
 
+      console.log('📍 Service areas loaded:', areas)
+
       if (areas && areas.length > 0) {
         const serviceAreaStrings = areas.map((area: any) => `${area.city}, ${area.state}`)
+        console.log('📍 Setting service areas:', serviceAreaStrings)
         setServiceAreas(serviceAreaStrings)
         
         // Auto-detect county from first city
         const firstCity = areas[0].city
         const detectedCounty = getCountyForCity(firstCity)
+        console.log('🏛️ Detected county for', firstCity, ':', detectedCounty)
         if (detectedCounty) {
           setSelectedCounty(detectedCounty)
-          setAvailableCities(getCitiesForCounty(detectedCounty))
+          const citiesInCounty = getCitiesForCounty(detectedCounty)
+          setAvailableCities(citiesInCounty)
+          console.log('🏛️ Set county and cities:', detectedCounty, citiesInCounty.length, 'cities')
         }
+      } else {
+        console.log('📍 No service areas found')
       }
 
       // Load services offered and insulation types
