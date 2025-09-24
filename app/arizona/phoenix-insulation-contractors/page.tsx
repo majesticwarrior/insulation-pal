@@ -179,6 +179,46 @@ async function getPhoenixContractors() {
   }
 }
 
+// Fetch recent insulation projects completed in Phoenix
+async function getPhoenixRecentProjects() {
+  try {
+    console.log('🏗️ Fetching recent projects in Phoenix...')
+    
+    const { data: projects, error } = await (supabase as any)
+      .from('contractor_portfolio')
+      .select(`
+        id,
+        title,
+        service_type,
+        after_image_url,
+        project_city,
+        project_state,
+        completion_date,
+        contractors!inner(
+          business_name,
+          status
+        )
+      `)
+      .eq('project_state', 'AZ')
+      .ilike('project_city', '%phoenix%')
+      .eq('contractors.status', 'approved')
+      .not('after_image_url', 'is', null)
+      .order('completion_date', { ascending: false })
+      .limit(12)
+
+    if (error) {
+      console.error('Error fetching Phoenix projects:', error)
+      return []
+    }
+
+    console.log(`Found ${projects?.length || 0} recent projects in Phoenix`)
+    return projects || []
+  } catch (error) {
+    console.error('Error in getPhoenixRecentProjects:', error)
+    return []
+  }
+}
+
 
 
 // Add Phoenix area cities with 50k+ population
@@ -201,6 +241,7 @@ const phoenixAreaCities = [
 
 export default async function PhoenixInsulationContractors() {
   const phoenixContractors = await getPhoenixContractors()
+  const recentProjects = await getPhoenixRecentProjects()
   
   const cityStats = {
     totalReviews: 847, // Base reviews from the platform
@@ -633,6 +674,62 @@ export default async function PhoenixInsulationContractors() {
               </Link>
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* Recent Projects Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
+              Recent Insulation Projects Completed in Phoenix
+            </h2>
+            <p className="text-lg text-gray-600">
+              See the quality work performed by our verified contractors in the Phoenix metro area
+            </p>
+          </div>
+
+          {recentProjects.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {recentProjects.map((project: any) => (
+                <Card key={project.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="relative h-48">
+                    <Image
+                      src={project.after_image_url || '/placeholder-project.jpg'}
+                      alt={project.title || 'Insulation Project'}
+                      fill
+                      className="object-cover"
+                      loading="lazy"
+                      placeholder="blur"
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-[#0a4768] mb-2 text-sm">
+                      {project.title || 'Insulation Project'}
+                    </h3>
+                    <div className="space-y-1 text-xs text-gray-600">
+                      <div>
+                        <span className="font-medium">Service:</span> {project.service_type || 'Insulation'}
+                      </div>
+                      <div>
+                        <span className="font-medium">Location:</span> {project.project_city}, AZ
+                      </div>
+                      <div>
+                        <span className="font-medium">Contractor:</span> {project.contractors.business_name}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-600">
+                Project portfolio coming soon. Contractors are adding their recent work to showcase quality installations.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
