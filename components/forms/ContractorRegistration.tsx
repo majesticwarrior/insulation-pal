@@ -139,11 +139,16 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
             <Form {...form}>
               <form 
                 onSubmit={(e) => {
+                  console.log('🔥 Form onSubmit handler called - preventing default')
                   e.preventDefault()
-                  console.log('📝 Form submit event triggered')
-                  form.handleSubmit(onSubmit)(e)
+                  e.stopPropagation()
+                  console.log('📝 Form submit event triggered, calling handleSubmit')
+                  const submitHandler = form.handleSubmit(onSubmit)
+                  submitHandler(e)
+                  return false
                 }} 
                 className="space-y-6"
+                method="post"
               >
               {/* Basic Information */}
               <div>
