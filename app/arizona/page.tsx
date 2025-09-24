@@ -30,9 +30,10 @@ export const metadata: Metadata = {
   },
 }
 
-// Fetch contractors from Supabase database
+// Fetch contractors from Supabase database who serve Arizona
 async function getArizonaContractors() {
   try {
+    // Get contractors who have service areas in Arizona (AZ) OR are based in Arizona
     const { data: contractors, error } = await (supabase as any)
       .from('contractors')
       .select(`
@@ -46,30 +47,50 @@ async function getArizonaContractors() {
         status,
         license_verified,
         insurance_verified,
-        profile_image
+        profile_image,
+        contractor_service_areas(
+          city,
+          state
+        )
       `)
-      .eq('business_state', 'AZ')
-      .eq('status', 'active')
+      .eq('status', 'approved')
       .order('average_rating', { ascending: false })
-      .limit(20)
+      .limit(50)
 
     if (error) {
       console.error('Error fetching contractors:', error)
       return []
     }
 
-    return contractors?.map((contractor: any) => ({
-      id: contractor.id,
-      name: contractor.business_name,
-      rating: contractor.average_rating || 4.5,
-      reviewCount: contractor.total_reviews || 0,
-      jobsCompleted: contractor.total_completed_projects || 0,
-      city: contractor.business_city || 'Phoenix',
-      services: ['Attic', 'Walls', 'Spray Foam'], // Default services - could be fetched from contractor_services table
-      image: contractor.profile_image || '/alex.jpg',
-      verified: contractor.license_verified || false,
-      bbbAccredited: contractor.insurance_verified || false
-    })) || []
+    // Filter contractors who serve Arizona (either based in AZ or have service areas in AZ)
+    const arizonaContractors = contractors?.filter((contractor: any) => {
+      const isBasedInAZ = contractor.business_state === 'AZ'
+      const hasAZServiceAreas = contractor.contractor_service_areas?.some((area: any) => area.state === 'AZ')
+      return isBasedInAZ || hasAZServiceAreas
+    }) || []
+
+    // Remove duplicates and format contractor data
+    const uniqueContractors = arizonaContractors.reduce((acc: any[], contractor: any) => {
+      const existingContractor = acc.find(c => c.id === contractor.id)
+      if (!existingContractor) {
+        acc.push({
+          id: contractor.id,
+          name: contractor.business_name,
+          rating: contractor.average_rating || 4.5,
+          reviewCount: contractor.total_reviews || 0,
+          jobsCompleted: contractor.total_completed_projects || 0,
+          city: contractor.business_city || 'Phoenix',
+          services: ['Attic', 'Walls', 'Spray Foam'], // Default services - could be fetched from contractor_services table
+          image: contractor.profile_image || '/alex.jpg',
+          verified: contractor.license_verified || false,
+          bbbAccredited: contractor.insurance_verified || false
+        })
+      }
+      return acc
+    }, [])
+
+    console.log(`Found ${uniqueContractors.length} contractors serving Arizona`)
+    return uniqueContractors
   } catch (error) {
     console.error('Database error:', error)
     return []

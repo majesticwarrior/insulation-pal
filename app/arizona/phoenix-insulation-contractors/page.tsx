@@ -90,6 +90,7 @@ const articles = [
 // Fetch Phoenix contractors from Supabase database
 async function getPhoenixContractors() {
   try {
+    // Get contractors who serve Phoenix (either based in Phoenix or have Phoenix as a service area)
     const { data: contractors, error } = await (supabase as any)
       .from('contractors')
       .select(`
@@ -105,11 +106,13 @@ async function getPhoenixContractors() {
         insurance_verified,
         profile_image,
         bio,
-        founded_year
+        founded_year,
+        contractor_service_areas(
+          city,
+          state
+        )
       `)
-      .eq('business_city', 'Phoenix')
-      .eq('business_state', 'Arizona')
-      .eq('status', 'active')
+      .eq('status', 'approved')
       .order('average_rating', { ascending: false })
 
     if (error) {
@@ -117,26 +120,44 @@ async function getPhoenixContractors() {
       return []
     }
 
-    // Transform data to match component format
-    return contractors?.map((contractor: any) => ({
-      id: contractor.id,
-      name: contractor.business_name,
-      rating: contractor.average_rating || 4.5,
-      reviewCount: contractor.total_reviews || 0,
-      jobsCompleted: contractor.total_completed_projects || 0,
-      reliabilityScore: 95, // Could be calculated
-      services: ['Attic', 'Walls', 'Spray Foam'], // Default services - could be fetched from contractor_services table
-      image: contractor.profile_image || '/alex.jpg',
-      verified: contractor.license_verified || false,
-      bbbAccredited: contractor.insurance_verified || false,
-      yearEstablished: contractor.founded_year || 2020,
-      about: contractor.bio || 'Professional insulation contractor serving the Phoenix area.',
-      recentProjects: [
-        '/attic-insulation-blown-in.jpg',
-        '/spray-foam-insulation-installed.jpg',
-        '/wall-insulation-icon.jpg'
-      ]
-    })) || []
+    // Filter contractors who serve Phoenix (either based in Phoenix or have Phoenix as a service area)
+    const phoenixContractors = contractors?.filter((contractor: any) => {
+      const isBasedInPhoenix = contractor.business_city?.toLowerCase() === 'phoenix'
+      const hasPhoenixServiceArea = contractor.contractor_service_areas?.some((area: any) => 
+        area.city?.toLowerCase() === 'phoenix' || area.city?.toLowerCase().includes('phoenix')
+      )
+      return isBasedInPhoenix || hasPhoenixServiceArea
+    }) || []
+
+    // Remove duplicates and transform data to match component format
+    const uniqueContractors = phoenixContractors.reduce((acc: any[], contractor: any) => {
+      const existingContractor = acc.find(c => c.id === contractor.id)
+      if (!existingContractor) {
+        acc.push({
+          id: contractor.id,
+          name: contractor.business_name,
+          rating: contractor.average_rating || 4.5,
+          reviewCount: contractor.total_reviews || 0,
+          jobsCompleted: contractor.total_completed_projects || 0,
+          reliabilityScore: 95, // Could be calculated
+          services: ['Attic', 'Walls', 'Spray Foam'], // Default services - could be fetched from contractor_services table
+          image: contractor.profile_image || '/alex.jpg',
+          verified: contractor.license_verified || false,
+          bbbAccredited: contractor.insurance_verified || false,
+          yearEstablished: contractor.founded_year || 2020,
+          about: contractor.bio || 'Professional insulation contractor serving the Phoenix area.',
+          recentProjects: [
+            '/attic-insulation-blown-in.jpg',
+            '/spray-foam-insulation-installed.jpg',
+            '/wall-insulation-icon.jpg'
+          ]
+        })
+      }
+      return acc
+    }, [])
+
+    console.log(`Found ${uniqueContractors.length} contractors serving Phoenix`)
+    return uniqueContractors
   } catch (error) {
     console.error('Database error:', error)
     return []
