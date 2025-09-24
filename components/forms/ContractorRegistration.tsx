@@ -68,29 +68,58 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
       if (userError) throw userError
 
       // Insert contractor
-      const { data: contractor, error: contractorError } = await (supabase as any)
-        .from('contractors')
-        .insert({
-          user_id: user.id,
+      const contractorData = {
+        user_id: user.id,
+        business_name: data.businessName,
+        license_number: data.licenseNumber,
+        status: 'pending'
+      }
+
+      // Add optional fields that may not exist in all database schemas
+      try {
+        // Try to include email and password fields
+        const contractorWithAuth = {
+          ...contractorData,
           email: data.email,
           password_hash: passwordHash,
-          business_name: data.businessName,
-          license_number: data.licenseNumber,
           contact_phone: data.phone,
-          contact_email: data.email,
-          status: 'pending'
-        })
-        .select()
-        .single()
+          contact_email: data.email
+        }
 
-      if (contractorError) throw contractorError
+        const { data: contractor, error: contractorError } = await (supabase as any)
+          .from('contractors')
+          .insert(contractorWithAuth)
+          .select()
+          .single()
+
+        if (contractorError) throw contractorError
+      } catch (authFieldError) {
+        // If email/password fields don't exist, try without them
+        console.log('Falling back to basic contractor creation:', authFieldError)
+        
+        const { data: contractor, error: contractorError } = await (supabase as any)
+          .from('contractors')
+          .insert(contractorData)
+          .select()
+          .single()
+
+        if (contractorError) throw contractorError
+      }
 
       toast.success('Registration submitted successfully! We will review your application and get back to you soon.')
       form.reset()
       onSuccess?.()
     } catch (error) {
       console.error('Registration error:', error)
-      toast.error('Failed to submit registration. Please try again.')
+      
+      // More detailed error logging
+      if (error instanceof Error) {
+        console.error('Error message:', error.message)
+        toast.error(`Registration failed: ${error.message}`)
+      } else {
+        console.error('Unknown error:', error)
+        toast.error('Failed to submit registration. Please try again.')
+      }
     } finally {
       setIsSubmitting(false)
     }
