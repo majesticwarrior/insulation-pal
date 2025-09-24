@@ -86,6 +86,8 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
   }
 
   // Transform database data to component format
+  const licenseNumber = contractorData.license_number || "N/A"
+  
   const contractor = {
     name: contractorData.business_name,
     owner: "Business Owner", // Could be added to database schema
@@ -98,7 +100,7 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
     address: `${contractorData.business_address || ''}, ${contractorData.business_city || ''}, ${contractorData.business_state || ''} ${contractorData.business_zip || ''}`.trim(),
     phone: contractorData.contact_phone || "(555) 123-4567",
     email: contractorData.contact_email || "contact@contractor.com",
-    licenseNumber: contractorData.license_number || "N/A",
+    licenseNumber,
     insuranceVerified: contractorData.insurance_verified || false,
     serviceAreas: [
       contractorData.business_city || "Phoenix", "Scottsdale", "Tempe", "Mesa", "Chandler", 
@@ -115,9 +117,10 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
     bio: contractorData.bio || "Professional insulation contractor with years of experience serving the local community.",
     certifications: [
       "Licensed Contractor",
-      "Insured Business",
+      "Insured Business", 
       "OSHA Safety Certified",
-      "Energy Star Partner"
+      "Energy Star Partner",
+      `License # ${licenseNumber}`
     ]
   }
 
@@ -347,16 +350,6 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                     <QuoteButton className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
                       Request Free Quote
                     </QuoteButton>
-                    <div className="text-center space-y-2">
-                      <Button variant="outline" className="w-full">
-                        <Phone className="h-4 w-4 mr-2" />
-                        Call {contractor.phone}
-                      </Button>
-                      <Button variant="outline" className="w-full">
-                        <Mail className="h-4 w-4 mr-2" />
-                        Send Message
-                      </Button>
-                    </div>
                   </form>
                 </CardContent>
               </Card>

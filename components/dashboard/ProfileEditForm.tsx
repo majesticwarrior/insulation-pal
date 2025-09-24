@@ -61,6 +61,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
   const [serviceAreas, setServiceAreas] = useState<string[]>([])
   const [servicesOffered, setServicesOffered] = useState<string[]>([])
   const [serviceTypes, setServiceTypes] = useState<string[]>([])
+  const [certifications, setCertifications] = useState<string[]>([])
   const [logoFile, setLogoFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
   const [logoUrl, setLogoUrl] = useState<string>('')
@@ -81,6 +82,15 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     'Mineral Wool',
     'Rigid Foam Board',
     'Roll & Batt'
+  ]
+
+  const availableCertifications = [
+    'BBB Accreditation',
+    'ENERGY STAR Partner', 
+    'BPI Certified',
+    'Licensed',
+    'Bonded & Insured',
+    'License #'
   ]
 
   useEffect(() => {
@@ -118,6 +128,9 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         }, [])
         setServiceTypes(Array.from(new Set(allInsulationTypes))) // Remove duplicates
       }
+
+      // Load certifications (for now, just set defaults - could be stored in a separate table)
+      setCertifications([])  // Will be enhanced when certifications are stored in database
 
     } catch (error) {
       console.error('Error loading contractor details:', error)
@@ -330,6 +343,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     setServicesOffered([])
     setServiceTypes([])
     setServiceAreas([])
+    setCertifications([])
     setIsEditing(false)
     loadContractorDetails() // Reload original data
   }
@@ -737,6 +751,39 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
                 />
                 <Label htmlFor={insulationType} className="text-sm">
                   {insulationType}
+                </Label>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Certifications */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Certifications</CardTitle>
+          <CardDescription>
+            Select your professional certifications and credentials
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4">
+            {availableCertifications.map((certification) => (
+              <div key={certification} className="flex items-center space-x-2">
+                <Checkbox
+                  id={certification}
+                  checked={certifications.includes(certification)}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setCertifications(prev => [...prev, certification])
+                    } else {
+                      setCertifications(prev => prev.filter(cert => cert !== certification))
+                    }
+                  }}
+                  disabled={!isEditing}
+                />
+                <Label htmlFor={certification} className="text-sm font-normal">
+                  {certification}
                 </Label>
               </div>
             ))}
