@@ -59,6 +59,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
   })
 
   const [serviceAreas, setServiceAreas] = useState<string[]>([])
+  const [servicesOffered, setServicesOffered] = useState<string[]>([])
   const [serviceTypes, setServiceTypes] = useState<string[]>([])
   const [logoFile, setLogoFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
@@ -98,14 +99,24 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         setServiceAreas(areas.map((area: any) => `${area.city}, ${area.state}`))
       }
 
-      // Load service types
+      // Load services offered and insulation types
       const { data: services } = await (supabase as any)
         .from('contractor_services')
-        .select('service_type')
+        .select('service_type, insulation_types')
         .eq('contractor_id', contractor.id)
 
-      if (services) {
-        setServiceTypes(services.map((service: any) => service.service_type))
+      if (services && services.length > 0) {
+        // Extract unique service areas
+        setServicesOffered(services.map((service: any) => service.service_type))
+        
+        // Extract unique insulation types from all services
+        const allInsulationTypes = services.reduce((acc: string[], service: any) => {
+          if (service.insulation_types && Array.isArray(service.insulation_types)) {
+            return [...acc, ...service.insulation_types]
+          }
+          return acc
+        }, [])
+        setServiceTypes(Array.from(new Set(allInsulationTypes))) // Remove duplicates
       }
 
     } catch (error) {
@@ -196,18 +207,19 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
           .insert(areaInserts)
       }
 
-      // Update service types
+      // Update services offered and insulation types
       // First delete existing services
       await (supabase as any)
         .from('contractor_services')
         .delete()
         .eq('contractor_id', contractor.id)
 
-      // Insert new services
-      if (serviceTypes.length > 0) {
-        const serviceInserts = serviceTypes.map(serviceType => ({
+      // Insert new services offered (areas like attic, wall, basement, etc.)
+      if (servicesOffered.length > 0) {
+        const serviceInserts = servicesOffered.map(serviceArea => ({
           contractor_id: contractor.id,
-          service_type: serviceType,
+          service_type: serviceArea,
+          insulation_types: serviceTypes, // Include insulation types for each service area
           starting_price_per_sqft: 1.50 // Default price
         }))
 
@@ -315,6 +327,9 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     setLogoPreview(null)
     setLogoUrl('')
     setLogoMethod('upload')
+    setServicesOffered([])
+    setServiceTypes([])
+    setServiceAreas([])
     setIsEditing(false)
     loadContractorDetails() // Reload original data
   }
@@ -668,10 +683,44 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         </CardContent>
       </Card>
 
-      {/* Types of Insulation */}
+      {/* Services Offered */}
       <Card>
         <CardHeader>
-          <CardTitle>Types of Insulation</CardTitle>
+          <CardTitle>Services Offered</CardTitle>
+          <CardDescription>
+            Select the areas where you provide insulation services
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4">
+            {['Attic', 'Walls', 'Basement', 'Crawl Space', 'Garage'].map((service) => (
+              <div key={service} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`service-${service}`}
+                  checked={servicesOffered.includes(service.toLowerCase())}
+                  onCheckedChange={(checked) => {
+                    const serviceValue = service.toLowerCase()
+                    if (checked) {
+                      setServicesOffered(prev => [...prev, serviceValue])
+                    } else {
+                      setServicesOffered(prev => prev.filter(type => type !== serviceValue))
+                    }
+                  }}
+                  disabled={!isEditing}
+                />
+                <Label htmlFor={`service-${service}`} className="text-sm font-normal">
+                  {service}
+                </Label>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Types of Insulation Offered */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Types of Insulation Offered</CardTitle>
           <CardDescription>
             Select the types of insulation materials you work with
           </CardDescription>
