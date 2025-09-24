@@ -22,6 +22,10 @@ interface Contractor {
   business_state?: string
   business_zip?: string
   credits: number
+  profile_image?: string
+  lead_delivery_preference?: string
+  contact_phone?: string
+  contact_email?: string
 }
 
 interface ProfileEditFormProps {
@@ -48,11 +52,16 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     business_address: contractor.business_address || '',
     business_city: contractor.business_city || '',
     business_state: contractor.business_state || '',
-    business_zip: contractor.business_zip || ''
+    business_zip: contractor.business_zip || '',
+    lead_delivery_preference: contractor.lead_delivery_preference || 'email',
+    contact_phone: contractor.contact_phone || '',
+    contact_email: contractor.contact_email || ''
   })
 
   const [serviceAreas, setServiceAreas] = useState<string[]>([])
   const [serviceTypes, setServiceTypes] = useState<string[]>([])
+  const [logoFile, setLogoFile] = useState<File | null>(null)
+  const [logoPreview, setLogoPreview] = useState<string | null>(null)
 
   const availableServiceTypes = [
     'attic',
@@ -106,6 +115,26 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Check file size (2MB limit)
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error('File size must be less than 2MB')
+        return
+      }
+      
+      setLogoFile(file)
+      
+      // Create preview
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setLogoPreview(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
   const handleServiceTypeToggle = (serviceType: string) => {
     setServiceTypes(prev => 
       prev.includes(serviceType)
@@ -129,6 +158,9 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         business_city: formData.business_city || null,
         business_state: formData.business_state || null,
         business_zip: formData.business_zip || null,
+        lead_delivery_preference: formData.lead_delivery_preference,
+        contact_phone: formData.contact_phone || null,
+        contact_email: formData.contact_email || null,
         updated_at: new Date().toISOString()
       }
 
@@ -196,6 +228,41 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         business_zip: updateData.business_zip || undefined
       }
 
+      // Handle logo upload if a new file was selected
+      if (logoFile) {
+        try {
+          const fileExt = logoFile.name.split('.').pop()
+          const fileName = `${contractor.id}-logo.${fileExt}`
+          const filePath = `contractor-logos/${fileName}`
+
+          const { error: uploadError } = await supabase.storage
+            .from('contractor_images')
+            .upload(filePath, logoFile, {
+              cacheControl: '3600',
+              upsert: true, // Allow overwriting existing logo
+            })
+
+          if (uploadError) throw uploadError
+
+          const { data: publicUrlData } = supabase.storage
+            .from('contractor_images')
+            .getPublicUrl(filePath)
+
+          if (publicUrlData?.publicUrl) {
+            // Update contractor with new logo URL
+            await (supabase as any)
+              .from('contractors')
+              .update({ profile_image: publicUrlData.publicUrl })
+              .eq('id', contractor.id)
+            
+            updatedContractor.profile_image = publicUrlData.publicUrl
+          }
+        } catch (logoError) {
+          console.error('Error uploading logo:', logoError)
+          toast.error('Profile updated but logo upload failed. Please try uploading the logo again.')
+        }
+      }
+
       onUpdate(updatedContractor)
       
       toast.success('Profile updated successfully!')
@@ -220,8 +287,13 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
       business_address: contractor.business_address || '',
       business_city: contractor.business_city || '',
       business_state: contractor.business_state || '',
-      business_zip: contractor.business_zip || ''
+      business_zip: contractor.business_zip || '',
+      lead_delivery_preference: contractor.lead_delivery_preference || 'email',
+      contact_phone: contractor.contact_phone || '',
+      contact_email: contractor.contact_email || ''
     })
+    setLogoFile(null)
+    setLogoPreview(null)
     setIsEditing(false)
     loadContractorDetails() // Reload original data
   }
@@ -288,6 +360,35 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
             </div>
           </div>
 
+          {/* Logo Upload Section */}
+          <div>
+            <Label htmlFor="logo">Business Logo</Label>
+            <div className="flex items-center space-x-4">
+              <div className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                {logoPreview || contractor.profile_image ? (
+                  <img 
+                    src={logoPreview || contractor.profile_image} 
+                    alt="Logo preview" 
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                ) : (
+                  <span className="text-xs text-gray-500 text-center">No Logo</span>
+                )}
+              </div>
+              {isEditing && (
+                <div className="flex-1">
+                  <Input
+                    id="logo"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleLogoChange}
+                    className="mb-2"
+                  />
+                  <p className="text-xs text-gray-500">Upload JPG, PNG, or GIF. Max 2MB.</p>
+                </div>
+              )}
+            </div>
+          </div>
 
           <div>
             <Label htmlFor="bio">Business Description</Label>
@@ -365,6 +466,82 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
                   onChange={(e) => handleInputChange('business_zip', e.target.value)}
                   disabled={!isEditing}
                 />
+              </div>
+            </div>
+          </div>
+
+          {/* Lead Delivery Preferences */}
+          <div className="space-y-4">
+            <h4 className="font-semibold">Lead Delivery Preferences</h4>
+            <div>
+              <Label>How do you want leads delivered?</Label>
+              <div className="mt-2 space-y-2">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="email"
+                    name="lead_delivery_preference"
+                    value="email"
+                    checked={formData.lead_delivery_preference === 'email'}
+                    onChange={(e) => handleInputChange('lead_delivery_preference', e.target.value)}
+                    disabled={!isEditing}
+                    className="w-4 h-4 text-[#F5DD22] border-gray-300 focus:ring-[#F5DD22]"
+                  />
+                  <Label htmlFor="email" className="text-sm font-normal">Email</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="text"
+                    name="lead_delivery_preference"
+                    value="text"
+                    checked={formData.lead_delivery_preference === 'text'}
+                    onChange={(e) => handleInputChange('lead_delivery_preference', e.target.value)}
+                    disabled={!isEditing}
+                    className="w-4 h-4 text-[#F5DD22] border-gray-300 focus:ring-[#F5DD22]"
+                  />
+                  <Label htmlFor="text" className="text-sm font-normal">Text</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="both"
+                    name="lead_delivery_preference"
+                    value="both"
+                    checked={formData.lead_delivery_preference === 'both'}
+                    onChange={(e) => handleInputChange('lead_delivery_preference', e.target.value)}
+                    disabled={!isEditing}
+                    className="w-4 h-4 text-[#F5DD22] border-gray-300 focus:ring-[#F5DD22]"
+                  />
+                  <Label htmlFor="both" className="text-sm font-normal">Both</Label>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="contact_phone">Phone # for Text Messages</Label>
+                <Input
+                  id="contact_phone"
+                  type="tel"
+                  value={formData.contact_phone}
+                  onChange={(e) => handleInputChange('contact_phone', e.target.value)}
+                  disabled={!isEditing}
+                  placeholder="(555) 123-4567"
+                />
+                <p className="text-xs text-gray-500 mt-1">For lead notifications only. Not displayed publicly.</p>
+              </div>
+              <div>
+                <Label htmlFor="contact_email">Email Address</Label>
+                <Input
+                  id="contact_email"
+                  type="email"
+                  value={formData.contact_email}
+                  onChange={(e) => handleInputChange('contact_email', e.target.value)}
+                  disabled={!isEditing}
+                  placeholder="contractor@example.com"
+                />
+                <p className="text-xs text-gray-500 mt-1">For lead notifications only. Not displayed publicly.</p>
               </div>
             </div>
           </div>

@@ -162,15 +162,15 @@ export default function ServicesPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <div className="text-2xl font-bold text-[#0a4768]">{service.price}</div>
-                      <div className="flex gap-3">
-                        <Link href={service.url}>
-                          <Button variant="outline" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Link href={service.url} className="w-full sm:w-auto">
+                          <Button variant="outline" className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
                             Learn More
                           </Button>
                         </Link>
-                        <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
+                        <QuoteButton className="w-full sm:w-auto bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
                           Get Free Quote
                         </QuoteButton>
                       </div>
