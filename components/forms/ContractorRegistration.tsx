@@ -215,7 +215,7 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
                     name="licenseNumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>License #</FormLabel>
+                        <FormLabel>License # *</FormLabel>
                         <FormControl>
                           <Input placeholder="License Number" {...field} />
                         </FormControl>
