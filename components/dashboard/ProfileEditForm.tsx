@@ -180,33 +180,42 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         console.log('📍 No service areas found')
       }
 
-      // TEMPORARY: Skip contractor_services query to avoid 401 error
-      console.log('⚠️ Temporarily skipping contractor_services query due to RLS 401 error')
-      console.log('💡 Will restore after fixing RLS policies')
-      
-      // Set empty defaults for now
-      setServicesOffered([])
-      setServiceTypes([])
-      
-      // // Load services offered and insulation types
-      // const { data: services } = await (supabase as any)
-      //   .from('contractor_services')
-      //   .select('service_type, insulation_types')
-      //   .eq('contractor_id', contractor.id)
+      // Load services offered and insulation types with error handling
+      try {
+        console.log('🔧 Loading contractor services...')
+        const { data: services, error: servicesError } = await (supabase as any)
+          .from('contractor_services')
+          .select('service_type, insulation_types')
+          .eq('contractor_id', contractor.id)
 
-      // if (services && services.length > 0) {
-      //   // Extract unique service areas
-      //   setServicesOffered(services.map((service: any) => service.service_type))
-      //   
-      //   // Extract unique insulation types from all services
-      //   const allInsulationTypes = services.reduce((acc: string[], service: any) => {
-      //     if (service.insulation_types && Array.isArray(service.insulation_types)) {
-      //       return [...acc, ...service.insulation_types]
-      //     }
-      //     return acc
-      //   }, [])
-      //   setServiceTypes(Array.from(new Set(allInsulationTypes))) // Remove duplicates
-      // }
+        if (servicesError) {
+          console.warn('⚠️ Failed to load contractor services (RLS issue):', servicesError)
+          // Set empty defaults
+          setServicesOffered([])
+          setServiceTypes([])
+        } else if (services && services.length > 0) {
+          console.log('✅ Loaded contractor services:', services)
+          // Extract unique service areas
+          setServicesOffered(services.map((service: any) => service.service_type))
+          
+          // Extract unique insulation types from all services
+          const allInsulationTypes = services.reduce((acc: string[], service: any) => {
+            if (service.insulation_types && Array.isArray(service.insulation_types)) {
+              return [...acc, ...service.insulation_types]
+            }
+            return acc
+          }, [])
+          setServiceTypes(Array.from(new Set(allInsulationTypes))) // Remove duplicates
+        } else {
+          console.log('📝 No existing services found for contractor')
+          setServicesOffered([])
+          setServiceTypes([])
+        }
+      } catch (error) {
+        console.warn('⚠️ Error loading contractor services:', error)
+        setServicesOffered([])
+        setServiceTypes([])
+      }
 
       // Load certifications (for now, just set defaults - could be stored in a separate table)
       setCertifications([])  // Will be enhanced when certifications are stored in database
@@ -295,53 +304,81 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         throw updateError
       }
 
-      // TEMPORARY: Skip service areas and services updates to avoid 401 errors
-      console.log('⚠️ Temporarily skipping service areas and services updates due to 401 RLS errors')
-      console.log('💡 Core contractor profile updated successfully, service data will be restored after RLS fix')
-      
-      // // Update service areas
-      // // First delete existing areas
-      // await (supabase as any)
-      //   .from('contractor_service_areas')
-      //   .delete()
-      //   .eq('contractor_id', contractor.id)
+      // Update service areas with error handling
+      try {
+        console.log('🏠 Updating service areas...')
+        
+        // First delete existing areas
+        const { error: deleteAreasError } = await (supabase as any)
+          .from('contractor_service_areas')
+          .delete()
+          .eq('contractor_id', contractor.id)
 
-      // // Insert new areas
-      // if (serviceAreas.length > 0) {
-      //   const areaInserts = serviceAreas.map(area => {
-      //     const [city, state] = area.split(', ')
-      //     return {
-      //       contractor_id: contractor.id,
-      //       city: city.trim(),
-      //       state: state?.trim() || 'AZ'
-      //     }
-      //   })
+        if (deleteAreasError && deleteAreasError.code !== 'PGRST116') { // PGRST116 = no rows found (OK)
+          console.warn('⚠️ Service areas delete failed (might be OK):', deleteAreasError)
+        }
 
-      //   await (supabase as any)
-      //     .from('contractor_service_areas')
-      //     .insert(areaInserts)
-      // }
+        // Insert new areas
+        if (serviceAreas.length > 0) {
+          const areaInserts = serviceAreas.map(area => {
+            const [city, state] = area.split(', ')
+            return {
+              contractor_id: contractor.id,
+              city: city.trim(),
+              state: state?.trim() || 'AZ'
+            }
+          })
 
-      // // Update services offered and insulation types
-      // // First delete existing services
-      // await (supabase as any)
-      //   .from('contractor_services')
-      //   .delete()
-      //   .eq('contractor_id', contractor.id)
+          const { error: insertAreasError } = await (supabase as any)
+            .from('contractor_service_areas')
+            .insert(areaInserts)
 
-      // // Insert new services offered (areas like attic, wall, basement, etc.)
-      // if (servicesOffered.length > 0) {
-      //   const serviceInserts = servicesOffered.map(serviceArea => ({
-      //     contractor_id: contractor.id,
-      //     service_type: serviceArea,
-      //     insulation_types: serviceTypes, // Include insulation types for each service area
-      //     starting_price_per_sqft: 1.50 // Default price
-      //   }))
+          if (insertAreasError) {
+            console.warn('⚠️ Service areas insert failed:', insertAreasError)
+          } else {
+            console.log('✅ Service areas updated successfully')
+          }
+        }
+      } catch (error) {
+        console.warn('⚠️ Service areas update failed, continuing with other updates:', error)
+      }
 
-      //   await (supabase as any)
-      //     .from('contractor_services')
-      //     .insert(serviceInserts)
-      // }
+      // Update services offered and insulation types with error handling
+      try {
+        console.log('🔧 Updating services offered...')
+        
+        // First delete existing services
+        const { error: deleteServicesError } = await (supabase as any)
+          .from('contractor_services')
+          .delete()
+          .eq('contractor_id', contractor.id)
+
+        if (deleteServicesError && deleteServicesError.code !== 'PGRST116') { // PGRST116 = no rows found (OK)
+          console.warn('⚠️ Services delete failed (might be OK):', deleteServicesError)
+        }
+
+        // Insert new services offered (areas like attic, wall, basement, etc.)
+        if (servicesOffered.length > 0) {
+          const serviceInserts = servicesOffered.map(serviceArea => ({
+            contractor_id: contractor.id,
+            service_type: serviceArea,
+            insulation_types: serviceTypes, // Include insulation types for each service area
+            starting_price_per_sqft: 1.50 // Default price
+          }))
+
+          const { error: insertServicesError } = await (supabase as any)
+            .from('contractor_services')
+            .insert(serviceInserts)
+
+          if (insertServicesError) {
+            console.warn('⚠️ Services insert failed:', insertServicesError)
+          } else {
+            console.log('✅ Services offered updated successfully')
+          }
+        }
+      } catch (error) {
+        console.warn('⚠️ Services update failed, continuing with other updates:', error)
+      }
 
       // Update local contractor data
       const updatedContractor: Contractor = {
