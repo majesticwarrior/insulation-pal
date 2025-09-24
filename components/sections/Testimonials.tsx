@@ -116,7 +116,7 @@ const Testimonials = () => {
         <div className="text-center mt-16">
           <div className="bg-[#D8E1FF] rounded-lg p-8 max-w-4xl mx-auto">
             <h3 className="text-2xl font-bold text-[#0a4768] mb-4">
-              Join Over 50,000 Satisfied Customers
+              Join 1000's of Satisfied Customers
             </h3>
             <p className="text-gray-600 mb-6">
               Experience the InsulationPal difference. Get connected with top-rated, 
@@ -128,7 +128,7 @@ const Testimonials = () => {
                 <div className="text-sm text-gray-600">Average Rating</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-[#0a4768]">50K+</div>
+                <div className="text-3xl font-bold text-[#0a4768]">1000's</div>
                 <div className="text-sm text-gray-600">Projects Completed</div>
               </div>
               <div>
