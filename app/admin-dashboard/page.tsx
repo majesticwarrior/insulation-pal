@@ -113,6 +113,36 @@ export default function AdminDashboard() {
     }
   }
 
+  const updateCredits = async (contractorId: string, businessName: string, currentCredits: number) => {
+    const newCredits = window.prompt(
+      `Update credits for "${businessName}"\n\nCurrent credits: ${currentCredits}\nEnter new credit amount:`,
+      currentCredits.toString()
+    )
+
+    if (newCredits === null) return // User cancelled
+    
+    const creditAmount = parseInt(newCredits)
+    if (isNaN(creditAmount) || creditAmount < 0) {
+      toast.error('Please enter a valid number (0 or greater)')
+      return
+    }
+
+    try {
+      const { error } = await (supabase as any)
+        .from('contractors')
+        .update({ credits: creditAmount })
+        .eq('id', contractorId)
+
+      if (error) throw error
+
+      toast.success(`Credits updated to ${creditAmount} for "${businessName}"`)
+      loadContractors() // Reload data
+    } catch (error) {
+      console.error('Error updating credits:', error)
+      toast.error('Failed to update credits')
+    }
+  }
+
   const deleteContractor = async (contractorId: string, businessName: string) => {
     // Confirmation dialog
     const confirmed = window.confirm(
@@ -311,8 +341,9 @@ export default function AdminDashboard() {
                           <TableCell>{getStatusBadge(contractor.status)}</TableCell>
                           <TableCell>
                             <div className="flex items-center">
-                              <DollarSign className="h-4 w-4 text-green-600 mr-1" />
-                              {contractor.credits || 0}
+                              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium">
+                                {contractor.credits || 0} credits
+                              </span>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -324,7 +355,7 @@ export default function AdminDashboard() {
                             )}
                           </TableCell>
                           <TableCell>
-                            <div className="flex space-x-2 flex-wrap">
+                            <div className="flex space-x-2 flex-wrap gap-y-2">
                               {contractor.status === 'pending' && (
                                 <Button
                                   size="sm"
@@ -352,6 +383,23 @@ export default function AdminDashboard() {
                                   Reactivate
                                 </Button>
                               )}
+                              {contractor.status === 'rejected' && (
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateContractorStatus(contractor.id, 'approved')}
+                                  className="bg-green-600 hover:bg-green-700"
+                                >
+                                  Approve
+                                </Button>
+                              )}
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => updateCredits(contractor.id, contractor.business_name, contractor.credits || 0)}
+                                className="border-blue-300 text-blue-600 hover:bg-blue-50"
+                              >
+                                Edit Credits
+                              </Button>
                               <Button
                                 size="sm"
                                 variant="outline"
@@ -407,7 +455,7 @@ export default function AdminDashboard() {
                             {new Date(contractor.created_at).toLocaleDateString()}
                           </TableCell>
                           <TableCell>
-                            <div className="flex space-x-2">
+                            <div className="flex space-x-2 flex-wrap gap-y-2">
                               <Button
                                 size="sm"
                                 onClick={() => updateContractorStatus(contractor.id, 'approved')}
@@ -423,6 +471,14 @@ export default function AdminDashboard() {
                               >
                                 <XCircle className="h-4 w-4 mr-2" />
                                 Reject
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => updateCredits(contractor.id, contractor.business_name, contractor.credits || 0)}
+                                className="border-blue-300 text-blue-600 hover:bg-blue-50"
+                              >
+                                Edit Credits
                               </Button>
                               <Button
                                 size="sm"
