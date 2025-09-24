@@ -31,9 +31,11 @@ interface ContractorPageProps {
   params: Promise<{ slug: string }>
 }
 
-// Fetch contractor data from database
-async function getContractorBySlug(slug: string) {
+// Fetch contractor data from database by ID
+async function getContractorById(contractorId: string) {
   try {
+    console.log('🔍 Fetching contractor by ID:', contractorId)
+    
     const { data: contractor, error } = await (supabase as any)
       .from('contractors')
       .select(`
@@ -55,16 +57,24 @@ async function getContractorBySlug(slug: string) {
         founded_year,
         employee_count,
         contact_phone,
-        contact_email
+        contact_email,
+        certifications
       `)
-      .eq('id', slug)
-      .eq('status', 'active')
+      .eq('id', contractorId)
+      .eq('status', 'approved')
       .single()
 
-    if (error || !contractor) {
+    if (error) {
+      console.error('Database error fetching contractor:', error)
+      return null
+    }
+    
+    if (!contractor) {
+      console.log('❌ No contractor found with ID:', contractorId)
       return null
     }
 
+    console.log('✅ Found contractor:', contractor.business_name)
     return contractor
   } catch (error) {
     console.error('Error fetching contractor:', error)
@@ -79,11 +89,17 @@ export const metadata: Metadata = {
 
 export default async function ContractorProfilePage({ params }: ContractorPageProps) {
   const { slug } = await params
-  const contractorData = await getContractorBySlug(slug)
+  
+  console.log('🔍 ContractorProfilePage called with slug:', slug)
+  
+  const contractorData = await getContractorById(slug)
   
   if (!contractorData) {
+    console.log('❌ ContractorProfilePage: contractor not found, returning 404')
     notFound()
   }
+  
+  console.log('✅ ContractorProfilePage: displaying contractor:', contractorData.business_name)
 
   // Transform database data to component format
   const licenseNumber = contractorData.license_number || "N/A"
