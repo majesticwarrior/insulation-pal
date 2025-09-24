@@ -52,6 +52,10 @@ async function getArizonaContractors() {
         contractor_service_areas(
           city,
           state
+        ),
+        contractor_services(
+          service_type,
+          insulation_types
         )
       `)
       .eq('status', 'approved')
@@ -74,6 +78,18 @@ async function getArizonaContractors() {
     const uniqueContractors = arizonaContractors.reduce((acc: any[], contractor: any) => {
       const existingContractor = acc.find(c => c.id === contractor.id)
       if (!existingContractor) {
+        // Extract services offered from contractor_services
+        const servicesOffered = contractor.contractor_services?.map((service: any) => service.service_type) || []
+        
+        // Extract unique insulation types from all services
+        const allInsulationTypes = contractor.contractor_services?.reduce((acc: string[], service: any) => {
+          if (service.insulation_types && Array.isArray(service.insulation_types)) {
+            return [...acc, ...service.insulation_types]
+          }
+          return acc
+        }, []) || []
+        const insulationTypes = Array.from(new Set(allInsulationTypes))
+
         acc.push({
           id: contractor.id,
           name: contractor.business_name,
@@ -82,7 +98,8 @@ async function getArizonaContractors() {
           reviewCount: contractor.total_reviews || 0,
           jobsCompleted: contractor.total_completed_projects || 0,
           city: contractor.business_city || 'Phoenix',
-          services: ['Attic', 'Walls', 'Spray Foam'], // Default services - could be fetched from contractor_services table
+          services: servicesOffered.length > 0 ? servicesOffered : ['General Insulation'], // Real services from profile
+          insulationTypes: insulationTypes.length > 0 ? insulationTypes : ['Fiberglass'], // Real insulation types from profile
           image: contractor.profile_image || '/alex.jpg',
           verified: contractor.license_verified || false,
           bbbAccredited: contractor.insurance_verified || false
@@ -264,9 +281,16 @@ export default async function ArizonaInsulationContractors() {
                   </div>
 
                   <div className="mb-4">
-                    <div className="text-sm text-gray-600 mb-2">Services:</div>
+                    <div className="text-sm text-gray-600 mb-2">Services Offered:</div>
                     <div className="flex flex-wrap gap-1">
                       {getServiceBadges(contractor.services)}
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <div className="text-sm text-gray-600 mb-2">Types of Insulation Offered:</div>
+                    <div className="flex flex-wrap gap-1">
+                      {getServiceBadges(contractor.insulationTypes)}
                     </div>
                   </div>
 

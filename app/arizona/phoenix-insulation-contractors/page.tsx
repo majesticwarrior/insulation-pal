@@ -111,6 +111,10 @@ async function getPhoenixContractors() {
         contractor_service_areas(
           city,
           state
+        ),
+        contractor_services(
+          service_type,
+          insulation_types
         )
       `)
       .eq('status', 'approved')
@@ -134,6 +138,18 @@ async function getPhoenixContractors() {
     const uniqueContractors = phoenixContractors.reduce((acc: any[], contractor: any) => {
       const existingContractor = acc.find(c => c.id === contractor.id)
       if (!existingContractor) {
+        // Extract services offered from contractor_services
+        const servicesOffered = contractor.contractor_services?.map((service: any) => service.service_type) || []
+        
+        // Extract unique insulation types from all services
+        const allInsulationTypes = contractor.contractor_services?.reduce((acc: string[], service: any) => {
+          if (service.insulation_types && Array.isArray(service.insulation_types)) {
+            return [...acc, ...service.insulation_types]
+          }
+          return acc
+        }, []) || []
+        const insulationTypes = Array.from(new Set(allInsulationTypes))
+
         acc.push({
           id: contractor.id,
           name: contractor.business_name,
@@ -142,17 +158,14 @@ async function getPhoenixContractors() {
           reviewCount: contractor.total_reviews || 0,
           jobsCompleted: contractor.total_completed_projects || 0,
           reliabilityScore: 95, // Could be calculated
-          services: ['Attic', 'Walls', 'Spray Foam'], // Default services - could be fetched from contractor_services table
+          services: servicesOffered.length > 0 ? servicesOffered : ['General Insulation'], // Real services from profile
+          insulationTypes: insulationTypes.length > 0 ? insulationTypes : ['Fiberglass'], // Real insulation types from profile
           image: contractor.profile_image || '/alex.jpg',
           verified: contractor.license_verified || false,
           bbbAccredited: contractor.insurance_verified || false,
           yearEstablished: contractor.founded_year || 2020,
-          about: contractor.bio || 'Professional insulation contractor serving the Phoenix area.',
-          recentProjects: [
-            '/attic-insulation-blown-in.jpg',
-            '/spray-foam-insulation-installed.jpg',
-            '/wall-insulation-icon.jpg'
-          ]
+          about: contractor.bio || 'Professional insulation contractor serving the Phoenix area.'
+          // Removed recentProjects as requested
         })
       }
       return acc
@@ -435,20 +448,15 @@ export default async function PhoenixInsulationContractors() {
                       ))}
                     </div>
 
-                    {/* Recent Projects */}
-                    <h4 className="font-semibold text-[#0a4768] mb-2">Recent Projects</h4>
-                    <div className="flex space-x-2">
-                      {contractor.recentProjects.slice(0, 3).map((project: any, index: number) => (
-                        <Image
-                          key={index}
-                          src={project}
-                          alt={`Recent project ${index + 1}`}
-                          width={60}
-                          height={60}
-                          className="w-15 h-15 rounded object-cover"
-                        />
+                    <h4 className="font-semibold text-[#0a4768] mb-2">Types of Insulation Offered</h4>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {contractor.insulationTypes.map((type: any, index: number) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {type}
+                        </Badge>
                       ))}
                     </div>
+
                   </div>
 
                   {/* Actions */}
