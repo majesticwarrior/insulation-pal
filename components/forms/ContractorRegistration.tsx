@@ -48,6 +48,7 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
   })
 
   const onSubmit = async (data: ContractorFormData) => {
+    console.log('🚀 Form submission started with data:', data)
     setIsSubmitting(true)
     try {
       // Hash the password
@@ -135,8 +136,15 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <Form {...form}>
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  console.log('📝 Form submit event triggered')
+                  form.handleSubmit(onSubmit)(e)
+                }} 
+                className="space-y-6"
+              >
               {/* Basic Information */}
               <div>
                 <h3 className="text-lg font-semibold mb-4">Basic Information</h3>
