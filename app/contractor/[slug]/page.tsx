@@ -21,18 +21,108 @@ import {
   DollarSign,
   Wrench
 } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
+import { notFound } from 'next/navigation'
 
 // Dynamic route - will be rendered on demand
 import type { Metadata } from 'next'
+
+interface ContractorPageProps {
+  params: Promise<{ slug: string }>
+}
+
+// Fetch contractor data from database
+async function getContractorBySlug(slug: string) {
+  try {
+    const { data: contractor, error } = await (supabase as any)
+      .from('contractors')
+      .select(`
+        id,
+        business_name,
+        license_number,
+        bio,
+        business_address,
+        business_city,
+        business_state,
+        business_zip,
+        average_rating,
+        total_reviews,
+        total_completed_projects,
+        status,
+        license_verified,
+        insurance_verified,
+        profile_image,
+        founded_year,
+        employee_count,
+        contact_phone,
+        contact_email
+      `)
+      .eq('id', slug)
+      .eq('status', 'active')
+      .single()
+
+    if (error || !contractor) {
+      return null
+    }
+
+    return contractor
+  } catch (error) {
+    console.error('Error fetching contractor:', error)
+    return null
+  }
+}
 
 export const metadata: Metadata = {
   title: 'Contractor Profile - InsulationPal',
   description: 'View contractor profile, reviews, and get free quotes from verified insulation professionals in your area.',
 }
 
-export default function ContractorProfilePage() {
-  // Mock data - in a real app, this would come from params and database
+export default async function ContractorProfilePage({ params }: ContractorPageProps) {
+  const { slug } = await params
+  const contractorData = await getContractorBySlug(slug)
+  
+  if (!contractorData) {
+    notFound()
+  }
+
+  // Transform database data to component format
   const contractor = {
+    name: contractorData.business_name,
+    owner: "Business Owner", // Could be added to database schema
+    rating: contractorData.average_rating || 4.5,
+    reviewCount: contractorData.total_reviews || 0,
+    yearsInBusiness: contractorData.founded_year ? new Date().getFullYear() - contractorData.founded_year : 5,
+    reliabilityRating: 95, // Could be calculated
+    responseTime: "2 hours", // Could be tracked in database
+    completedProjects: contractorData.total_completed_projects || 0,
+    address: `${contractorData.business_address || ''}, ${contractorData.business_city || ''}, ${contractorData.business_state || ''} ${contractorData.business_zip || ''}`.trim(),
+    phone: contractorData.contact_phone || "(555) 123-4567",
+    email: contractorData.contact_email || "contact@contractor.com",
+    licenseNumber: contractorData.license_number || "N/A",
+    insuranceVerified: contractorData.insurance_verified || false,
+    serviceAreas: [
+      contractorData.business_city || "Phoenix", "Scottsdale", "Tempe", "Mesa", "Chandler", 
+      "Glendale", "Peoria", "Surprise", "Avondale", "Goodyear"
+    ],
+    services: [
+      "Attic Insulation",
+      "Wall Insulation", 
+      "Spray Foam Insulation",
+      "Crawl Space Insulation",
+      "Basement Insulation"
+    ],
+    logo: contractorData.profile_image,
+    bio: contractorData.bio || "Professional insulation contractor with years of experience serving the local community.",
+    certifications: [
+      "Licensed Contractor",
+      "Insured Business",
+      "OSHA Safety Certified",
+      "Energy Star Partner"
+    ]
+  }
+
+  // Demo reviews and projects (in real app, these would also come from database)
+  const demoContractor = {
     name: "Elite Insulation Services",
     owner: "Michael Rodriguez",
     rating: 4.9,
@@ -166,16 +256,21 @@ export default function ContractorProfilePage() {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-xl p-8">
                 <div className="flex items-start gap-6 mb-6">
-                  <Image
-                    src="/professional-insulation-contractor-working-on-home.jpg"
-                    alt={contractor.name}
-                    width={120}
-                    height={120}
-                    className="w-24 h-24 rounded-full object-cover"
-                    loading="lazy"
-                    placeholder="blur"
-                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                  />
+                  <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center border-2 border-gray-200 overflow-hidden">
+                    {contractor.logo ? (
+                      <Image
+                        src={contractor.logo}
+                        alt={`${contractor.name} logo`}
+                        width={96}
+                        height={96}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="text-xs text-gray-500 text-center">
+                        {contractor.name.charAt(0)}
+                      </div>
+                    )}
+                  </div>
                   <div className="flex-1">
                     <h1 className="text-3xl font-bold text-[#0a4768] mb-2">{contractor.name}</h1>
                     <p className="text-lg text-gray-600 mb-4">Owned by {contractor.owner}</p>
@@ -217,7 +312,7 @@ export default function ContractorProfilePage() {
 
                 <div className="border-t pt-6">
                   <h3 className="text-xl font-bold text-[#0a4768] mb-4">About Our Company</h3>
-                  <p className="text-gray-700 leading-relaxed">{contractor.description}</p>
+                  <p className="text-gray-700 leading-relaxed">{contractor.bio}</p>
                 </div>
               </div>
             </div>
