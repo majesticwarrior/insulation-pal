@@ -88,9 +88,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     'BBB Accreditation',
     'ENERGY STAR Partner', 
     'BPI Certified',
-    'Licensed',
-    'Bonded & Insured',
-    'License #'
+    'Licensed, Bonded & Insured'
   ]
 
   useEffect(() => {
