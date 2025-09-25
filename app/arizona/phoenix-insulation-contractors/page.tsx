@@ -603,22 +603,6 @@ export default async function PhoenixInsulationContractors() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-[#D6D6D6] text-[#0a4768]">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            Ready to Improve Your Phoenix Home?
-          </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Connect with Phoenix's most trusted insulation contractors. Get free quotes from verified professionals 
-            who understand the unique insulation needs of desert homes.
-          </p>
-          <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
-            Get Phoenix Quotes Now
-          </QuoteButton>
-        </div>
-      </section>
-
       {/* Recent Phoenix Completed Insulation Projects */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
@@ -675,6 +659,21 @@ export default async function PhoenixInsulationContractors() {
         </div>
       </section>
 
+      {/* CTA Section */}
+      <section className="py-16 bg-[#D6D6D6] text-[#0a4768]">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">
+            Ready to Improve Your Phoenix Home?
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Connect with Phoenix's most trusted insulation contractors. Get free quotes from verified professionals 
+            who understand the unique insulation needs of desert homes.
+          </p>
+          <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+            Get Phoenix Quotes Now
+          </QuoteButton>
+        </div>
+      </section>
 
       {/* Understanding Home Insulation - Educational Articles Carousel */}
       <section className="py-12 bg-white">
