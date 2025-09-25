@@ -675,40 +675,6 @@ export default async function PhoenixInsulationContractors() {
         </div>
       </section>
 
-      {/* All Reviews */}
-      <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
-            All Phoenix Reviews
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Reviews will be populated from database when available */}
-            {[].map((review: any) => (
-              <Card key={review.id} className="border-l-4 border-l-[#F5DD22]">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    {renderStars(review.rating)}
-                    <span className="ml-2 font-semibold">{review.rating}.0</span>
-                    {review.verified && (
-                      <Badge variant="secondary" className="ml-2 text-xs">
-                        Verified
-                      </Badge>
-                    )}
-                  </div>
-                  <blockquote className="text-gray-700 mb-4">
-                    "{review.comment}"
-                  </blockquote>
-                  <div className="text-sm text-gray-600">
-                    <div className="font-medium">{review.customerName}</div>
-                    <div>{review.contractorName}</div>
-                    <div>{new Date(review.date).toLocaleDateString()}</div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Understanding Home Insulation - Educational Articles Carousel */}
       <section className="py-12 bg-white">
