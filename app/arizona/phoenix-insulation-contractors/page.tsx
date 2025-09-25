@@ -522,12 +522,9 @@ export default async function PhoenixInsulationContractors() {
         </div>
       </section>
 
-      {/* Google Map - Service Areas */}
-      <section className="py-12 bg-gray-50">
+      {/* Service Areas Map */}
+      <section className="py-8 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
-            Phoenix & Maricopa County Service Areas
-          </h2>
           <div className="rounded-lg overflow-hidden shadow-lg">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d422508.0351092426!2d-112.41914644999999!3d33.3586662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872b5d0c0572a2ff%3A0x4aec1cd17f2c4880!2sMaricopa%20County%2C%20AZ!5e0!3m2!1sen!2sus!4v1709562834567!5m2!1sen!2sus"
@@ -659,56 +656,31 @@ export default async function PhoenixInsulationContractors() {
         </div>
       </section>
 
-      {/* Google Map - DUPLICATE TO REMOVE */}
-      <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
-            Phoenix & Maricopa County Service Areas
+      {/* CTA Section */}
+      <section className="py-16 bg-[#D6D6D6] text-[#0a4768]">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">
+            Ready to Improve Your Phoenix Home?
           </h2>
-          <div className="rounded-lg overflow-hidden shadow-lg">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d422508.0351092426!2d-112.41914644999999!3d33.3586662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872b5d0c0572a2ff%3A0x4aec1cd17f2c4880!2sMaricopa%20County%2C%20AZ!5e0!3m2!1sen!2sus!4v1709562834567!5m2!1sen!2sus"
-              width="100%"
-              height="450"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Maricopa County, Arizona - Service Area Map"
-            />
-          </div>
-          <div className="text-center mt-6">
-            <p className="text-gray-600 mb-4">
-              Our certified insulation contractors serve all cities and communities throughout Maricopa County, including Phoenix and surrounding areas.
-            </p>
-            <Button 
-              asChild 
-              variant="outline"
-              className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-            >
-              <Link 
-                href="https://www.google.com/maps/place/Maricopa+County,+AZ/@33.3586662,-112.0192618,10z/data=!4m6!3m5!1s0x872b5d0c0572a2ff:0x4aec1cd17f2c4880!8m2!3d33.2917968!4d-112.4291464!16zL20vMG0yN24?entry=ttu&g_ep=EgoyMDI1MDkxNy4wIKXMDSoASAFQAw%3D%3D"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center"
-              >
-                View Full Map
-                <ExternalLink className="w-4 h-4 ml-2" />
-              </Link>
-            </Button>
-          </div>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Connect with Phoenix's most trusted insulation contractors. Get free quotes from verified professionals 
+            who understand the unique insulation needs of desert homes.
+          </p>
+          <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+            Get Phoenix Quotes Now
+          </QuoteButton>
         </div>
       </section>
 
-      {/* Recent Projects Section */}
-      <section className="py-16 bg-gray-50">
+      {/* Understanding Home Insulation - Educational Articles Carousel */}
+      <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Recent Insulation Projects Completed in Phoenix
+              Understanding Home Insulation
             </h2>
-            <p className="text-lg text-gray-600">
-              See the quality work performed by our verified contractors in the Phoenix metro area
+            <p className="text-lg text-gray-600 mb-8">
+              Learn the basics of home insulation and why it's crucial for Phoenix homes
             </p>
           </div>
 
