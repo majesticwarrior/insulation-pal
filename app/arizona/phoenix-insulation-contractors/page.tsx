@@ -619,15 +619,15 @@ export default async function PhoenixInsulationContractors() {
         </div>
       </section>
 
-      {/* Understanding Home Insulation - Educational Articles Carousel */}
+      {/* Recent Phoenix Completed Insulation Projects */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Understanding Home Insulation
+              Recent Phoenix Completed Insulation Projects
             </h2>
             <p className="text-lg text-gray-600 mb-8">
-              Learn the basics of home insulation and why it's crucial for Phoenix homes
+              See the quality work performed by our verified contractors in the Phoenix metro area
             </p>
           </div>
 
