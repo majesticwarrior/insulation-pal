@@ -302,41 +302,6 @@ export default async function PhoenixInsulationContractors() {
         </div>
       </section>
 
-      {/* Recent Reviews */}
-      <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold text-[#0a4768] mb-8 text-center">
-            Recent Customer Reviews in Phoenix
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Reviews will be populated from database when available */}
-            {[].map((review: any) => (
-              <Card key={review.id} className="border-l-4 border-l-[#F5DD22]">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    {renderStars(review.rating)}
-                    <span className="ml-2 font-semibold">{review.rating}.0</span>
-                    {review.verified && (
-                      <Badge variant="secondary" className="ml-2 text-xs">
-                        Verified
-                      </Badge>
-                    )}
-                  </div>
-                  <blockquote className="text-gray-700 mb-4">
-                    "{review.comment}"
-                  </blockquote>
-                  <div className="text-sm text-gray-600">
-                    <div className="font-medium">{review.customerName}</div>
-                    <div>{review.contractorName}</div>
-                    <div>{new Date(review.date).toLocaleDateString()}</div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Insulation Information */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -557,87 +522,144 @@ export default async function PhoenixInsulationContractors() {
         </div>
       </section>
 
-      {/* Educational Articles Carousel */}
-      <section className="py-12 bg-white">
+      {/* Google Map - Service Areas */}
+      <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Understanding Home Insulation
-            </h2>
-            <p className="text-lg text-gray-600 mb-8">
-              Learn the basics of home insulation and why it's crucial for Phoenix homes
-            </p>
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
+            Phoenix & Maricopa County Service Areas
+          </h2>
+          <div className="rounded-lg overflow-hidden shadow-lg">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d422508.0351092426!2d-112.41914644999999!3d33.3586662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872b5d0c0572a2ff%3A0x4aec1cd17f2c4880!2sMaricopa%20County%2C%20AZ!5e0!3m2!1sen!2sus!4v1709562834567!5m2!1sen!2sus"
+              width="100%"
+              height="450"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Maricopa County, Arizona - Service Area Map"
+            />
           </div>
-          
-          <div className="max-w-6xl mx-auto">
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              className="w-full"
+          <div className="text-center mt-6">
+            <p className="text-gray-600 mb-4">
+              Our certified insulation contractors serve all cities and communities throughout Maricopa County, including Phoenix and surrounding areas.
+            </p>
+            <Button 
+              asChild 
+              variant="outline"
+              className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
             >
-              <CarouselContent className="-ml-2 md:-ml-4">
-                {articles.map((article, index) => (
-                  <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
-                    <Card className="hover:shadow-xl transition-shadow overflow-hidden h-full">
-                      <div className="aspect-video relative">
-                        <Image
-                          src={article.image}
-                          alt={article.title}
-                          fill
-                          className="object-cover"
-                        />
-                        <div className="absolute top-4 left-4">
-                          <span className="bg-[#F5DD22] text-[#0a4768] px-3 py-1 rounded-full text-sm font-medium">
-                            {article.category}
-                          </span>
-                        </div>
-                      </div>
-                      <CardContent className="p-6 flex flex-col justify-between h-48">
-                        <div>
-                          <h3 className="text-lg font-bold text-[#0a4768] mb-3 line-clamp-2">
-                            {article.title}
-                          </h3>
-                          <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-                            {article.description}
-                          </p>
-                        </div>
-                        <Button 
-                          asChild 
-                          variant="outline" 
-                          size="sm"
-                          className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-                        >
-                          <Link href={`/resources/articles/${article.slug}`} className="flex items-center">
-                            Read Article
-                            <ExternalLink className="w-3 h-3 ml-1" />
-                          </Link>
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="hidden md:flex" />
-              <CarouselNext className="hidden md:flex" />
-            </Carousel>
-            
-            <div className="text-center mt-8">
-              <Button 
-                asChild 
-                className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold"
+              <Link 
+                href="https://www.google.com/maps/place/Maricopa+County,+AZ/@33.3586662,-112.0192618,10z/data=!4m6!3m5!1s0x872b5d0c0572a2ff:0x4aec1cd17f2c4880!8m2!3d33.2917968!4d-112.4291464!16zL20vMG0yN24?entry=ttu&g_ep=EgoyMDI1MDkxNy4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center"
               >
-                <Link href="/resources/articles">
-                  View All Articles
-                </Link>
-              </Button>
-            </div>
+                View Full Map
+                <ExternalLink className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Google Map */}
+      {/* Recent Projects Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
+              Recent Insulation Projects Completed in Phoenix
+            </h2>
+            <p className="text-lg text-gray-600">
+              See the quality work performed by our verified contractors in the Phoenix metro area
+            </p>
+          </div>
+
+          {recentProjects.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {recentProjects.map((project: any) => (
+                <Card key={project.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="relative h-48">
+                    <Image
+                      src={project.after_image_url || '/placeholder-project.jpg'}
+                      alt={project.title || 'Insulation Project'}
+                      fill
+                      className="object-cover"
+                      loading="lazy"
+                      placeholder="blur"
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-[#0a4768] mb-2 text-sm">
+                      {project.title || 'Insulation Project'}
+                    </h3>
+                    <div className="space-y-1 text-xs text-gray-600">
+                      <div>
+                        <span className="font-medium">Service:</span> {project.service_type || 'Insulation'}
+                      </div>
+                      <div>
+                        <span className="font-medium">Location:</span> {project.project_city}, {project.project_state}
+                      </div>
+                      <div>
+                        <span className="font-medium">Contractor:</span> {project.contractors?.business_name}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-600">Recent projects will be displayed here as contractors complete jobs and upload photos.</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+
+      {/* All Phoenix Reviews */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
+            All Phoenix Reviews
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Reviews will be populated from database when available */}
+            {[].map((review: any) => (
+              <Card key={review.id} className="border-l-4 border-l-[#F5DD22]">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    {renderStars(review.rating)}
+                    <span className="ml-2 font-semibold">{review.rating}.0</span>
+                    {review.verified && (
+                      <Badge variant="secondary" className="ml-2 text-xs">
+                        Verified
+                      </Badge>
+                    )}
+                  </div>
+                  <blockquote className="text-gray-700 mb-4">
+                    "{review.comment}"
+                  </blockquote>
+                  <div className="text-sm text-gray-600">
+                    <div className="font-medium">{review.customerName}</div>
+                    <div>{review.contractorName}</div>
+                    <div>{new Date(review.date).toLocaleDateString()}</div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          <div className="text-center mt-8">
+            <p className="text-gray-600">
+              Customer reviews help you make informed decisions. All reviews are verified and from actual completed projects.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Google Map - DUPLICATE TO REMOVE */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
@@ -782,6 +804,86 @@ export default async function PhoenixInsulationContractors() {
           <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
             Get Phoenix Quotes Now
           </QuoteButton>
+        </div>
+      </section>
+
+      {/* Understanding Home Insulation - Educational Articles Carousel */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
+              Understanding Home Insulation
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Learn the basics of home insulation and why it's crucial for Phoenix homes
+            </p>
+          </div>
+          
+          <div className="max-w-6xl mx-auto">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {articles.map((article, index) => (
+                  <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                    <Card className="hover:shadow-xl transition-shadow overflow-hidden h-full">
+                      <div className="aspect-video relative">
+                        <Image
+                          src={article.image}
+                          alt={article.title}
+                          fill
+                          className="object-cover"
+                        />
+                        <div className="absolute top-4 left-4">
+                          <span className="bg-[#F5DD22] text-[#0a4768] px-3 py-1 rounded-full text-sm font-medium">
+                            {article.category}
+                          </span>
+                        </div>
+                      </div>
+                      <CardContent className="p-6 flex flex-col justify-between h-48">
+                        <div>
+                          <h3 className="text-lg font-bold text-[#0a4768] mb-3 line-clamp-2">
+                            {article.title}
+                          </h3>
+                          <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                            {article.description}
+                          </p>
+                        </div>
+                        <Button 
+                          asChild 
+                          variant="outline" 
+                          size="sm"
+                          className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
+                        >
+                          <Link href={`/resources/articles/${article.slug}`} className="flex items-center">
+                            Read Article
+                            <ExternalLink className="w-3 h-3 ml-1" />
+                          </Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="hidden md:flex" />
+              <CarouselNext className="hidden md:flex" />
+            </Carousel>
+            
+            <div className="text-center mt-8">
+              <Button 
+                asChild 
+                className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold"
+              >
+                <Link href="/resources/articles">
+                  View All Articles
+                </Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
