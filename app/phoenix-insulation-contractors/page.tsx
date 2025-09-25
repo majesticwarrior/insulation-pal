@@ -459,67 +459,7 @@ export default function PhoenixInsulationContractors() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {/* Spray Foam Article */}
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video relative">
-                <Image
-                  src="/spray-foam-insulation-installed.jpg"
-                  alt="Spray Foam Insulation"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
-                  What is Spray Foam Insulation?
-                </h3>
-                <p className="text-gray-600 text-sm mb-3">
-                  Explore the superior air sealing properties of spray foam insulation and its applications in Phoenix homes.
-                </p>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-                >
-                  <Link href="/resources/articles/what-is-spray-foam-insulation">
-                    Learn More
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Blown-in Insulation Article */}
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video relative">
-                <Image
-                  src="/attic-insulation-blown-in.jpg"
-                  alt="Blown-in Insulation"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
-                  What is Blown-in Insulation?
-                </h3>
-                <p className="text-gray-600 text-sm mb-3">
-                  Understanding blown-in insulation techniques for filling gaps and achieving complete coverage in attics.
-                </p>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-                >
-                  <Link href="/resources/articles/what-is-blown-in-insulation">
-                    Learn More
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {/* Fiberglass Insulation Article */}
             <Card className="overflow-hidden hover:shadow-lg transition-shadow">
               <div className="aspect-video relative">
@@ -580,6 +520,96 @@ export default function PhoenixInsulationContractors() {
               </CardContent>
             </Card>
 
+            {/* Spray Foam Insulation Article */}
+            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="aspect-video relative">
+                <Image
+                  src="/spray-foam-insulation-installed.jpg"
+                  alt="Spray Foam Insulation"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <CardContent className="p-4">
+                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
+                  What is Spray Foam Insulation?
+                </h3>
+                <p className="text-gray-600 text-sm mb-3">
+                  Explore the superior air sealing properties of spray foam insulation and its applications in Phoenix homes.
+                </p>
+                <Button 
+                  asChild 
+                  variant="outline" 
+                  size="sm"
+                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
+                >
+                  <Link href="/resources/articles/what-is-spray-foam-insulation">
+                    Learn More
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Mineral Wool Insulation Article */}
+            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="aspect-video relative">
+                <Image
+                  src="/mineral-wool-insulation.jpg"
+                  alt="Mineral Wool Insulation"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <CardContent className="p-4">
+                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
+                  What is Mineral Wool Insulation?
+                </h3>
+                <p className="text-gray-600 text-sm mb-3">
+                  Understanding mineral wool insulation's fire resistance, soundproofing qualities, and thermal performance.
+                </p>
+                <Button 
+                  asChild 
+                  variant="outline" 
+                  size="sm"
+                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
+                >
+                  <Link href="/resources/articles/what-is-mineral-wool-insulation">
+                    Learn More
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Rigid Foam Board Insulation Article */}
+            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="aspect-video relative">
+                <Image
+                  src="/rigid-foam-board.jpg"
+                  alt="Rigid Foam Board Insulation"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <CardContent className="p-4">
+                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
+                  What is Rigid Foam Board Insulation?
+                </h3>
+                <p className="text-gray-600 text-sm mb-3">
+                  Learn about rigid foam board insulation for continuous insulation applications and moisture resistance.
+                </p>
+                <Button 
+                  asChild 
+                  variant="outline" 
+                  size="sm"
+                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
+                >
+                  <Link href="/resources/articles/what-is-rigid-foam-board-insulation">
+                    Learn More
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
             {/* Roll and Batt Insulation Article */}
             <Card className="overflow-hidden hover:shadow-lg transition-shadow">
               <div className="aspect-video relative">
@@ -604,6 +634,36 @@ export default function PhoenixInsulationContractors() {
                   className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
                 >
                   <Link href="/resources/articles/what-is-roll-and-batt-insulation">
+                    Learn More
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Blown-in Insulation Article */}
+            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="aspect-video relative">
+                <Image
+                  src="/attic-insulation-blown-in.jpg"
+                  alt="Blown-in Insulation"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <CardContent className="p-4">
+                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
+                  What is Blown-in Insulation?
+                </h3>
+                <p className="text-gray-600 text-sm mb-3">
+                  Understanding blown-in insulation techniques for filling gaps and achieving complete coverage in attics.
+                </p>
+                <Button 
+                  asChild 
+                  variant="outline" 
+                  size="sm"
+                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
+                >
+                  <Link href="/resources/articles/what-is-blown-in-insulation">
                     Learn More
                   </Link>
                 </Button>
