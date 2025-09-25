@@ -449,7 +449,7 @@ export default function PhoenixInsulationContractors() {
       </section>
 
       {/* Educational Video */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-12" style={{backgroundColor: '#D8E1FF'}}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
