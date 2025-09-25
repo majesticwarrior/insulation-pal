@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button'
 import { QuoteButton } from '@/components/ui/quote-button'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, CheckCircle, Wind, Target, Layers } from 'lucide-react'
+import { ArrowLeft, CheckCircle, Wind, Target, Layers, Star, Shield } from 'lucide-react'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
 export default function BlownInInsulationArticle() {
   return (
@@ -57,6 +58,62 @@ export default function BlownInInsulationArticle() {
                 fill
                 className="object-cover"
               />
+            </div>
+
+            {/* Why Trust Insulation Pal Accordion */}
+            <div className="mb-8">
+              <Accordion type="single" collapsible className="border rounded-lg bg-white shadow-sm">
+                <AccordionItem value="trust-insulation-pal">
+                  <AccordionTrigger className="px-6 py-4 text-left">
+                    <div className="flex items-center space-x-3">
+                      <Shield className="w-5 h-5 text-[#0a4768]" />
+                      <span className="text-lg font-semibold text-[#0a4768]">Why trust Insulation Pal</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-6">
+                    <div className="space-y-4">
+                      <p className="text-gray-700">
+                        1000's of customers have trusted Insulation Pal, a digital platform that provides access to local insulation contractors and provide fast estimates.
+                      </p>
+                      
+                      <ul className="space-y-3">
+                        <li className="flex items-start space-x-3">
+                          <div className="flex-shrink-0 w-2 h-2 bg-[#F5DD22] rounded-full mt-2"></div>
+                          <span className="text-gray-700">
+                            <strong>30% reduction in energy bills*</strong> reported by Insulation Pal customers
+                          </span>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                          <div className="flex-shrink-0 w-2 h-2 bg-[#F5DD22] rounded-full mt-2"></div>
+                          <span className="text-gray-700">
+                            Hundreds of licensed physical therapists and health coaches
+                          </span>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                          <div className="flex-shrink-0 w-2 h-2 bg-[#F5DD22] rounded-full mt-2"></div>
+                          <div className="text-gray-700">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <span><strong>4.9/5 average star rating</strong> of Insulation Pal reviews on Google</span>
+                              <div className="flex items-center space-x-1">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star 
+                                    key={i} 
+                                    className={`w-4 h-4 ${i < 5 ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                      
+                      <p className="text-sm text-gray-600 pt-2 border-t">
+                        Insulation Pal prides itself on the integrity of its content, which is carefully curated and created by our staff. We use only trusted sources in our reporting, including home improvement journals, university and government websites.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           </div>
         </div>
