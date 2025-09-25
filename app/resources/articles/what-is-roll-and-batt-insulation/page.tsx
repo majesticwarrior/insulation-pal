@@ -64,7 +64,7 @@ export default function RollAndBattInsulationArticle() {
             </div>
 
             {/* Why Trust Insulation Pal Accordion */}
-            <div className="mb-8">
+            <div className="mb-4">
               <Accordion type="single" collapsible className="border rounded-lg bg-white shadow-sm">
                 <AccordionItem value="trust-insulation-pal">
                   <AccordionTrigger className="px-6 py-4 text-left">
