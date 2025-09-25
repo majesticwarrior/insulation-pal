@@ -380,24 +380,6 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                       Get a quote directly from {contractor.name}
                     </p>
                   </div>
-
-                  <div className="bg-gray-50 rounded-lg p-4 mt-4">
-                    <h4 className="font-semibold text-[#0a4768] mb-2">Contact Information</h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center">
-                        <Phone className="h-4 w-4 text-[#0a4768] mr-2" />
-                        <span>{contractor.phone}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <Mail className="h-4 w-4 text-[#0a4768] mr-2" />
-                        <span>{contractor.email}</span>
-                      </div>
-                      <div className="flex items-start">
-                        <MapPin className="h-4 w-4 text-[#0a4768] mr-2 mt-0.5" />
-                        <span>{contractor.address}</span>
-                      </div>
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
             </div>
