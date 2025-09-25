@@ -1,3 +1,5 @@
+'use client'
+
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,8 +17,14 @@ import {
   TrendingUp,
   Shield,
   Award,
-  Quote
+  Quote,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react'
+import useEmblaCarousel from 'embla-carousel-react'
+import Autoplay from 'embla-carousel-autoplay'
+import { useCallback, useEffect, useState } from 'react'
+import { articles } from '@/lib/articles-data'
 
 // Mock data for Phoenix contractors
 const phoenixContractors = [
@@ -170,7 +178,46 @@ const cityStats = {
   jobsCompleted: phoenixContractors.reduce((sum, contractor) => sum + contractor.jobsCompleted, 0) + 234
 }
 
+
 export default function PhoenixInsulationContractors() {
+  // Carousel setup
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { 
+      loop: true,
+      align: 'start',
+      slidesToScroll: 1,
+      breakpoints: {
+        '(min-width: 768px)': { slidesToScroll: 2 },
+        '(min-width: 1024px)': { slidesToScroll: 3 }
+      }
+    },
+    [Autoplay({ delay: 4000, stopOnInteraction: false })]
+  )
+
+  const [canScrollPrev, setCanScrollPrev] = useState(false)
+  const [canScrollNext, setCanScrollNext] = useState(false)
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev()
+  }, [emblaApi])
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext()
+  }, [emblaApi])
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return
+    setCanScrollPrev(emblaApi.canScrollPrev())
+    setCanScrollNext(emblaApi.canScrollNext())
+  }, [emblaApi])
+
+  useEffect(() => {
+    if (!emblaApi) return
+    onSelect()
+    emblaApi.on('select', onSelect)
+    emblaApi.on('reInit', onSelect)
+  }, [emblaApi, onSelect])
+
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -447,258 +494,86 @@ export default function PhoenixInsulationContractors() {
         </div>
       </section>
 
-      {/* Understanding Home Insulation */}
+      {/* Understanding Home Insulation - Carousel */}
       <section className="py-12" style={{backgroundColor: '#D8E1FF'}}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
               Understanding Home Insulation
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-gray-600 mb-6">
               Learn the basics of home insulation and why it's crucial for Phoenix homes
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-            {/* Fiberglass Insulation Article */}
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video relative">
-                <Image
-                  src="/blown-in-fiberglass-insulation.jpg"
-                  alt="Fiberglass Insulation"
-                  fill
-                  className="object-cover"
-                />
+          {/* Carousel Container */}
+          <div className="relative max-w-7xl mx-auto">
+            {/* Navigation Buttons */}
+            <div className="flex justify-between items-center mb-6">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={scrollPrev}
+                disabled={!canScrollPrev}
+                className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white disabled:opacity-50"
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Previous
+              </Button>
+              
+              <div className="text-sm text-gray-600">
+                Swipe or use arrows to explore • Auto-playing
               </div>
-              <CardContent className="p-4">
-                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
-                  What is Fiberglass Insulation?
-                </h3>
-                <p className="text-gray-600 text-sm mb-3">
-                  Learn about fiberglass insulation, its benefits, and why it's one of the most popular insulation materials.
-                </p>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-                >
-                  <Link href="/resources/articles/what-is-fibreglass-insulation">
-                    Learn More
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={scrollNext}
+                disabled={!canScrollNext}
+                className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white disabled:opacity-50"
+              >
+                Next
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
 
-            {/* Cellulose Insulation Article */}
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video relative">
-                <Image
-                  src="/cellulose-wall-insulation-installed.jpg"
-                  alt="Cellulose Insulation"
-                  fill
-                  className="object-cover"
-                />
+            {/* Embla Carousel */}
+            <div className="overflow-hidden" ref={emblaRef}>
+              <div className="flex">
+                {articles.map((article, index) => (
+                  <div key={index} className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.333%] pl-4 first:pl-0">
+                    <Card className="overflow-hidden hover:shadow-lg transition-shadow mx-2">
+                      <div className="aspect-video relative">
+                        <Image
+                          src={article.image}
+                          alt={article.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <CardContent className="p-4">
+                        <h3 className="text-lg font-bold text-[#0a4768] mb-2">
+                          {article.title}
+                        </h3>
+                        <p className="text-gray-600 text-sm mb-3">
+                          {article.description}
+                        </p>
+                        <Button 
+                          asChild 
+                          variant="outline" 
+                          size="sm"
+                          className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
+                        >
+                          <Link href={`/resources/articles/${article.slug}`}>
+                            Learn More
+                          </Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
               </div>
-              <CardContent className="p-4">
-                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
-                  What is Cellulose Insulation?
-                </h3>
-                <p className="text-gray-600 text-sm mb-3">
-                  Discover the eco-friendly benefits of cellulose insulation made from recycled paper products.
-                </p>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-                >
-                  <Link href="/resources/articles/what-is-cellulose-insulation">
-                    Learn More
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Spray Foam Insulation Article */}
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video relative">
-                <Image
-                  src="/spray-foam-insulation-installed.jpg"
-                  alt="Spray Foam Insulation"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
-                  What is Spray Foam Insulation?
-                </h3>
-                <p className="text-gray-600 text-sm mb-3">
-                  Explore the superior air sealing properties of spray foam insulation and its applications in Phoenix homes.
-                </p>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-                >
-                  <Link href="/resources/articles/what-is-spray-foam-insulation">
-                    Learn More
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Mineral Wool Insulation Article */}
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video relative">
-                <Image
-                  src="/mineral-wool-insulation.jpg"
-                  alt="Mineral Wool Insulation"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
-                  What is Mineral Wool Insulation?
-                </h3>
-                <p className="text-gray-600 text-sm mb-3">
-                  Understanding mineral wool insulation's fire resistance, soundproofing qualities, and thermal performance.
-                </p>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-                >
-                  <Link href="/resources/articles/what-is-mineral-wool-insulation">
-                    Learn More
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Rigid Foam Board Insulation Article */}
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video relative">
-                <Image
-                  src="/rigid-foam-board.jpg"
-                  alt="Rigid Foam Board Insulation"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
-                  What is Rigid Foam Board Insulation?
-                </h3>
-                <p className="text-gray-600 text-sm mb-3">
-                  Learn about rigid foam board insulation for continuous insulation applications and moisture resistance.
-                </p>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-                >
-                  <Link href="/resources/articles/what-is-rigid-foam-board-insulation">
-                    Learn More
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Roll and Batt Insulation Article */}
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video relative">
-                <Image
-                  src="/roll-and-batt-glass-wool-insulation.jpg"
-                  alt="Roll and Batt Insulation"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
-                  What is Roll and Batt Insulation?
-                </h3>
-                <p className="text-gray-600 text-sm mb-3">
-                  Discover the versatility and cost-effectiveness of roll and batt insulation for DIY installations.
-                </p>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-                >
-                  <Link href="/resources/articles/what-is-roll-and-batt-insulation">
-                    Learn More
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Blown-in Insulation Article */}
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video relative">
-                <Image
-                  src="/attic-insulation-blown-in.jpg"
-                  alt="Blown-in Insulation"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
-                  What is Blown-in Insulation?
-                </h3>
-                <p className="text-gray-600 text-sm mb-3">
-                  Understanding blown-in insulation techniques for filling gaps and achieving complete coverage in attics.
-                </p>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-                >
-                  <Link href="/resources/articles/what-is-blown-in-insulation">
-                    Learn More
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Energy Audit Article */}
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video relative">
-                <Image
-                  src="/energy-consumption-audit.jpg"
-                  alt="Energy Audit"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="text-lg font-bold text-[#0a4768] mb-2">
-                  What is an Energy Audit?
-                </h3>
-                <p className="text-gray-600 text-sm mb-3">
-                  Learn how energy audits identify insulation needs and energy efficiency improvements for your home.
-                </p>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-                >
-                  <Link href="/resources/articles/what-is-an-energy-audit">
-                    Learn More
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
+            </div>
           </div>
         </div>
       </section>
