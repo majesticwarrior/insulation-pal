@@ -153,6 +153,11 @@ export function ImageUploadManager({ contractorId }: ImageUploadManagerProps) {
       return
     }
 
+    if (!formData.project_city.trim()) {
+      toast.error('Project city is required')
+      return
+    }
+
     if (!beforeImageFile && !afterImageFile) {
       toast.error('Please upload at least one image')
       return
@@ -456,12 +461,13 @@ export function ImageUploadManager({ contractorId }: ImageUploadManagerProps) {
                 />
               </div>
               <div>
-                <Label htmlFor="project_city">City</Label>
+                <Label htmlFor="project_city">City *</Label>
                 <Input
                   id="project_city"
                   value={formData.project_city}
                   onChange={(e) => setFormData(prev => ({ ...prev, project_city: e.target.value }))}
                   placeholder="Phoenix"
+                  required
                 />
               </div>
               <div>
