@@ -463,18 +463,65 @@ export default function AdminDashboard() {
         console.error('❌ Error testing RPC function:', e)
       }
 
-      // Use admin RPC function to bypass RLS policies
-      console.log('🔄 Using admin RPC function to insert review...')
+      // Try simple admin function first
+      console.log('🔄 Trying simple admin RPC function...')
       
-      const { data, error } = await (supabase as any)
-        .rpc('admin_insert_review', {
+      const { data: simpleData, error: simpleError } = await (supabase as any)
+        .rpc('simple_admin_review', {
+          contractor_id_param: insertData.contractor_id,
+          customer_name_param: insertData.customer_name,
+          rating_param: insertData.rating,
+          comment_param: insertData.comment,
+          verified_param: insertData.verified
+        })
+
+      if (simpleError) {
+        console.error('❌ Simple RPC failed, trying complex RPC...', simpleError)
+        
+        // Fallback to original RPC function
+        const { data, error } = await (supabase as any)
+          .rpc('admin_insert_review', {
+            p_contractor_id: insertData.contractor_id,
+            p_customer_name: insertData.customer_name,
+            p_rating: insertData.rating,
+            p_customer_email: insertData.customer_email,
+            p_comment: insertData.comment,
+            p_verified: insertData.verified
+          })
+      } else {
+        console.log('✅ Simple RPC response:', simpleData)
+        
+        // Check if the response indicates success or error
+        if (simpleData && simpleData.success === false) {
+          console.error('❌ Simple RPC returned error:', simpleData.error)
+          throw new Error(simpleData.error)
+        } else if (simpleData && simpleData.success === true) {
+          console.log('✅ Simple RPC succeeded with review ID:', simpleData.review_id)
+          toast.success('Review added successfully (simple method)')
+          setIsReviewDialogOpen(false)
+          setReviewFormData({
+            contractor_id: '',
+            customer_name: '',
+            customer_email: '',
+            rating: 5,
+            comment: '',
+            verified: true
+          })
+          loadContractors()
+          return
+        }
+      }
+
+      // Continue with original complex RPC if simple one failed
+      const { data, error } = simpleError ? 
+        await (supabase as any).rpc('admin_insert_review', {
           p_contractor_id: insertData.contractor_id,
           p_customer_name: insertData.customer_name,
           p_rating: insertData.rating,
           p_customer_email: insertData.customer_email,
           p_comment: insertData.comment,
           p_verified: insertData.verified
-        })
+        }) : { data: simpleData, error: null }
 
       if (error) {
         console.error('❌ Admin RPC function failed:', error)
