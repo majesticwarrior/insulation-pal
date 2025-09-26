@@ -4,6 +4,17 @@ import { Database } from './database.types'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder-project.supabase.co'
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder_anon_key'
 
+// Validate environment variables
+const isValidConfig = supabaseUrl && 
+                     supabaseAnonKey && 
+                     !supabaseUrl.includes('placeholder') && 
+                     !supabaseAnonKey.includes('placeholder')
+
+if (!isValidConfig && typeof window !== 'undefined') {
+  console.warn('🚨 Supabase environment variables not properly configured. Running in demo mode.')
+  console.warn('Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your .env.local file')
+}
+
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
 
 // Client-side supabase instance

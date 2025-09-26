@@ -112,16 +112,27 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
     try {
       const formData = form.getValues()
       
+      // Enhanced debugging for Supabase configuration
+      console.log('🔍 Supabase Configuration Check:', {
+        url: process.env.NEXT_PUBLIC_SUPABASE_URL,
+        hasKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        keyLength: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.length || 0,
+        supabaseInstance: !!supabase
+      })
+      
       // Check if we're in demo mode (no real Supabase connection)
       const isDemoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL || 
-                        process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder')
+                        process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder') ||
+                        !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+                        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('placeholder')
       
       if (isDemoMode) {
         // Demo mode - simulate successful submission
         console.log('Demo Mode: Quote request submitted:', formData)
+        console.log('🚨 Demo mode triggered due to missing/placeholder environment variables')
         await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate delay
         
-        toast.success('Quote request submitted successfully! (Demo Mode)')
+        toast.success('Quote request submitted successfully! (Demo Mode - Please set up Supabase environment variables)')
         onClose()
         form.reset()
         setCurrentStep(1)
@@ -149,13 +160,40 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
 
       console.log('📋 Submitting lead data:', leadData)
 
+      // Test Supabase connection before attempting insert
+      try {
+        const { data: testData, error: testError } = await (supabase as any)
+          .from('leads')
+          .select('id')
+          .limit(1)
+        
+        if (testError) {
+          console.error('🚨 Supabase connection test failed:', testError)
+          throw new Error(`Database connection failed: ${testError.message}`)
+        }
+        
+        console.log('✅ Supabase connection test passed')
+      } catch (connectionError) {
+        console.error('🚨 Critical Supabase connection error:', connectionError)
+        throw new Error(`Cannot connect to database. Please check your environment variables.`)
+      }
+
       const { data: lead, error } = await (supabase as any)
         .from('leads')
         .insert(leadData)
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('🚨 Lead insertion error:', error)
+        console.error('Error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        })
+        throw error
+      }
 
       // If random_three is selected, assign to 3 random contractors
       if (formData.quotePreference === 'random_three') {
