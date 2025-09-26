@@ -28,6 +28,7 @@ import { ProfileEditForm } from '@/components/dashboard/ProfileEditForm'
 import { ImageUploadManager } from '@/components/dashboard/ImageUploadManager'
 import { CreditPurchaseManager } from '@/components/dashboard/CreditPurchaseManager'
 import { toast } from 'sonner'
+import { LeadsList } from './components/LeadsList'
 
 interface Lead {
   id: string
@@ -131,35 +132,13 @@ export default function ContractorDashboard() {
       // TEMPORARY: Skip lead assignments query to fix 500 error and focus on credits
       console.log('🔍 Skipping lead assignments query temporarily to fix 500 error')
       console.log('💡 Focus: Get contractor data and credits working first')
-      
-      // Use empty leads data for now
-      const leadsData: any[] = []
-      console.log('📋 Using empty leads array to bypass 500 error')
+      // Note: Leads are now handled by the LeadsList component
+      console.log('📋 Lead data is now handled by LeadsList component')
 
-      const formattedLeads = leadsData?.map((assignment: any) => ({
-        id: assignment.lead_id || assignment.id,
-        customer_name: assignment.leads?.customer_name || 'N/A',
-        customer_email: assignment.leads?.customer_email || 'N/A',
-        customer_phone: assignment.leads?.customer_phone || 'N/A',
-        city: assignment.leads?.city || 'N/A',
-        home_size_sqft: assignment.leads?.home_size_sqft || 0,
-        areas_needed: assignment.leads?.areas_needed || [],
-        insulation_types: assignment.leads?.insulation_types || [],
-        status: assignment.status || 'pending',
-        cost: assignment.cost || 0,
-        created_at: assignment.created_at
-      })) || []
-
-      console.log('📋 Formatted leads:', formattedLeads)
-
-      setLeads(formattedLeads)
-
-      // Calculate stats
-      const activeLeads = formattedLeads.filter((lead: any) => lead.status === 'sent' || lead.status === 'viewed').length
-      const completedJobs = formattedLeads.filter((lead: any) => lead.status === 'hired').length
-      const revenue = formattedLeads
-        .filter((lead: any) => lead.status === 'hired')
-        .reduce((sum: number, lead: any) => sum + lead.cost, 0)
+      // Calculate stats (simplified since leads are handled separately)
+      const activeLeads = 0  // Will be calculated by LeadsList component
+      const completedJobs = 0  // Will be calculated by LeadsList component  
+      const revenue = 0  // Will be calculated separately
 
       const finalCredits = contractorData?.credits || contractor?.credits || 0
       console.log('📊 Calculating stats:')
@@ -168,7 +147,7 @@ export default function ContractorDashboard() {
       console.log('💳 Final credits value:', finalCredits)
 
       setStats({
-        totalLeads: formattedLeads.length,
+        totalLeads: 0, // Will be updated by LeadsList component
         activeLeads,
         completedJobs,
         revenue,
@@ -177,7 +156,7 @@ export default function ContractorDashboard() {
       })
 
       console.log('📈 Stats updated:', {
-        totalLeads: formattedLeads.length,
+        totalLeads: 0,
         activeLeads,
         completedJobs,
         revenue,
@@ -389,85 +368,7 @@ export default function ContractorDashboard() {
           </TabsList>
 
           <TabsContent value="leads" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Leads</CardTitle>
-                <CardDescription>
-                  Manage your incoming leads and track progress
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {leads.length === 0 ? (
-                    <p className="text-center text-gray-500 py-8">
-                      No leads yet. We'll notify you when new leads come in!
-                    </p>
-                  ) : (
-                    leads.map((lead) => (
-                      <div key={lead.id} className="border rounded-lg p-4 hover:bg-gray-50">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <h3 className="font-semibold text-gray-900">
-                              {lead.customer_name || 'Customer'}
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                              {lead.city} • {lead.home_size_sqft} sq ft
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            {getStatusBadge(lead.status)}
-                            <p className="text-sm text-gray-500 mt-1">
-                              {formatDate(lead.created_at)}
-                            </p>
-                          </div>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <span className="font-medium">Areas needed:</span>
-                            <p className="text-gray-600">
-                              {lead.areas_needed.join(', ')}
-                            </p>
-                          </div>
-                          <div>
-                            <span className="font-medium">Insulation types:</span>
-                            <p className="text-gray-600">
-                              {lead.insulation_types.join(', ')}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex justify-between items-center mt-4">
-                          <div className="flex items-center space-x-4">
-                            <span className="text-sm text-gray-600">
-                              Lead cost: {formatCurrency(lead.cost)}
-                            </span>
-                          </div>
-                          <div className="flex space-x-2">
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => handleViewDetails(lead)}
-                            >
-                              View Details
-                            </Button>
-                            {lead.status === 'sent' && (
-                              <Button 
-                                size="sm" 
-                                className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]"
-                                onClick={() => handleRespond(lead)}
-                              >
-                                Respond
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            {contractor?.id && <LeadsList contractorId={contractor.id} />}
           </TabsContent>
 
           <TabsContent value="profile">
