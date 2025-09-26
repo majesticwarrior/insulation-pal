@@ -13,10 +13,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Shield, Users, Clock, CheckCircle, XCircle, Eye, DollarSign, LogOut, Edit, Plus, Star, UserCog, Upload, X } from 'lucide-react'
+import { Shield, Users, Clock, CheckCircle, XCircle, Eye, DollarSign, LogOut, Edit, Plus, Star, UserCog } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
-import Image from 'next/image'
 
 interface Contractor {
   id: string
@@ -50,7 +49,6 @@ interface Review {
   contractor_id: string
   customer_name: string
   customer_email?: string
-  customer_image?: string
   rating: number
   title?: string
   comment?: string
@@ -82,7 +80,6 @@ export default function AdminDashboard() {
     contractor_id: '',
     customer_name: '',
     customer_email: '',
-    customer_image: '',
     rating: 5,
     title: '',
     comment: '',
@@ -91,8 +88,6 @@ export default function AdminDashboard() {
     verified: true
   })
   const [isAddingReview, setIsAddingReview] = useState(false)
-  const [customerImageFile, setCustomerImageFile] = useState<File | null>(null)
-  const [customerImagePreview, setCustomerImagePreview] = useState<string>('')
   
   const router = useRouter()
 
@@ -377,7 +372,6 @@ export default function AdminDashboard() {
       contractor_id: contractor.id,
       customer_name: '',
       customer_email: '',
-      customer_image: '',
       rating: 5,
       title: '',
       comment: '',
@@ -385,72 +379,9 @@ export default function AdminDashboard() {
       location: contractor.business_city ? `${contractor.business_city}, ${contractor.business_state}` : '',
       verified: true
     })
-    setCustomerImageFile(null)
-    setCustomerImagePreview('')
     setIsReviewDialogOpen(true)
   }
 
-  const handleCustomerImageSelect = (file: File) => {
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please select an image file')
-      return
-    }
-
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit
-      toast.error('Image size must be less than 5MB')
-      return
-    }
-
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      const preview = e.target?.result as string
-      setCustomerImageFile(file)
-      setCustomerImagePreview(preview)
-    }
-    reader.readAsDataURL(file)
-  }
-
-  const uploadCustomerImageToSupabase = async (file: File): Promise<string> => {
-    try {
-      console.log('🔄 Uploading customer image to Supabase Storage...', file.name)
-      
-      // Generate unique filename
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-      const filePath = `customer-images/${fileName}`
-
-      // Upload to Supabase Storage
-      const { data, error } = await supabase.storage
-        .from('contractor_images')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false
-        })
-
-      if (error) {
-        console.error('❌ Supabase Storage upload error:', error)
-        throw new Error(`Upload failed: ${error.message}`)
-      }
-
-      console.log('✅ Customer image uploaded successfully:', data.path)
-
-      // Get public URL
-      const { data: urlData } = supabase.storage
-        .from('contractor_images')
-        .getPublicUrl(filePath)
-
-      if (!urlData.publicUrl) {
-        throw new Error('Failed to get public URL for uploaded image')
-      }
-
-      console.log('✅ Public URL generated:', urlData.publicUrl)
-      return urlData.publicUrl
-      
-    } catch (error) {
-      console.error('💥 Customer image upload failed:', error)
-      throw error
-    }
-  }
 
   const addReview = async () => {
     if (!reviewFormData.customer_name.trim() || !reviewFormData.comment?.trim()) {
@@ -460,13 +391,6 @@ export default function AdminDashboard() {
 
     setIsAddingReview(true)
     try {
-      let customerImageUrl = ''
-
-      // Upload customer image if provided
-      if (customerImageFile) {
-        customerImageUrl = await uploadCustomerImageToSupabase(customerImageFile)
-      }
-
       const { error } = await (supabase as any)
         .from('reviews')
         .insert({
@@ -505,7 +429,6 @@ export default function AdminDashboard() {
         contractor_id: '',
         customer_name: '',
         customer_email: '',
-        customer_image: '',
         rating: 5,
         title: '',
         comment: '',
@@ -513,8 +436,6 @@ export default function AdminDashboard() {
         location: '',
         verified: true
       })
-      setCustomerImageFile(null)
-      setCustomerImagePreview('')
       loadContractors()
     } catch (error) {
       console.error('Error adding review:', error)
@@ -1227,48 +1148,6 @@ export default function AdminDashboard() {
                     onChange={(e) => setReviewFormData(prev => ({ ...prev, customer_email: e.target.value }))}
                     placeholder="john@example.com"
                   />
-                </div>
-              </div>
-
-              {/* Customer Image Upload */}
-              <div>
-                <Label>Customer Image</Label>
-                <div className="mt-2">
-                  {customerImagePreview ? (
-                    <div className="relative inline-block">
-                      <Image
-                        src={customerImagePreview}
-                        alt="Customer preview"
-                        width={120}
-                        height={120}
-                        className="w-24 h-24 object-cover rounded-full border-2 border-gray-200"
-                      />
-                      <button
-                        onClick={() => {
-                          setCustomerImageFile(null)
-                          setCustomerImagePreview('')
-                        }}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                        type="button"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ) : (
-                    <label className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center cursor-pointer hover:border-gray-400 transition-colors">
-                      <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                      <span className="text-sm text-gray-600 text-center">
-                        Upload customer image<br />
-                        <span className="text-xs text-gray-500">(Optional, max 5MB)</span>
-                      </span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => e.target.files?.[0] && handleCustomerImageSelect(e.target.files[0])}
-                        className="hidden"
-                      />
-                    </label>
-                  )}
                 </div>
               </div>
 
