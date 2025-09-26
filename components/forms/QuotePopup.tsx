@@ -316,20 +316,58 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
         const assignments = selected.map((contractor: any) => ({
           lead_id: leadId,
           contractor_id: contractor.id,
-          status: 'sent',
+          status: 'pending', // Valid assignment_status enum value
           cost: 20.00
         }))
 
         console.log('📋 Creating assignments:', assignments)
         
+        // Test lead_assignments table access first
+        try {
+          console.log('🔍 Testing lead_assignments table access...')
+          const { data: testData, error: testError } = await (supabase as any)
+            .from('lead_assignments')
+            .select('id')
+            .limit(1)
+          
+          console.log('🔍 Table test result:', { 
+            data: testData, 
+            error: testError,
+            errorStringified: JSON.stringify(testError, null, 2)
+          })
+          
+          if (testError) {
+            console.error('❌ Cannot access lead_assignments table:', testError)
+            throw new Error(`Table access failed: ${testError.message || 'Unknown error'}`)
+          }
+        } catch (tableTestError) {
+          console.error('❌ Critical table access error:', tableTestError)
+          throw tableTestError
+        }
+        
+        // Now try the insertion
         const { data: assignmentData, error: assignmentError } = await (supabase as any)
           .from('lead_assignments')
           .insert(assignments)
           .select()
 
+        console.log('🔍 Assignment insertion result:', {
+          data: assignmentData,
+          error: assignmentError,
+          errorKeys: assignmentError ? Object.keys(assignmentError) : [],
+          errorStringified: JSON.stringify(assignmentError, null, 2),
+          assignmentsAttempted: assignments.length
+        })
+
         if (assignmentError) {
           console.error('❌ Assignment insertion failed:', assignmentError)
-          throw assignmentError
+          console.error('❌ Error details:', {
+            message: assignmentError.message || 'No message',
+            code: assignmentError.code || 'No code',
+            details: assignmentError.details || 'No details',
+            hint: assignmentError.hint || 'No hint'
+          })
+          throw new Error(`Assignment insertion failed: ${assignmentError.message || 'Unknown error'}`)
         }
         
         console.log('✅ Successfully assigned lead to', selected.length, 'contractors:', assignmentData)
