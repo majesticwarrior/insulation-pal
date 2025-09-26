@@ -380,6 +380,24 @@ export default function AdminDashboard() {
       return
     }
 
+    if (!reviewFormData.contractor_id) {
+      toast.error('Contractor ID is required')
+      return
+    }
+
+    // Validate contractor exists
+    const contractor = contractors.find(c => c.id === reviewFormData.contractor_id)
+    if (!contractor) {
+      toast.error('Selected contractor not found')
+      return
+    }
+
+    console.log('🔍 Contractor validation:', {
+      contractor_exists: !!contractor,
+      contractor_id: contractor?.id,
+      contractor_name: contractor?.business_name
+    })
+
     setIsAddingReview(true)
     try {
       console.log('🔄 Attempting to insert review with data:', {
@@ -391,21 +409,30 @@ export default function AdminDashboard() {
         verified: reviewFormData.verified
       })
 
+      // Ensure data types are correct
+      const insertData = {
+        contractor_id: reviewFormData.contractor_id,
+        lead_id: null,
+        customer_name: reviewFormData.customer_name.trim(),
+        customer_email: reviewFormData.customer_email?.trim() || null,
+        rating: parseInt(reviewFormData.rating.toString()), // Ensure integer
+        comment: reviewFormData.comment?.trim() || null,
+        verified: Boolean(reviewFormData.verified)
+      }
+
+      console.log('🔄 Final insert data with correct types:', insertData)
+
       const { data, error } = await (supabase as any)
         .from('reviews')
-        .insert({
-          contractor_id: reviewFormData.contractor_id,
-          lead_id: null, // Add this field as it's required in the schema
-          customer_name: reviewFormData.customer_name,
-          customer_email: reviewFormData.customer_email || null,
-          rating: reviewFormData.rating,
-          comment: reviewFormData.comment,
-          verified: reviewFormData.verified
-        })
+        .insert(insertData)
         .select()
 
       if (error) {
         console.error('❌ Supabase insertion error:', error)
+        console.error('❌ Error details:', JSON.stringify(error, null, 2))
+        console.error('❌ Error message:', error.message)
+        console.error('❌ Error code:', error.code)
+        toast.error(`Database error: ${error.message}`)
         throw error
       }
 
