@@ -17,17 +17,35 @@ import {
   CheckCircle,
   Calendar,
   DollarSign,
-  Wrench
+  Wrench,
+  ExternalLink
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { notFound } from 'next/navigation'
 import { extractIdFromSlug } from '@/lib/slug-utils'
+import Link from 'next/link'
 
 // Dynamic route - will be rendered on demand
 import type { Metadata } from 'next'
 
 interface ContractorPageProps {
   params: Promise<{ slug: string }>
+}
+
+interface ContractorProject {
+  id: string
+  title: string
+  description?: string
+  service_type: string
+  project_size_sqft?: number
+  completion_date?: string
+  before_image_url?: string
+  after_image_url?: string
+  additional_images?: string[]
+  project_city: string
+  project_state: string
+  is_featured: boolean
+  display_order: number
 }
 
 // Fetch contractor data from database by slug or ID
@@ -100,6 +118,45 @@ async function getContractorBySlug(slug: string) {
   }
 }
 
+// Fetch contractor portfolio projects
+async function getContractorProjects(contractorId: string): Promise<ContractorProject[]> {
+  try {
+    console.log('🔍 Fetching contractor projects for ID:', contractorId)
+    
+    const { data: projects, error } = await (supabase as any)
+      .from('contractor_portfolio')
+      .select(`
+        id,
+        title,
+        description,
+        service_type,
+        project_size_sqft,
+        completion_date,
+        before_image_url,
+        after_image_url,
+        additional_images,
+        project_city,
+        project_state,
+        is_featured,
+        display_order
+      `)
+      .eq('contractor_id', contractorId)
+      .order('display_order', { ascending: true })
+      .limit(8) // Show up to 8 recent projects
+
+    if (error) {
+      console.error('Database error fetching contractor projects:', error)
+      return []
+    }
+    
+    console.log(`✅ Found ${projects?.length || 0} projects for contractor`)
+    return projects || []
+  } catch (error) {
+    console.error('Error fetching contractor projects:', error)
+    return []
+  }
+}
+
 export const metadata: Metadata = {
   title: 'Contractor Profile - InsulationPal',
   description: 'View contractor profile, reviews, and get free quotes from verified insulation professionals in your area.',
@@ -118,6 +175,9 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
   }
   
   console.log('✅ ContractorProfilePage: displaying contractor:', contractorData.business_name)
+
+  // Fetch real contractor projects
+  const contractorProjects = await getContractorProjects(contractorData.id)
 
   // Transform database data to component format
   const licenseNumber = contractorData.license_number || "N/A"
@@ -239,36 +299,19 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
     }
   ]
 
-  const recentProjects = [
-    {
-      service: "Attic Insulation",
-      location: "North Phoenix",
-      price: "$1,200",
-      timeline: "1 day",
-      description: "Complete attic insulation upgrade with blown-in cellulose"
-    },
-    {
-      service: "Spray Foam Insulation", 
-      location: "Scottsdale",
-      price: "$2,800",
-      timeline: "2 days",
-      description: "Closed-cell spray foam for energy efficiency improvement"
-    },
-    {
-      service: "Wall Insulation",
-      location: "Tempe",
-      price: "$1,800",
-      timeline: "1 day",
-      description: "Injection foam insulation for existing walls"
-    },
-    {
-      service: "Basement Insulation",
-      location: "Mesa",
-      price: "$2,200",
-      timeline: "2 days",
-      description: "Basement wall and ceiling insulation installation"
-    }
-  ]
+  // Transform real contractor projects for display
+  const recentProjects = contractorProjects.map((project: ContractorProject) => ({
+    id: project.id,
+    service: project.service_type.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) + ' Insulation',
+    location: `${project.project_city}, ${project.project_state}`,
+    timeline: project.completion_date ? 
+      `Completed ${new Date(project.completion_date).toLocaleDateString()}` : 
+      'Recent project',
+    description: project.description || project.title,
+    image: project.after_image_url || project.before_image_url || '/attic-insulation-blown-in.jpg', // fallback image
+    title: project.title,
+    size: project.project_size_sqft
+  }))
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -403,10 +446,19 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                 <CardContent>
                   <div className="space-y-2">
                     {contractor.services.map((service, index) => (
-                      <div key={index} className="flex items-center">
-                        <CheckCircle className="h-4 w-4 text-[#0a4768] mr-2" />
-                        <span className="text-gray-700">{service}</span>
-                      </div>
+                      <Button
+                        key={index}
+                        asChild
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-start text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
+                      >
+                        <Link href={`/services/${service.toLowerCase().replace(/\s+/g, '-')}`}>
+                          <CheckCircle className="h-4 w-4 mr-2" />
+                          {service}
+                          <ExternalLink className="w-3 h-3 ml-auto" />
+                        </Link>
+                      </Button>
                     ))}
                   </div>
                 </CardContent>
@@ -425,9 +477,18 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
                     {contractor.serviceAreas.map((area, index) => (
-                      <Badge key={index} variant="secondary" className="text-[#0a4768]">
-                        {area}
-                      </Badge>
+                      <Button
+                        key={index}
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
+                      >
+                        <Link href={`/arizona/${area.toLowerCase().replace(/\s+/g, '-')}-insulation-contractors`}>
+                          {area}
+                          <ExternalLink className="w-3 h-3 ml-1" />
+                        </Link>
+                      </Button>
                     ))}
                   </div>
                 </CardContent>
@@ -501,33 +562,59 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-[#0a4768] mb-8">Recent Projects</h2>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {recentProjects.map((project, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="mb-4">
-                    <Badge className="bg-[#F5DD22] text-[#0a4768] mb-2">
-                      {project.service}
-                    </Badge>
-                    <div className="font-semibold text-[#0a4768]">{project.location}</div>
-                  </div>
-                  
-                  <p className="text-gray-700 text-sm mb-4">{project.description}</p>
-                  
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Price:</span>
-                      <span className="font-semibold text-[#0a4768]">{project.price}</span>
+          {recentProjects.length === 0 ? (
+            <Card>
+              <CardContent className="text-center py-12">
+                <div className="text-gray-500 mb-4">
+                  <Wrench className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">No Projects Yet</h4>
+                  <p className="text-gray-600">
+                    This contractor hasn't uploaded any project photos yet.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {recentProjects.map((project: any, index: number) => (
+                <Card key={project.id || index} className="hover:shadow-lg transition-shadow overflow-hidden">
+                  <div className="aspect-video relative">
+                    <Image
+                      src={project.image}
+                      alt={`${project.service} project in ${project.location}`}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <Badge className="bg-[#F5DD22] text-[#0a4768]">
+                        {project.service}
+                      </Badge>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Timeline:</span>
-                      <span className="font-semibold text-[#0a4768]">{project.timeline}</span>
-                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  <CardContent className="p-6">
+                    <div className="mb-4">
+                      <div className="font-semibold text-[#0a4768] mb-2">{project.title}</div>
+                      <div className="text-sm text-gray-600 mb-2">{project.location}</div>
+                      <p className="text-gray-700 text-sm mb-4">{project.description}</p>
+                    </div>
+                    
+                    <div className="space-y-2 text-sm">
+                      {project.size && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Size:</span>
+                          <span className="font-semibold text-[#0a4768]">{project.size} sq ft</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Completed:</span>
+                        <span className="font-semibold text-[#0a4768]">{project.timeline}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
