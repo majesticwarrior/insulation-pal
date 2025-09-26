@@ -1,5 +1,3 @@
-'use client'
-
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -17,14 +15,8 @@ import {
   TrendingUp,
   Shield,
   Award,
-  Quote,
-  ChevronLeft,
-  ChevronRight
+  Quote
 } from 'lucide-react'
-import useEmblaCarousel from 'embla-carousel-react'
-import Autoplay from 'embla-carousel-autoplay'
-import { useCallback, useEffect, useState } from 'react'
-import { articles } from '@/lib/articles-data'
 
 // Mock data for Phoenix contractors
 const phoenixContractors = [
@@ -180,44 +172,6 @@ const cityStats = {
 
 
 export default function PhoenixInsulationContractors() {
-  // Carousel setup
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { 
-      loop: true,
-      align: 'start',
-      slidesToScroll: 1,
-      breakpoints: {
-        '(min-width: 768px)': { slidesToScroll: 2 },
-        '(min-width: 1024px)': { slidesToScroll: 3 }
-      }
-    },
-    [Autoplay({ delay: 4000, stopOnInteraction: false })]
-  )
-
-  const [canScrollPrev, setCanScrollPrev] = useState(false)
-  const [canScrollNext, setCanScrollNext] = useState(false)
-
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev()
-  }, [emblaApi])
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext()
-  }, [emblaApi])
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return
-    setCanScrollPrev(emblaApi.canScrollPrev())
-    setCanScrollNext(emblaApi.canScrollNext())
-  }, [emblaApi])
-
-  useEffect(() => {
-    if (!emblaApi) return
-    onSelect()
-    emblaApi.on('select', onSelect)
-    emblaApi.on('reInit', onSelect)
-  }, [emblaApi, onSelect])
-
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -494,89 +448,6 @@ export default function PhoenixInsulationContractors() {
         </div>
       </section>
 
-      {/* Understanding Home Insulation - Carousel */}
-      <section className="py-12" style={{backgroundColor: '#D8E1FF'}}>
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Understanding Home Insulation
-            </h2>
-            <p className="text-lg text-gray-600 mb-6">
-              Learn the basics of home insulation and why it's crucial for Phoenix homes
-            </p>
-          </div>
-          
-          {/* Carousel Container */}
-          <div className="relative max-w-7xl mx-auto">
-            {/* Navigation Buttons */}
-            <div className="flex justify-between items-center mb-6">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={scrollPrev}
-                disabled={!canScrollPrev}
-                className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white disabled:opacity-50"
-              >
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                Previous
-              </Button>
-              
-              <div className="text-sm text-gray-600">
-                Swipe or use arrows to explore • Auto-playing
-              </div>
-              
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={scrollNext}
-                disabled={!canScrollNext}
-                className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white disabled:opacity-50"
-              >
-                Next
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Button>
-            </div>
-
-            {/* Embla Carousel */}
-            <div className="overflow-hidden" ref={emblaRef}>
-              <div className="flex">
-                {articles.map((article, index) => (
-                  <div key={index} className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.333%] pl-4 first:pl-0">
-                    <Card className="overflow-hidden hover:shadow-lg transition-shadow mx-2">
-                      <div className="aspect-video relative">
-                        <Image
-                          src={article.image}
-                          alt={article.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <CardContent className="p-4">
-                        <h3 className="text-lg font-bold text-[#0a4768] mb-2">
-                          {article.title}
-                        </h3>
-                        <p className="text-gray-600 text-sm mb-3">
-                          {article.description}
-                        </p>
-                        <Button 
-                          asChild 
-                          variant="outline" 
-                          size="sm"
-                          className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-                        >
-                          <Link href={`/resources/articles/${article.slug}`}>
-                            Learn More
-                          </Link>
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Google Map Placeholder */}
       <section className="py-12 bg-white">
