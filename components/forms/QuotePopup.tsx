@@ -243,36 +243,107 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
 
   const assignRandomContractors = async (leadId: string, city: string, state: string) => {
     try {
-      // Get contractors in the area
-      const { data: contractors } = await supabase
-        .from('contractors')
-        .select(`
-          id,
-          contractor_service_areas!inner(city)
-        `)
-        .eq('status', 'approved')
-        .eq('contractor_service_areas.city', city)
-        .limit(10)
+      console.log('🔄 Assigning contractors for lead:', leadId, 'in', city, state)
+      
+      // First, try to get contractors by service areas
+      let contractors = null
+      let contractorError = null
+      
+      try {
+        console.log('🔍 Trying to get contractors by service areas...')
+        const { data, error } = await supabase
+          .from('contractor_service_areas')
+          .select(`
+            contractor_id,
+            contractors!inner(
+              id,
+              business_name,
+              status
+            )
+          `)
+          .eq('city', city)
+          .eq('state', state)
+          .eq('contractors.status', 'approved')
+          .limit(10)
+        
+        if (error) {
+          console.error('❌ Service areas query failed:', error)
+          contractorError = error
+        } else {
+          contractors = data?.map((item: any) => item.contractors) || []
+          console.log('✅ Found', contractors.length, 'contractors via service areas')
+        }
+      } catch (serviceAreaError) {
+        console.error('❌ Service area query exception:', serviceAreaError)
+        contractorError = serviceAreaError
+      }
+
+      // Fallback: Get contractors by business city if service areas failed
+      if (!contractors || contractors.length === 0) {
+        console.log('🔄 Fallback: Getting contractors by business city...')
+        try {
+          const { data, error } = await supabase
+            .from('contractors')
+            .select('id, business_name, business_city, business_state')
+            .eq('status', 'approved')
+            .eq('business_city', city)
+            .eq('business_state', state)
+            .limit(10)
+          
+          if (error) {
+            console.error('❌ Business city fallback failed:', error)
+            throw error
+          }
+          
+          contractors = data || []
+          console.log('✅ Fallback found', contractors.length, 'contractors by business city')
+        } catch (fallbackError) {
+          console.error('❌ Both contractor queries failed:', fallbackError)
+          throw fallbackError
+        }
+      }
 
       if (contractors && contractors.length > 0) {
+        console.log('🎯 Available contractors:', contractors.map((c: any) => ({ id: c.id, name: c.business_name })))
+        
         // Randomly select up to 3 contractors
         const shuffled = contractors.sort(() => 0.5 - Math.random())
         const selected = shuffled.slice(0, Math.min(3, contractors.length))
+        
+        console.log('🎲 Selected contractors:', selected.map((c: any) => ({ id: c.id, name: c.business_name })))
 
         // Create lead assignments
         const assignments = selected.map((contractor: any) => ({
           lead_id: leadId,
           contractor_id: contractor.id,
+          status: 'sent',
           cost: 20.00
         }))
 
-        await (supabase as any).from('lead_assignments').insert(assignments)
+        console.log('📋 Creating assignments:', assignments)
+        
+        const { data: assignmentData, error: assignmentError } = await (supabase as any)
+          .from('lead_assignments')
+          .insert(assignments)
+          .select()
+
+        if (assignmentError) {
+          console.error('❌ Assignment insertion failed:', assignmentError)
+          throw assignmentError
+        }
+        
+        console.log('✅ Successfully assigned lead to', selected.length, 'contractors:', assignmentData)
+        toast.success(`Lead assigned to ${selected.length} contractors in ${city}!`)
 
         // TODO: Send notifications to contractors
         // This would integrate with email/SMS service
+      } else {
+        console.warn('⚠️ No contractors found in', city, state)
+        toast.warning(`No contractors found in ${city}. Lead saved but not assigned.`)
       }
     } catch (error) {
-      console.error('Error assigning contractors:', error)
+      console.error('❌ Error assigning contractors:', error)
+      toast.error('Lead saved but contractor assignment failed. Please check admin dashboard.')
     }
   }
 
