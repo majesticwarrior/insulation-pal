@@ -39,6 +39,8 @@ export function LeadsList({ contractorId }: { contractorId: string }) {
 
   async function fetchLeads() {
     try {
+      console.log('🔍 LeadsList: Fetching leads for contractor:', contractorId)
+      
       const { data, error } = await supabase
         .from('lead_assignments')
         .select(`
@@ -63,10 +65,18 @@ export function LeadsList({ contractorId }: { contractorId: string }) {
         .eq('contractor_id', contractorId)
         .order('created_at', { ascending: false })
 
-      if (error) throw error
+      console.log('🔍 LeadsList: Query result:', { data, error })
+      console.log('🔍 LeadsList: Data length:', data?.length || 0)
+      
+      if (error) {
+        console.error('❌ LeadsList: Query error:', error)
+        throw error
+      }
+      
+      console.log('✅ LeadsList: Successfully fetched leads:', data)
       setLeads(data || [])
     } catch (error) {
-      console.error('Error fetching leads:', error)
+      console.error('❌ LeadsList: Error fetching leads:', error)
     } finally {
       setLoading(false)
     }
