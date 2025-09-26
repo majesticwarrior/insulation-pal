@@ -437,62 +437,27 @@ export default function AdminDashboard() {
 
       console.log('🔄 Final insert data with correct types:', insertData)
 
-      // Try with a more direct approach, using rpc if needed
-      console.log('🔄 Attempting to insert review directly...')
+      // Use admin RPC function to bypass RLS policies
+      console.log('🔄 Using admin RPC function to insert review...')
       
-      let { data, error } = await (supabase as any)
-        .from('reviews')
-        .insert(insertData)
-        .select()
-
-      // If direct insertion fails due to RLS, log the specific error
-      if (error && error.code === '42501') {
-        console.error('❌ RLS Policy blocking insertion. Trying alternative approach...')
-        
-        // Try without the select() to see if that's the issue
-        const { data: data2, error: error2 } = await (supabase as any)
-          .from('reviews')
-          .insert(insertData)
-          
-        if (error2) {
-          console.error('❌ Alternative approach also failed:', error2)
-          throw error2
-        }
-        
-        console.log('✅ Alternative insertion successful!')
-        // If successful, set data to a minimal response
-        data = [{ id: 'inserted' }]
-        error = null
-      } else if (error) {
-        throw error
-      }
+      const { data, error } = await (supabase as any)
+        .rpc('admin_insert_review', {
+          p_contractor_id: insertData.contractor_id,
+          p_customer_name: insertData.customer_name,
+          p_customer_email: insertData.customer_email,
+          p_rating: insertData.rating,
+          p_comment: insertData.comment,
+          p_verified: insertData.verified
+        })
 
       if (error) {
-        console.error('❌ Supabase insertion error:', error)
-        console.error('❌ Error details:', JSON.stringify(error, null, 2))
-        console.error('❌ Error message:', error.message)
-        console.error('❌ Error code:', error.code)
-        toast.error(`Database error: ${error.message}`)
+        console.error('❌ Admin RPC function failed:', error)
         throw error
       }
+      
+      console.log('✅ Admin review inserted successfully with ID:', data)
 
-      console.log('✅ Review inserted successfully:', data)
-
-      // Update contractor's review stats
-      const contractor = contractors.find(c => c.id === reviewFormData.contractor_id)
-      if (contractor) {
-        const newTotalReviews = (contractor.total_reviews || 0) + 1
-        const currentTotalRating = (contractor.average_rating || 0) * (contractor.total_reviews || 0)
-        const newAverageRating = (currentTotalRating + reviewFormData.rating) / newTotalReviews
-
-        await (supabase as any)
-          .from('contractors')
-          .update({
-            total_reviews: newTotalReviews,
-            average_rating: parseFloat(newAverageRating.toFixed(2))
-          })
-          .eq('id', reviewFormData.contractor_id)
-      }
+      // Note: Contractor stats are automatically updated by the RPC function
 
       toast.success('Review added successfully')
       setIsReviewDialogOpen(false)
