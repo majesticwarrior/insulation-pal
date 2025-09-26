@@ -194,10 +194,12 @@ export default async function PhoenixInsulationContractors() {
   const recentProjects = await getPhoenixRecentProjects()
   
   const cityStats = {
-    totalReviews: 847, // Base reviews from the platform
-    averageRating: 4.8,
+    totalReviews: phoenixContractors.reduce((sum: number, contractor: any) => sum + contractor.reviewCount, 0),
+    averageRating: phoenixContractors.length > 0 ? 
+      (phoenixContractors.reduce((sum: number, contractor: any) => sum + contractor.rating, 0) / phoenixContractors.length).toFixed(1) : 
+      '4.8',
     totalContractors: phoenixContractors.length,
-    jobsCompleted: phoenixContractors.reduce((sum: number, contractor: any) => sum + contractor.jobsCompleted, 0) + 234
+    jobsCompleted: phoenixContractors.reduce((sum: number, contractor: any) => sum + contractor.jobsCompleted, 0)
   }
   
   const renderStars = (rating: number) => {
