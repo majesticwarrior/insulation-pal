@@ -437,6 +437,32 @@ export default function AdminDashboard() {
 
       console.log('🔄 Final insert data with correct types:', insertData)
 
+      // First test if the RPC function exists
+      console.log('🔍 Testing if admin_insert_review function exists...')
+      try {
+        const { data: testData, error: testError } = await (supabase as any)
+          .rpc('admin_insert_review', {
+            p_contractor_id: '00000000-0000-0000-0000-000000000000', // dummy UUID
+            p_customer_name: 'test',
+            p_rating: 5
+          })
+        
+        if (testError && testError.code === '42883') {
+          console.error('❌ RPC function does not exist!', testError)
+          toast.error('Admin function not found in database')
+          return
+        } else if (testError && testError.message?.includes('does not exist')) {
+          // Expected error for dummy contractor ID
+          console.log('✅ RPC function exists but contractor validation failed (expected)')
+        } else if (testError) {
+          console.log('✅ RPC function exists, got validation error:', testError.message)
+        } else {
+          console.log('✅ RPC function exists and test passed')
+        }
+      } catch (e) {
+        console.error('❌ Error testing RPC function:', e)
+      }
+
       // Use admin RPC function to bypass RLS policies
       console.log('🔄 Using admin RPC function to insert review...')
       
@@ -452,6 +478,12 @@ export default function AdminDashboard() {
 
       if (error) {
         console.error('❌ Admin RPC function failed:', error)
+        console.error('❌ RPC Error details:', JSON.stringify(error, null, 2))
+        console.error('❌ RPC Error message:', error.message)
+        console.error('❌ RPC Error code:', error.code)
+        console.error('❌ RPC Error hint:', error.hint)
+        console.error('❌ RPC Error details:', error.details)
+        toast.error(`RPC Error: ${error.message}`)
         throw error
       }
       
