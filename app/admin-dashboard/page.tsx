@@ -382,18 +382,34 @@ export default function AdminDashboard() {
 
     setIsAddingReview(true)
     try {
-      const { error } = await (supabase as any)
+      console.log('🔄 Attempting to insert review with data:', {
+        contractor_id: reviewFormData.contractor_id,
+        customer_name: reviewFormData.customer_name,
+        customer_email: reviewFormData.customer_email || null,
+        rating: reviewFormData.rating,
+        comment: reviewFormData.comment,
+        verified: reviewFormData.verified
+      })
+
+      const { data, error } = await (supabase as any)
         .from('reviews')
         .insert({
           contractor_id: reviewFormData.contractor_id,
+          lead_id: null, // Add this field as it's required in the schema
           customer_name: reviewFormData.customer_name,
           customer_email: reviewFormData.customer_email || null,
           rating: reviewFormData.rating,
           comment: reviewFormData.comment,
           verified: reviewFormData.verified
         })
+        .select()
 
-      if (error) throw error
+      if (error) {
+        console.error('❌ Supabase insertion error:', error)
+        throw error
+      }
+
+      console.log('✅ Review inserted successfully:', data)
 
       // Update contractor's review stats
       const contractor = contractors.find(c => c.id === reviewFormData.contractor_id)
