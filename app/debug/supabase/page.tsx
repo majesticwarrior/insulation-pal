@@ -21,30 +21,62 @@ export default function SupabaseDebugPage() {
     try {
       console.log('🔍 Testing Supabase connection...')
       
-      const { data, error } = await supabase
-        .from('contractors')
-        .select('id')
-        .limit(1)
+      // Test multiple tables to see what exists
+      const tests = [
+        { table: 'contractors', name: 'Contractors' },
+        { table: 'leads', name: 'Leads' },
+        { table: 'reviews', name: 'Reviews' }
+      ]
 
+      const results = []
+
+      for (const test of tests) {
+        try {
+          const { data, error } = await supabase
+            .from(test.table)
+            .select('id')
+            .limit(1)
+
+          results.push({
+            table: test.name,
+            success: !error,
+            error: error?.message || null,
+            count: data?.length || 0
+          })
+
+          console.log(`🔍 ${test.name} table:`, error ? '❌ Failed' : '✅ Success', data?.length || 0, 'records')
+          if (error) {
+            console.error(`❌ ${test.name} error:`, error)
+          }
+        } catch (err: any) {
+          results.push({
+            table: test.name,
+            success: false,
+            error: err.message,
+            count: 0
+          })
+          console.error(`🚨 ${test.name} critical error:`, err)
+        }
+      }
+
+      // Set overall connection test result
+      const hasAnySuccess = results.some(r => r.success)
       setConnectionTest({
-        success: !error,
-        error: error?.message || null,
-        data: data?.length || 0,
-        timestamp: new Date().toISOString()
+        success: hasAnySuccess,
+        error: hasAnySuccess ? null : 'All table tests failed',
+        data: results.filter(r => r.success).length,
+        timestamp: new Date().toISOString(),
+        details: results
       })
 
-      if (error) {
-        console.error('❌ Connection test failed:', error)
-      } else {
-        console.log('✅ Connection test passed:', data?.length || 0, 'records found')
-      }
     } catch (err: any) {
       console.error('🚨 Critical connection error:', err)
       setConnectionTest({
         success: false,
         error: err.message,
         data: 0,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        details: []
       })
     }
   }
@@ -109,9 +141,9 @@ export default function SupabaseDebugPage() {
       <div className={`rounded-lg p-6 mb-6 ${connectionTest?.success ? 'bg-green-50' : 'bg-red-50'}`}>
         <h2 className="text-xl font-semibold mb-4">Connection Test</h2>
         {connectionTest ? (
-          <div className="space-y-2 text-sm">
+          <div className="space-y-4 text-sm">
             <div>
-              <strong>Status:</strong> {connectionTest.success ? '✅ Success' : '❌ Failed'}
+              <strong>Overall Status:</strong> {connectionTest.success ? '✅ Success' : '❌ Failed'}
             </div>
             <div>
               <strong>Timestamp:</strong> {connectionTest.timestamp}
@@ -121,9 +153,27 @@ export default function SupabaseDebugPage() {
                 <strong>Error:</strong> {connectionTest.error}
               </div>
             )}
-            {connectionTest.success && (
+            <div>
+              <strong>Tables Accessible:</strong> {connectionTest.data}
+            </div>
+            
+            {/* Detailed Table Results */}
+            {connectionTest.details && connectionTest.details.length > 0 && (
               <div>
-                <strong>Records Found:</strong> {connectionTest.data}
+                <strong>Table Details:</strong>
+                <div className="mt-2 space-y-1">
+                  {connectionTest.details.map((detail: any, index: number) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <span>{detail.success ? '✅' : '❌'}</span>
+                      <span className="font-mono">{detail.table}</span>
+                      {detail.success ? (
+                        <span className="text-green-600">({detail.count} records)</span>
+                      ) : (
+                        <span className="text-red-600">({detail.error})</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

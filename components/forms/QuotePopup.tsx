@@ -162,20 +162,49 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
 
       // Test Supabase connection before attempting insert
       try {
+        console.log('🔍 Testing connection to leads table...')
         const { data: testData, error: testError } = await (supabase as any)
           .from('leads')
           .select('id')
           .limit(1)
         
+        console.log('🔍 Connection test result:', {
+          data: testData,
+          error: testError,
+          errorKeys: testError ? Object.keys(testError) : [],
+          errorStringified: JSON.stringify(testError, null, 2)
+        })
+        
         if (testError) {
           console.error('🚨 Supabase connection test failed:', testError)
-          throw new Error(`Database connection failed: ${testError.message}`)
+          console.error('🚨 Error details:', {
+            message: testError.message || 'No message',
+            code: testError.code || 'No code',
+            details: testError.details || 'No details',
+            hint: testError.hint || 'No hint',
+            status: testError.status || 'No status'
+          })
+          
+          // Check if it's a "table doesn't exist" error
+          if (testError.message?.includes('relation') && testError.message?.includes('does not exist')) {
+            throw new Error(`Database table 'leads' does not exist. Please run the database migration script.`)
+          }
+          
+          throw new Error(`Database connection failed: ${testError.message || 'Unknown error'}`)
         }
         
-        console.log('✅ Supabase connection test passed')
-      } catch (connectionError) {
+        console.log('✅ Supabase connection test passed, found', testData?.length || 0, 'records')
+      } catch (connectionError: any) {
         console.error('🚨 Critical Supabase connection error:', connectionError)
-        throw new Error(`Cannot connect to database. Please check your environment variables.`)
+        console.error('🚨 Error type:', typeof connectionError)
+        console.error('🚨 Error constructor:', connectionError.constructor.name)
+        
+        // If it's our custom error, re-throw it
+        if (connectionError.message?.includes('Database')) {
+          throw connectionError
+        }
+        
+        throw new Error(`Cannot connect to database. Please check your environment variables and database setup.`)
       }
 
       const { data: lead, error } = await (supabase as any)
