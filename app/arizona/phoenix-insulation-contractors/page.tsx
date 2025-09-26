@@ -169,6 +169,48 @@ async function getPhoenixRecentProjects() {
   }
 }
 
+// Fetch Phoenix contractor reviews
+async function getPhoenixReviews() {
+  try {
+    console.log('🔍 Fetching Phoenix reviews...')
+    
+    const { data: reviews, error } = await (supabase as any)
+      .from('reviews')
+      .select(`
+        id,
+        customer_name,
+        rating,
+        title,
+        comment,
+        service_type,
+        location,
+        verified,
+        created_at,
+        contractors!inner(
+          business_name,
+          business_city,
+          business_state,
+          status
+        )
+      `)
+      .eq('contractors.status', 'approved')
+      .or('location.ilike.%phoenix%,contractors.business_city.ilike.%phoenix%')
+      .order('created_at', { ascending: false })
+      .limit(15)
+
+    if (error) {
+      console.error('Error fetching Phoenix reviews:', error)
+      return []
+    }
+
+    console.log(`Found ${reviews?.length || 0} reviews in Phoenix`)
+    return reviews || []
+  } catch (error) {
+    console.error('Error in getPhoenixReviews:', error)
+    return []
+  }
+}
+
 
 
 // Add Phoenix area cities with 50k+ population
@@ -192,6 +234,7 @@ const phoenixAreaCities = [
 export default async function PhoenixInsulationContractors() {
   const phoenixContractors = await getPhoenixContractors()
   const recentProjects = await getPhoenixRecentProjects()
+  const phoenixReviews = await getPhoenixReviews()
   
   const cityStats = {
     totalReviews: phoenixContractors.reduce((sum: number, contractor: any) => sum + contractor.reviewCount, 0),
@@ -520,8 +563,7 @@ export default async function PhoenixInsulationContractors() {
             All Phoenix Reviews
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Reviews will be populated from database when available */}
-            {[].map((review: any) => (
+            {phoenixReviews.length > 0 ? phoenixReviews.map((review: any) => (
               <Card key={review.id} className="border-l-4 border-l-[#F5DD22]">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
@@ -533,17 +575,33 @@ export default async function PhoenixInsulationContractors() {
                       </Badge>
                     )}
                   </div>
+                  {review.title && (
+                    <h4 className="font-semibold text-[#0a4768] mb-2">{review.title}</h4>
+                  )}
                   <blockquote className="text-gray-700 mb-4">
                     "{review.comment}"
                   </blockquote>
                   <div className="text-sm text-gray-600">
-                    <div className="font-medium">{review.customerName}</div>
-                    <div>{review.contractorName}</div>
-                    <div>{new Date(review.date).toLocaleDateString()}</div>
+                    <div className="font-medium">{review.customer_name}</div>
+                    <div>{review.contractors.business_name}</div>
+                    <div>{new Date(review.created_at).toLocaleDateString()}</div>
+                    {review.service_type && (
+                      <div className="text-xs text-[#0a4768] mt-1">
+                        Service: {review.service_type}
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
-            ))}
+            )) : (
+              <div className="col-span-full text-center py-12">
+                <Star className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">No Reviews Yet</h4>
+                <p className="text-gray-600">
+                  Phoenix contractor reviews will appear here as customers share their experiences.
+                </p>
+              </div>
+            )}
           </div>
           
           <div className="text-center mt-8">

@@ -473,7 +473,6 @@ export default function AdminDashboard() {
           contractor_id: reviewFormData.contractor_id,
           customer_name: reviewFormData.customer_name,
           customer_email: reviewFormData.customer_email || null,
-          customer_image: customerImageUrl || null,
           rating: reviewFormData.rating,
           title: reviewFormData.title || null,
           comment: reviewFormData.comment,

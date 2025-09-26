@@ -157,6 +157,42 @@ async function getContractorProjects(contractorId: string): Promise<ContractorPr
   }
 }
 
+// Fetch contractor reviews
+async function getContractorReviews(contractorId: string) {
+  try {
+    console.log('🔍 Fetching contractor reviews for ID:', contractorId)
+    
+    const { data: reviews, error } = await (supabase as any)
+      .from('reviews')
+      .select(`
+        id,
+        customer_name,
+        customer_email,
+        rating,
+        title,
+        comment,
+        service_type,
+        location,
+        verified,
+        created_at
+      `)
+      .eq('contractor_id', contractorId)
+      .order('created_at', { ascending: false })
+      .limit(10) // Show up to 10 recent reviews
+
+    if (error) {
+      console.error('Database error fetching contractor reviews:', error)
+      return []
+    }
+    
+    console.log(`✅ Found ${reviews?.length || 0} reviews for contractor`)
+    return reviews || []
+  } catch (error) {
+    console.error('Error fetching contractor reviews:', error)
+    return []
+  }
+}
+
 export const metadata: Metadata = {
   title: 'Contractor Profile - InsulationPal',
   description: 'View contractor profile, reviews, and get free quotes from verified insulation professionals in your area.',
@@ -176,8 +212,9 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
   
   console.log('✅ ContractorProfilePage: displaying contractor:', contractorData.business_name)
 
-  // Fetch real contractor projects
+  // Fetch real contractor projects and reviews
   const contractorProjects = await getContractorProjects(contractorData.id)
+  const contractorReviews = await getContractorReviews(contractorData.id)
 
   // Transform database data to component format
   const licenseNumber = contractorData.license_number || "N/A"
@@ -260,44 +297,21 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
     ]
   }
 
-  const recentReviews = [
-    {
-      name: "Sarah Johnson",
-      location: "Scottsdale, AZ",
-      rating: 5,
-      date: "September 10, 2025",
-      service: "Attic Insulation",
-      comment: "Outstanding work! Michael and his team were professional, on time, and cleaned up thoroughly. Our energy bills have already dropped significantly.",
-      verified: true
-    },
-    {
-      name: "David Chen",
-      location: "Tempe, AZ", 
-      rating: 5,
-      date: "September 5, 2025",
-      service: "Spray Foam Insulation",
-      comment: "Excellent service from start to finish. Very knowledgeable about different insulation options and helped us choose the best solution for our home.",
-      verified: true
-    },
-    {
-      name: "Maria Gonzalez",
-      location: "Phoenix, AZ",
-      rating: 5,
-      date: "August 28, 2025",
-      service: "Wall Insulation",
-      comment: "Elite Insulation exceeded our expectations. Fair pricing, quality work, and great communication throughout the project.",
-      verified: true
-    },
-    {
-      name: "Robert Wilson",
-      location: "Mesa, AZ",
-      rating: 4,
-      date: "August 20, 2025",
-      service: "Crawl Space Insulation",
-      comment: "Good work overall. Arrived on time and completed the job as promised. Would recommend to others.",
-      verified: true
-    }
-  ]
+  // Transform real contractor reviews for display
+  const recentReviews = contractorReviews.map((review: any) => ({
+    name: review.customer_name,
+    location: review.location || `${contractorData.business_city}, ${contractorData.business_state}`,
+    rating: review.rating,
+    date: new Date(review.created_at).toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    }),
+    service: review.service_type || 'Insulation Service',
+    comment: review.comment,
+    verified: review.verified,
+    title: review.title
+  }))
 
   // Transform real contractor projects for display
   const recentProjects = contractorProjects.map((project: ContractorProject) => ({
@@ -525,8 +539,21 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-[#0a4768] mb-8">Customer Reviews</h2>
           
-          <div className="grid md:grid-cols-2 gap-6">
-            {recentReviews.map((review, index) => (
+          {recentReviews.length === 0 ? (
+            <Card>
+              <CardContent className="text-center py-12">
+                <div className="text-gray-500 mb-4">
+                  <Star className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">No Reviews Yet</h4>
+                  <p className="text-gray-600">
+                    This contractor hasn't received any reviews yet. Be the first to share your experience!
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-6">
+              {recentReviews.map((review: any, index: number) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
@@ -553,7 +580,8 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                 </CardContent>
               </Card>
             ))}
-          </div>
+            </div>
+          )}
         </div>
       </section>
 
