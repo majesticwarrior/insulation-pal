@@ -8,23 +8,54 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Shield, Users, Clock, CheckCircle, XCircle, Eye, DollarSign, LogOut } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Shield, Users, Clock, CheckCircle, XCircle, Eye, DollarSign, LogOut, Edit, Plus, Star, UserCog } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 
 interface Contractor {
   id: string
+  user_id?: string
   business_name: string
   email: string
-  license_number: string
+  license_number?: string
   status: string
   credits: number
   created_at: string
-  contact_phone: string
-  business_city: string
-  business_state: string
+  contact_phone?: string
+  contact_email?: string
+  business_address?: string
+  business_city?: string
+  business_state?: string
+  business_zip?: string
   total_reviews: number
   average_rating: number
+  total_completed_projects?: number
+  profile_image?: string
+  bio?: string
+  founded_year?: number
+  employee_count?: number
+  license_verified?: boolean
+  insurance_verified?: boolean
+  certifications?: string[]
+}
+
+interface Review {
+  id?: string
+  contractor_id: string
+  customer_name: string
+  customer_email?: string
+  rating: number
+  title?: string
+  comment?: string
+  service_type?: string
+  location?: string
+  verified: boolean
+  created_at?: string
 }
 
 export default function AdminDashboard() {
@@ -36,6 +67,28 @@ export default function AdminDashboard() {
     approved: 0,
     suspended: 0
   })
+  
+  // Profile editing state
+  const [selectedContractor, setSelectedContractor] = useState<Contractor | null>(null)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [editFormData, setEditFormData] = useState<Partial<Contractor>>({})
+  const [isUpdating, setIsUpdating] = useState(false)
+  
+  // Review addition state
+  const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false)
+  const [reviewFormData, setReviewFormData] = useState<Review>({
+    contractor_id: '',
+    customer_name: '',
+    customer_email: '',
+    rating: 5,
+    title: '',
+    comment: '',
+    service_type: '',
+    location: '',
+    verified: true
+  })
+  const [isAddingReview, setIsAddingReview] = useState(false)
+  
   const router = useRouter()
 
   useEffect(() => {
@@ -52,22 +105,33 @@ export default function AdminDashboard() {
     try {
       setIsLoading(true)
       
-      // Fetch all contractors
+      // Fetch all contractors with complete profile data
       const { data: contractorsData, error } = await (supabase as any)
         .from('contractors')
         .select(`
           id,
+          user_id,
           business_name,
-          email,
           license_number,
           status,
           credits,
           created_at,
           contact_phone,
+          contact_email,
+          business_address,
           business_city,
           business_state,
+          business_zip,
           total_reviews,
-          average_rating
+          average_rating,
+          total_completed_projects,
+          profile_image,
+          bio,
+          founded_year,
+          employee_count,
+          license_verified,
+          insurance_verified,
+          certifications
         `)
         .order('created_at', { ascending: false })
 
@@ -258,6 +322,128 @@ export default function AdminDashboard() {
     router.push('/admin-login')
   }
 
+  // Profile editing functions
+  const openEditDialog = (contractor: Contractor) => {
+    setSelectedContractor(contractor)
+    setEditFormData({
+      business_name: contractor.business_name,
+      license_number: contractor.license_number || '',
+      contact_phone: contractor.contact_phone || '',
+      contact_email: contractor.contact_email || '',
+      business_address: contractor.business_address || '',
+      business_city: contractor.business_city || '',
+      business_state: contractor.business_state || '',
+      business_zip: contractor.business_zip || '',
+      bio: contractor.bio || '',
+      founded_year: contractor.founded_year || new Date().getFullYear(),
+      employee_count: contractor.employee_count || 1,
+      license_verified: contractor.license_verified || false,
+      insurance_verified: contractor.insurance_verified || false
+    })
+    setIsEditDialogOpen(true)
+  }
+
+  const updateContractorProfile = async () => {
+    if (!selectedContractor) return
+
+    setIsUpdating(true)
+    try {
+      const { error } = await (supabase as any)
+        .from('contractors')
+        .update(editFormData)
+        .eq('id', selectedContractor.id)
+
+      if (error) throw error
+
+      toast.success('Contractor profile updated successfully')
+      setIsEditDialogOpen(false)
+      loadContractors()
+    } catch (error) {
+      console.error('Error updating contractor profile:', error)
+      toast.error('Failed to update contractor profile')
+    } finally {
+      setIsUpdating(false)
+    }
+  }
+
+  // Review addition functions
+  const openReviewDialog = (contractor: Contractor) => {
+    setReviewFormData({
+      contractor_id: contractor.id,
+      customer_name: '',
+      customer_email: '',
+      rating: 5,
+      title: '',
+      comment: '',
+      service_type: 'attic',
+      location: contractor.business_city ? `${contractor.business_city}, ${contractor.business_state}` : '',
+      verified: true
+    })
+    setIsReviewDialogOpen(true)
+  }
+
+  const addReview = async () => {
+    if (!reviewFormData.customer_name.trim() || !reviewFormData.comment?.trim()) {
+      toast.error('Customer name and comment are required')
+      return
+    }
+
+    setIsAddingReview(true)
+    try {
+      const { error } = await (supabase as any)
+        .from('reviews')
+        .insert({
+          contractor_id: reviewFormData.contractor_id,
+          customer_name: reviewFormData.customer_name,
+          customer_email: reviewFormData.customer_email || null,
+          rating: reviewFormData.rating,
+          title: reviewFormData.title || null,
+          comment: reviewFormData.comment,
+          service_type: reviewFormData.service_type || null,
+          location: reviewFormData.location || null,
+          verified: reviewFormData.verified
+        })
+
+      if (error) throw error
+
+      // Update contractor's review stats
+      const contractor = contractors.find(c => c.id === reviewFormData.contractor_id)
+      if (contractor) {
+        const newTotalReviews = (contractor.total_reviews || 0) + 1
+        const currentTotalRating = (contractor.average_rating || 0) * (contractor.total_reviews || 0)
+        const newAverageRating = (currentTotalRating + reviewFormData.rating) / newTotalReviews
+
+        await (supabase as any)
+          .from('contractors')
+          .update({
+            total_reviews: newTotalReviews,
+            average_rating: parseFloat(newAverageRating.toFixed(2))
+          })
+          .eq('id', reviewFormData.contractor_id)
+      }
+
+      toast.success('Review added successfully')
+      setIsReviewDialogOpen(false)
+      setReviewFormData({
+        contractor_id: '',
+        customer_name: '',
+        customer_email: '',
+        rating: 5,
+        title: '',
+        comment: '',
+        service_type: '',
+        location: '',
+        verified: true
+      })
+      loadContractors()
+    } catch (error) {
+      console.error('Error adding review:', error)
+      toast.error('Failed to add review')
+    } finally {
+      setIsAddingReview(false)
+    }
+  }
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
@@ -362,6 +548,8 @@ export default function AdminDashboard() {
           <TabsList>
             <TabsTrigger value="contractors">Contractor Management</TabsTrigger>
             <TabsTrigger value="pending">Pending Approvals ({stats.pending})</TabsTrigger>
+            <TabsTrigger value="profiles">Profile Management</TabsTrigger>
+            <TabsTrigger value="reviews">Add Reviews</TabsTrigger>
           </TabsList>
 
           <TabsContent value="contractors">
@@ -463,6 +651,24 @@ export default function AdminDashboard() {
                                 className="border-blue-300 text-blue-600 hover:bg-blue-50 text-xs px-2 py-1"
                               >
                                 Edit Credits
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => openEditDialog(contractor)}
+                                className="border-green-300 text-green-600 hover:bg-green-50 text-xs px-2 py-1"
+                              >
+                                <Edit className="h-3 w-3 mr-1" />
+                                Edit
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => openReviewDialog(contractor)}
+                                className="border-purple-300 text-purple-600 hover:bg-purple-50 text-xs px-2 py-1"
+                              >
+                                <Star className="h-3 w-3 mr-1" />
+                                Review
                               </Button>
                               <Button
                                 size="sm"
@@ -570,7 +776,477 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* Profile Management Tab */}
+          <TabsContent value="profiles">
+            <Card>
+              <CardHeader>
+                <CardTitle>Profile Management</CardTitle>
+                <CardDescription>
+                  View and edit detailed contractor profile information
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Business Name</TableHead>
+                        <TableHead>Contact Info</TableHead>
+                        <TableHead>Location</TableHead>
+                        <TableHead>Verification</TableHead>
+                        <TableHead>Business Details</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {contractors.map((contractor) => (
+                        <TableRow key={contractor.id}>
+                          <TableCell className="font-medium">
+                            <div>
+                              <div className="font-semibold">{contractor.business_name}</div>
+                              <div className="text-sm text-gray-500">
+                                License: {contractor.license_number || 'N/A'}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              <div>📧 {contractor.contact_email || 'N/A'}</div>
+                              <div>📞 {contractor.contact_phone || 'N/A'}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              <div>{contractor.business_address || 'N/A'}</div>
+                              <div>
+                                {contractor.business_city && contractor.business_state
+                                  ? `${contractor.business_city}, ${contractor.business_state} ${contractor.business_zip || ''}`
+                                  : 'N/A'
+                                }
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <Badge 
+                                variant={contractor.license_verified ? "default" : "secondary"}
+                                className={contractor.license_verified ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
+                              >
+                                {contractor.license_verified ? "License ✓" : "License ✗"}
+                              </Badge>
+                              <Badge 
+                                variant={contractor.insurance_verified ? "default" : "secondary"}
+                                className={contractor.insurance_verified ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
+                              >
+                                {contractor.insurance_verified ? "Insurance ✓" : "Insurance ✗"}
+                              </Badge>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              <div>Founded: {contractor.founded_year || 'N/A'}</div>
+                              <div>Employees: {contractor.employee_count || 'N/A'}</div>
+                              <div>Projects: {contractor.total_completed_projects || 0}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => openEditDialog(contractor)}
+                              className="border-blue-300 text-blue-600 hover:bg-blue-50 text-xs px-2 py-1"
+                            >
+                              <Edit className="h-3 w-3 mr-1" />
+                              Edit Profile
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Add Reviews Tab */}
+          <TabsContent value="reviews">
+            <Card>
+              <CardHeader>
+                <CardTitle>Add Manual Reviews</CardTitle>
+                <CardDescription>
+                  Add reviews for contractors manually to help build their reputation
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Business Name</TableHead>
+                        <TableHead>Current Reviews</TableHead>
+                        <TableHead>Average Rating</TableHead>
+                        <TableHead>Location</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {contractors.filter(c => c.status === 'approved').map((contractor) => (
+                        <TableRow key={contractor.id}>
+                          <TableCell className="font-medium">
+                            {contractor.business_name}
+                          </TableCell>
+                          <TableCell>
+                            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium">
+                              {contractor.total_reviews || 0} reviews
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center">
+                              <Star className="h-4 w-4 text-yellow-400 mr-1" />
+                              <span className="font-semibold">
+                                {contractor.average_rating ? contractor.average_rating.toFixed(1) : '0.0'}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {contractor.business_city && contractor.business_state
+                              ? `${contractor.business_city}, ${contractor.business_state}`
+                              : 'Not specified'
+                            }
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              size="sm"
+                              onClick={() => openReviewDialog(contractor)}
+                              className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] text-xs px-2 py-1"
+                            >
+                              <Plus className="h-3 w-3 mr-1" />
+                              Add Review
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {contractors.filter(c => c.status === 'approved').length === 0 && (
+                        <TableRow>
+                          <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                            No approved contractors available for reviews
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
+
+        {/* Edit Contractor Profile Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Edit Contractor Profile</DialogTitle>
+            </DialogHeader>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Basic Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Basic Information</h3>
+                
+                <div>
+                  <Label htmlFor="business_name">Business Name</Label>
+                  <Input
+                    id="business_name"
+                    value={editFormData.business_name || ''}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, business_name: e.target.value }))}
+                    placeholder="Business Name"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="license_number">License Number</Label>
+                  <Input
+                    id="license_number"
+                    value={editFormData.license_number || ''}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, license_number: e.target.value }))}
+                    placeholder="License Number"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="contact_phone">Contact Phone</Label>
+                  <Input
+                    id="contact_phone"
+                    value={editFormData.contact_phone || ''}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, contact_phone: e.target.value }))}
+                    placeholder="(555) 123-4567"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="contact_email">Contact Email</Label>
+                  <Input
+                    id="contact_email"
+                    type="email"
+                    value={editFormData.contact_email || ''}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, contact_email: e.target.value }))}
+                    placeholder="contact@business.com"
+                  />
+                </div>
+              </div>
+
+              {/* Location & Business Details */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Location & Business Details</h3>
+                
+                <div>
+                  <Label htmlFor="business_address">Business Address</Label>
+                  <Input
+                    id="business_address"
+                    value={editFormData.business_address || ''}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, business_address: e.target.value }))}
+                    placeholder="123 Main St"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Label htmlFor="business_city">City</Label>
+                    <Input
+                      id="business_city"
+                      value={editFormData.business_city || ''}
+                      onChange={(e) => setEditFormData(prev => ({ ...prev, business_city: e.target.value }))}
+                      placeholder="Phoenix"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="business_state">State</Label>
+                    <Input
+                      id="business_state"
+                      value={editFormData.business_state || ''}
+                      onChange={(e) => setEditFormData(prev => ({ ...prev, business_state: e.target.value }))}
+                      placeholder="AZ"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="business_zip">ZIP Code</Label>
+                  <Input
+                    id="business_zip"
+                    value={editFormData.business_zip || ''}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, business_zip: e.target.value }))}
+                    placeholder="85001"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Label htmlFor="founded_year">Founded Year</Label>
+                    <Input
+                      id="founded_year"
+                      type="number"
+                      value={editFormData.founded_year || ''}
+                      onChange={(e) => setEditFormData(prev => ({ ...prev, founded_year: parseInt(e.target.value) || undefined }))}
+                      placeholder="2020"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="employee_count">Employee Count</Label>
+                    <Input
+                      id="employee_count"
+                      type="number"
+                      value={editFormData.employee_count || ''}
+                      onChange={(e) => setEditFormData(prev => ({ ...prev, employee_count: parseInt(e.target.value) || undefined }))}
+                      placeholder="5"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Verification Status</Label>
+                  <div className="space-y-2">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={editFormData.license_verified || false}
+                        onChange={(e) => setEditFormData(prev => ({ ...prev, license_verified: e.target.checked }))}
+                      />
+                      <span>License Verified</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={editFormData.insurance_verified || false}
+                        onChange={(e) => setEditFormData(prev => ({ ...prev, insurance_verified: e.target.checked }))}
+                      />
+                      <span>Insurance Verified</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bio */}
+              <div className="md:col-span-2 space-y-4">
+                <h3 className="text-lg font-semibold">Company Bio</h3>
+                <div>
+                  <Label htmlFor="bio">Bio / Description</Label>
+                  <Textarea
+                    id="bio"
+                    value={editFormData.bio || ''}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, bio: e.target.value }))}
+                    placeholder="Describe the company, services, and experience..."
+                    rows={4}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3 mt-6">
+              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={updateContractorProfile}
+                disabled={isUpdating}
+                className="bg-[#0a4768] hover:bg-[#0a4768]/90"
+              >
+                {isUpdating ? 'Updating...' : 'Update Profile'}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Add Review Dialog */}
+        <Dialog open={isReviewDialogOpen} onOpenChange={setIsReviewDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Add Manual Review</DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="customer_name">Customer Name *</Label>
+                  <Input
+                    id="customer_name"
+                    value={reviewFormData.customer_name}
+                    onChange={(e) => setReviewFormData(prev => ({ ...prev, customer_name: e.target.value }))}
+                    placeholder="John Smith"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="customer_email">Customer Email</Label>
+                  <Input
+                    id="customer_email"
+                    type="email"
+                    value={reviewFormData.customer_email || ''}
+                    onChange={(e) => setReviewFormData(prev => ({ ...prev, customer_email: e.target.value }))}
+                    placeholder="john@example.com"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="rating">Rating *</Label>
+                  <Select
+                    value={reviewFormData.rating.toString()}
+                    onValueChange={(value) => setReviewFormData(prev => ({ ...prev, rating: parseInt(value) }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="5">⭐⭐⭐⭐⭐ (5 stars)</SelectItem>
+                      <SelectItem value="4">⭐⭐⭐⭐ (4 stars)</SelectItem>
+                      <SelectItem value="3">⭐⭐⭐ (3 stars)</SelectItem>
+                      <SelectItem value="2">⭐⭐ (2 stars)</SelectItem>
+                      <SelectItem value="1">⭐ (1 star)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="service_type">Service Type</Label>
+                  <Select
+                    value={reviewFormData.service_type || ''}
+                    onValueChange={(value) => setReviewFormData(prev => ({ ...prev, service_type: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select service type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="attic">Attic Insulation</SelectItem>
+                      <SelectItem value="wall">Wall Insulation</SelectItem>
+                      <SelectItem value="basement">Basement Insulation</SelectItem>
+                      <SelectItem value="crawl_space">Crawl Space Insulation</SelectItem>
+                      <SelectItem value="spray_foam">Spray Foam Insulation</SelectItem>
+                      <SelectItem value="removal">Insulation Removal</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="title">Review Title</Label>
+                <Input
+                  id="title"
+                  value={reviewFormData.title || ''}
+                  onChange={(e) => setReviewFormData(prev => ({ ...prev, title: e.target.value }))}
+                  placeholder="Great service!"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="comment">Review Comment *</Label>
+                <Textarea
+                  id="comment"
+                  value={reviewFormData.comment || ''}
+                  onChange={(e) => setReviewFormData(prev => ({ ...prev, comment: e.target.value }))}
+                  placeholder="Describe the customer's experience..."
+                  rows={4}
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="location">Project Location</Label>
+                <Input
+                  id="location"
+                  value={reviewFormData.location || ''}
+                  onChange={(e) => setReviewFormData(prev => ({ ...prev, location: e.target.value }))}
+                  placeholder="Phoenix, AZ"
+                />
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="verified"
+                  checked={reviewFormData.verified}
+                  onChange={(e) => setReviewFormData(prev => ({ ...prev, verified: e.target.checked }))}
+                />
+                <Label htmlFor="verified">Mark as Verified Review</Label>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3 mt-6">
+              <Button variant="outline" onClick={() => setIsReviewDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={addReview}
+                disabled={isAddingReview}
+                className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]"
+              >
+                {isAddingReview ? 'Adding Review...' : 'Add Review'}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )
