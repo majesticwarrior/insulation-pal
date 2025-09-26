@@ -17,9 +17,5 @@
         }
       ]
     }
-  ],
-  "images": {
-    "unoptimized": false,
-    "loader": "default"
-  }
+  ]
 }
