@@ -373,6 +373,160 @@ export default function AdminDashboard() {
     setIsReviewDialogOpen(true)
   }
 
+  // Test database functions
+  const testDatabaseFunctions = async () => {
+    console.log('🧪 Starting comprehensive database test...')
+    
+    try {
+      // Test 1: Can we read reviews table?
+      console.log('📋 Test 1: Reading reviews table...')
+      const { data: reviewsData, error: reviewsError } = await (supabase as any)
+        .from('reviews')
+        .select('id, customer_name, rating')
+        .limit(5)
+      
+      if (reviewsError) {
+        console.error('❌ Test 1 FAILED - Cannot read reviews table:', reviewsError)
+      } else {
+        console.log('✅ Test 1 PASSED - Reviews table accessible, sample data:', reviewsData)
+      }
+
+      // Test 2: Can we read contractors table?
+      console.log('📋 Test 2: Reading contractors table...')
+      const { data: contractorsData, error: contractorsError } = await (supabase as any)
+        .from('contractors')
+        .select('id, business_name')
+        .eq('status', 'approved')
+        .limit(3)
+      
+      if (contractorsError) {
+        console.error('❌ Test 2 FAILED - Cannot read contractors table:', contractorsError)
+      } else {
+        console.log('✅ Test 2 PASSED - Contractors table accessible, sample data:', contractorsData)
+      }
+
+      // Test 3: Test simple RPC function with valid contractor ID
+      if (contractorsData && contractorsData.length > 0) {
+        const testContractorId = contractorsData[0].id
+        console.log('📋 Test 3: Testing simple_admin_review with valid contractor ID:', testContractorId)
+        
+        const { data: simpleData, error: simpleError } = await (supabase as any)
+          .rpc('simple_admin_review', {
+            contractor_id_param: testContractorId,
+            customer_name_param: 'TEST USER - ADMIN DASHBOARD',
+            rating_param: 5,
+            comment_param: 'This is a test review from admin dashboard - please ignore',
+            verified_param: true
+          })
+        
+        if (simpleError) {
+          console.error('❌ Test 3 FAILED - Simple RPC error:', simpleError)
+          console.error('Error code:', simpleError.code)
+          console.error('Error message:', simpleError.message)
+        } else {
+          console.log('✅ Test 3 PASSED - Simple RPC response:', simpleData)
+          
+          // If it succeeded, we should delete the test review
+          if (simpleData && simpleData.success && simpleData.review_id) {
+            console.log('🧹 Cleaning up test review...')
+            const { error: deleteError } = await (supabase as any)
+              .from('reviews')
+              .delete()
+              .eq('id', simpleData.review_id)
+            
+            if (deleteError) {
+              console.warn('⚠️ Could not delete test review:', deleteError)
+            } else {
+              console.log('✅ Test review cleaned up successfully')
+            }
+          }
+        }
+
+        // Test 4: Test complex RPC function
+        console.log('📋 Test 4: Testing admin_insert_review with valid contractor ID:', testContractorId)
+        
+        const { data: complexData, error: complexError } = await (supabase as any)
+          .rpc('admin_insert_review', {
+            p_contractor_id: testContractorId,
+            p_customer_name: 'TEST USER 2 - ADMIN DASHBOARD',
+            p_rating: 4,
+            p_customer_email: 'test@example.com',
+            p_comment: 'This is a test review from admin dashboard complex function - please ignore',
+            p_verified: true
+          })
+        
+        if (complexError) {
+          console.error('❌ Test 4 FAILED - Complex RPC error:', complexError)
+          console.error('Error code:', complexError.code)
+          console.error('Error message:', complexError.message)
+        } else {
+          console.log('✅ Test 4 PASSED - Complex RPC response:', complexData)
+          
+          // Clean up the test review
+          if (complexData) {
+            console.log('🧹 Cleaning up complex test review...')
+            const { error: deleteError } = await (supabase as any)
+              .from('reviews')
+              .delete()
+              .eq('id', complexData)
+            
+            if (deleteError) {
+              console.warn('⚠️ Could not delete complex test review:', deleteError)
+            } else {
+              console.log('✅ Complex test review cleaned up successfully')
+            }
+          }
+        }
+
+        // Test 5: Test direct insertion
+        console.log('📋 Test 5: Testing direct insertion...')
+        
+        const { data: directData, error: directError } = await (supabase as any)
+          .from('reviews')
+          .insert({
+            contractor_id: testContractorId,
+            lead_id: null,
+            customer_name: 'TEST USER 3 - DIRECT INSERT',
+            customer_email: 'direct@example.com',
+            rating: 3,
+            comment: 'This is a test review from direct insertion - please ignore',
+            verified: true
+          })
+          .select()
+        
+        if (directError) {
+          console.error('❌ Test 5 FAILED - Direct insertion error:', directError)
+          console.error('Error code:', directError.code)
+          console.error('Error message:', directError.message)
+        } else {
+          console.log('✅ Test 5 PASSED - Direct insertion response:', directData)
+          
+          // Clean up the test review
+          if (directData && directData.length > 0) {
+            console.log('🧹 Cleaning up direct test review...')
+            const { error: deleteError } = await (supabase as any)
+              .from('reviews')
+              .delete()
+              .eq('id', directData[0].id)
+            
+            if (deleteError) {
+              console.warn('⚠️ Could not delete direct test review:', deleteError)
+            } else {
+              console.log('✅ Direct test review cleaned up successfully')
+            }
+          }
+        }
+      }
+
+      console.log('🧪 Database test completed! Check console for detailed results.')
+      toast.success('Database test completed - check console for results')
+      
+    } catch (error) {
+      console.error('❌ Database test failed with exception:', error)
+      toast.error('Database test failed - check console for details')
+    }
+  }
+
 
   const addReview = async () => {
     if (!reviewFormData.customer_name.trim() || !reviewFormData.comment?.trim()) {
@@ -437,7 +591,28 @@ export default function AdminDashboard() {
 
       console.log('🔄 Final insert data with correct types:', insertData)
 
-      // First test if the RPC function exists
+      // Test if simple RPC function exists
+      console.log('🔍 Testing if simple_admin_review function exists...')
+      try {
+        const { data: simpleTestData, error: simpleTestError } = await (supabase as any)
+          .rpc('simple_admin_review', {
+            contractor_id_param: '00000000-0000-0000-0000-000000000000', // dummy UUID
+            customer_name_param: 'test',
+            rating_param: 5
+          })
+        
+        if (simpleTestError && simpleTestError.code === '42883') {
+          console.error('❌ Simple RPC function does not exist!', simpleTestError)
+        } else if (simpleTestError) {
+          console.log('✅ Simple RPC function exists, got error:', simpleTestError.message)
+        } else {
+          console.log('✅ Simple RPC function exists, response:', simpleTestData)
+        }
+      } catch (e) {
+        console.error('❌ Error testing simple RPC function:', e)
+      }
+
+      // Test if complex RPC function exists
       console.log('🔍 Testing if admin_insert_review function exists...')
       try {
         const { data: testData, error: testError } = await (supabase as any)
@@ -448,23 +623,29 @@ export default function AdminDashboard() {
           })
         
         if (testError && testError.code === '42883') {
-          console.error('❌ RPC function does not exist!', testError)
-          toast.error('Admin function not found in database')
-          return
+          console.error('❌ Complex RPC function does not exist!', testError)
         } else if (testError && testError.message?.includes('does not exist')) {
           // Expected error for dummy contractor ID
-          console.log('✅ RPC function exists but contractor validation failed (expected)')
+          console.log('✅ Complex RPC function exists but contractor validation failed (expected)')
         } else if (testError) {
-          console.log('✅ RPC function exists, got validation error:', testError.message)
+          console.log('✅ Complex RPC function exists, got validation error:', testError.message)
         } else {
-          console.log('✅ RPC function exists and test passed')
+          console.log('✅ Complex RPC function exists and test passed')
         }
       } catch (e) {
-        console.error('❌ Error testing RPC function:', e)
+        console.error('❌ Error testing complex RPC function:', e)
       }
 
       // Try simple admin function first
       console.log('🔄 Trying simple admin RPC function...')
+      console.log('🔗 RPC URL: simple_admin_review')
+      console.log('📋 RPC Parameters:', {
+        contractor_id_param: insertData.contractor_id,
+        customer_name_param: insertData.customer_name,
+        rating_param: insertData.rating,
+        comment_param: insertData.comment,
+        verified_param: insertData.verified
+      })
       
       const { data: simpleData, error: simpleError } = await (supabase as any)
         .rpc('simple_admin_review', {
@@ -1034,10 +1215,22 @@ export default function AdminDashboard() {
           <TabsContent value="reviews">
             <Card>
               <CardHeader>
-                <CardTitle>Add Manual Reviews</CardTitle>
-                <CardDescription>
-                  Add reviews for contractors manually to help build their reputation
-                </CardDescription>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle>Add Manual Reviews</CardTitle>
+                    <CardDescription>
+                      Add reviews for contractors manually to help build their reputation
+                    </CardDescription>
+                  </div>
+                  <Button
+                    onClick={testDatabaseFunctions}
+                    variant="outline"
+                    size="sm"
+                    className="border-blue-300 text-blue-600 hover:bg-blue-50"
+                  >
+                    Test Database
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="rounded-md border">
