@@ -17,6 +17,7 @@ import {
   Award,
   Quote,
   Play,
+  ExternalLink
 } from 'lucide-react'
 import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
