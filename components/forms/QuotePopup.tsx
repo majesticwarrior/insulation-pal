@@ -129,21 +129,29 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
       }
       
       // Insert lead into database
+      const leadData = {
+        home_size_sqft: parseInt(formData.homeSize),
+        areas_needed: formData.areas,
+        insulation_types: formData.insulationTypes,
+        quote_preference: formData.quotePreference,
+        customer_name: formData.customerName,
+        customer_email: formData.customerEmail,
+        customer_phone: formData.customerPhone,
+        city: formData.city,
+        state: formData.state,
+        zip_code: formData.zipCode
+      }
+
+      // Add property_address if form includes address (defensive coding)
+      if (formData.address) {
+        ;(leadData as any).property_address = formData.address
+      }
+
+      console.log('📋 Submitting lead data:', leadData)
+
       const { data: lead, error } = await (supabase as any)
         .from('leads')
-        .insert({
-          home_size_sqft: parseInt(formData.homeSize),
-          areas_needed: formData.areas,
-          insulation_types: formData.insulationTypes,
-          quote_preference: formData.quotePreference,
-          customer_name: formData.customerName,
-          customer_email: formData.customerEmail,
-          customer_phone: formData.customerPhone,
-          property_address: formData.address,
-          city: formData.city,
-          state: formData.state,
-          zip_code: formData.zipCode
-        })
+        .insert(leadData)
         .select()
         .single()
 
