@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { QuoteButton } from '@/components/ui/quote-button'
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import Link from 'next/link'
 import Image from 'next/image'
 import { 
@@ -22,6 +23,7 @@ import {
 import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import { generateUniqueSlug } from '@/lib/slug-utils'
+import { articles } from '@/lib/articles-data'
 
 export const metadata: Metadata = {
   title: 'Phoenix Insulation Contractors - InsulationPal | Top-Rated Professionals',
@@ -622,6 +624,85 @@ export default async function PhoenixInsulationContractors() {
         </div>
       </section>
 
+      {/* Understanding Home Insulation - Educational Articles Carousel */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
+              Understanding Home Insulation
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Learn the basics of home insulation and why it's crucial for Phoenix homes
+            </p>
+          </div>
+          
+          <div className="max-w-6xl mx-auto">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {articles.map((article, index) => (
+                  <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                    <Card className="hover:shadow-xl transition-shadow overflow-hidden h-full">
+                      <div className="aspect-video relative">
+                        <Image
+                          src={article.image}
+                          alt={article.title}
+                          fill
+                          className="object-cover"
+                        />
+                        <div className="absolute top-4 left-4">
+                          <span className="bg-[#F5DD22] text-[#0a4768] px-3 py-1 rounded-full text-sm font-medium">
+                            {article.category}
+                          </span>
+                        </div>
+                      </div>
+                      <CardContent className="p-6 flex flex-col justify-between h-48">
+                        <div>
+                          <h3 className="text-lg font-bold text-[#0a4768] mb-3 line-clamp-2">
+                            {article.title}
+                          </h3>
+                          <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                            {article.description}
+                          </p>
+                        </div>
+                        <Button 
+                          asChild 
+                          variant="outline" 
+                          size="sm"
+                          className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
+                        >
+                          <Link href={`/resources/articles/${article.slug}`} className="flex items-center">
+                            Read Article
+                            <ExternalLink className="w-3 h-3 ml-1" />
+                          </Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="hidden md:flex" />
+              <CarouselNext className="hidden md:flex" />
+            </Carousel>
+            
+            <div className="text-center mt-8">
+              <Button 
+                asChild 
+                className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold"
+              >
+                <Link href="/resources/articles">
+                  View All Articles
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <Footer />
     </main>
