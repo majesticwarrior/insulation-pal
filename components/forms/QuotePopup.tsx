@@ -21,11 +21,12 @@ const quoteSchema = z.object({
   insulationTypes: z.array(z.string()).min(1, 'Please select at least one insulation type'),
   quotePreference: z.enum(['random_three', 'choose_three']),
   customerName: z.string().min(2, 'Name must be at least 2 characters'),
-  customerEmail: z.string().email('Invalid email address'),
-  customerPhone: z.string().min(10, 'Phone number must be at least 10 digits'),
+  customerEmail: z.string().email('Email address is required'),
+  customerPhone: z.string().min(10, 'Phone number is required and must be at least 10 digits'),
+  address: z.string().min(1, 'Address is required'),
   city: z.string().min(1, 'City is required'),
   state: z.string().min(1, 'State is required'),
-  zipCode: z.string().optional()
+  zipCode: z.string().min(5, 'Zip code is required and must be at least 5 digits')
 })
 
 type QuoteFormData = z.infer<typeof quoteSchema>
@@ -70,6 +71,7 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
       customerName: '',
       customerEmail: '',
       customerPhone: '',
+      address: '',
       city: '',
       state: 'Arizona',
       zipCode: ''
@@ -87,7 +89,7 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
         fieldsToValidate = ['areas', 'insulationTypes', 'quotePreference']
         break
       case 3:
-        fieldsToValidate = ['customerName', 'customerEmail', 'customerPhone', 'city', 'state']
+        fieldsToValidate = ['customerName', 'customerEmail', 'customerPhone', 'address', 'city', 'state', 'zipCode']
         break
     }
 
@@ -137,9 +139,10 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
           customer_name: formData.customerName,
           customer_email: formData.customerEmail,
           customer_phone: formData.customerPhone,
+          property_address: formData.address,
           city: formData.city,
           state: formData.state,
-          zip_code: formData.zipCode || null
+          zip_code: formData.zipCode
         })
         .select()
         .single()
@@ -379,6 +382,20 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
                 )}
               />
 
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address</FormLabel>
+                    <FormControl>
+                      <Input placeholder="123 Main Street" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <div className="grid grid-cols-2 gap-3">
                 <FormField
                   control={form.control}
@@ -414,7 +431,7 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
                 name="zipCode"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Zip Code (Optional)</FormLabel>
+                    <FormLabel>Zip Code</FormLabel>
                     <FormControl>
                       <Input placeholder="85001" {...field} />
                     </FormControl>
