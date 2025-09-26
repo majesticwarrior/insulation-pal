@@ -483,15 +483,62 @@ export default function AdminDashboard() {
         console.error('❌ RPC Error code:', error.code)
         console.error('❌ RPC Error hint:', error.hint)
         console.error('❌ RPC Error details:', error.details)
-        toast.error(`RPC Error: ${error.message}`)
-        throw error
+        
+        // If RPC fails, try direct insertion as fallback
+        console.log('🔄 RPC failed, trying direct insertion as fallback...')
+        
+        try {
+          const { data: directData, error: directError } = await (supabase as any)
+            .from('reviews')
+            .insert({
+              contractor_id: insertData.contractor_id,
+              lead_id: null,
+              customer_name: insertData.customer_name,
+              customer_email: insertData.customer_email,
+              rating: insertData.rating,
+              comment: insertData.comment,
+              verified: insertData.verified
+            })
+            .select()
+          
+          if (directError) {
+            console.error('❌ Direct insertion also failed:', directError)
+            toast.error(`Both RPC and direct insertion failed: ${directError.message}`)
+            throw directError
+          }
+          
+          console.log('✅ Direct insertion succeeded as fallback:', directData)
+          
+          // Manually update contractor stats since we bypassed RPC
+          const contractor = contractors.find(c => c.id === reviewFormData.contractor_id)
+          if (contractor) {
+            const newTotalReviews = (contractor.total_reviews || 0) + 1
+            const currentTotalRating = (contractor.average_rating || 0) * (contractor.total_reviews || 0)
+            const newAverageRating = (currentTotalRating + reviewFormData.rating) / newTotalReviews
+
+            await (supabase as any)
+              .from('contractors')
+              .update({
+                total_reviews: newTotalReviews,
+                average_rating: parseFloat(newAverageRating.toFixed(2))
+              })
+              .eq('id', reviewFormData.contractor_id)
+          }
+          
+          toast.success('Review added successfully (via fallback method)')
+          
+        } catch (fallbackError) {
+          console.error('❌ Fallback method also failed:', fallbackError)
+          toast.error(`All methods failed: ${error.message}`)
+          throw error
+        }
+      } else {
+        console.log('✅ Admin review inserted successfully with ID:', data)
+        toast.success('Review added successfully')
       }
-      
-      console.log('✅ Admin review inserted successfully with ID:', data)
 
-      // Note: Contractor stats are automatically updated by the RPC function
+      // Note: Contractor stats are automatically updated by the RPC function or fallback method
 
-      toast.success('Review added successfully')
       setIsReviewDialogOpen(false)
       setReviewFormData({
         contractor_id: '',
