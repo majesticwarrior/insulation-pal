@@ -409,6 +409,21 @@ export default function AdminDashboard() {
         verified: reviewFormData.verified
       })
 
+      // First, let's test if we can read from the reviews table
+      console.log('🔍 Testing reviews table access...')
+      const { data: testRead, error: readError } = await (supabase as any)
+        .from('reviews')
+        .select('id')
+        .limit(1)
+
+      if (readError) {
+        console.error('❌ Cannot read from reviews table:', readError)
+        toast.error(`Cannot access reviews table: ${readError.message}`)
+        return
+      }
+      
+      console.log('✅ Reviews table is accessible, found records:', testRead?.length || 0)
+
       // Ensure data types are correct
       const insertData = {
         contractor_id: reviewFormData.contractor_id,
@@ -422,10 +437,35 @@ export default function AdminDashboard() {
 
       console.log('🔄 Final insert data with correct types:', insertData)
 
-      const { data, error } = await (supabase as any)
+      // Try with a more direct approach, using rpc if needed
+      console.log('🔄 Attempting to insert review directly...')
+      
+      let { data, error } = await (supabase as any)
         .from('reviews')
         .insert(insertData)
         .select()
+
+      // If direct insertion fails due to RLS, log the specific error
+      if (error && error.code === '42501') {
+        console.error('❌ RLS Policy blocking insertion. Trying alternative approach...')
+        
+        // Try without the select() to see if that's the issue
+        const { data: data2, error: error2 } = await (supabase as any)
+          .from('reviews')
+          .insert(insertData)
+          
+        if (error2) {
+          console.error('❌ Alternative approach also failed:', error2)
+          throw error2
+        }
+        
+        console.log('✅ Alternative insertion successful!')
+        // If successful, set data to a minimal response
+        data = [{ id: 'inserted' }]
+        error = null
+      } else if (error) {
+        throw error
+      }
 
       if (error) {
         console.error('❌ Supabase insertion error:', error)
