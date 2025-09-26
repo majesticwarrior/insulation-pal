@@ -4,8 +4,8 @@
 CREATE OR REPLACE FUNCTION admin_insert_review(
   p_contractor_id UUID,
   p_customer_name TEXT,
-  p_customer_email TEXT DEFAULT NULL,
   p_rating INTEGER,
+  p_customer_email TEXT DEFAULT NULL,
   p_comment TEXT DEFAULT NULL,
   p_verified BOOLEAN DEFAULT TRUE
 )

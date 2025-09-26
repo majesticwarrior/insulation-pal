@@ -444,8 +444,8 @@ export default function AdminDashboard() {
         .rpc('admin_insert_review', {
           p_contractor_id: insertData.contractor_id,
           p_customer_name: insertData.customer_name,
-          p_customer_email: insertData.customer_email,
           p_rating: insertData.rating,
+          p_customer_email: insertData.customer_email,
           p_comment: insertData.comment,
           p_verified: insertData.verified
         })
