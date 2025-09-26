@@ -50,10 +50,7 @@ interface Review {
   customer_name: string
   customer_email?: string
   rating: number
-  title?: string
   comment?: string
-  service_type?: string
-  location?: string
   verified: boolean
   created_at?: string
 }
@@ -81,10 +78,7 @@ export default function AdminDashboard() {
     customer_name: '',
     customer_email: '',
     rating: 5,
-    title: '',
     comment: '',
-    service_type: '',
-    location: '',
     verified: true
   })
   const [isAddingReview, setIsAddingReview] = useState(false)
@@ -373,10 +367,7 @@ export default function AdminDashboard() {
       customer_name: '',
       customer_email: '',
       rating: 5,
-      title: '',
       comment: '',
-      service_type: 'attic',
-      location: contractor.business_city ? `${contractor.business_city}, ${contractor.business_state}` : '',
       verified: true
     })
     setIsReviewDialogOpen(true)
@@ -398,10 +389,7 @@ export default function AdminDashboard() {
           customer_name: reviewFormData.customer_name,
           customer_email: reviewFormData.customer_email || null,
           rating: reviewFormData.rating,
-          title: reviewFormData.title || null,
           comment: reviewFormData.comment,
-          service_type: reviewFormData.service_type || null,
-          location: reviewFormData.location || null,
           verified: reviewFormData.verified
         })
 
@@ -430,10 +418,7 @@ export default function AdminDashboard() {
         customer_name: '',
         customer_email: '',
         rating: 5,
-        title: '',
         comment: '',
-        service_type: '',
-        location: '',
         verified: true
       })
       loadContractors()
@@ -1151,55 +1136,25 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="rating">Rating *</Label>
-                  <Select
-                    value={reviewFormData.rating.toString()}
-                    onValueChange={(value) => setReviewFormData(prev => ({ ...prev, rating: parseInt(value) }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="5">⭐⭐⭐⭐⭐ (5 stars)</SelectItem>
-                      <SelectItem value="4">⭐⭐⭐⭐ (4 stars)</SelectItem>
-                      <SelectItem value="3">⭐⭐⭐ (3 stars)</SelectItem>
-                      <SelectItem value="2">⭐⭐ (2 stars)</SelectItem>
-                      <SelectItem value="1">⭐ (1 star)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="service_type">Service Type</Label>
-                  <Select
-                    value={reviewFormData.service_type || ''}
-                    onValueChange={(value) => setReviewFormData(prev => ({ ...prev, service_type: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select service type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="attic">Attic Insulation</SelectItem>
-                      <SelectItem value="wall">Wall Insulation</SelectItem>
-                      <SelectItem value="basement">Basement Insulation</SelectItem>
-                      <SelectItem value="crawl_space">Crawl Space Insulation</SelectItem>
-                      <SelectItem value="spray_foam">Spray Foam Insulation</SelectItem>
-                      <SelectItem value="removal">Insulation Removal</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <Label htmlFor="rating">Rating *</Label>
+                <Select
+                  value={reviewFormData.rating.toString()}
+                  onValueChange={(value) => setReviewFormData(prev => ({ ...prev, rating: parseInt(value) }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="5">⭐⭐⭐⭐⭐ (5 stars)</SelectItem>
+                    <SelectItem value="4">⭐⭐⭐⭐ (4 stars)</SelectItem>
+                    <SelectItem value="3">⭐⭐⭐ (3 stars)</SelectItem>
+                    <SelectItem value="2">⭐⭐ (2 stars)</SelectItem>
+                    <SelectItem value="1">⭐ (1 star)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div>
-                <Label htmlFor="title">Review Title</Label>
-                <Input
-                  id="title"
-                  value={reviewFormData.title || ''}
-                  onChange={(e) => setReviewFormData(prev => ({ ...prev, title: e.target.value }))}
-                  placeholder="Great service!"
-                />
-              </div>
 
               <div>
                 <Label htmlFor="comment">Review Comment *</Label>
@@ -1213,15 +1168,6 @@ export default function AdminDashboard() {
                 />
               </div>
 
-              <div>
-                <Label htmlFor="location">Project Location</Label>
-                <Input
-                  id="location"
-                  value={reviewFormData.location || ''}
-                  onChange={(e) => setReviewFormData(prev => ({ ...prev, location: e.target.value }))}
-                  placeholder="Phoenix, AZ"
-                />
-              </div>
 
               <div className="flex items-center space-x-2">
                 <input
