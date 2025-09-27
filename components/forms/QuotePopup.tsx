@@ -316,7 +316,7 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
         const assignments = selected.map((contractor: any) => ({
           lead_id: leadId,
           contractor_id: contractor.id,
-          status: 'pending', // Valid assignment_status enum value
+          status: 'sent', // Valid assignment_status enum value
           cost: 20.00
         }))
 

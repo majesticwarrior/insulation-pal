@@ -53,6 +53,11 @@ interface Review {
   comment?: string
   verified: boolean
   created_at?: string
+  contractor_name?: string
+  title?: string
+  service_type?: string
+  project_cost?: number
+  location?: string
 }
 
 export default function AdminDashboard() {
@@ -82,6 +87,17 @@ export default function AdminDashboard() {
     verified: true
   })
   const [isAddingReview, setIsAddingReview] = useState(false)
+  
+  // Review management state
+  const [reviews, setReviews] = useState<Review[]>([])
+  const [isLoadingReviews, setIsLoadingReviews] = useState(false)
+  const [selectedReview, setSelectedReview] = useState<Review | null>(null)
+  const [isViewReviewDialogOpen, setIsViewReviewDialogOpen] = useState(false)
+  const [isDeletingReview, setIsDeletingReview] = useState(false)
+  const [isEditReviewDialogOpen, setIsEditReviewDialogOpen] = useState(false)
+  const [isUpdatingReview, setIsUpdatingReview] = useState(false)
+  const [selectedContractorForReviews, setSelectedContractorForReviews] = useState<string>('')
+  const [isManageReviewsDialogOpen, setIsManageReviewsDialogOpen] = useState(false)
   
   const router = useRouter()
 
@@ -151,6 +167,204 @@ export default function AdminDashboard() {
       toast.error('Failed to load contractor data')
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const loadReviews = async (contractorId?: string) => {
+    try {
+      setIsLoadingReviews(true)
+      
+      if (!contractorId) {
+        setReviews([])
+        return
+      }
+      
+      // Fetch reviews for specific contractor
+      const { data: reviewsData, error } = await (supabase as any)
+        .from('reviews')
+        .select(`
+          id,
+          contractor_id,
+          customer_id,
+          customer_name,
+          customer_email,
+          rating,
+          comment,
+          verified,
+          created_at,
+          title,
+          service_type,
+          project_cost,
+          location,
+          contractors(
+            business_name
+          ),
+          users(
+            name,
+            email
+          )
+        `)
+        .eq('contractor_id', contractorId)
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        console.error('❌ Error loading reviews with contractors:', error)
+        console.log('🔄 Trying to load reviews without contractor info...')
+        
+        // Fallback: load reviews without contractor info
+        const { data: fallbackData, error: fallbackError } = await (supabase as any)
+          .from('reviews')
+          .select(`
+            id,
+            contractor_id,
+            customer_id,
+            customer_name,
+            customer_email,
+            rating,
+            comment,
+            verified,
+            created_at,
+            title,
+            service_type,
+            project_cost,
+            location,
+            users(
+              name,
+              email
+            )
+          `)
+          .eq('contractor_id', contractorId)
+          .order('created_at', { ascending: false })
+        
+        if (fallbackError) throw fallbackError
+        
+        const transformedReviews = fallbackData?.map((review: any) => ({
+          ...review,
+          contractor_name: 'Unknown Contractor',
+          customer_name: review.customer_name || review.users?.name || 'Anonymous',
+          customer_email: review.customer_email || review.users?.email || null
+        })) || []
+        
+        console.log('📋 Loaded reviews (fallback):', transformedReviews)
+        setReviews(transformedReviews)
+        return
+      }
+
+      // Transform the data to include contractor name and customer info
+      const transformedReviews = reviewsData?.map((review: any) => ({
+        ...review,
+        contractor_name: review.contractors?.business_name || 'Unknown',
+        customer_name: review.customer_name || review.users?.name || 'Anonymous',
+        customer_email: review.customer_email || review.users?.email || null
+      })) || []
+
+      console.log('📋 Loaded reviews:', transformedReviews)
+      console.log('📋 Review IDs:', transformedReviews.map((r: any) => r.id))
+      
+      setReviews(transformedReviews)
+
+    } catch (error) {
+      console.error('Error loading reviews:', error)
+      toast.error('Failed to load reviews')
+    } finally {
+      setIsLoadingReviews(false)
+    }
+  }
+
+  const viewReview = (review: Review) => {
+    setSelectedReview(review)
+    setIsViewReviewDialogOpen(true)
+  }
+
+  const editReview = (review: Review) => {
+    setSelectedReview(review)
+    setReviewFormData({
+      contractor_id: review.contractor_id,
+      customer_name: review.customer_name || '',
+      customer_email: review.customer_email || '',
+      rating: review.rating,
+      comment: review.comment || '',
+      verified: review.verified
+    })
+    setIsEditReviewDialogOpen(true)
+  }
+
+  const deleteReview = async (reviewId: string) => {
+    if (!confirm('Are you sure you want to delete this review? This action cannot be undone.')) {
+      return
+    }
+
+    try {
+      setIsDeletingReview(true)
+      
+      console.log('🗑️ Attempting to delete review:', reviewId)
+      
+      // Delete the review
+      const { data, error } = await (supabase as any)
+        .from('reviews')
+        .delete()
+        .eq('id', reviewId)
+        .select()
+
+      console.log('🗑️ Delete result:', { data, error })
+
+      if (error) {
+        console.error('❌ Delete error details:', error)
+        throw error
+      }
+
+      console.log('✅ Review deleted successfully')
+
+      // Reload reviews and contractors to update counts
+      await loadReviews(selectedContractorForReviews)
+      await loadContractors()
+      
+      toast.success('Review deleted successfully')
+      
+    } catch (error) {
+      console.error('❌ Error deleting review:', error)
+      toast.error(`Failed to delete review: ${error.message || 'Unknown error'}`)
+    } finally {
+      setIsDeletingReview(false)
+    }
+  }
+
+  const updateReview = async () => {
+    if (!selectedReview?.id) return
+
+    try {
+      setIsUpdatingReview(true)
+      
+      console.log('🔄 Updating review:', selectedReview.id)
+      
+      // Update the review
+      const { error } = await (supabase as any)
+        .from('reviews')
+        .update({
+          rating: reviewFormData.rating,
+          comment: reviewFormData.comment,
+          verified: reviewFormData.verified,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', selectedReview.id)
+
+      if (error) throw error
+
+      console.log('✅ Review updated successfully')
+
+      // Reload reviews and contractors to update counts
+      await loadReviews(selectedContractorForReviews)
+      await loadContractors()
+      
+      toast.success('Review updated successfully')
+      setIsEditReviewDialogOpen(false)
+      setSelectedReview(null)
+      
+    } catch (error) {
+      console.error('❌ Error updating review:', error)
+      toast.error(`Failed to update review: ${error.message || 'Unknown error'}`)
+    } finally {
+      setIsUpdatingReview(false)
     }
   }
 
@@ -885,22 +1099,15 @@ export default function AdminDashboard() {
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="contractors" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="contractors">Contractor Management</TabsTrigger>
-            <TabsTrigger value="pending">Pending Approvals ({stats.pending})</TabsTrigger>
-            <TabsTrigger value="profiles">Profile Management</TabsTrigger>
-            <TabsTrigger value="reviews">Add Reviews</TabsTrigger>
-          </TabsList>
+        <div className="space-y-6">
 
-          <TabsContent value="contractors">
-            <Card>
-              <CardHeader>
-                <CardTitle>All Contractors</CardTitle>
-                <CardDescription>
-                  Manage contractor profiles, billing, and account status
-                </CardDescription>
-              </CardHeader>
+          <Card>
+            <CardHeader>
+              <CardTitle>Contractor Management</CardTitle>
+              <CardDescription>
+                Manage contractor profiles, status, and reviews
+              </CardDescription>
+            </CardHeader>
               <CardContent>
                 <div className="rounded-md border">
                   <Table>
@@ -947,354 +1154,94 @@ export default function AdminDashboard() {
                             )}
                           </TableCell>
                           <TableCell>
-                            <div className="flex space-x-1 items-center whitespace-nowrap">
-                              {contractor.status === 'pending' && (
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateContractorStatus(contractor.id, 'approved')}
-                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1"
-                                >
-                                  Approve
-                                </Button>
-                              )}
-                              {contractor.status === 'approved' && (
-                                <Button
-                                  size="sm"
-                                  variant="destructive"
-                                  className="text-xs px-2 py-1"
-                                  onClick={() => updateContractorStatus(contractor.id, 'suspended')}
-                                >
-                                  Suspend
-                                </Button>
-                              )}
-                              {contractor.status === 'suspended' && (
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateContractorStatus(contractor.id, 'approved')}
-                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1"
-                                >
-                                  Reactivate
-                                </Button>
-                              )}
-                              {contractor.status === 'rejected' && (
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateContractorStatus(contractor.id, 'approved')}
-                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1"
-                                >
-                                  Approve
-                                </Button>
-                              )}
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => updateCredits(contractor.id, contractor.business_name, contractor.credits || 0)}
-                                className="border-blue-300 text-blue-600 hover:bg-blue-50 text-xs px-2 py-1"
-                              >
-                                Edit Credits
-                              </Button>
+                            <div className="flex flex-wrap gap-1">
                               <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => openEditDialog(contractor)}
-                                className="border-green-300 text-green-600 hover:bg-green-50 text-xs px-2 py-1"
+                                className="text-blue-600 hover:bg-blue-50"
                               >
                                 <Edit className="h-3 w-3 mr-1" />
-                                Edit
+                                Edit Profile
                               </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => openReviewDialog(contractor)}
-                                className="border-purple-300 text-purple-600 hover:bg-purple-50 text-xs px-2 py-1"
-                              >
-                                <Star className="h-3 w-3 mr-1" />
-                                Review
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => deleteContractor(contractor.id, contractor.business_name)}
-                                className="border-red-300 text-red-600 hover:bg-red-50 text-xs px-2 py-1"
-                              >
-                                Delete
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="pending">
-            <Card>
-              <CardHeader>
-                <CardTitle>Pending Contractor Approvals</CardTitle>
-                <CardDescription>
-                  Review and approve new contractor registrations
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Business Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Phone</TableHead>
-                        <TableHead>License #</TableHead>
-                        <TableHead>Registration Date</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {contractors
-                        .filter(contractor => contractor.status === 'pending')
-                        .map((contractor) => (
-                        <TableRow key={contractor.id}>
-                          <TableCell className="font-medium">
-                            {contractor.business_name}
-                          </TableCell>
-                          <TableCell>{contractor.email}</TableCell>
-                          <TableCell>{contractor.contact_phone || 'N/A'}</TableCell>
-                          <TableCell>{contractor.license_number || 'N/A'}</TableCell>
-                          <TableCell>
-                            {new Date(contractor.created_at).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex space-x-1 items-center whitespace-nowrap">
-                              <Button
-                                size="sm"
-                                onClick={() => updateContractorStatus(contractor.id, 'approved')}
-                                className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1"
-                              >
-                                <CheckCircle className="h-3 w-3 mr-1" />
-                                Approve
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                className="text-xs px-2 py-1"
-                                onClick={() => updateContractorStatus(contractor.id, 'rejected')}
-                              >
-                                <XCircle className="h-3 w-3 mr-1" />
-                                Reject
-                              </Button>
+                              
+                              {contractor.status === 'pending' && (
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateContractorStatus(contractor.id, 'approved')}
+                                  className="bg-green-600 hover:bg-green-700 text-white"
+                                >
+                                  <CheckCircle className="h-3 w-3 mr-1" />
+                                  Activate
+                                </Button>
+                              )}
+                              
+                              {contractor.status === 'suspended' && (
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateContractorStatus(contractor.id, 'approved')}
+                                  className="bg-green-600 hover:bg-green-700 text-white"
+                                >
+                                  <CheckCircle className="h-3 w-3 mr-1" />
+                                  Re-activate
+                                </Button>
+                              )}
+                              
+                              {contractor.status === 'approved' && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => updateContractorStatus(contractor.id, 'suspended')}
+                                  className="text-orange-600 hover:bg-orange-50"
+                                >
+                                  <XCircle className="h-3 w-3 mr-1" />
+                                  Suspend
+                                </Button>
+                              )}
+                              
                               <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => updateCredits(contractor.id, contractor.business_name, contractor.credits || 0)}
-                                className="border-blue-300 text-blue-600 hover:bg-blue-50 text-xs px-2 py-1"
+                                className="text-blue-600 hover:bg-blue-50"
                               >
+                                <DollarSign className="h-3 w-3 mr-1" />
                                 Edit Credits
                               </Button>
+                              
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setSelectedContractorForReviews(contractor.id)
+                                  loadReviews(contractor.id)
+                                  setIsManageReviewsDialogOpen(true)
+                                }}
+                                className="text-purple-600 hover:bg-purple-50"
+                              >
+                                <Eye className="h-3 w-3 mr-1" />
+                                Manage Reviews
+                              </Button>
+                              
                               <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => deleteContractor(contractor.id, contractor.business_name)}
-                                className="border-red-300 text-red-600 hover:bg-red-50 text-xs px-2 py-1"
+                                className="text-red-600 hover:bg-red-50"
                               >
+                                <XCircle className="h-3 w-3 mr-1" />
                                 Delete
                               </Button>
                             </div>
                           </TableCell>
                         </TableRow>
                       ))}
-                      {contractors.filter(contractor => contractor.status === 'pending').length === 0 && (
-                        <TableRow>
-                          <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                            No pending contractor approvals
-                          </TableCell>
-                        </TableRow>
-                      )}
                     </TableBody>
                   </Table>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-
-          {/* Profile Management Tab */}
-          <TabsContent value="profiles">
-            <Card>
-              <CardHeader>
-                <CardTitle>Profile Management</CardTitle>
-                <CardDescription>
-                  View and edit detailed contractor profile information
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Business Name</TableHead>
-                        <TableHead>Contact Info</TableHead>
-                        <TableHead>Location</TableHead>
-                        <TableHead>Verification</TableHead>
-                        <TableHead>Business Details</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {contractors.map((contractor) => (
-                        <TableRow key={contractor.id}>
-                          <TableCell className="font-medium">
-                            <div>
-                              <div className="font-semibold">{contractor.business_name}</div>
-                              <div className="text-sm text-gray-500">
-                                License: {contractor.license_number || 'N/A'}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="text-sm">
-                              <div>📧 {contractor.contact_email || 'N/A'}</div>
-                              <div>📞 {contractor.contact_phone || 'N/A'}</div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="text-sm">
-                              <div>{contractor.business_address || 'N/A'}</div>
-                              <div>
-                                {contractor.business_city && contractor.business_state
-                                  ? `${contractor.business_city}, ${contractor.business_state} ${contractor.business_zip || ''}`
-                                  : 'N/A'
-                                }
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-y-1">
-                              <Badge 
-                                variant={contractor.license_verified ? "default" : "secondary"}
-                                className={contractor.license_verified ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
-                              >
-                                {contractor.license_verified ? "License ✓" : "License ✗"}
-                              </Badge>
-                              <Badge 
-                                variant={contractor.insurance_verified ? "default" : "secondary"}
-                                className={contractor.insurance_verified ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
-                              >
-                                {contractor.insurance_verified ? "Insurance ✓" : "Insurance ✗"}
-                              </Badge>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="text-sm">
-                              <div>Founded: {contractor.founded_year || 'N/A'}</div>
-                              <div>Employees: {contractor.employee_count || 'N/A'}</div>
-                              <div>Projects: {contractor.total_completed_projects || 0}</div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => openEditDialog(contractor)}
-                              className="border-blue-300 text-blue-600 hover:bg-blue-50 text-xs px-2 py-1"
-                            >
-                              <Edit className="h-3 w-3 mr-1" />
-                              Edit Profile
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Add Reviews Tab */}
-          <TabsContent value="reviews">
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle>Add Manual Reviews</CardTitle>
-                    <CardDescription>
-                      Add reviews for contractors manually to help build their reputation
-                    </CardDescription>
-                  </div>
-                  <Button
-                    onClick={testDatabaseFunctions}
-                    variant="outline"
-                    size="sm"
-                    className="border-blue-300 text-blue-600 hover:bg-blue-50"
-                  >
-                    Test Database
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Business Name</TableHead>
-                        <TableHead>Current Reviews</TableHead>
-                        <TableHead>Average Rating</TableHead>
-                        <TableHead>Location</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {contractors.filter(c => c.status === 'approved').map((contractor) => (
-                        <TableRow key={contractor.id}>
-                          <TableCell className="font-medium">
-                            {contractor.business_name}
-                          </TableCell>
-                          <TableCell>
-                            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium">
-                              {contractor.total_reviews || 0} reviews
-                            </span>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center">
-                              <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                              <span className="font-semibold">
-                                {contractor.average_rating ? contractor.average_rating.toFixed(1) : '0.0'}
-                              </span>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {contractor.business_city && contractor.business_state
-                              ? `${contractor.business_city}, ${contractor.business_state}`
-                              : 'Not specified'
-                            }
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              size="sm"
-                              onClick={() => openReviewDialog(contractor)}
-                              className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] text-xs px-2 py-1"
-                            >
-                              <Plus className="h-3 w-3 mr-1" />
-                              Add Review
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                      {contractors.filter(c => c.status === 'approved').length === 0 && (
-                        <TableRow>
-                          <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                            No approved contractors available for reviews
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        </div>
 
         {/* Edit Contractor Profile Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -1440,33 +1387,21 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </div>
-
-              {/* Bio */}
-              <div className="md:col-span-2 space-y-4">
-                <h3 className="text-lg font-semibold">Company Bio</h3>
-                <div>
-                  <Label htmlFor="bio">Bio / Description</Label>
-                  <Textarea
-                    id="bio"
-                    value={editFormData.bio || ''}
-                    onChange={(e) => setEditFormData(prev => ({ ...prev, bio: e.target.value }))}
-                    placeholder="Describe the company, services, and experience..."
-                    rows={4}
-                  />
-                </div>
-              </div>
             </div>
 
-            <div className="flex justify-end space-x-3 mt-6">
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+            <div className="flex justify-end space-x-2 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setIsEditDialogOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={updateContractorProfile}
                 disabled={isUpdating}
-                className="bg-[#0a4768] hover:bg-[#0a4768]/90"
+                className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]"
               >
-                {isUpdating ? 'Updating...' : 'Update Profile'}
+                {isUpdating ? 'Updating...' : 'Update Contractor'}
               </Button>
             </div>
           </DialogContent>
@@ -1522,7 +1457,6 @@ export default function AdminDashboard() {
                 </Select>
               </div>
 
-
               <div>
                 <Label htmlFor="comment">Review Comment *</Label>
                 <Textarea
@@ -1535,7 +1469,6 @@ export default function AdminDashboard() {
                 />
               </div>
 
-
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -1547,16 +1480,352 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="flex justify-end space-x-3 mt-6">
-              <Button variant="outline" onClick={() => setIsReviewDialogOpen(false)}>
+            <div className="flex justify-end space-x-2 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setIsReviewDialogOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={addReview}
                 disabled={isAddingReview}
                 className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]"
               >
-                {isAddingReview ? 'Adding Review...' : 'Add Review'}
+                {isAddingReview ? 'Adding...' : 'Add Review'}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Review Dialog */}
+        <Dialog open={isEditReviewDialogOpen} onOpenChange={setIsEditReviewDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Edit Review</DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit_customer_name">Customer Name *</Label>
+                  <Input
+                    id="edit_customer_name"
+                    value={reviewFormData.customer_name}
+                    onChange={(e) => setReviewFormData(prev => ({ ...prev, customer_name: e.target.value }))}
+                    placeholder="John Smith"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit_customer_email">Customer Email</Label>
+                  <Input
+                    id="edit_customer_email"
+                    type="email"
+                    value={reviewFormData.customer_email || ''}
+                    onChange={(e) => setReviewFormData(prev => ({ ...prev, customer_email: e.target.value }))}
+                    placeholder="john@example.com"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="edit_rating">Rating *</Label>
+                <Select
+                  value={reviewFormData.rating.toString()}
+                  onValueChange={(value) => setReviewFormData(prev => ({ ...prev, rating: parseInt(value) }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="5">⭐⭐⭐⭐⭐ (5 stars)</SelectItem>
+                    <SelectItem value="4">⭐⭐⭐⭐ (4 stars)</SelectItem>
+                    <SelectItem value="3">⭐⭐⭐ (3 stars)</SelectItem>
+                    <SelectItem value="2">⭐⭐ (2 stars)</SelectItem>
+                    <SelectItem value="1">⭐ (1 star)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="edit_comment">Review Comment *</Label>
+                <Textarea
+                  id="edit_comment"
+                  value={reviewFormData.comment || ''}
+                  onChange={(e) => setReviewFormData(prev => ({ ...prev, comment: e.target.value }))}
+                  placeholder="Describe the customer's experience..."
+                  rows={4}
+                  required
+                />
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="edit_verified"
+                  checked={reviewFormData.verified}
+                  onChange={(e) => setReviewFormData(prev => ({ ...prev, verified: e.target.checked }))}
+                />
+                <Label htmlFor="edit_verified">Mark as Verified Review</Label>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-2 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setIsEditReviewDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={updateReview}
+                disabled={isUpdatingReview}
+                className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]"
+              >
+                {isUpdatingReview ? 'Updating...' : 'Update Review'}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* View Review Dialog */}
+        <Dialog open={isViewReviewDialogOpen} onOpenChange={setIsViewReviewDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Review Details</DialogTitle>
+            </DialogHeader>
+            
+            {selectedReview && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">Customer Name</Label>
+                    <p className="text-lg">{selectedReview.customer_name || 'Anonymous'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">Customer Email</Label>
+                    <p className="text-lg">{selectedReview.customer_email || 'Not provided'}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Rating</Label>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-5 w-5 ${
+                            i < selectedReview.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-lg font-semibold">{selectedReview.rating}/5</span>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Review Comment</Label>
+                  <p className="text-lg bg-gray-50 p-3 rounded-md">
+                    {selectedReview.comment || 'No comment provided'}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">Verified</Label>
+                    <Badge variant={selectedReview.verified ? "default" : "secondary"}>
+                      {selectedReview.verified ? "Verified" : "Unverified"}
+                    </Badge>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">Date</Label>
+                    <p className="text-lg">
+                      {selectedReview.created_at ? new Date(selectedReview.created_at).toLocaleDateString() : 'N/A'}
+                    </p>
+                  </div>
+                </div>
+
+                {selectedReview.service_type && (
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">Service Type</Label>
+                    <p className="text-lg">{selectedReview.service_type}</p>
+                  </div>
+                )}
+
+                {selectedReview.project_cost && (
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">Project Cost</Label>
+                    <p className="text-lg">${selectedReview.project_cost}</p>
+                  </div>
+                )}
+
+                {selectedReview.location && (
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">Location</Label>
+                    <p className="text-lg">{selectedReview.location}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="flex justify-end space-x-2 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setIsViewReviewDialogOpen(false)}
+              >
+                Close
+              </Button>
+              {selectedReview && (
+                <Button
+                  onClick={() => {
+                    setIsViewReviewDialogOpen(false)
+                    editReview(selectedReview)
+                  }}
+                  className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]"
+                >
+                  Edit Review
+                </Button>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Manage Reviews Dialog */}
+        <Dialog open={isManageReviewsDialogOpen} onOpenChange={setIsManageReviewsDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Manage Reviews</DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              {/* Contractor Info */}
+              {selectedContractorForReviews && (
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold">
+                    Reviews for: {contractors.find(c => c.id === selectedContractorForReviews)?.business_name}
+                  </h3>
+                </div>
+              )}
+
+              {/* Add Review Button */}
+              <div className="flex justify-end">
+                <Button
+                  onClick={() => {
+                    if (!selectedContractorForReviews) {
+                      toast.error('Please select a contractor first')
+                      return
+                    }
+                    setReviewFormData({
+                      contractor_id: selectedContractorForReviews,
+                      customer_name: '',
+                      customer_email: '',
+                      rating: 5,
+                      comment: '',
+                      verified: true
+                    })
+                    setIsReviewDialogOpen(true)
+                  }}
+                  className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Review
+                </Button>
+              </div>
+
+              {/* Reviews List */}
+              {isLoadingReviews ? (
+                <div className="flex justify-center py-8">
+                  <div className="text-gray-500">Loading reviews...</div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {reviews.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">
+                      No reviews found for this contractor
+                    </div>
+                  ) : (
+                    reviews.map((review) => (
+                      <div key={review.id} className="border rounded-lg p-4">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-2">
+                              <span className="font-semibold">{review.customer_name || 'Anonymous'}</span>
+                              <Badge variant={review.verified ? "default" : "secondary"}>
+                                {review.verified ? "Verified" : "Unverified"}
+                              </Badge>
+                            </div>
+                            {review.customer_email && (
+                              <div className="text-sm text-gray-500 mb-2">{review.customer_email}</div>
+                            )}
+                            <div className="flex items-center space-x-2 mb-2">
+                              <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star
+                                    key={i}
+                                    className={`h-4 w-4 ${
+                                      i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                              <span className="font-semibold">{review.rating}/5</span>
+                            </div>
+                            <div className="text-gray-700">{review.comment || 'No comment'}</div>
+                            <div className="text-sm text-gray-500 mt-2">
+                              {review.created_at ? new Date(review.created_at).toLocaleDateString() : 'N/A'}
+                            </div>
+                          </div>
+                          <div className="flex space-x-2 ml-4">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => viewReview(review)}
+                              className="text-blue-600 hover:bg-blue-50"
+                            >
+                              <Eye className="h-3 w-3 mr-1" />
+                              View
+                            </Button>
+                            {review.id && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => editReview(review)}
+                                className="text-green-600 hover:bg-green-50"
+                              >
+                                <Edit className="h-3 w-3 mr-1" />
+                                Edit
+                              </Button>
+                            )}
+                            {review.id && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => deleteReview(review.id)}
+                                disabled={isDeletingReview}
+                                className="text-red-600 hover:bg-red-50"
+                              >
+                                <XCircle className="h-3 w-3 mr-1" />
+                                Delete
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end space-x-2 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setIsManageReviewsDialogOpen(false)}
+              >
+                Close
               </Button>
             </div>
           </DialogContent>

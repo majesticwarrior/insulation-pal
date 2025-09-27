@@ -14,7 +14,7 @@ interface Lead {
   status: string
   cost: number
   created_at: string
-  response_date?: string
+  responded_at?: string
   leads: {
     customer_name: string
     customer_email: string
@@ -28,7 +28,7 @@ interface Lead {
   }
 }
 
-export function LeadsList({ contractorId }: { contractorId: string }) {
+export function LeadsList({ contractorId, contractorCredits }: { contractorId: string, contractorCredits?: number }) {
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
   const [responding, setResponding] = useState<string | null>(null)
@@ -41,7 +41,74 @@ export function LeadsList({ contractorId }: { contractorId: string }) {
     try {
       console.log('🔍 LeadsList: Fetching leads for contractor:', contractorId)
       
-      const { data, error } = await supabase
+      // First, test if the tables exist to detect demo mode
+      console.log('🔍 Testing table access...')
+      const { data: testData, error: testError } = await supabase
+        .from('lead_assignments')
+        .select('id')
+        .limit(1)
+      
+      console.log('🔍 Table test result:', { testData, testError })
+      
+      // If we get a connection error, we're likely in demo mode
+      if (testError && (testError.message?.includes('placeholder') || 
+                       testError.message?.includes('Invalid API key') ||
+                       testError.code === 'PGRST301' ||
+                       testError.code === 'PGRST116')) {
+        console.log('🎭 Demo Mode detected: Simulating leads data')
+        // Simulate some demo leads
+        const demoLeads = [
+          {
+            id: 'demo-1',
+            lead_id: 'demo-lead-1',
+            status: 'sent',
+            cost: 20.00,
+            created_at: new Date().toISOString(),
+            leads: {
+              customer_name: 'John Smith',
+              customer_email: 'john@example.com',
+              customer_phone: '(555) 123-4567',
+              home_size_sqft: 2500,
+              areas_needed: ['attic', 'walls'],
+              insulation_types: ['fiberglass', 'cellulose'],
+              city: 'Phoenix',
+              state: 'AZ',
+              zip_code: '85001'
+            }
+          },
+          {
+            id: 'demo-2',
+            lead_id: 'demo-lead-2',
+            status: 'sent',
+            cost: 20.00,
+            created_at: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+            leads: {
+              customer_name: 'Sarah Johnson',
+              customer_email: 'sarah@example.com',
+              customer_phone: '(555) 987-6543',
+              home_size_sqft: 1800,
+              areas_needed: ['basement'],
+              insulation_types: ['spray_foam'],
+              city: 'Tempe',
+              state: 'AZ',
+              zip_code: '85281'
+            }
+          }
+        ]
+        
+        console.log('✅ Demo Mode: Returning simulated leads:', demoLeads)
+        setLeads(demoLeads)
+        return
+      }
+      
+      if (testError) {
+        console.error('❌ Table access error:', testError)
+        throw new Error(`Cannot access lead_assignments table: ${testError.message}`)
+      }
+      
+      // Now try the full query
+      console.log('🔍 Executing main query for contractor:', contractorId)
+      let { data, error }: { data: any[] | null, error: any } = await supabase
         .from('lead_assignments')
         .select(`
           id,
@@ -49,7 +116,7 @@ export function LeadsList({ contractorId }: { contractorId: string }) {
           status,
           cost,
           created_at,
-          response_date,
+          responded_at,
           leads(
             customer_name,
             customer_email,
@@ -63,13 +130,78 @@ export function LeadsList({ contractorId }: { contractorId: string }) {
           )
         `)
         .eq('contractor_id', contractorId)
+        .neq('status', 'declined')
         .order('created_at', { ascending: false })
+
+      console.log('🔍 Main query result:', { 
+        dataLength: data?.length || 0, 
+        error, 
+        data: data?.slice(0, 2) // Log first 2 items for debugging
+      })
+
+      // If the join query fails, try a simpler approach
+      if (error && error.message?.includes('relation') || error?.code === 'PGRST116') {
+        console.log('🔄 Join query failed, trying separate queries...')
+        
+        // First get lead assignments
+        const { data: assignments, error: assignmentsError } = await supabase
+          .from('lead_assignments')
+          .select('*')
+          .eq('contractor_id', contractorId)
+          .neq('status', 'declined')
+          .order('created_at', { ascending: false })
+        
+        if (assignmentsError) {
+          console.error('❌ Assignments query failed:', assignmentsError)
+          throw assignmentsError
+        }
+        
+        console.log('✅ Got assignments:', assignments)
+        
+        if (assignments && assignments.length > 0) {
+          // Get lead details for each assignment
+          const leadIds = assignments.map((a: any) => a.lead_id)
+          const { data: leadsData, error: leadsError } = await supabase
+            .from('leads')
+            .select('*')
+            .in('id', leadIds)
+          
+          if (leadsError) {
+            console.error('❌ Leads query failed:', leadsError)
+            throw leadsError
+          }
+          
+          console.log('✅ Got leads:', leadsData)
+          
+          // Combine the data
+          data = assignments.map((assignment: any) => ({
+            ...assignment,
+            leads: leadsData?.find((lead: any) => lead.id === assignment.lead_id) || {}
+          }))
+          
+          error = null
+          console.log('✅ Combined data:', data)
+        } else {
+          data = []
+          error = null
+        }
+      }
 
       console.log('🔍 LeadsList: Query result:', { data, error })
       console.log('🔍 LeadsList: Data length:', data?.length || 0)
+      console.log('🔍 LeadsList: Error details:', {
+        error,
+        errorMessage: error?.message,
+        errorCode: error?.code,
+        errorDetails: error?.details,
+        errorHint: error?.hint
+      })
       
       if (error) {
         console.error('❌ LeadsList: Query error:', error)
+        console.error('❌ Error message:', error.message)
+        console.error('❌ Error code:', error.code)
+        console.error('❌ Error details:', error.details)
         throw error
       }
       
@@ -77,6 +209,9 @@ export function LeadsList({ contractorId }: { contractorId: string }) {
       setLeads(data || [])
     } catch (error) {
       console.error('❌ LeadsList: Error fetching leads:', error)
+      console.error('❌ Error type:', typeof error)
+      console.error('❌ Error constructor:', error?.constructor?.name)
+      console.error('❌ Error stringified:', JSON.stringify(error, null, 2))
     } finally {
       setLoading(false)
     }
@@ -85,6 +220,26 @@ export function LeadsList({ contractorId }: { contractorId: string }) {
   async function respondToLead(leadAssignmentId: string, response: 'accept' | 'decline') {
     setResponding(leadAssignmentId)
     try {
+      // Check if this is a demo lead
+      if (leadAssignmentId.startsWith('demo-')) {
+        console.log('🎭 Demo Mode: Simulating lead response:', response)
+        // Simulate response by updating local state
+        setLeads(prevLeads => 
+          prevLeads.map(lead => 
+            lead.id === leadAssignmentId 
+              ? { 
+                  ...lead, 
+                  status: response === 'accept' ? 'accepted' : 'declined',
+                  responded_at: new Date().toISOString()
+                }
+              : lead
+          )
+        )
+        // Simulate delay
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        return
+      }
+      
       await handleContractorResponse(leadAssignmentId, contractorId, response)
       await fetchLeads() // Refresh the list
     } catch (error) {
@@ -96,9 +251,12 @@ export function LeadsList({ contractorId }: { contractorId: string }) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800'
+      case 'sent': return 'bg-yellow-100 text-yellow-800'
+      case 'viewed': return 'bg-blue-100 text-blue-800'
       case 'accepted': return 'bg-green-100 text-green-800'
-      case 'declined': return 'bg-red-100 text-red-800'
+      case 'hired': return 'bg-green-100 text-green-800'
+      // Legacy support for old status values
+      case 'pending': return 'bg-yellow-100 text-yellow-800'
       default: return 'bg-gray-100 text-gray-800'
     }
   }
@@ -107,13 +265,30 @@ export function LeadsList({ contractorId }: { contractorId: string }) {
     return <div className="text-center py-8">Loading leads...</div>
   }
 
+  // Check if we're in demo mode by looking at the leads data
+  const isDemoMode = leads.length > 0 && leads[0]?.id?.startsWith('demo-')
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-[#0a4768]">Available Leads</h2>
-        <Badge variant="secondary">
-          {leads.filter(l => l.status === 'pending').length} pending
-        </Badge>
+        <div>
+          <h2 className="text-2xl font-bold text-[#0a4768]">Available Leads</h2>
+          {isDemoMode && (
+            <p className="text-sm text-amber-600 mt-1">
+              🎭 Demo Mode - Showing sample leads
+            </p>
+          )}
+        </div>
+        <div className="flex gap-2">
+          {contractorCredits !== undefined && (
+            <Badge variant={contractorCredits > 0 ? "default" : "destructive"}>
+              {contractorCredits} credits
+            </Badge>
+          )}
+          <Badge variant="secondary">
+            {leads.filter(l => l.status === 'sent' || l.status === 'pending').length} pending
+          </Badge>
+        </div>
       </div>
 
       {leads.length === 0 ? (
@@ -193,15 +368,16 @@ export function LeadsList({ contractorId }: { contractorId: string }) {
                 )}
               </div>
 
-              {leadAssignment.status === 'pending' && (
+              {(leadAssignment.status === 'pending' || leadAssignment.status === 'sent') && (
                 <div className="flex gap-3">
                   <Button
                     onClick={() => respondToLead(leadAssignment.id, 'accept')}
-                    disabled={responding === leadAssignment.id}
-                    className="bg-green-600 hover:bg-green-700 text-white"
+                    disabled={responding === leadAssignment.id || (contractorCredits !== undefined && contractorCredits <= 0)}
+                    className="bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-400"
                   >
                     <CheckCircle className="h-4 w-4 mr-2" />
-                    {responding === leadAssignment.id ? 'Responding...' : 'Accept Lead'}
+                    {responding === leadAssignment.id ? 'Responding...' : 
+                     (contractorCredits !== undefined && contractorCredits <= 0) ? 'No Credits' : 'Accept Lead'}
                   </Button>
                   <Button
                     onClick={() => respondToLead(leadAssignment.id, 'decline')}
@@ -227,21 +403,13 @@ export function LeadsList({ contractorId }: { contractorId: string }) {
                 </div>
               )}
 
-              {leadAssignment.status === 'declined' && (
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="flex items-center text-gray-600">
-                    <X className="h-5 w-5 mr-2" />
-                    <span className="font-medium">Lead Declined</span>
-                  </div>
-                </div>
-              )}
 
               <div className="text-xs text-gray-500 mt-4">
                 <Clock className="h-3 w-3 inline mr-1" />
                 Received: {new Date(leadAssignment.created_at).toLocaleDateString()}
-                {leadAssignment.response_date && (
+                {leadAssignment.responded_at && (
                   <span className="ml-4">
-                    Responded: {new Date(leadAssignment.response_date).toLocaleDateString()}
+                    Responded: {new Date(leadAssignment.responded_at).toLocaleDateString()}
                   </span>
                 )}
               </div>

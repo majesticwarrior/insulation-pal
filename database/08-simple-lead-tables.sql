@@ -39,5 +39,7 @@ ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lead_assignments ENABLE ROW LEVEL SECURITY;
 
 -- Simple RLS policies
-CREATE POLICY IF NOT EXISTS "Allow all access to leads" ON leads FOR ALL USING (true);
-CREATE POLICY IF NOT EXISTS "Allow all access to lead_assignments" ON lead_assignments FOR ALL USING (true);
+DROP POLICY IF EXISTS "Allow all access to leads" ON leads;
+DROP POLICY IF EXISTS "Allow all access to lead_assignments" ON lead_assignments;
+CREATE POLICY "Allow all access to leads" ON leads FOR ALL USING (true);
+CREATE POLICY "Allow all access to lead_assignments" ON lead_assignments FOR ALL USING (true);

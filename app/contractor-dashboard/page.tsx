@@ -368,7 +368,7 @@ export default function ContractorDashboard() {
           </TabsList>
 
           <TabsContent value="leads" className="space-y-6">
-            {contractor?.id && <LeadsList contractorId={contractor.id} />}
+            {contractor?.id && <LeadsList contractorId={contractor.id} contractorCredits={contractor.credits} />}
           </TabsContent>
 
           <TabsContent value="profile">

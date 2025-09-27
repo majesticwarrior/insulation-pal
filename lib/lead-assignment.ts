@@ -58,7 +58,7 @@ export async function assignLeadToContractors(lead: Lead) {
       lead_id: (lead as any).id,
       contractor_id: contractor.id,
       cost: 20.00, // Cost per lead
-      status: 'pending'
+      status: 'sent'
     }))
 
     const { error: assignmentError } = await (supabase as any)
@@ -131,42 +131,101 @@ export async function handleContractorResponse(
       .from('lead_assignments')
       .update({
         status: response === 'accept' ? 'accepted' : 'declined',
-        response_date: new Date().toISOString()
+        responded_at: new Date().toISOString()
       })
       .eq('id', leadAssignmentId)
       .eq('contractor_id', contractorId)
 
     if (error) throw error
 
-    // If accepted, notify customer
+    // If accepted, deduct credit and notify customer
     if (response === 'accept') {
-      // Get lead and contractor details
-      const { data: assignment } = await (supabase as any)
-        .from('lead_assignments')
-        .select(`
-          leads(customer_name, customer_email),
-          contractors(business_name, users(email, phone))
-        `)
-        .eq('id', leadAssignmentId)
-        .single()
+      try {
+        console.log('💳 Deducting credit for accepted lead...')
+        
+        // Get current contractor credits
+        const { data: contractor, error: contractorError } = await (supabase as any)
+          .from('contractors')
+          .select('credits')
+          .eq('id', contractorId)
+          .single()
 
-      if (assignment?.leads?.customer_email) {
-        await sendEmail({
-          to: assignment.leads.customer_email,
-          subject: 'Contractor Interested in Your Project',
-          template: 'contractor-response',
-          data: {
-            customerName: assignment.leads.customer_name,
-            contractorName: assignment.contractors.business_name,
-            contractorEmail: assignment.contractors.users.email,
-            contractorPhone: assignment.contractors.users.phone
-          }
-        })
+        if (contractorError) {
+          console.error('❌ Error fetching contractor credits:', contractorError)
+          throw contractorError
+        }
+
+        const currentCredits = contractor?.credits || 0
+        console.log('💰 Current credits:', currentCredits)
+
+        if (currentCredits <= 0) {
+          console.warn('⚠️ Contractor has no credits available')
+          throw new Error('Insufficient credits to accept this lead')
+        }
+
+        // Deduct one credit
+        const { error: creditError } = await (supabase as any)
+          .from('contractors')
+          .update({ credits: currentCredits - 1 })
+          .eq('id', contractorId)
+
+        if (creditError) {
+          console.error('❌ Error deducting credit:', creditError)
+          throw creditError
+        }
+
+        console.log('✅ Credit deducted successfully. New balance:', currentCredits - 1)
+      } catch (creditError) {
+        console.error('❌ Credit deduction failed:', creditError)
+        throw creditError
+      }
+
+      try {
+        console.log('🔍 Getting assignment details for notification...')
+        
+        // Get lead and contractor details
+        const { data: assignment, error: assignmentError } = await (supabase as any)
+          .from('lead_assignments')
+          .select(`
+            leads(customer_name, customer_email),
+            contractors(business_name, users(email, phone))
+          `)
+          .eq('id', leadAssignmentId)
+          .single()
+
+        if (assignmentError) {
+          console.error('❌ Error fetching assignment details:', assignmentError)
+          // Don't throw - email notification is optional
+          return
+        }
+
+        console.log('✅ Assignment details:', assignment)
+
+        if (assignment?.leads?.customer_email) {
+          console.log('📧 Sending email notification...')
+          await sendEmail({
+            to: assignment.leads.customer_email,
+            subject: 'Contractor Interested in Your Project',
+            template: 'contractor-response',
+            data: {
+              customerName: assignment.leads.customer_name,
+              contractorName: assignment.contractors.business_name,
+              contractorEmail: assignment.contractors.users.email,
+              contractorPhone: assignment.contractors.users.phone
+            }
+          })
+          console.log('✅ Email notification sent')
+        } else {
+          console.log('⚠️ No customer email found, skipping notification')
+        }
+      } catch (emailError) {
+        console.error('❌ Email notification failed:', emailError)
+        // Don't throw - email notification is optional, lead acceptance should still work
       }
     }
 
   } catch (error) {
-    console.error('Error handling contractor response:', error)
-    throw error
+    console.error('Error handling contractor response:', error);
+    throw error;
   }
 }

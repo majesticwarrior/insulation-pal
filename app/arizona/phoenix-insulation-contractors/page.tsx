@@ -174,7 +174,8 @@ async function getPhoenixReviews() {
   try {
     console.log('🔍 Fetching Phoenix reviews...')
     
-    const { data: reviews, error } = await (supabase as any)
+    // Try to fetch reviews with location containing Phoenix
+    const { data: locationReviews, error: locationError } = await (supabase as any)
       .from('reviews')
       .select(`
         id,
@@ -194,17 +195,65 @@ async function getPhoenixReviews() {
         )
       `)
       .eq('contractors.status', 'approved')
-      .or('location.ilike.%phoenix%,contractors.business_city.ilike.%phoenix%')
+      .ilike('location', '%Phoenix%')
       .order('created_at', { ascending: false })
-      .limit(15)
+      .limit(10)
 
-    if (error) {
-      console.error('Error fetching Phoenix reviews:', error)
-      return []
+    // Try to fetch reviews from contractors based in Phoenix
+    const { data: contractorReviews, error: contractorError } = await (supabase as any)
+      .from('reviews')
+      .select(`
+        id,
+        customer_name,
+        rating,
+        title,
+        comment,
+        service_type,
+        location,
+        verified,
+        created_at,
+        contractors!inner(
+          business_name,
+          business_city,
+          business_state,
+          status
+        )
+      `)
+      .eq('contractors.status', 'approved')
+      .ilike('contractors.business_city', '%Phoenix%')
+      .order('created_at', { ascending: false })
+      .limit(10)
+
+    // Combine and deduplicate results
+    const allReviews = []
+    const seenIds = new Set()
+
+    // Add location-based reviews
+    if (locationReviews) {
+      for (const review of locationReviews) {
+        if (!seenIds.has(review.id)) {
+          allReviews.push(review)
+          seenIds.add(review.id)
+        }
+      }
     }
 
-    console.log(`Found ${reviews?.length || 0} reviews in Phoenix`)
-    return reviews || []
+    // Add contractor-based reviews
+    if (contractorReviews) {
+      for (const review of contractorReviews) {
+        if (!seenIds.has(review.id)) {
+          allReviews.push(review)
+          seenIds.add(review.id)
+        }
+      }
+    }
+
+    // Sort by created_at descending and limit to 15
+    allReviews.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    const finalReviews = allReviews.slice(0, 15)
+
+    console.log(`Found ${finalReviews.length} reviews in Phoenix`)
+    return finalReviews
   } catch (error) {
     console.error('Error in getPhoenixReviews:', error)
     return []
@@ -556,59 +605,88 @@ export default async function PhoenixInsulationContractors() {
 
 
 
-      {/* All Phoenix Reviews */}
+      {/* Phoenix Reviews Carousel */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
-            All Phoenix Reviews
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {phoenixReviews.length > 0 ? phoenixReviews.map((review: any) => (
-              <Card key={review.id} className="border-l-4 border-l-[#F5DD22]">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    {renderStars(review.rating)}
-                    <span className="ml-2 font-semibold">{review.rating}.0</span>
-                    {review.verified && (
-                      <Badge variant="secondary" className="ml-2 text-xs">
-                        Verified
-                      </Badge>
-                    )}
-                  </div>
-                  {review.title && (
-                    <h4 className="font-semibold text-[#0a4768] mb-2">{review.title}</h4>
-                  )}
-                  <blockquote className="text-gray-700 mb-4">
-                    "{review.comment}"
-                  </blockquote>
-                  <div className="text-sm text-gray-600">
-                    <div className="font-medium">{review.customer_name}</div>
-                    <div>{review.contractors.business_name}</div>
-                    <div>{new Date(review.created_at).toLocaleDateString()}</div>
-                    {review.service_type && (
-                      <div className="text-xs text-[#0a4768] mt-1">
-                        Service: {review.service_type}
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            )) : (
-              <div className="col-span-full text-center py-12">
-                <Star className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h4 className="text-lg font-semibold text-gray-900 mb-2">No Reviews Yet</h4>
-                <p className="text-gray-600">
-                  Phoenix contractor reviews will appear here as customers share their experiences.
-                </p>
-              </div>
-            )}
-          </div>
-          
-          <div className="text-center mt-8">
-            <p className="text-gray-600">
-              Customer reviews help you make informed decisions. All reviews are verified and from actual completed projects.
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
+              Latest Phoenix Reviews
+            </h2>
+            <p className="text-lg text-gray-600">
+              See what customers are saying about our Phoenix insulation contractors
             </p>
           </div>
+          
+          {phoenixReviews.length > 0 ? (
+            <div className="max-w-6xl mx-auto">
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-2 md:-ml-4">
+                  {phoenixReviews.map((review: any) => (
+                    <CarouselItem key={review.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                      <Card className="border-l-4 border-l-[#F5DD22] h-full">
+                        <CardContent className="p-6 flex flex-col h-full">
+                          <div className="flex items-center mb-4">
+                            <div className="flex">
+                              {renderStars(review.rating)}
+                            </div>
+                            <span className="ml-2 font-semibold">{review.rating}.0</span>
+                            {review.verified && (
+                              <Badge variant="secondary" className="ml-2 text-xs">
+                                Verified
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          {review.title && (
+                            <h4 className="font-semibold text-[#0a4768] mb-2 text-sm">
+                              {review.title}
+                            </h4>
+                          )}
+                          
+                          <blockquote className="text-gray-700 mb-4 flex-grow text-sm">
+                            "{review.comment}"
+                          </blockquote>
+                          
+                          <div className="text-xs text-gray-600 mt-auto">
+                            <div className="font-medium">{review.customer_name}</div>
+                            <div className="text-[#0a4768]">{review.contractors.business_name}</div>
+                            <div>{new Date(review.created_at).toLocaleDateString()}</div>
+                            {review.service_type && (
+                              <div className="text-[#0a4768] mt-1 font-medium">
+                                {review.service_type}
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="hidden md:flex" />
+                <CarouselNext className="hidden md:flex" />
+              </Carousel>
+              
+              <div className="text-center mt-8">
+                <p className="text-gray-600 text-sm">
+                  Showing {phoenixReviews.length} of the latest reviews from Phoenix customers
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <Star className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h4 className="text-lg font-semibold text-gray-900 mb-2">No Reviews Yet</h4>
+              <p className="text-gray-600">
+                Phoenix contractor reviews will appear here as customers share their experiences.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
