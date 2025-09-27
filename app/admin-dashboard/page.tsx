@@ -323,7 +323,7 @@ export default function AdminDashboard() {
       
     } catch (error) {
       console.error('❌ Error deleting review:', error)
-      toast.error(`Failed to delete review: ${error.message || 'Unknown error'}`)
+      toast.error(`Failed to delete review: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsDeletingReview(false)
     }
@@ -362,7 +362,7 @@ export default function AdminDashboard() {
       
     } catch (error) {
       console.error('❌ Error updating review:', error)
-      toast.error(`Failed to update review: ${error.message || 'Unknown error'}`)
+      toast.error(`Failed to update review: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsUpdatingReview(false)
     }
@@ -921,7 +921,7 @@ export default function AdminDashboard() {
       if (error) {
         console.error('❌ Admin RPC function failed:', error)
         console.error('❌ RPC Error details:', JSON.stringify(error, null, 2))
-        console.error('❌ RPC Error message:', error.message)
+        console.error('❌ RPC Error message:', error instanceof Error ? error.message : 'Unknown error')
         console.error('❌ RPC Error code:', error.code)
         console.error('❌ RPC Error hint:', error.hint)
         console.error('❌ RPC Error details:', error.details)
@@ -971,7 +971,7 @@ export default function AdminDashboard() {
           
         } catch (fallbackError) {
           console.error('❌ Fallback method also failed:', fallbackError)
-          toast.error(`All methods failed: ${error.message}`)
+          toast.error(`All methods failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
           throw error
         }
       } else {
@@ -1803,7 +1803,7 @@ export default function AdminDashboard() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={() => deleteReview(review.id)}
+                                onClick={() => review.id && deleteReview(review.id)}
                                 disabled={isDeletingReview}
                                 className="text-red-600 hover:bg-red-50"
                               >
