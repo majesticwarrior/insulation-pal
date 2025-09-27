@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'InsulationPal - Professional Insulation Services',
   description: 'Connect with trusted insulation contractors in your area. Get quotes for attic insulation, wall insulation, spray foam, and more.',
+  verification: {
+    google: 'dZYI0UVpI_LXVg6tYuC7uIRTZ0ScPWj8r4PCjLH9ZHA',
+  },
 }
 
 export default function RootLayout({
