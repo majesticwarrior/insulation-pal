@@ -193,9 +193,63 @@ async function getContractorReviews(contractorId: string) {
   }
 }
 
-export const metadata: Metadata = {
-  title: 'Contractor Profile - InsulationPal',
-  description: 'View contractor profile, reviews, and get free quotes from verified insulation professionals in your area.',
+// Generate dynamic metadata based on contractor data
+export async function generateMetadata({ params }: ContractorPageProps): Promise<Metadata> {
+  const { slug } = await params
+  const contractorData = await getContractorBySlug(slug)
+  
+  if (!contractorData) {
+    return {
+      title: 'Contractor Not Found - InsulationPal',
+      description: 'The requested contractor profile could not be found.',
+    }
+  }
+
+  const contractorName = contractorData.business_name
+  const location = `${contractorData.business_city}, ${contractorData.business_state}`
+  const rating = contractorData.average_rating || 4.5
+  const reviewCount = contractorData.total_reviews || 0
+  const services = "Attic, Wall, Spray Foam, Basement, and Crawl Space Insulation"
+  
+  return {
+    title: `${contractorName} - ${rating}★ Insulation Contractor in ${location} | InsulationPal`,
+    description: `Get quotes from ${contractorName}, a ${rating}★ rated insulation contractor in ${location}. ${reviewCount} reviews. Services: ${services}. Licensed & insured.`,
+    keywords: [
+      `${contractorName}`,
+      'insulation contractor',
+      location,
+      `${contractorData.business_state} insulation`,
+      'attic insulation',
+      'wall insulation',
+      'spray foam insulation',
+      'basement insulation',
+      'crawl space insulation',
+      'insulation quotes',
+      'verified contractor'
+    ],
+    openGraph: {
+      title: `${contractorName} - ${rating}★ Insulation Contractor`,
+      description: `Professional insulation services in ${location}. ${rating}★ rating with ${reviewCount} reviews. Get your free quote today!`,
+      type: 'website',
+      locale: 'en_US',
+      siteName: 'InsulationPal',
+      images: contractorData.profile_image ? [{
+        url: contractorData.profile_image,
+        width: 800,
+        height: 600,
+        alt: `${contractorName} logo`,
+      }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${contractorName} - ${rating}★ Insulation Contractor`,
+      description: `Professional insulation services in ${location}. ${rating}★ rating with ${reviewCount} reviews.`,
+      images: contractorData.profile_image ? [contractorData.profile_image] : undefined,
+    },
+    alternates: {
+      canonical: `https://insulationpal.com/contractor/${slug}`,
+    },
+  }
 }
 
 export default async function ContractorProfilePage({ params }: ContractorPageProps) {

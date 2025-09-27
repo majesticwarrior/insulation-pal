@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { ReviewForm } from '@/components/forms/ReviewForm'
 import { supabase } from '@/lib/supabase'
+import type { Metadata } from 'next'
 
 interface ReviewPageProps {
   params: Promise<{
@@ -26,6 +27,50 @@ async function getContractor(contractorId: string) {
   }
 
   return contractor as { id: string; business_name: string; status: string }
+}
+
+// Generate dynamic metadata based on contractor data
+export async function generateMetadata({ params }: ReviewPageProps): Promise<Metadata> {
+  const { contractorId } = await params
+  const contractor = await getContractor(contractorId)
+  
+  if (!contractor) {
+    return {
+      title: 'Contractor Not Found - InsulationPal',
+      description: 'The requested contractor could not be found.',
+    }
+  }
+
+  const contractorName = contractor.business_name
+  
+  return {
+    title: `Review ${contractorName} - InsulationPal`,
+    description: `Share your experience with ${contractorName}. Leave a review for this insulation contractor to help other customers make informed decisions.`,
+    keywords: [
+      `review ${contractorName}`,
+      `${contractorName} reviews`,
+      'insulation contractor review',
+      'contractor feedback',
+      'insulation service review',
+      'Phoenix contractor review',
+      'Arizona contractor review'
+    ],
+    openGraph: {
+      title: `Review ${contractorName} - InsulationPal`,
+      description: `Share your experience with ${contractorName}. Help other customers by leaving an honest review of your insulation project.`,
+      type: 'website',
+      locale: 'en_US',
+      siteName: 'InsulationPal',
+    },
+    twitter: {
+      card: 'summary',
+      title: `Review ${contractorName}`,
+      description: `Share your experience with ${contractorName}. Help other customers by leaving a review.`,
+    },
+    alternates: {
+      canonical: `https://insulationpal.com/review/${contractorId}`,
+    },
+  }
 }
 
 export default async function ReviewPage({ params, searchParams }: ReviewPageProps) {

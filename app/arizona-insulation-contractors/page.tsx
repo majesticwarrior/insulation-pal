@@ -16,6 +16,43 @@ import {
   Shield,
   Award
 } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Arizona Insulation Contractors - InsulationPal | Licensed Professionals Statewide',
+  description: 'Find the best insulation contractors across Arizona. Get free quotes from licensed professionals in Phoenix, Tucson, Mesa, Chandler, and more. Attic, wall, and spray foam insulation services.',
+  keywords: [
+    'Arizona insulation contractors',
+    'Phoenix insulation contractors',
+    'Tucson insulation contractors',
+    'Mesa insulation contractors',
+    'Chandler insulation contractors',
+    'Scottsdale insulation contractors',
+    'Arizona attic insulation',
+    'Arizona spray foam insulation',
+    'Arizona wall insulation',
+    'Arizona basement insulation',
+    'Arizona crawl space insulation',
+    'Arizona energy efficiency',
+    'Arizona insulation quotes',
+    'licensed insulation contractors Arizona'
+  ],
+  openGraph: {
+    title: 'Arizona Insulation Contractors - Licensed Professionals Statewide',
+    description: 'Connect with the best licensed insulation contractors across Arizona. Get free quotes for all types of insulation services in Phoenix, Tucson, Mesa, and more.',
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'InsulationPal',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Arizona Insulation Contractors - Licensed Professionals Statewide',
+    description: 'Connect with the best licensed insulation contractors across Arizona. Get free quotes today!',
+  },
+  alternates: {
+    canonical: 'https://insulationpal.com/arizona-insulation-contractors',
+  },
+}
 
 // This would come from the database in a real application
 const topContractors = [

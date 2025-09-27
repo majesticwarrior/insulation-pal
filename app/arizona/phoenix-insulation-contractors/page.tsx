@@ -25,15 +25,62 @@ import { supabase } from '@/lib/supabase'
 import { generateUniqueSlug } from '@/lib/slug-utils'
 import { articles } from '@/lib/articles-data'
 
-export const metadata: Metadata = {
-  title: 'Phoenix Insulation Contractors - InsulationPal | Top-Rated Professionals',
-  description: 'Find the best insulation contractors in Phoenix, AZ. Get free quotes from licensed professionals for attic, wall, and spray foam insulation services.',
-  keywords: 'Phoenix insulation contractors, Phoenix attic insulation, Phoenix spray foam, Phoenix energy efficiency, Arizona insulation services',
-  openGraph: {
-    title: 'Phoenix Insulation Contractors - Top-Rated Professionals',
-    description: 'Connect with the best licensed insulation contractors in Phoenix, Arizona. Get free quotes for all types of insulation services.',
-    type: 'website',
-  },
+// Generate dynamic metadata based on Phoenix contractor data
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const contractors = await getPhoenixContractors()
+    const contractorCount = contractors.length
+    const topContractor = contractors[0]
+    
+    const baseTitle = 'Phoenix Insulation Contractors'
+    const baseDescription = 'Find the best insulation contractors in Phoenix, AZ'
+    
+    return {
+      title: `${baseTitle} - ${contractorCount} Top-Rated Professionals | InsulationPal`,
+      description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
+      keywords: [
+        'Phoenix insulation contractors',
+        'Phoenix attic insulation',
+        'Phoenix spray foam insulation',
+        'Phoenix wall insulation',
+        'Phoenix basement insulation',
+        'Phoenix crawl space insulation',
+        'Phoenix energy efficiency',
+        'Arizona insulation services',
+        'Phoenix insulation quotes',
+        'licensed insulation contractors Phoenix',
+        'verified insulation professionals Phoenix'
+      ],
+      openGraph: {
+        title: `${baseTitle} - ${contractorCount} Top-Rated Professionals`,
+        description: `Connect with ${contractorCount} licensed insulation contractors in Phoenix, Arizona. Get free quotes for all types of insulation services.`,
+        type: 'website',
+        locale: 'en_US',
+        siteName: 'InsulationPal',
+        images: topContractor?.profile_image ? [{
+          url: topContractor.profile_image,
+          width: 1200,
+          height: 630,
+          alt: `${topContractor.business_name} - Phoenix Insulation Contractor`,
+        }] : undefined,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${baseTitle} - ${contractorCount} Top-Rated Professionals`,
+        description: `Connect with ${contractorCount} licensed insulation contractors in Phoenix, Arizona. Get free quotes today!`,
+        images: topContractor?.profile_image ? [topContractor.profile_image] : undefined,
+      },
+      alternates: {
+        canonical: 'https://insulationpal.com/arizona/phoenix-insulation-contractors',
+      },
+    }
+  } catch (error) {
+    console.error('Error generating metadata:', error)
+    return {
+      title: 'Phoenix Insulation Contractors - InsulationPal',
+      description: 'Find the best insulation contractors in Phoenix, AZ. Get free quotes from licensed professionals.',
+    }
+  }
 }
 
 
