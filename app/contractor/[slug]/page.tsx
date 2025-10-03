@@ -584,7 +584,7 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                     {contractor.certifications && contractor.certifications.length > 0 && (
                       <div className="space-y-2">
                         <div className="font-semibold text-gray-800 mb-2">Certifications:</div>
-                        {contractor.certifications.map((cert, index) => (
+                        {contractor.certifications.map((cert: any, index: number) => (
                           <div key={index} className="flex items-center p-2 bg-green-50 rounded border border-green-200">
                             <CheckCircle className="h-4 w-4 text-green-600 mr-2 flex-shrink-0" />
                             <span className="text-gray-700">{cert}</span>
