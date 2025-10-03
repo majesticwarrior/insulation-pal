@@ -209,7 +209,7 @@ async function getArizonaContractors() {
     console.log(`Found ${uniqueContractors.length} contractors serving Arizona`)
     
     // Debug: Log contractor badge status
-    uniqueContractors.forEach(contractor => {
+    uniqueContractors.forEach((contractor: any) => {
       console.log(`🏷️ ${contractor.name}:`)
       console.log(`   BBB Accredited: ${contractor.bbbAccredited}`)
       console.log(`   Licensed, Bonded & Insured: ${contractor.licensedBondedInsured}`)
