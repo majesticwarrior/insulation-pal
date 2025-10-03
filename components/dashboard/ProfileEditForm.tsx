@@ -105,9 +105,10 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
 
   const availableCertifications = [
     'BBB Accreditation',
-    'ENERGY STAR Partner', 
     'BPI Certified',
-    'Licensed, Bonded & Insured'
+    'ENERGY STAR Partner',
+    'Licensed, Bonded & Insured',
+    'OSHA Safety Certified'
   ]
 
   useEffect(() => {

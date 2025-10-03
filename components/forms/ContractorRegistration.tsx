@@ -19,7 +19,8 @@ const contractorSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
   confirmPassword: z.string(),
   businessName: z.string().min(2, 'Business name must be at least 2 characters'),
-  licenseNumber: z.string().min(1, 'License number is required')
+  licenseNumber: z.string().min(1, 'License number is required'),
+  city: z.string().min(1, 'City is required')
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"]
@@ -43,7 +44,8 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
       password: '',
       confirmPassword: '',
       businessName: '',
-      licenseNumber: ''
+      licenseNumber: '',
+      city: ''
     }
   })
 
@@ -73,6 +75,7 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
         user_id: user.id,
         business_name: data.businessName,
         license_number: data.licenseNumber,
+        business_city: data.city,
         status: 'pending'
       }
 
@@ -218,6 +221,20 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
                         <FormLabel>License # *</FormLabel>
                         <FormControl>
                           <Input placeholder="License Number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Phoenix" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

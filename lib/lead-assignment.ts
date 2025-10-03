@@ -27,7 +27,7 @@ export interface Contractor {
 
 export async function assignLeadToContractors(lead: Lead) {
   try {
-    // 1. Find contractors in the area with credits
+    // 1. Find contractors in the area (with credits for per_lead, or any for per_job_completed)
     const { data: contractors, error: contractorError } = await (supabase as any)
       .from('contractors')
       .select(`
@@ -35,10 +35,11 @@ export async function assignLeadToContractors(lead: Lead) {
         user_id,
         business_name,
         credits,
+        payment_preference,
         users(email, phone)
       `)
       .eq('status', 'approved')
-      .gt('credits', 0)
+      .or('credits.gt.0,payment_preference.eq.per_job_completed')
       .limit(5) // Limit to top 5 contractors
 
     if (contractorError) throw contractorError
@@ -67,12 +68,16 @@ export async function assignLeadToContractors(lead: Lead) {
 
     if (assignmentError) throw assignmentError
 
-    // 4. Deduct credits from contractors
+    // 4. Deduct credits from contractors (only for per_lead payment preference)
     for (const contractor of selectedContractors) {
-      await (supabase as any)
-        .from('contractors')
-        .update({ credits: (contractor as any).credits - 1 })
-        .eq('id', contractor.id)
+      if (contractor.payment_preference === 'per_lead' || !contractor.payment_preference) {
+        // Only deduct credits for per_lead contractors
+        await (supabase as any)
+          .from('contractors')
+          .update({ credits: (contractor as any).credits - 1 })
+          .eq('id', contractor.id)
+      }
+      // For per_job_completed contractors, no credits are deducted
     }
 
     // 5. Notify contractors

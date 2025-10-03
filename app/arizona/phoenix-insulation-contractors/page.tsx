@@ -24,6 +24,7 @@ import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import { generateUniqueSlug } from '@/lib/slug-utils'
 import { articles } from '@/lib/articles-data'
+import { getContractorLogo } from '@/lib/contractor-utils'
 
 // Generate dynamic metadata based on Phoenix contractor data
 export async function generateMetadata(): Promise<Metadata> {
@@ -101,6 +102,7 @@ async function getPhoenixContractors() {
         status,
         license_verified,
         insurance_verified,
+        bbb_accredited,
         profile_image,
         bio,
         founded_year,
@@ -118,6 +120,100 @@ async function getPhoenixContractors() {
 
     if (error) {
       console.error('Database error:', error)
+      // If the error is about missing bbb_accredited column, continue without it
+      if (error.message && error.message.includes('bbb_accredited')) {
+        console.warn('⚠️ bbb_accredited column not found - BBB badges will not display')
+        // Retry query without bbb_accredited column
+        const { data: contractorsRetry, error: retryError } = await (supabase as any)
+          .from('contractors')
+          .select(`
+            id,
+            business_name,
+            business_city,
+            business_state,
+            average_rating,
+            total_reviews,
+            total_completed_projects,
+            status,
+            license_verified,
+            insurance_verified,
+            profile_image,
+            bio,
+            founded_year,
+            contractor_service_areas(
+              city,
+              state
+            ),
+            contractor_services(
+              service_type,
+              insulation_types
+            )
+          `)
+          .eq('status', 'approved')
+          .order('average_rating', { ascending: false })
+
+        if (retryError) {
+          console.error('Database error on retry:', retryError)
+          return []
+        }
+        
+        // Process contractors without bbb_accredited
+        const phoenixContractors = contractorsRetry?.filter((contractor: any) => {
+          const contractorCity = contractor.business_city?.toLowerCase()
+          const serviceAreas = contractor.contractor_service_areas || []
+          const servesPhoenix = serviceAreas.some((area: any) => 
+            area.city?.toLowerCase() === 'phoenix'
+          )
+          return contractorCity === 'phoenix' || servesPhoenix
+        }) || []
+
+        // Remove duplicates and transform data to match component format
+        const uniqueContractors = phoenixContractors.reduce((acc: any[], contractor: any) => {
+          const existingContractor = acc.find(c => c.id === contractor.id)
+          if (!existingContractor) {
+            // Extract services offered from contractor_services and capitalize them
+            const servicesOffered = contractor.contractor_services?.map((service: any) => {
+              const serviceType = service.service_type || ''
+              // Capitalize each word in the service type
+              return serviceType.split(' ').map((word: string) => 
+                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+              ).join(' ')
+            }) || []
+            
+            // Extract unique insulation types from all services
+            const allInsulationTypes = contractor.contractor_services?.reduce((acc: string[], service: any) => {
+              if (service.insulation_types && Array.isArray(service.insulation_types)) {
+                return [...acc, ...service.insulation_types]
+              }
+              return acc
+            }, []) || []
+            
+            const insulationTypes = [...new Set(allInsulationTypes)]
+
+            acc.push({
+              id: contractor.id,
+              name: contractor.business_name,
+              slug: generateUniqueSlug(contractor.business_name, contractor.id),
+              rating: contractor.average_rating || 4.5,
+              reviewCount: contractor.total_reviews || 0,
+              jobsCompleted: contractor.total_completed_projects || 0,
+              reliabilityScore: 95, // Could be calculated
+              services: servicesOffered.length > 0 ? servicesOffered : ['Basement', 'Attic', 'Garage', 'Crawl Space', 'Walls'], // Real services from profile
+              insulationTypes: insulationTypes.length > 0 ? insulationTypes : ['Fiberglass'], // Real insulation types from profile
+              image: getContractorLogo(contractor.profile_image),
+              verified: contractor.license_verified || false,
+              bbbAccredited: false, // Column doesn't exist yet
+              licensedBondedInsured: Boolean(contractor.license_verified && contractor.insurance_verified),
+              yearEstablished: contractor.founded_year || 2020,
+              about: contractor.bio || 'Professional insulation contractor serving the Phoenix area.'
+              // Removed recentProjects as requested
+            })
+          }
+          return acc
+        }, [])
+
+        return uniqueContractors
+      }
       return []
     }
 
@@ -134,8 +230,14 @@ async function getPhoenixContractors() {
     const uniqueContractors = phoenixContractors.reduce((acc: any[], contractor: any) => {
       const existingContractor = acc.find(c => c.id === contractor.id)
       if (!existingContractor) {
-        // Extract services offered from contractor_services
-        const servicesOffered = contractor.contractor_services?.map((service: any) => service.service_type) || []
+        // Extract services offered from contractor_services and capitalize them
+        const servicesOffered = contractor.contractor_services?.map((service: any) => {
+          const serviceType = service.service_type || ''
+          // Capitalize each word in the service type
+          return serviceType.split(' ').map((word: string) => 
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          ).join(' ')
+        }) || []
         
         // Extract unique insulation types from all services
         const allInsulationTypes = contractor.contractor_services?.reduce((acc: string[], service: any) => {
@@ -154,11 +256,12 @@ async function getPhoenixContractors() {
           reviewCount: contractor.total_reviews || 0,
           jobsCompleted: contractor.total_completed_projects || 0,
           reliabilityScore: 95, // Could be calculated
-          services: servicesOffered.length > 0 ? servicesOffered : ['General Insulation'], // Real services from profile
+          services: servicesOffered.length > 0 ? servicesOffered : ['Basement', 'Attic', 'Garage', 'Crawl Space', 'Walls'], // Real services from profile
           insulationTypes: insulationTypes.length > 0 ? insulationTypes : ['Fiberglass'], // Real insulation types from profile
-          image: contractor.profile_image || '/alex.jpg',
+          image: getContractorLogo(contractor.profile_image),
           verified: contractor.license_verified || false,
-          bbbAccredited: contractor.insurance_verified || false,
+          bbbAccredited: contractor.bbb_accredited || false,
+          licensedBondedInsured: Boolean(contractor.license_verified && contractor.insurance_verified),
           yearEstablished: contractor.founded_year || 2020,
           about: contractor.bio || 'Professional insulation contractor serving the Phoenix area.'
           // Removed recentProjects as requested
@@ -168,6 +271,14 @@ async function getPhoenixContractors() {
     }, [])
 
     console.log(`Found ${uniqueContractors.length} contractors serving Phoenix`)
+    
+    // Debug: Log contractor badge status
+    uniqueContractors.forEach(contractor => {
+      console.log(`🏷️ ${contractor.name}:`)
+      console.log(`   BBB Accredited: ${contractor.bbbAccredited}`)
+      console.log(`   Licensed, Bonded & Insured: ${contractor.licensedBondedInsured}`)
+    })
+    
     return uniqueContractors
   } catch (error) {
     console.error('Database error:', error)
@@ -519,15 +630,20 @@ export default async function PhoenixInsulationContractors() {
                       <div>
                         <span className="font-medium">Jobs Completed:</span> {contractor.jobsCompleted}
                       </div>
-                      <div>
-                        <span className="font-medium">Reliability:</span> {contractor.reliabilityScore}%
+                      <div className="space-y-1">
+                        {contractor.bbbAccredited && (
+                          <div className="flex items-center text-green-600 text-sm">
+                            <Award className="w-4 h-4 mr-1" />
+                            BBB Accredited
+                          </div>
+                        )}
+                        {contractor.licensedBondedInsured && (
+                          <div className="flex items-center text-green-600 text-sm">
+                            <Shield className="w-4 h-4 mr-1" />
+                            Licensed, Bonded & Insured
+                          </div>
+                        )}
                       </div>
-                      {contractor.bbbAccredited && (
-                        <div className="flex items-center text-green-600">
-                          <Award className="w-4 h-4 mr-1" />
-                          BBB Accredited
-                        </div>
-                      )}
                     </div>
                   </div>
 

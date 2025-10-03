@@ -24,6 +24,7 @@ import { supabase } from '@/lib/supabase'
 import { notFound } from 'next/navigation'
 import { extractIdFromSlug } from '@/lib/slug-utils'
 import Link from 'next/link'
+import { getContractorLogo } from '@/lib/contractor-utils'
 
 // Dynamic route - will be rendered on demand
 import type { Metadata } from 'next'
@@ -298,15 +299,10 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
       "Crawl Space Insulation",
       "Basement Insulation"
     ],
-    logo: contractorData.profile_image,
+    logo: getContractorLogo(contractorData.profile_image),
     bio: contractorData.bio || "Professional insulation contractor with years of experience serving the local community.",
-    certifications: [
-      "Licensed Contractor",
-      "Insured Business", 
-      "OSHA Safety Certified",
-      "Energy Star Partner",
-      `License # ${licenseNumber}`
-    ]
+    certifications: contractorData.certifications || [],
+    licenseNumber: contractorData.license_number || ''
   }
 
   // Demo reviews and projects (in real app, these would also come from database)
@@ -563,23 +559,47 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
               </Card>
             </div>
 
-            {/* Certifications */}
+            {/* Certifications & License */}
             <div>
               <Card>
                 <CardHeader>
                   <CardTitle className="text-xl text-[#0a4768] flex items-center">
                     <Award className="h-5 w-5 mr-2" />
-                    Certifications
+                    Certifications & License
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
-                    {contractor.certifications.map((cert, index) => (
-                      <div key={index} className="flex items-center">
-                        <CheckCircle className="h-4 w-4 text-green-600 mr-2" />
-                        <span className="text-gray-700">{cert}</span>
+                  <div className="space-y-3">
+                    {/* License Number */}
+                    {contractor.licenseNumber && (
+                      <div className="flex items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <Shield className="h-5 w-5 text-blue-600 mr-3" />
+                        <div>
+                          <div className="font-semibold text-blue-900">License Number</div>
+                          <div className="text-blue-700 font-mono">{contractor.licenseNumber}</div>
+                        </div>
                       </div>
-                    ))}
+                    )}
+                    
+                    {/* Certifications */}
+                    {contractor.certifications && contractor.certifications.length > 0 && (
+                      <div className="space-y-2">
+                        <div className="font-semibold text-gray-800 mb-2">Certifications:</div>
+                        {contractor.certifications.map((cert, index) => (
+                          <div key={index} className="flex items-center p-2 bg-green-50 rounded border border-green-200">
+                            <CheckCircle className="h-4 w-4 text-green-600 mr-2 flex-shrink-0" />
+                            <span className="text-gray-700">{cert}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* No certifications message */}
+                    {(!contractor.certifications || contractor.certifications.length === 0) && (
+                      <div className="text-gray-500 text-sm italic">
+                        No certifications listed
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>

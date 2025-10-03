@@ -48,6 +48,7 @@ interface Contractor {
   id: string
   business_name: string
   license_number?: string
+  payment_preference?: string
   bio?: string
   founded_year?: number
   employee_count?: number
@@ -364,7 +365,7 @@ export default function ContractorDashboard() {
             <TabsTrigger value="leads">Leads</TabsTrigger>
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="images">Images</TabsTrigger>
-            <TabsTrigger value="billing">Billing</TabsTrigger>
+            <TabsTrigger value="packages">Lead Packages</TabsTrigger>
           </TabsList>
 
           <TabsContent value="leads" className="space-y-6">
@@ -392,7 +393,7 @@ export default function ContractorDashboard() {
             <ImageUploadManager contractorId={contractor?.id || '33333333-3333-3333-3333-333333333331'} />
           </TabsContent>
 
-          <TabsContent value="billing">
+          <TabsContent value="packages">
             <CreditPurchaseManager 
               contractorId={contractor?.id || '33333333-3333-3333-3333-333333333331'}
               currentCredits={stats.credits}

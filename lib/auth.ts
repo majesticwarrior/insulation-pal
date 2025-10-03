@@ -1,7 +1,12 @@
 import { supabase } from './supabase'
 import type { Database } from './database.types'
+import bcrypt from 'bcryptjs'
 
 type Contractor = Database['public']['Tables']['contractors']['Row']
+
+interface ContractorWithPassword extends Contractor {
+  password_hash: string
+}
 
 export interface LoginCredentials {
   email: string
@@ -157,14 +162,18 @@ export async function loginContractor({ email, password }: LoginCredentials): Pr
       .from('contractors')
       .select('*')
       .eq('email', email)
-      .single()
+      .single() as { data: ContractorWithPassword | null, error: any }
 
     if (error || !contractor) {
       return { success: false, error: 'Invalid email or password' }
     }
 
-    // In production, you'd verify password with bcrypt here
-    // For now, we'll skip password verification in production mode
+    // Verify password with bcrypt
+    const isPasswordValid = await bcrypt.compare(password, contractor.password_hash)
+    
+    if (!isPasswordValid) {
+      return { success: false, error: 'Invalid email or password' }
+    }
 
     // Check if contractor is approved
     if ((contractor as any).status !== 'approved') {

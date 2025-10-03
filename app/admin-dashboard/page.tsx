@@ -99,6 +99,13 @@ export default function AdminDashboard() {
   const [selectedContractorForReviews, setSelectedContractorForReviews] = useState<string>('')
   const [isManageReviewsDialogOpen, setIsManageReviewsDialogOpen] = useState(false)
   
+  // Filtering state
+  const [selectedState, setSelectedState] = useState<string>('')
+  const [selectedCity, setSelectedCity] = useState<string>('')
+  const [availableStates, setAvailableStates] = useState<string[]>([])
+  const [availableCities, setAvailableCities] = useState<string[]>([])
+  const [filteredContractors, setFilteredContractors] = useState<Contractor[]>([])
+  
   const router = useRouter()
 
   useEffect(() => {
@@ -169,6 +176,74 @@ export default function AdminDashboard() {
       setIsLoading(false)
     }
   }
+
+  // Filtering functions
+  const updateAvailableStates = (contractors: Contractor[]) => {
+    const stateSet = new Set(contractors.map(c => c.business_state).filter((state): state is string => Boolean(state)))
+    const states = Array.from(stateSet).sort()
+    setAvailableStates(states)
+  }
+
+  const updateAvailableCities = (contractors: Contractor[], state?: string) => {
+    const filteredByState = state ? contractors.filter(c => c.business_state === state) : contractors
+    const citySet = new Set(filteredByState.map(c => c.business_city).filter((city): city is string => Boolean(city)))
+    const cities = Array.from(citySet).sort()
+    setAvailableCities(cities)
+  }
+
+  const applyFilters = () => {
+    let filtered = [...contractors]
+
+    if (selectedState) {
+      filtered = filtered.filter(c => c.business_state === selectedState)
+    }
+
+    if (selectedCity) {
+      filtered = filtered.filter(c => c.business_city === selectedCity)
+    }
+
+    setFilteredContractors(filtered)
+  }
+
+  const clearFilters = () => {
+    setSelectedState('')
+    setSelectedCity('')
+    setFilteredContractors(contractors)
+  }
+
+  // Update filters when contractors change
+  useEffect(() => {
+    updateAvailableStates(contractors)
+    setFilteredContractors(contractors)
+  }, [contractors])
+
+  // Update cities when state changes
+  useEffect(() => {
+    updateAvailableCities(contractors, selectedState)
+    if (selectedState) {
+      setSelectedCity('') // Reset city when state changes
+    }
+  }, [selectedState, contractors])
+
+  // Apply filters when state or city changes
+  useEffect(() => {
+    applyFilters()
+  }, [selectedState, selectedCity, contractors])
+
+  // Update stats based on filtered contractors
+  useEffect(() => {
+    const totalContractors = filteredContractors.length
+    const pending = filteredContractors.filter(c => c.status === 'pending').length
+    const approved = filteredContractors.filter(c => c.status === 'approved').length
+    const suspended = filteredContractors.filter(c => c.status === 'suspended').length
+
+    setStats({
+      total: totalContractors,
+      pending,
+      approved,
+      suspended
+    })
+  }, [filteredContractors])
 
   const loadReviews = async (contractorId?: string) => {
     try {
@@ -450,30 +525,32 @@ export default function AdminDashboard() {
 
       console.log('✅ Found contractor data:', contractor)
 
+      console.log('🗑️ Deleting from contractors table...')
+      
+      // Delete from contractors table (will cascade to related tables)
+      const { data: deletedContractor, error: contractorError, count } = await (supabase as any)
+        .from('contractors')
+        .delete()
+        .eq('id', contractorId)
+        .select()
+
+      console.log('🔍 Delete contractor result:', { deletedContractor, contractorError, count })
+
+      if (contractorError) {
+        console.error('❌ Error deleting contractor:', contractorError)
+        throw contractorError
+      }
+
+      // Verify the contractor was actually deleted
+      if (!deletedContractor || deletedContractor.length === 0) {
+        console.error('❌ Contractor was not deleted - no rows affected')
+        throw new Error('Contractor deletion failed - no rows were affected. This may be due to database permissions.')
+      }
+
+      console.log('✅ Contractor deleted successfully:', deletedContractor)
+
+      // Only delete from users table if user_id exists
       if (contractor?.user_id) {
-        console.log('🗑️ Deleting from contractors table...')
-        
-        // Delete from contractors table (will cascade to related tables)
-        const { data: deletedContractor, error: contractorError, count } = await (supabase as any)
-          .from('contractors')
-          .delete()
-          .eq('id', contractorId)
-          .select()
-
-        console.log('🔍 Delete contractor result:', { deletedContractor, contractorError, count })
-
-        if (contractorError) {
-          console.error('❌ Error deleting contractor:', contractorError)
-          throw contractorError
-        }
-
-        // Verify the contractor was actually deleted
-        if (!deletedContractor || deletedContractor.length === 0) {
-          console.error('❌ Contractor was not deleted - no rows affected')
-          throw new Error('Contractor deletion failed - no rows were affected. This may be due to database permissions.')
-        }
-
-        console.log('✅ Contractor deleted successfully:', deletedContractor)
         console.log('🗑️ Deleting from users table...')
 
         // Delete from users table
@@ -498,8 +575,7 @@ export default function AdminDashboard() {
 
         console.log('✅ User deleted successfully:', deletedUser)
       } else {
-        console.log('⚠️ No user_id found for contractor')
-        throw new Error('No user_id found for contractor')
+        console.log('ℹ️ No user_id found for contractor - skipping user deletion')
       }
 
       // Verify deletion by trying to fetch the contractor again
@@ -1109,6 +1185,67 @@ export default function AdminDashboard() {
               </CardDescription>
             </CardHeader>
               <CardContent>
+                {/* Filter Controls */}
+                <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                  <div className="flex flex-wrap gap-4 items-end">
+                    <div className="flex-1 min-w-[200px]">
+                      <Label htmlFor="state-filter">Filter by State</Label>
+                      <Select value={selectedState || 'all'} onValueChange={(val) => setSelectedState(val === 'all' ? '' : val)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="All States" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All States</SelectItem>
+                          {availableStates.map((state) => (
+                            <SelectItem key={state} value={state}>
+                              {state}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="flex-1 min-w-[200px]">
+                      <Label htmlFor="city-filter">Filter by City</Label>
+                      <Select 
+                        value={selectedCity || 'all'} 
+                        onValueChange={(val) => setSelectedCity(val === 'all' ? '' : val)}
+                        disabled={!selectedState}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder={selectedState ? "All Cities" : "Select state first"} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Cities</SelectItem>
+                          {availableCities.map((city) => (
+                            <SelectItem key={city} value={city}>
+                              {city}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Button 
+                        variant="outline" 
+                        onClick={clearFilters}
+                        disabled={!selectedState && !selectedCity}
+                      >
+                        Clear Filters
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {(selectedState || selectedCity) && (
+                    <div className="mt-3 text-sm text-gray-600">
+                      Showing {filteredContractors.length} of {contractors.length} contractors
+                      {selectedState && ` in ${selectedState}`}
+                      {selectedCity && `, ${selectedCity}`}
+                    </div>
+                  )}
+                </div>
+                
                 <div className="rounded-md border">
                   <Table>
                     <TableHeader>
@@ -1124,7 +1261,7 @@ export default function AdminDashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {contractors.map((contractor) => (
+                      {filteredContractors.map((contractor) => (
                         <TableRow key={contractor.id}>
                           <TableCell className="font-medium">
                             {contractor.business_name}
