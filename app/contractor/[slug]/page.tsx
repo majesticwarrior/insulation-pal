@@ -301,8 +301,7 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
     ],
     logo: getContractorLogo(contractorData.profile_image),
     bio: contractorData.bio || "Professional insulation contractor with years of experience serving the local community.",
-    certifications: contractorData.certifications || [],
-    licenseNumber: contractorData.license_number || ''
+    certifications: contractorData.certifications || []
   }
 
   // Demo reviews and projects (in real app, these would also come from database)
