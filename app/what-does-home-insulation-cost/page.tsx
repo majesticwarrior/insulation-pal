@@ -105,34 +105,25 @@ const regionalCosts = [
 
 export default function CostPage() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen overflow-x-hidden">
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
+      <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20 overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="max-w-4xl mx-auto text-center overflow-hidden">
             <div className="bg-[#F5DD22] w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8">
               <DollarSign className="h-12 w-12 text-[#0a4768]" />
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0a4768] mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#0a4768] mb-6 leading-tight">
               A 2025 Pricing Guide for Home Insulation Costs?
             </h1>
-            <p className="text-xl text-gray-700 mb-8 leading-relaxed">
+            <p className="text-lg sm:text-xl text-gray-700 mb-8 leading-relaxed px-4 sm:px-0">
               Complete pricing breakdown for all types of insulation. Compare DIY vs professional costs, 
               regional pricing variations, and get accurate estimates for your project.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button 
-                asChild
-                className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg"
-              >
-                <Link href="#calculator">
-                  <Calculator className="mr-2 h-5 w-5" />
-                  Cost Calculator
-                </Link>
-              </Button>
-              <QuoteButton className="bg-[#0a4768] hover:bg-[#0a4768]/90 text-white px-8 py-3 text-lg">
+            <div className="flex justify-center px-4 sm:px-0">
+              <QuoteButton className="bg-[#0a4768] hover:bg-[#0a4768]/90 text-white px-6 sm:px-8 py-3 text-base sm:text-lg w-full sm:w-auto">
                 Get Free Quote
               </QuoteButton>
             </div>
@@ -140,34 +131,34 @@ export default function CostPage() {
         </div>
       </section>
 
-      <section className="py-12">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="grid lg:grid-cols-4 gap-8">
-            <div className="lg:col-span-3 space-y-10">
+      <section className="py-8 sm:py-12">
+        <div className="container mx-auto px-4 max-w-7xl overflow-hidden">
+          <div className="grid lg:grid-cols-4 gap-4 lg:gap-8 overflow-hidden">
+            <div className="lg:col-span-3 space-y-8 sm:space-y-10 overflow-hidden">
               {/* Long-form Content */}
               <section>
-                <h2 className="text-3xl font-bold text-[#0a4768] mb-6">Understanding Insulation Costs</h2>
-                <div className="prose prose-lg max-w-none text-gray-700">
-                  <p className="text-lg mb-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#0a4768] mb-6">Understanding Insulation Costs</h2>
+                <div className="prose prose-lg max-w-none text-gray-700 overflow-hidden">
+                  <p className="text-base sm:text-lg mb-6">
                     Home insulation costs vary significantly based on several factors including the type of material, 
                     area size, installation complexity, and geographic location. Understanding these variables is 
                     crucial for homeowners planning insulation projects and budgeting accordingly.
                   </p>
                   
-                  <p className="mb-6">
+                  <p className="text-base sm:text-lg mb-6">
                     The average cost of insulating a home ranges from $1,500 to $6,000, with most homeowners 
                     spending between $2,000 and $4,500. This wide range reflects the diversity of insulation 
                     projects, from simple attic upgrades to comprehensive whole-house insulation improvements.
                   </p>
 
-                  <p className="mb-6">
+                  <p className="text-base sm:text-lg mb-6">
                     Professional installation typically costs 2-3 times more than DIY installation, but includes 
                     labor, equipment rental, and warranty coverage. DIY projects can save 50-70% on labor costs 
                     but require proper tools, safety equipment, and technical knowledge.
                   </p>
 
-                  <h3 className="text-2xl font-bold text-[#0a4768] mb-4">Cost Breakdown Analysis</h3>
-                  <p className="mb-6">
+                  <h3 className="text-xl sm:text-2xl font-bold text-[#0a4768] mb-4">Cost Breakdown Analysis</h3>
+                  <p className="text-base sm:text-lg mb-6">
                     Material costs typically represent 40-60% of total project costs, while labor accounts for 
                     30-50%. Additional costs may include equipment rental, disposal fees, and permit costs. 
                     Understanding this breakdown helps homeowners make informed decisions about DIY vs professional installation.
@@ -177,11 +168,11 @@ export default function CostPage() {
 
               {/* Average Costs Overview */}
               <section>
-                <h2 className="text-3xl font-bold text-[#0a4768] mb-6">Average Insulation Costs by Type</h2>
-                <div className="grid md:grid-cols-2 gap-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#0a4768] mb-6">Average Insulation Costs by Type</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 overflow-hidden">
                   {insulationTypes.map((type, index) => (
                     <Card key={index} className="hover:shadow-lg transition-shadow">
-                      <CardContent className="p-6">
+                      <CardContent className="p-4 sm:p-6">
                         <h3 className="text-xl font-bold text-[#0a4768] mb-3">{type.name}</h3>
                         <div className="space-y-2 mb-4">
                           <div className="flex justify-between">
@@ -207,13 +198,13 @@ export default function CostPage() {
 
               {/* Cost Factors */}
               <section>
-                <h2 className="text-3xl font-bold text-[#0a4768] mb-6">What Affects Insulation Costs?</h2>
-                <div className="grid md:grid-cols-2 gap-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#0a4768] mb-6">What Affects Insulation Costs?</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 overflow-hidden">
                   {costFactors.map((factor, index) => (
                     <Card key={index} className="hover:shadow-lg transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between mb-3">
-                          <h3 className="text-lg font-bold text-[#0a4768]">{factor.title}</h3>
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 gap-2">
+                          <h3 className="text-base sm:text-lg font-bold text-[#0a4768]">{factor.title}</h3>
                           <span className={`px-2 py-1 rounded text-xs font-medium ${
                             factor.impact === 'High' ? 'bg-red-100 text-red-700' :
                             factor.impact === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
@@ -222,7 +213,7 @@ export default function CostPage() {
                             {factor.impact} Impact
                           </span>
                         </div>
-                        <p className="text-gray-600 mb-4">{factor.description}</p>
+                        <p className="text-sm sm:text-base text-gray-600 mb-4">{factor.description}</p>
                         <ul className="space-y-1">
                           {factor.examples.map((example, i) => (
                             <li key={i} className="text-sm text-gray-500 flex items-center">
@@ -239,25 +230,25 @@ export default function CostPage() {
 
               {/* Material Costs */}
               <section>
-                <h2 className="text-3xl font-bold text-[#0a4768] mb-6">Insulation Material Costs</h2>
-                <Card>
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#0a4768] mb-6">Insulation Material Costs</h2>
+                <Card className="overflow-hidden">
                   <CardContent className="p-0">
                     <div className="overflow-x-auto">
-                      <table className="w-full">
+                      <table className="w-full min-w-[600px]">
                         <thead className="bg-gray-50">
                           <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Material</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost per Sq Ft</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">R-Value</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difficulty</th>
+                            <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Material</th>
+                            <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost per Sq Ft</th>
+                            <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">R-Value</th>
+                            <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difficulty</th>
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                           {materialCosts.map((material, index) => (
                             <tr key={index} className="hover:bg-gray-50">
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#0a4768]">{material.material}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{material.costPerSqFt}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{material.rValue}</td>
+                              <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-[#0a4768]">{material.material}</td>
+                              <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{material.costPerSqFt}</td>
+                              <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{material.rValue}</td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                                   material.difficulty === 'Easy' ? 'bg-green-100 text-green-700' :
@@ -278,18 +269,18 @@ export default function CostPage() {
 
               {/* Regional Pricing */}
               <section>
-                <h2 className="text-3xl font-bold text-[#0a4768] mb-6">Regional Cost Variations</h2>
-                <div className="grid md:grid-cols-2 gap-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#0a4768] mb-6">Regional Cost Variations</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 overflow-hidden">
                   {regionalCosts.map((region, index) => (
                     <Card key={index} className="hover:shadow-lg transition-shadow">
-                      <CardContent className="p-6">
-                        <h3 className="text-lg font-bold text-[#0a4768] mb-3">{region.region}</h3>
+                      <CardContent className="p-4 sm:p-6">
+                        <h3 className="text-base sm:text-lg font-bold text-[#0a4768] mb-3">{region.region}</h3>
                         <div className="space-y-2">
-                          <div className="flex justify-between">
+                          <div className="flex justify-between text-sm sm:text-base">
                             <span className="text-gray-600">Cost Multiplier:</span>
                             <span className="font-semibold text-[#0a4768]">{region.multiplier}</span>
                           </div>
-                          <div className="flex justify-between">
+                          <div className="flex justify-between text-sm sm:text-base">
                             <span className="text-gray-600">Average Cost:</span>
                             <span className="font-semibold text-[#0a4768]">{region.avgCost}</span>
                           </div>
@@ -302,8 +293,8 @@ export default function CostPage() {
 
               {/* Additional Long-form Content */}
               <section>
-                <h2 className="text-3xl font-bold text-[#0a4768] mb-6">Return on Investment</h2>
-                <div className="prose prose-lg max-w-none text-gray-700">
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#0a4768] mb-6">Return on Investment</h2>
+                <div className="prose prose-lg max-w-none text-gray-700 overflow-hidden">
                   <p className="mb-6">
                     Insulation provides one of the best returns on investment for home improvements, typically 
                     paying for itself within 3-7 years through energy savings. The exact payback period depends 
@@ -316,7 +307,7 @@ export default function CostPage() {
                     savings of $400 per year, making insulation upgrades highly cost-effective.
                   </p>
 
-                  <h3 className="text-2xl font-bold text-[#0a4768] mb-4">Energy Savings Breakdown</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold text-[#0a4768] mb-4">Energy Savings Breakdown</h3>
                   <p className="mb-6">
                     Attic insulation typically provides the highest energy savings, as heat rises and escapes 
                     through poorly insulated roofs. Wall insulation offers moderate savings, while basement and 
@@ -334,10 +325,10 @@ export default function CostPage() {
             </div>
 
             {/* Right Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-8 space-y-6">
-                <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                  <h3 className="text-lg font-semibold text-[#0a4768] mb-4">Get Started</h3>
+            <div className="lg:col-span-1 mt-8 lg:mt-0 overflow-hidden">
+              <div className="sticky top-8 space-y-4 sm:space-y-6">
+                <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
+                  <h3 className="text-base sm:text-lg font-semibold text-[#0a4768] mb-4">Get Started</h3>
                   <div className="space-y-3">
                     <QuoteButton className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
                       <DollarSign className="mr-2 h-4 w-4" />
@@ -358,56 +349,56 @@ export default function CostPage() {
                   </div>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                  <h3 className="text-lg font-semibold text-[#0a4768] mb-4">Learning Center</h3>
+                <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
+                  <h3 className="text-base sm:text-lg font-semibold text-[#0a4768] mb-4">Learning Center</h3>
                   <div className="space-y-3">
-                    <Link href="/resources/articles" className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <Link href="/resources/articles" className="block p-2 sm:p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="flex items-center text-[#0a4768]">
                         <FileText className="h-4 w-4 mr-2" />
-                        <span className="font-medium">Articles</span>
+                        <span className="text-sm sm:text-base font-medium">Articles</span>
                       </div>
-                      <p className="text-sm text-gray-600 mt-1">Expert guides and tips</p>
+                      <p className="text-xs sm:text-sm text-gray-600 mt-1">Expert guides and tips</p>
                     </Link>
-                    <Link href="/resources/diy" className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <Link href="/resources/diy" className="block p-2 sm:p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="flex items-center text-[#0a4768]">
                         <BookOpen className="h-4 w-4 mr-2" />
-                        <span className="font-medium">Do It Yourself</span>
+                        <span className="text-sm sm:text-base font-medium">Do It Yourself</span>
                       </div>
-                      <p className="text-sm text-gray-600 mt-1">Step-by-step guides</p>
+                      <p className="text-xs sm:text-sm text-gray-600 mt-1">Step-by-step guides</p>
                     </Link>
                   </div>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
                   <div className="space-y-3">
-                    <Link href="/services/attic-insulation" className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <Link href="/services/attic-insulation" className="block p-2 sm:p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="flex items-center text-[#0a4768]">
                         <Wrench className="h-4 w-4 mr-2" />
-                        <span className="font-medium">What is Attic Insulation?</span>
+                        <span className="text-sm sm:text-base font-medium">What is Attic Insulation?</span>
                       </div>
                     </Link>
-                    <Link href="/services/wall-insulation" className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <Link href="/services/wall-insulation" className="block p-2 sm:p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="flex items-center text-[#0a4768]">
                         <Wrench className="h-4 w-4 mr-2" />
-                        <span className="font-medium">What is Wall Insulation?</span>
+                        <span className="text-sm sm:text-base font-medium">What is Wall Insulation?</span>
                       </div>
                     </Link>
-                    <Link href="/services/basement-insulation" className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <Link href="/services/basement-insulation" className="block p-2 sm:p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="flex items-center text-[#0a4768]">
                         <Wrench className="h-4 w-4 mr-2" />
-                        <span className="font-medium">What is Basement Insulation?</span>
+                        <span className="text-sm sm:text-base font-medium">What is Basement Insulation?</span>
                       </div>
                     </Link>
-                    <Link href="/services/crawl-space" className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <Link href="/services/crawl-space" className="block p-2 sm:p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="flex items-center text-[#0a4768]">
                         <Wrench className="h-4 w-4 mr-2" />
-                        <span className="font-medium">What is Crawl Space Insulation?</span>
+                        <span className="text-sm sm:text-base font-medium">What is Crawl Space Insulation?</span>
                       </div>
                     </Link>
-                    <Link href="/services/spray-foam" className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <Link href="/services/spray-foam" className="block p-2 sm:p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="flex items-center text-[#0a4768]">
                         <Wrench className="h-4 w-4 mr-2" />
-                        <span className="font-medium">What is Spray Foam Insulation?</span>
+                        <span className="text-sm sm:text-base font-medium">What is Spray Foam Insulation?</span>
                       </div>
                     </Link>
                   </div>
