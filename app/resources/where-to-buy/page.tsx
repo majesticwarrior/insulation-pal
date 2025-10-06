@@ -417,13 +417,7 @@ export default function WhereToBuyPage() {
             Get personalized recommendations and professional advice.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button 
-              className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg"
-            >
-              <Phone className="mr-2 h-5 w-5" />
-              Contact Expert
-            </Button>
-            <QuoteButton className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white px-8 py-3 text-lg">
+            <QuoteButton className="bg-[#0a4768] hover:bg-[#0a4768]/90 text-white px-8 py-3 text-lg">
               Get Installation Quote
             </QuoteButton>
           </div>

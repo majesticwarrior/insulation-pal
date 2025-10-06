@@ -5,8 +5,11 @@ import { Button } from '@/components/ui/button'
 import { QuoteButton } from '@/components/ui/quote-button'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Play, BookOpen, Calculator, Wrench, Shield, Clock, ArrowLeft } from 'lucide-react'
+import { Calculator, Wrench, Shield, ArrowLeft, Play, Wind, Scissors, Zap, Ruler, Eye, Hand, Flashlight } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import type { Metadata } from 'next'
+import DIYVideosGrid from '@/components/pages/DIYVideosGrid'
+import CostCalculatorDialog from '@/components/pages/CostCalculatorDialog'
 
 export const metadata: Metadata = {
   title: 'DIY Insulation Guides - InsulationPal | How-To Videos & Tutorials',
@@ -21,24 +24,24 @@ export const metadata: Metadata = {
 
 const diyProjects = [
   {
-    title: 'Attic Insulation Installation',
+    title: 'Attic Insulation',
     description: 'Learn how to properly insulate your attic with blown-in or batt insulation.',
-    image: '/attic-insulation-blown-in.jpg',
+    image: '/attic-insulation-glass-wool.jpg',
     difficulty: 'Intermediate',
     time: '4-6 hours',
     cost: '$200-500',
-    videoUrl: '#',
-    guideUrl: '#'
+    videoUrl: 'https://www.youtube.com/watch?v=ghH5un9P7zQ',
+    guideUrl: '/resources/diy/attic'
   },
   {
-    title: 'Wall Insulation for Existing Homes',
+    title: 'Wall Insulation',
     description: 'Add insulation to existing walls using injection or blown-in techniques.',
     image: '/cellulose-wall-insulation-installed.jpg',
     difficulty: 'Advanced',
     time: '6-8 hours',
     cost: '$300-800',
-    videoUrl: '#',
-    guideUrl: '#'
+    videoUrl: 'https://www.youtube.com/watch?v=tuW033vM-xA',
+    guideUrl: '/resources/diy/walls'
   },
   {
     title: 'Crawl Space Insulation',
@@ -47,8 +50,8 @@ const diyProjects = [
     difficulty: 'Intermediate',
     time: '3-5 hours',
     cost: '$150-400',
-    videoUrl: '#',
-    guideUrl: '#'
+    videoUrl: 'https://www.youtube.com/watch?v=pjmsgqDAK2A',
+    guideUrl: '/resources/diy/crawl-space'
   },
   {
     title: 'Basement Insulation',
@@ -57,8 +60,8 @@ const diyProjects = [
     difficulty: 'Intermediate',
     time: '5-7 hours',
     cost: '$250-600',
-    videoUrl: '#',
-    guideUrl: '#'
+    videoUrl: 'https://www.youtube.com/watch?v=djYi5TeKtIc',
+    guideUrl: '/resources/diy/basement'
   },
   {
     title: 'Garage Insulation',
@@ -67,8 +70,8 @@ const diyProjects = [
     difficulty: 'Beginner',
     time: '3-4 hours',
     cost: '$100-300',
-    videoUrl: '#',
-    guideUrl: '#'
+    videoUrl: 'https://www.youtube.com/watch?v=m0iYiHx0Gmg',
+    guideUrl: '/resources/diy/garage'
   },
   {
     title: 'Spray Foam Insulation',
@@ -77,20 +80,30 @@ const diyProjects = [
     difficulty: 'Advanced',
     time: '8-12 hours',
     cost: '$500-1200',
-    videoUrl: '#',
+    videoUrl: 'https://www.youtube.com/watch?v=6-xPIgRLuBE',
+    guideUrl: '#'
+  },
+  {
+    title: 'Blown-in Insulation',
+    description: 'Install loose-fill insulation in attics or walls for improved efficiency.',
+    image: '/attic-insulation-blown-in.jpg',
+    difficulty: 'Intermediate',
+    time: '3-6 hours',
+    cost: '$200-600',
+    videoUrl: 'https://www.youtube.com/watch?v=PKRqplUscbw',
     guideUrl: '#'
   }
 ]
 
-const tools = [
-  { name: 'Insulation Blower', description: 'For blown-in insulation installation' },
-  { name: 'Utility Knife', description: 'For cutting insulation batts' },
-  { name: 'Staple Gun', description: 'For securing insulation in place' },
-  { name: 'Measuring Tape', description: 'For accurate measurements' },
-  { name: 'Safety Glasses', description: 'Eye protection during installation' },
-  { name: 'Dust Mask', description: 'Respiratory protection from insulation fibers' },
-  { name: 'Work Gloves', description: 'Hand protection during installation' },
-  { name: 'Flashlight', description: 'For working in dark spaces' }
+const tools: { name: string; description: string; icon: LucideIcon }[] = [
+  { name: 'Insulation Blower', description: 'For blown-in insulation installation', icon: Wind },
+  { name: 'Utility Knife', description: 'For cutting insulation batts', icon: Scissors },
+  { name: 'Staple Gun', description: 'For securing insulation in place', icon: Zap },
+  { name: 'Measuring Tape', description: 'For accurate measurements', icon: Ruler },
+  { name: 'Safety Glasses', description: 'Eye protection during installation', icon: Eye },
+  { name: 'Dust Mask', description: 'Respiratory protection from insulation fibers', icon: Shield },
+  { name: 'Work Gloves', description: 'Hand protection during installation', icon: Hand },
+  { name: 'Flashlight', description: 'For working in dark spaces', icon: Flashlight }
 ]
 
 const safetyTips = [
@@ -198,70 +211,7 @@ export default function DIYPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {diyProjects.map((project, index) => (
-              <Card key={index} className="hover:shadow-xl transition-shadow overflow-hidden">
-                <div className="aspect-video relative">
-                  <Image
-                    src={project.image}
-                    alt={project.title}
-                    fill
-                    className="object-cover"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                    <Button size="lg" className="bg-white/20 hover:bg-white/30 text-white border-white">
-                      <Play className="mr-2 h-5 w-5" />
-                      Watch Video
-                    </Button>
-                  </div>
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-[#F5DD22] text-[#0a4768] px-3 py-1 rounded-full text-sm font-medium">
-                      {project.difficulty}
-                    </span>
-                  </div>
-                </div>
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold text-[#0a4768] mb-3">
-                    {project.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    {project.description}
-                  </p>
-                  
-                  <div className="grid grid-cols-3 gap-4 mb-6 text-center">
-                    <div>
-                      <Clock className="h-5 w-5 text-gray-500 mx-auto mb-1" />
-                      <p className="text-sm text-gray-600">{project.time}</p>
-                    </div>
-                    <div>
-                      <Calculator className="h-5 w-5 text-gray-500 mx-auto mb-1" />
-                      <p className="text-sm text-gray-600">{project.cost}</p>
-                    </div>
-                    <div>
-                      <Wrench className="h-5 w-5 text-gray-500 mx-auto mb-1" />
-                      <p className="text-sm text-gray-600">{project.difficulty}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button asChild variant="outline" size="sm" className="flex-1 border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
-                      <Link href={project.videoUrl}>
-                        <Play className="mr-2 h-4 w-4" />
-                        Video
-                      </Link>
-                    </Button>
-                    <Button asChild variant="outline" size="sm" className="flex-1 border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
-                      <Link href={project.guideUrl}>
-                        <BookOpen className="mr-2 h-4 w-4" />
-                        Guide
-                      </Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <DIYVideosGrid projects={diyProjects} />
         </div>
       </section>
 
@@ -278,17 +228,20 @@ export default function DIYPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {tools.map((tool, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="bg-[#F5DD22] w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Wrench className="h-6 w-6 text-[#0a4768]" />
-                  </div>
-                  <h3 className="font-bold text-[#0a4768] mb-2">{tool.name}</h3>
-                  <p className="text-gray-600 text-sm">{tool.description}</p>
-                </CardContent>
-              </Card>
-            ))}
+            {tools.map((tool, index) => {
+              const IconComponent = (tool.icon || Wrench) as LucideIcon
+              return (
+                <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="bg-[#F5DD22] w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <IconComponent className="h-6 w-6 text-[#0a4768]" />
+                    </div>
+                    <h3 className="font-bold text-[#0a4768] mb-2">{tool.name}</h3>
+                    <p className="text-gray-600 text-sm">{tool.description}</p>
+                  </CardContent>
+                </Card>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -303,13 +256,15 @@ export default function DIYPage() {
             Use our interactive calculator to estimate the cost of materials and tools for your insulation project.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button 
-              className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg"
-            >
-              <Calculator className="mr-2 h-5 w-5" />
-              Open Calculator
-            </Button>
-            <QuoteButton className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white px-8 py-3 text-lg">
+            <CostCalculatorDialog>
+              <Button 
+                className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg"
+              >
+                <Calculator className="mr-2 h-5 w-5" />
+                Open Calculator
+              </Button>
+            </CostCalculatorDialog>
+            <QuoteButton className="bg-[#0a4768] hover:bg-[#0a4768]/90 text-white px-8 py-3 text-lg">
               Get Professional Quote
             </QuoteButton>
           </div>

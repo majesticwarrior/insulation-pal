@@ -51,6 +51,9 @@ const Header = () => {
             <Link href="/how-it-works" className="text-gray-700 hover:text-[#0a4768] transition-colors">
               How It Works
             </Link>
+            <Link href="/what-does-home-insulation-cost" className="text-gray-700 hover:text-[#0a4768] transition-colors">
+              Cost
+            </Link>
             <Link href="/resources" className="text-gray-700 hover:text-[#0a4768] transition-colors">
               Learning Center
             </Link>
@@ -101,6 +104,13 @@ const Header = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               How It Works
+            </Link>
+            <Link
+              href="/what-does-home-insulation-cost"
+              className="block text-gray-700 hover:text-[#0a4768] transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Cost
             </Link>
             <Link
               href="/resources"
