@@ -7,6 +7,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, Clock, Tag, CheckCircle, Shield, Home, Star } from 'lucide-react'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'What is Fibreglass Insulation? | Complete Guide to Fiberglass',
+  description: 'Discover everything you need to know about fibreglass insulation, one of the most popular and cost-effective insulation materials for homes.',
+}
 
 export default function FiberglassInsulationArticle() {
   return (

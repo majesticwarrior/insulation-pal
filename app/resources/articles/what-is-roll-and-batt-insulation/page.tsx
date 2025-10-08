@@ -7,6 +7,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, CheckCircle, DollarSign, Wrench, Home, Star, Shield } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'What is Roll and Batt Insulation? | DIY Insulation Guide',
+  description: 'Discover the versatility and cost-effectiveness of roll and batt insulation for DIY and professional installations in homes and commercial buildings.',
+}
 
 export default function RollAndBattInsulationArticle() {
   return (

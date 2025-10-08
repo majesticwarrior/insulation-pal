@@ -7,6 +7,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, CheckCircle, Search, Thermometer, DollarSign, FileText, Star, Shield } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'What is an Energy Audit? | Complete Guide to Home Energy Assessments',
+  description: 'Learn how energy audits identify insulation needs and energy efficiency improvements to reduce your home\'s energy consumption and costs.',
+}
 
 export default function EnergyAuditArticle() {
   return (

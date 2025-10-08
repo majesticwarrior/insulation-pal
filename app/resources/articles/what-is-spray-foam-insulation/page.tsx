@@ -7,6 +7,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, CheckCircle, Shield, Thermometer, Wind, Star } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'What is Spray Foam Insulation? | Open-Cell vs Closed-Cell Guide',
+  description: 'Explore the superior air sealing properties of spray foam insulation and discover why it\'s considered the premium choice for maximum energy efficiency and moisture control.',
+}
 
 export default function SprayFoamInsulationArticle() {
   return (

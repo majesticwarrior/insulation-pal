@@ -7,6 +7,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, CheckCircle, Wind, Target, Layers, Star, Shield } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'What is Blown-in Insulation? | Complete Installation Guide',
+  description: 'Understanding blown-in insulation techniques for filling gaps and achieving complete coverage in attics, walls, and hard-to-reach areas.',
+}
 
 export default function BlownInInsulationArticle() {
   return (

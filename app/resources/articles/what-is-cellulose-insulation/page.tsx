@@ -7,6 +7,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, CheckCircle, Leaf, Recycle, Shield, Star } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'What is Cellulose Insulation? | Eco-Friendly Insulation Guide',
+  description: 'Discover cellulose insulation, an eco-friendly option made from recycled paper that offers excellent thermal performance and sustainability.',
+}
 
 export default function CelluloseInsulationArticle() {
   return (

@@ -7,6 +7,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, CheckCircle, Shield, Layers, Droplets, Star } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'What is Rigid Foam Board Insulation? | High-Performance Insulation',
+  description: 'Learn about rigid foam board insulation for continuous insulation applications, moisture resistance, and high-performance building envelope solutions.',
+}
 
 export default function RigidFoamBoardInsulationArticle() {
   return (

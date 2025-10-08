@@ -7,6 +7,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, CheckCircle, Shield, Volume2, Flame, Star } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'What is Mineral Wool Insulation? | Fire-Resistant Insulation Guide',
+  description: 'Understanding mineral wool insulation\'s fire resistance, soundproofing qualities, and thermal performance for superior home protection and comfort.',
+}
 
 export default function MineralWoolInsulationArticle() {
   return (
