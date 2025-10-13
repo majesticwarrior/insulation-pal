@@ -323,36 +323,36 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
               </div>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-2 gap-4 mb-6">
-                <div>
-                  <div className="flex items-center mb-2">
-                    <Home className="h-4 w-4 mr-2 text-[#0a4768]" />
-                    <span className="font-medium">Home Size:</span>
-                    <span className="ml-1">{leadAssignment.leads.home_size_sqft.toLocaleString()} sq ft</span>
-                  </div>
-                  <div className="mb-2">
-                    <span className="font-medium">Areas Needed:</span>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {leadAssignment.leads.areas_needed.map((area, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {area}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
+              {leadAssignment.status === 'accepted' ? (
+                <div className="grid md:grid-cols-2 gap-4 mb-6">
                   <div>
-                    <span className="font-medium">Insulation Types:</span>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {leadAssignment.leads.insulation_types.map((type, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {type}
-                        </Badge>
-                      ))}
+                    <div className="flex items-center mb-2">
+                      <Home className="h-4 w-4 mr-2 text-[#0a4768]" />
+                      <span className="font-medium">Home Size:</span>
+                      <span className="ml-1">{leadAssignment.leads.home_size_sqft.toLocaleString()} sq ft</span>
+                    </div>
+                    <div className="mb-2">
+                      <span className="font-medium">Areas Needed:</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {leadAssignment.leads.areas_needed.map((area, index) => (
+                          <Badge key={index} variant="outline" className="text-xs">
+                            {area}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="font-medium">Insulation Types:</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {leadAssignment.leads.insulation_types.map((type, index) => (
+                          <Badge key={index} variant="outline" className="text-xs">
+                            {type}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-                
-                {leadAssignment.status === 'accepted' && (
+                  
                   <div className="space-y-2">
                     <div className="flex items-center">
                       <Mail className="h-4 w-4 mr-2 text-[#0a4768]" />
@@ -365,8 +365,17 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                       </div>
                     )}
                   </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800 mb-2">
+                    <span className="font-semibold">New Lead Available</span>
+                  </p>
+                  <p className="text-sm text-blue-700">
+                    Accept this lead to view complete project details and customer contact information.
+                  </p>
+                </div>
+              )}
 
               {(leadAssignment.status === 'pending' || leadAssignment.status === 'sent') && (
                 <div className="flex gap-3">

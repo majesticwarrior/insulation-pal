@@ -27,7 +27,9 @@ export interface Contractor {
 
 export async function assignLeadToContractors(lead: Lead) {
   try {
-    // 1. Find contractors in the area (with credits for per_lead, or any for per_job_completed)
+    console.log('🎯 Assigning lead to contractors in:', lead.city, lead.state)
+    
+    // 1. Find contractors in the customer's city with available credits
     const { data: contractors, error: contractorError } = await (supabase as any)
       .from('contractors')
       .select(`
@@ -36,23 +38,30 @@ export async function assignLeadToContractors(lead: Lead) {
         business_name,
         credits,
         payment_preference,
-        users(email, phone)
+        users(email, phone),
+        contractor_service_areas!inner(city, state)
       `)
       .eq('status', 'approved')
-      .or('credits.gt.0,payment_preference.eq.per_job_completed')
-      .limit(5) // Limit to top 5 contractors
+      .eq('contractor_service_areas.city', lead.city)
+      .eq('contractor_service_areas.state', lead.state || 'AZ')
+      .gt('credits', 0) // Only contractors with available credits
 
     if (contractorError) throw contractorError
 
     if (!contractors || contractors.length === 0) {
-      console.log('No contractors available for this lead')
+      console.log(`❌ No contractors available in ${lead.city}, ${lead.state}`)
       return
     }
 
-    // 2. Randomly select up to 3 contractors or let customer choose
+    console.log(`✅ Found ${contractors.length} contractors in ${lead.city}`)
+
+    // 2. Automatically select up to 3 contractors randomly
     const selectedContractors = contractors
       .sort(() => 0.5 - Math.random())
       .slice(0, 3)
+    
+    console.log(`📋 Auto-assigning lead to ${selectedContractors.length} contractors:`, 
+      selectedContractors.map(c => c.business_name))
 
     // 3. Create lead assignments
     const assignments = selectedContractors.map((contractor: any) => ({

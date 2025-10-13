@@ -32,10 +32,14 @@ export const metadata: Metadata = {
   },
 }
 
+// Revalidate this page every 60 seconds to show updated contractor data
+export const revalidate = 60
+
 // Fetch contractors from Supabase database who serve Arizona
 async function getArizonaContractors() {
   try {
     // Get contractors who have service areas in Arizona (AZ) OR are based in Arizona
+    // Only show contractors with available credits
     const { data: contractors, error } = await (supabase as any)
       .from('contractors')
       .select(`
@@ -51,6 +55,7 @@ async function getArizonaContractors() {
         insurance_verified,
         bbb_accredited,
         profile_image,
+        credits,
         contractor_service_areas(
           city,
           state
@@ -61,6 +66,7 @@ async function getArizonaContractors() {
         )
       `)
       .eq('status', 'approved')
+      .gt('credits', 0)
       .order('average_rating', { ascending: false })
       .limit(50)
 
@@ -84,6 +90,7 @@ async function getArizonaContractors() {
             license_verified,
             insurance_verified,
             profile_image,
+            credits,
             contractor_service_areas(
               city,
               state
@@ -94,6 +101,7 @@ async function getArizonaContractors() {
             )
           `)
           .eq('status', 'approved')
+          .gt('credits', 0)
           .order('average_rating', { ascending: false })
 
         if (retryError) {
@@ -380,16 +388,16 @@ export default async function ArizonaInsulationContractors() {
                         <Image
                           src={contractor.image || '/alex.jpg'}
                           alt={contractor.name}
-                          width={60}
-                          height={60}
-                          className="w-15 h-15 rounded-full object-cover"
+                          width={80}
+                          height={80}
+                          className="w-20 h-20 rounded-full object-cover"
                           loading="lazy"
                           placeholder="blur"
                           blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                         />
                         {contractor.verified && (
                           <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1">
-                            <CheckCircle className="w-3 h-3 text-white" />
+                            <CheckCircle className="w-4 h-4 text-white" />
                           </div>
                         )}
                       </div>
@@ -517,16 +525,16 @@ export default async function ArizonaInsulationContractors() {
                           <Image
                             src={contractor.image}
                             alt={contractor.name}
-                            width={40}
-                            height={40}
-                            className="w-10 h-10 rounded-full object-cover"
+                            width={56}
+                            height={56}
+                            className="w-14 h-14 rounded-full object-cover"
                             loading="lazy"
                             placeholder="blur"
                             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                           />
                           {contractor.verified && (
                             <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1">
-                              <CheckCircle className="w-2 h-2 text-white" />
+                              <CheckCircle className="w-3 h-3 text-white" />
                             </div>
                           )}
                         </div>

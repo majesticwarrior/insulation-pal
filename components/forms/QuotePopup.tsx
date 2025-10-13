@@ -73,7 +73,7 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
       customerPhone: '',
       address: '',
       city: '',
-      state: 'Arizona',
+      state: 'AZ',
       zipCode: ''
     }
   })
@@ -224,12 +224,16 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
         throw error
       }
 
-      // If random_three is selected, assign to 3 random contractors
-      if (formData.quotePreference === 'random_three') {
-        await assignRandomContractors(lead.id, formData.city, formData.state)
-      }
+      // Auto-assign lead to 3 contractors in the customer's city
+      console.log('🎯 Auto-assigning lead to 3 contractors in:', formData.city, formData.state)
+      const assignmentResult = await assignRandomContractors(lead.id, formData.city, formData.state)
 
-      toast.success('Quote request submitted successfully!')
+      if (assignmentResult.success) {
+        toast.success(`Quote request submitted successfully! Your request has been sent to ${assignmentResult.count} contractor${assignmentResult.count !== 1 ? 's' : ''} in your area.`)
+      } else {
+        toast.warning('Quote request submitted, but no contractors with available credits were found in your area. We will notify you when contractors become available.')
+      }
+      
       onClose()
       form.reset()
       setCurrentStep(1)
@@ -245,37 +249,48 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
     try {
       console.log('🔄 Assigning contractors for lead:', leadId, 'in', city, state)
       
+      // Normalize state to abbreviation
+      const stateAbbr = state === 'Arizona' ? 'AZ' : state
+      console.log('📍 Normalized state:', state, '=>', stateAbbr)
+      
       // First, try to get contractors by service areas
       let contractors = null
       let contractorError = null
       
       try {
-        console.log('🔍 Trying to get contractors by service areas...')
-        const { data, error } = await supabase
-          .from('contractor_service_areas')
-          .select(`
-            contractor_id,
-            contractors!inner(
-              id,
-              business_name,
-              status
-            )
-          `)
-          .eq('city', city)
-          .eq('state', state)
-          .eq('contractors.status', 'approved')
-          .limit(10)
+        console.log('🔍 Trying to get contractors by service areas for:', city, stateAbbr)
         
-        if (error) {
-          console.error('❌ Service areas query failed:', error)
-          contractorError = error
+        // First get service areas for the city
+        const { data: areas, error: areaError } = await supabase
+          .from('contractor_service_areas')
+          .select('contractor_id')
+          .eq('city', city)
+          .eq('state', stateAbbr)
+        
+        if (areaError) throw areaError
+        
+        const contractorIds = areas?.map(a => a.contractor_id) || []
+        console.log('📍 Found', contractorIds.length, 'contractors serving', city)
+        
+        if (contractorIds.length === 0) {
+          contractors = []
         } else {
-          contractors = data?.map((item: any) => item.contractors) || []
-          console.log('✅ Found', contractors.length, 'contractors via service areas')
+          // Then get those contractors who have credits
+          const { data, error } = await supabase
+            .from('contractors')
+            .select('id, business_name, status, credits')
+            .in('id', contractorIds)
+            .eq('status', 'approved')
+            .gt('credits', 0)
+            .limit(10)
+          
+          contractors = data || []
+          console.log('✅ Found', contractors.length, 'contractors with credits in', city)
         }
       } catch (serviceAreaError) {
         console.error('❌ Service area query exception:', serviceAreaError)
         contractorError = serviceAreaError
+        contractors = []
       }
 
       // Fallback: Get contractors by business city if service areas failed
@@ -284,10 +299,11 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
         try {
           const { data, error } = await supabase
             .from('contractors')
-            .select('id, business_name, business_city, business_state')
+            .select('id, business_name, business_city, business_state, credits')
             .eq('status', 'approved')
             .eq('business_city', city)
-            .eq('business_state', state)
+            .eq('business_state', stateAbbr)
+            .gt('credits', 0)
             .limit(10)
           
           if (error) {
@@ -299,7 +315,7 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
           console.log('✅ Fallback found', contractors.length, 'contractors by business city')
         } catch (fallbackError) {
           console.error('❌ Both contractor queries failed:', fallbackError)
-          throw fallbackError
+          contractors = []
         }
       }
 
@@ -316,36 +332,13 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
         const assignments = selected.map((contractor: any) => ({
           lead_id: leadId,
           contractor_id: contractor.id,
-          status: 'sent', // Valid assignment_status enum value
+          status: 'pending', // Valid assignment_status enum value
           cost: 20.00
         }))
 
         console.log('📋 Creating assignments:', assignments)
         
-        // Test lead_assignments table access first
-        try {
-          console.log('🔍 Testing lead_assignments table access...')
-          const { data: testData, error: testError } = await (supabase as any)
-            .from('lead_assignments')
-            .select('id')
-            .limit(1)
-          
-          console.log('🔍 Table test result:', { 
-            data: testData, 
-            error: testError,
-            errorStringified: JSON.stringify(testError, null, 2)
-          })
-          
-          if (testError) {
-            console.error('❌ Cannot access lead_assignments table:', testError)
-            throw new Error(`Table access failed: ${testError.message || 'Unknown error'}`)
-          }
-        } catch (tableTestError) {
-          console.error('❌ Critical table access error:', tableTestError)
-          throw tableTestError
-        }
-        
-        // Now try the insertion
+        // Insert the lead assignments
         const { data: assignmentData, error: assignmentError } = await (supabase as any)
           .from('lead_assignments')
           .insert(assignments)
@@ -367,21 +360,22 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
             details: assignmentError.details || 'No details',
             hint: assignmentError.hint || 'No hint'
           })
-          throw new Error(`Assignment insertion failed: ${assignmentError.message || 'Unknown error'}`)
+          return { success: false, count: 0, error: assignmentError.message || 'Assignment insertion failed' }
         }
         
         console.log('✅ Successfully assigned lead to', selected.length, 'contractors:', assignmentData)
-        toast.success(`Lead assigned to ${selected.length} contractors in ${city}!`)
-
+        
         // TODO: Send notifications to contractors
         // This would integrate with email/SMS service
+        
+        return { success: true, count: selected.length }
       } else {
-        console.warn('⚠️ No contractors found in', city, state)
-        toast.warning(`No contractors found in ${city}. Lead saved but not assigned.`)
+        console.warn('⚠️ No contractors with credits found in', city, state)
+        return { success: false, count: 0, error: 'No contractors with credits available' }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Error assigning contractors:', error)
-      toast.error('Lead saved but contractor assignment failed. Please check admin dashboard.')
+      return { success: false, count: 0, error: error.message || 'Unknown error' }
     }
   }
 
@@ -602,7 +596,7 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
                     <FormItem>
                       <FormLabel>State</FormLabel>
                       <FormControl>
-                        <Input placeholder="Arizona" {...field} />
+                        <Input placeholder="AZ" {...field} value="AZ" readOnly className="bg-gray-50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

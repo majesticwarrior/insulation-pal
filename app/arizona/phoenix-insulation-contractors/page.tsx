@@ -26,6 +26,9 @@ import { generateUniqueSlug } from '@/lib/slug-utils'
 import { articles } from '@/lib/articles-data'
 import { getContractorLogo } from '@/lib/contractor-utils'
 
+// Revalidate this page every 60 seconds to show updated contractor data
+export const revalidate = 60
+
 // Generate dynamic metadata based on Phoenix contractor data
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -89,6 +92,7 @@ export async function generateMetadata(): Promise<Metadata> {
 async function getPhoenixContractors() {
   try {
     // Get contractors who serve Phoenix (either based in Phoenix or have Phoenix as a service area)
+    // Only show contractors with available credits
     const { data: contractors, error } = await (supabase as any)
       .from('contractors')
       .select(`
@@ -106,6 +110,7 @@ async function getPhoenixContractors() {
         profile_image,
         bio,
         founded_year,
+        credits,
         contractor_service_areas(
           city,
           state
@@ -116,6 +121,7 @@ async function getPhoenixContractors() {
         )
       `)
       .eq('status', 'approved')
+      .gt('credits', 0)
       .order('average_rating', { ascending: false })
 
     if (error) {
@@ -140,6 +146,7 @@ async function getPhoenixContractors() {
             profile_image,
             bio,
             founded_year,
+            credits,
             contractor_service_areas(
               city,
               state
@@ -150,6 +157,7 @@ async function getPhoenixContractors() {
             )
           `)
           .eq('status', 'approved')
+          .gt('credits', 0)
           .order('average_rating', { ascending: false })
 
         if (retryError) {
@@ -605,13 +613,13 @@ export default async function PhoenixInsulationContractors() {
                         <Image
                           src={contractor.image}
                           alt={contractor.name}
-                          width={80}
-                          height={80}
-                          className="w-20 h-20 rounded-full object-cover"
+                          width={100}
+                          height={100}
+                          className="w-25 h-25 rounded-full object-cover"
                         />
                         {contractor.verified && (
-                          <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1">
-                            <CheckCircle className="w-4 h-4 text-white" />
+                          <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1.5">
+                            <CheckCircle className="w-5 h-5 text-white" />
                           </div>
                         )}
                       </div>

@@ -622,7 +622,8 @@ export default function AdminDashboard() {
       founded_year: contractor.founded_year || new Date().getFullYear(),
       employee_count: contractor.employee_count || 1,
       license_verified: contractor.license_verified || false,
-      insurance_verified: contractor.insurance_verified || false
+      insurance_verified: contractor.insurance_verified || false,
+      bbb_accredited: contractor.bbb_accredited || false
     })
     setIsEditDialogOpen(true)
   }
@@ -1503,23 +1504,27 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Verification Status</Label>
+                  <Label>Verification & Accreditation</Label>
                   <div className="space-y-2">
                     <label className="flex items-center space-x-2">
                       <input
                         type="checkbox"
-                        checked={editFormData.license_verified || false}
-                        onChange={(e) => setEditFormData(prev => ({ ...prev, license_verified: e.target.checked }))}
+                        checked={(editFormData.license_verified && editFormData.insurance_verified) || false}
+                        onChange={(e) => setEditFormData(prev => ({ 
+                          ...prev, 
+                          license_verified: e.target.checked,
+                          insurance_verified: e.target.checked
+                        }))}
                       />
-                      <span>License Verified</span>
+                      <span className="font-medium">🛡️ Licensed, Bonded & Insured</span>
                     </label>
                     <label className="flex items-center space-x-2">
                       <input
                         type="checkbox"
-                        checked={editFormData.insurance_verified || false}
-                        onChange={(e) => setEditFormData(prev => ({ ...prev, insurance_verified: e.target.checked }))}
+                        checked={editFormData.bbb_accredited || false}
+                        onChange={(e) => setEditFormData(prev => ({ ...prev, bbb_accredited: e.target.checked }))}
                       />
-                      <span>Insurance Verified</span>
+                      <span className="font-medium">🏆 BBB Accredited</span>
                     </label>
                   </div>
                 </div>

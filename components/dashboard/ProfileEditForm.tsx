@@ -29,6 +29,7 @@ interface Contractor {
   contact_phone?: string
   contact_email?: string
   certifications?: string[]
+  bbb_accredited?: boolean
 }
 
 interface ProfileEditFormProps {
@@ -139,7 +140,8 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
       business_zip: contractor.business_zip || '',
       lead_delivery_preference: contractor.lead_delivery_preference || 'email',
       contact_phone: contractor.contact_phone || '',
-      contact_email: contractor.contact_email || ''
+      contact_email: contractor.contact_email || '',
+      bbb_accredited: contractor.bbb_accredited || false
     })
     
     console.log('✅ Form data updated')
@@ -289,6 +291,12 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         contact_phone: formData.contact_phone || null,
         contact_email: formData.contact_email || null,
         certifications: certifications, // Add certifications to save data
+        // Auto-verify license when license number is provided (for green checkmark)
+        license_verified: formData.license_number ? true : false,
+        // Only set insurance_verified when "Licensed, Bonded & Insured" certification is checked
+        insurance_verified: certifications.includes('Licensed, Bonded & Insured'),
+        // Set BBB accredited when certification is checked
+        bbb_accredited: certifications.includes('BBB Accreditation'),
         updated_at: new Date().toISOString()
       }
 
@@ -510,7 +518,8 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
       business_zip: contractor.business_zip || '',
       lead_delivery_preference: contractor.lead_delivery_preference || 'email',
       contact_phone: contractor.contact_phone || '',
-      contact_email: contractor.contact_email || ''
+      contact_email: contractor.contact_email || '',
+      bbb_accredited: contractor.bbb_accredited || false
     })
     setLogoFile(null)
     setLogoPreview(null)
@@ -578,12 +587,13 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
               />
             </div>
             <div>
-              <Label htmlFor="license_number">License Number</Label>
+              <Label htmlFor="license_number">License Number (ROC#)</Label>
               <Input
                 id="license_number"
                 value={formData.license_number}
                 onChange={(e) => handleInputChange('license_number', e.target.value)}
                 disabled={!isEditing}
+                placeholder="e.g., ROC123456"
               />
             </div>
           </div>
