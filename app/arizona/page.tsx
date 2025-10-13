@@ -485,6 +485,110 @@ export default async function ArizonaInsulationContractors() {
         </div>
       </section>
 
+      {/* Recent Projects Section */}
+      <section className="py-16 bg-[#D6D6D6]">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
+              Recent Insulation Projects Completed in Arizona
+            </h2>
+            <p className="text-lg text-gray-600">
+              See the quality work performed by our verified contractors across Arizona
+            </p>
+          </div>
+
+          {recentProjects.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {recentProjects.map((project: any) => (
+                <Card key={project.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="relative h-48">
+                    <Image
+                      src={project.after_image_url || '/placeholder-project.jpg'}
+                      alt={project.title || 'Insulation Project'}
+                      fill
+                      className="object-cover"
+                      loading="lazy"
+                      placeholder="blur"
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-[#0a4768] mb-2 text-sm">
+                      {project.title || 'Insulation Project'}
+                    </h3>
+                    <div className="space-y-1 text-xs text-gray-600">
+                      <div>
+                        <span className="font-medium">Service:</span> {project.service_type || 'Insulation'}
+                      </div>
+                      <div>
+                        <span className="font-medium">Location:</span> {project.project_city}, AZ
+                      </div>
+                      <div>
+                        <span className="font-medium">Contractor:</span> {project.contractors.business_name}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-600">
+                Project portfolio coming soon. Contractors are adding their recent work to showcase quality installations.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Arizona Cities Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
+              Arizona Cities We Serve
+            </h2>
+            <p className="text-lg text-gray-600">
+              Find insulation contractors in major Arizona cities (50,000+ population)
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {arizonaCities.map((city, index) => (
+              <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      {city.slug === 'phoenix' ? (
+                        <Link href={`/arizona/${city.slug}-insulation-contractors`} className="text-[#0a4768] hover:underline">
+                          <h3 className="font-semibold text-lg">{city.name}</h3>
+                        </Link>
+                      ) : (
+                        <h3 className="font-semibold text-lg text-gray-700">{city.name}</h3>
+                      )}
+                      <p className="text-sm text-gray-500">Pop: {city.population}</p>
+                    </div>
+                    <div className="text-right">
+                      {city.slug === 'phoenix' ? (
+                        <Link href={`/arizona/${city.slug}-insulation-contractors`}>
+                          <Button size="sm" variant="outline" className="text-xs">
+                            View Contractors
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Button size="sm" variant="outline" className="text-xs" disabled>
+                          Coming Soon
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* All Contractors */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -616,110 +720,6 @@ export default async function ArizonaInsulationContractors() {
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
-      </section>
-
-      {/* Recent Projects Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Recent Insulation Projects Completed in Arizona
-            </h2>
-            <p className="text-lg text-gray-600">
-              See the quality work performed by our verified contractors across Arizona
-            </p>
-          </div>
-
-          {recentProjects.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {recentProjects.map((project: any) => (
-                <Card key={project.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="relative h-48">
-                    <Image
-                      src={project.after_image_url || '/placeholder-project.jpg'}
-                      alt={project.title || 'Insulation Project'}
-                      fill
-                      className="object-cover"
-                      loading="lazy"
-                      placeholder="blur"
-                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-                    />
-                  </div>
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold text-[#0a4768] mb-2 text-sm">
-                      {project.title || 'Insulation Project'}
-                    </h3>
-                    <div className="space-y-1 text-xs text-gray-600">
-                      <div>
-                        <span className="font-medium">Service:</span> {project.service_type || 'Insulation'}
-                      </div>
-                      <div>
-                        <span className="font-medium">Location:</span> {project.project_city}, AZ
-                      </div>
-                      <div>
-                        <span className="font-medium">Contractor:</span> {project.contractors.business_name}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-600">
-                Project portfolio coming soon. Contractors are adding their recent work to showcase quality installations.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Arizona Cities Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Arizona Cities We Serve
-            </h2>
-            <p className="text-lg text-gray-600">
-              Find insulation contractors in major Arizona cities (50,000+ population)
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {arizonaCities.map((city, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      {city.slug === 'phoenix' ? (
-                        <Link href={`/arizona/${city.slug}-insulation-contractors`} className="text-[#0a4768] hover:underline">
-                          <h3 className="font-semibold text-lg">{city.name}</h3>
-                        </Link>
-                      ) : (
-                        <h3 className="font-semibold text-lg text-gray-700">{city.name}</h3>
-                      )}
-                      <p className="text-sm text-gray-500">Pop: {city.population}</p>
-                    </div>
-                    <div className="text-right">
-                      {city.slug === 'phoenix' ? (
-                        <Link href={`/arizona/${city.slug}-insulation-contractors`}>
-                          <Button size="sm" variant="outline" className="text-xs">
-                            View Contractors
-                          </Button>
-                        </Link>
-                      ) : (
-                        <Button size="sm" variant="outline" className="text-xs" disabled>
-                          Coming Soon
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </div>
       </section>
