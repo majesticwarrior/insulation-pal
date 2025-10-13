@@ -399,17 +399,17 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-xl p-8">
                 <div className="flex items-start gap-6 mb-6">
-                  <div className="w-32 h-32 rounded-lg bg-gray-100 flex items-center justify-center border-2 border-gray-200 overflow-hidden">
+                  <div className="w-40 h-40 rounded-lg bg-gray-100 flex items-center justify-center border-2 border-gray-200 overflow-hidden">
                     {contractor.logo ? (
                       <Image
                         src={contractor.logo}
                         alt={`${contractor.name} logo`}
-                        width={128}
-                        height={128}
+                        width={160}
+                        height={160}
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="text-xl text-gray-500 text-center font-bold">
+                      <div className="text-2xl text-gray-500 text-center font-bold">
                         {contractor.name.charAt(0)}
                       </div>
                     )}
