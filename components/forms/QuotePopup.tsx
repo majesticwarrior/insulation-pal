@@ -254,7 +254,7 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
       console.log('📍 Normalized state:', state, '=>', stateAbbr)
       
       // First, try to get contractors by service areas
-      let contractors = null
+      let contractors: any[] = []
       let contractorError = null
       
       try {
@@ -269,12 +269,10 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
         
         if (areaError) throw areaError
         
-        const contractorIds = areas?.map(a => a.contractor_id) || []
+        const contractorIds = areas?.map((a: any) => a.contractor_id) || []
         console.log('📍 Found', contractorIds.length, 'contractors serving', city)
         
-        if (contractorIds.length === 0) {
-          contractors = []
-        } else {
+        if (contractorIds.length > 0) {
           // Then get those contractors who have credits
           const { data, error } = await supabase
             .from('contractors')
@@ -290,7 +288,6 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
       } catch (serviceAreaError) {
         console.error('❌ Service area query exception:', serviceAreaError)
         contractorError = serviceAreaError
-        contractors = []
       }
 
       // Fallback: Get contractors by business city if service areas failed
@@ -315,7 +312,6 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
           console.log('✅ Fallback found', contractors.length, 'contractors by business city')
         } catch (fallbackError) {
           console.error('❌ Both contractor queries failed:', fallbackError)
-          contractors = []
         }
       }
 

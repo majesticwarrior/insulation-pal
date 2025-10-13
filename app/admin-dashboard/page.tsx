@@ -41,6 +41,7 @@ interface Contractor {
   employee_count?: number
   license_verified?: boolean
   insurance_verified?: boolean
+  bbb_accredited?: boolean
   certifications?: string[]
 }
 

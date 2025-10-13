@@ -58,7 +58,8 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     business_zip: contractor.business_zip || '',
     lead_delivery_preference: contractor.lead_delivery_preference || 'email',
     contact_phone: contractor.contact_phone || '',
-    contact_email: contractor.contact_email || ''
+    contact_email: contractor.contact_email || '',
+    bbb_accredited: contractor.bbb_accredited || false
   })
 
   const [servicesOffered, setServicesOffered] = useState<string[]>([])

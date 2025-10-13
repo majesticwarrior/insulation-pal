@@ -107,6 +107,7 @@ async function getPhoenixContractors() {
         license_verified,
         insurance_verified,
         bbb_accredited,
+        license_number,
         profile_image,
         bio,
         founded_year,
@@ -270,6 +271,7 @@ async function getPhoenixContractors() {
           verified: contractor.license_verified || false,
           bbbAccredited: contractor.bbb_accredited || false,
           licensedBondedInsured: Boolean(contractor.license_verified && contractor.insurance_verified),
+          licenseNumber: contractor.license_number || '',
           yearEstablished: contractor.founded_year || 2020,
           about: contractor.bio || 'Professional insulation contractor serving the Phoenix area.'
           // Removed recentProjects as requested
@@ -617,11 +619,6 @@ export default async function PhoenixInsulationContractors() {
                           height={100}
                           className="w-25 h-25 rounded-full object-cover"
                         />
-                        {contractor.verified && (
-                          <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1.5">
-                            <CheckCircle className="w-5 h-5 text-white" />
-                          </div>
-                        )}
                       </div>
                       <div>
                         <h3 className="text-xl font-bold text-[#0a4768]">{contractor.name}</h3>
@@ -648,7 +645,17 @@ export default async function PhoenixInsulationContractors() {
                         {contractor.licensedBondedInsured && (
                           <div className="flex items-center text-green-600 text-sm">
                             <Shield className="w-4 h-4 mr-1" />
-                            Licensed, Bonded & Insured
+                            <span>Licensed, Bonded & Insured</span>
+                          </div>
+                        )}
+                        {contractor.licenseNumber && (
+                          <div className="flex items-center text-gray-600 text-xs ml-5">
+                            {contractor.verified && (
+                              <div className="bg-green-500 rounded-full p-0.5 mr-1.5">
+                                <CheckCircle className="w-3 h-3 text-white" />
+                              </div>
+                            )}
+                            License # {contractor.licenseNumber}
                           </div>
                         )}
                       </div>

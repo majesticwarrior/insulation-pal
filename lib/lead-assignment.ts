@@ -61,7 +61,7 @@ export async function assignLeadToContractors(lead: Lead) {
       .slice(0, 3)
     
     console.log(`📋 Auto-assigning lead to ${selectedContractors.length} contractors:`, 
-      selectedContractors.map(c => c.business_name))
+      selectedContractors.map((c: any) => c.business_name))
 
     // 3. Create lead assignments
     const assignments = selectedContractors.map((contractor: any) => ({

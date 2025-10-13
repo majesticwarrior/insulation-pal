@@ -60,7 +60,7 @@ export default function DebugLeadsPage() {
       }
       
       // Get contractors with credits
-      const contractorIds = areas.map(a => a.contractor_id)
+      const contractorIds = areas.map((a: any) => a.contractor_id)
       const { data: contractors } = await supabase
         .from('contractors')
         .select('id, business_name, credits')
@@ -76,20 +76,20 @@ export default function DebugLeadsPage() {
         return
       }
       
-      contractors.forEach(c => {
+      contractors.forEach((c: any) => {
         setTestResult(prev => prev + `  - ${c.business_name}: ${c.credits} credits\n`)
       })
       
       // Create assignments
       const selected = contractors.slice(0, 3)
-      const assignments = selected.map(c => ({
+      const assignments = selected.map((c: any) => ({
         lead_id: leadId,
         contractor_id: c.id,
         status: 'pending',
         cost: 20.00
       }))
       
-      const { data: result, error: assignError } = await supabase
+      const { data: result, error: assignError } = await (supabase as any)
         .from('lead_assignments')
         .insert(assignments)
         .select()
