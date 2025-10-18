@@ -5,7 +5,7 @@ import { getPropertyImages, getPlaceholderImage, extractStreetName } from '@/lib
 
 const emailTemplates = {
   'new-lead': (data: any) => {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
     const logoUrl = `${siteUrl}/insulation-pal-logo.png`
     
     // Get property images
@@ -149,7 +149,7 @@ const emailTemplates = {
   },
   
   'contractor-quote': (data: any) => {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
     const logoUrl = `${siteUrl}/insulation-pal-logo.png`
     
     // Extract street name (remove house number)
@@ -318,7 +318,7 @@ const emailTemplates = {
   },
 
   'quote-accepted': (data: any) => {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
     const logoUrl = `${siteUrl}/insulation-pal-logo.png`
     
     return `
@@ -439,7 +439,7 @@ const emailTemplates = {
   },
   
   'project-completion-review': (data: any) => {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
     const logoUrl = `${siteUrl}/insulation-pal-logo.png`
     
     return `

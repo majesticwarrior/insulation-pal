@@ -193,7 +193,7 @@ export async function sendLeadNotification({
   projectDetails: string
   preference?: 'email' | 'sms' | 'both'
 }) {
-  const dashboardLink = `${process.env.NEXTAUTH_URL || 'http://localhost:3001'}/contractor-dashboard`
+  const dashboardLink = `${process.env.NEXTAUTH_URL || 'https://insulationpal.com'}/contractor-dashboard`
   
   const data = {
     contractorName,

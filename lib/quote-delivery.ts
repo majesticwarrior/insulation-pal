@@ -81,7 +81,7 @@ export async function sendQuoteToCustomer(quoteData: QuoteData) {
           propertyAddress: lead.property_address
         },
         contractorEmail: contractor.users?.email || 'Contact through InsulationPal',
-        quoteReviewLink: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'}/customer-quotes?leadId=${assignmentData.lead_id}`,
+        quoteReviewLink: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'}/customer-quotes?leadId=${assignmentData.lead_id}`,
         leadId: assignmentData.lead_id
       }
     })

@@ -182,7 +182,7 @@ async function notifyContractors(contractors: any[], lead: Lead) {
               insulationTypes: lead.insulation_types.join(', '),
               projectTimeline: lead.project_timeline,
               budgetRange: lead.budget_range,
-              dashboardLink: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'}/contractor-dashboard?from=email`
+              dashboardLink: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'}/contractor-dashboard?from=email`
             }
           })
           console.log(`✅ Email notification sent to ${contractor.business_name} at ${contactEmail}`)
@@ -198,7 +198,7 @@ async function notifyContractors(contractors: any[], lead: Lead) {
         try {
           await sendSMS({
             to: contactPhone,
-            message: `New lead available in ${lead.city}, ${lead.state}. View details: ${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'}/contractor-dashboard`,
+            message: `New lead available in ${lead.city}, ${lead.state}. View details: ${process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'}/contractor-dashboard`,
             type: 'new-lead'
           })
           console.log(`✅ SMS notification sent to ${contractor.business_name} at ${contactPhone}`)

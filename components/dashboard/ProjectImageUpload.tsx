@@ -169,7 +169,7 @@ export function ProjectImageUpload({
 
   const sendReviewRequestEmail = async () => {
     try {
-      const reviewLink = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/review/${contractorId}?leadId=${leadAssignmentId}`
+      const reviewLink = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'}/review/${contractorId}?leadId=${leadAssignmentId}`
 
       await fetch('/api/send-email', {
         method: 'POST',

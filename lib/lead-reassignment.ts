@@ -258,7 +258,7 @@ async function notifyContractor(lead: Lead, contractor: Contractor, assignmentId
   try {
     console.log(`📧 Notifying contractor ${contractor.business_name}`)
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
     
     // Determine contact method based on contractor preference
     const contactEmail = contractor.lead_delivery_preference === 'phone' 
