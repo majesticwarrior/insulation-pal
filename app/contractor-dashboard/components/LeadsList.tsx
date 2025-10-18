@@ -356,7 +356,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
               }}
             />
           </div>
-        ) : leadAssignment.status === 'accepted' ? (
+        ) : leadAssignment.status === 'won' ? (
           <>
             {/* Customer Contact Information */}
             <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">

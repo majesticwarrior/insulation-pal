@@ -134,7 +134,7 @@ function CustomerQuoteReviewContent() {
               quote_notes: 'Complete attic and wall insulation with R-38 fiberglass. Includes air sealing and vapor barrier installation.',
               quote_amount: 2800,
               responded_at: new Date(Date.now() - 3600000).toISOString(),
-              status: 'accepted',
+              status: 'won',
               contractors: {
                 id: 'demo-contractor-1',
                 business_name: 'Desert Insulation Pros',
@@ -150,7 +150,7 @@ function CustomerQuoteReviewContent() {
               quote_notes: 'Premium cellulose insulation with R-49 in attic and R-15 in walls. Includes comprehensive air sealing.',
               quote_amount: 3200,
               responded_at: new Date(Date.now() - 7200000).toISOString(),
-              status: 'accepted',
+              status: 'won',
               contractors: {
                 id: 'demo-contractor-2',
                 business_name: 'Phoenix Energy Solutions',
@@ -166,7 +166,7 @@ function CustomerQuoteReviewContent() {
               quote_notes: 'Standard fiberglass insulation installation. Basic air sealing included.',
               quote_amount: 2400,
               responded_at: new Date(Date.now() - 10800000).toISOString(),
-              status: 'accepted',
+              status: 'won',
               contractors: {
                 id: 'demo-contractor-3',
                 business_name: 'Arizona Insulation Co',
@@ -215,7 +215,7 @@ function CustomerQuoteReviewContent() {
               quote_notes: 'Complete attic and wall insulation with R-38 fiberglass. Includes air sealing and vapor barrier installation.',
               quote_amount: 2800,
               responded_at: new Date(Date.now() - 3600000).toISOString(),
-              status: 'accepted',
+              status: 'won',
               contractors: {
                 id: 'demo-contractor-1',
                 business_name: 'Desert Insulation Pros',
@@ -231,7 +231,7 @@ function CustomerQuoteReviewContent() {
               quote_notes: 'Premium cellulose insulation with R-49 in attic and R-15 in walls. Includes comprehensive air sealing.',
               quote_amount: 3200,
               responded_at: new Date(Date.now() - 7200000).toISOString(),
-              status: 'accepted',
+              status: 'won',
               contractors: {
                 id: 'demo-contractor-2',
                 business_name: 'Phoenix Energy Solutions',
@@ -247,7 +247,7 @@ function CustomerQuoteReviewContent() {
               quote_notes: 'Standard fiberglass insulation installation. Basic air sealing included.',
               quote_amount: 2400,
               responded_at: new Date(Date.now() - 10800000).toISOString(),
-              status: 'accepted',
+              status: 'won',
               contractors: {
                 id: 'demo-contractor-3',
                 business_name: 'Arizona Insulation Co',
@@ -332,7 +332,7 @@ function CustomerQuoteReviewContent() {
               quote_notes: 'Complete attic and wall insulation with R-38 fiberglass. Includes air sealing and vapor barrier installation.',
               quote_amount: 2800,
               responded_at: new Date(Date.now() - 3600000).toISOString(),
-              status: 'accepted',
+              status: 'won',
               contractors: {
                 id: 'demo-contractor-1',
                 business_name: 'Desert Insulation Pros',
@@ -348,7 +348,7 @@ function CustomerQuoteReviewContent() {
               quote_notes: 'Premium cellulose insulation with R-49 in attic and R-15 in walls. Includes comprehensive air sealing.',
               quote_amount: 3200,
               responded_at: new Date(Date.now() - 7200000).toISOString(),
-              status: 'accepted',
+              status: 'won',
               contractors: {
                 id: 'demo-contractor-2',
                 business_name: 'Phoenix Energy Solutions',
@@ -364,7 +364,7 @@ function CustomerQuoteReviewContent() {
               quote_notes: 'Standard fiberglass insulation installation. Basic air sealing included.',
               quote_amount: 2400,
               responded_at: new Date(Date.now() - 10800000).toISOString(),
-              status: 'accepted',
+              status: 'won',
               contractors: {
                 id: 'demo-contractor-3',
                 business_name: 'Arizona Insulation Co',
@@ -413,7 +413,7 @@ function CustomerQuoteReviewContent() {
               quote_notes: 'Complete attic and wall insulation with R-38 fiberglass. Includes air sealing and vapor barrier installation.',
               quote_amount: 2800,
               responded_at: new Date(Date.now() - 3600000).toISOString(),
-              status: 'accepted',
+              status: 'won',
               contractors: {
                 id: 'demo-contractor-1',
                 business_name: 'Desert Insulation Pros',
@@ -429,7 +429,7 @@ function CustomerQuoteReviewContent() {
               quote_notes: 'Premium cellulose insulation with R-49 in attic and R-15 in walls. Includes comprehensive air sealing.',
               quote_amount: 3200,
               responded_at: new Date(Date.now() - 7200000).toISOString(),
-              status: 'accepted',
+              status: 'won',
               contractors: {
                 id: 'demo-contractor-2',
                 business_name: 'Phoenix Energy Solutions',
@@ -445,7 +445,7 @@ function CustomerQuoteReviewContent() {
               quote_notes: 'Standard fiberglass insulation installation. Basic air sealing included.',
               quote_amount: 2400,
               responded_at: new Date(Date.now() - 10800000).toISOString(),
-              status: 'accepted',
+              status: 'won',
               contractors: {
                 id: 'demo-contractor-3',
                 business_name: 'Arizona Insulation Co',
@@ -471,6 +471,7 @@ function CustomerQuoteReviewContent() {
         // Check if contractor has responded (has responded_at timestamp)
         const hasResponseDate = quote.responded_at
         const hasValidStatus = quote.status === 'accepted' || 
+                              quote.status === 'won' ||
                               quote.status === 'responded' ||
                               quote.status === 'completed' ||
                               quote.status === 'pending' // Include pending quotes that have been submitted
@@ -561,10 +562,10 @@ function CustomerQuoteReviewContent() {
       if (quoteError) throw quoteError
       if (!quoteData) throw new Error('Quote not found')
 
-      // Update assignment status to accepted
+      // Update assignment status to won (customer selected this contractor)
       const { error } = await (supabase as any)
         .from('lead_assignments')
-        .update({ status: 'accepted' })
+        .update({ status: 'won' })
         .eq('id', quoteId)
 
       if (error) throw error

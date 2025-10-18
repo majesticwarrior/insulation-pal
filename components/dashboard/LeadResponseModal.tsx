@@ -134,11 +134,8 @@ export function LeadResponseModal({
               <div className="col-span-2">
                 <span className="font-medium">Insulation Types:</span> {lead.insulation_types.join(', ')}
               </div>
-              <div>
-                <span className="font-medium">Email:</span> {lead.customer_email}
-              </div>
-              <div>
-                <span className="font-medium">Phone:</span> {lead.customer_phone}
+              <div className="col-span-2">
+                <span className="font-medium text-gray-500 italic">Contact information will be provided after you accept the lead</span>
               </div>
             </div>
           </div>
