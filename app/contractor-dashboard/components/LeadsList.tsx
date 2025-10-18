@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { supabase } from '@/lib/supabase'
 import { handleContractorResponse } from '@/lib/lead-assignment'
 import { Phone, Mail, MapPin, Home, CheckCircle, X, Clock } from 'lucide-react'
+import { QuoteSubmissionForm } from '@/components/dashboard/QuoteSubmissionForm'
 
 interface Lead {
   id: string
@@ -15,9 +16,11 @@ interface Lead {
   cost: number
   created_at: string
   responded_at?: string
+  quote_amount?: number
+  quote_notes?: string
   leads: {
     customer_name: string
-    customer_email: string
+    customer_email?: string
     customer_phone?: string
     home_size_sqft: number
     areas_needed: string[]
@@ -25,6 +28,7 @@ interface Lead {
     city: string
     state: string
     zip_code?: string
+    property_address?: string
   }
 }
 
@@ -61,37 +65,40 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           {
             id: 'demo-1',
             lead_id: 'demo-lead-1',
-            status: 'sent',
+            status: 'accepted',
             cost: 20.00,
             created_at: new Date().toISOString(),
+            responded_at: new Date().toISOString(),
+            quote_amount: 2500,
+            quote_notes: 'Complete attic and wall insulation with fiberglass and cellulose',
             leads: {
               customer_name: 'John Smith',
-              customer_email: 'john@example.com',
+              customer_email: 'john.smith@example.com',
               customer_phone: '(555) 123-4567',
               home_size_sqft: 2500,
               areas_needed: ['attic', 'walls'],
               insulation_types: ['fiberglass', 'cellulose'],
               city: 'Phoenix',
               state: 'AZ',
-              zip_code: '85001'
+              zip_code: '85001',
+              property_address: '123 Main Street, Phoenix, AZ 85001'
             }
           },
           {
             id: 'demo-2',
             lead_id: 'demo-lead-2',
-            status: 'sent',
+            status: 'pending',
             cost: 20.00,
             created_at: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
             leads: {
               customer_name: 'Sarah Johnson',
-              customer_email: 'sarah@example.com',
-              customer_phone: '(555) 987-6543',
               home_size_sqft: 1800,
               areas_needed: ['basement'],
               insulation_types: ['spray_foam'],
               city: 'Tempe',
               state: 'AZ',
-              zip_code: '85281'
+              zip_code: '85281',
+              property_address: '456 Oak Avenue, Tempe, AZ 85281'
             }
           }
         ]
@@ -117,6 +124,8 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           cost,
           created_at,
           responded_at,
+          quote_amount,
+          quote_notes,
           leads(
             customer_name,
             customer_email,
@@ -126,7 +135,8 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             insulation_types,
             city,
             state,
-            zip_code
+            zip_code,
+            property_address
           )
         `)
         .eq('contractor_id', contractorId)
@@ -229,7 +239,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             lead.id === leadAssignmentId 
               ? { 
                   ...lead, 
-                  status: response === 'accept' ? 'accepted' : 'declined',
+                  status: response === 'accept' ? 'pending' : 'declined',
                   responded_at: new Date().toISOString()
                 }
               : lead
@@ -324,60 +334,164 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             </CardHeader>
             <CardContent>
               {leadAssignment.status === 'accepted' ? (
-                <div className="grid md:grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <div className="flex items-center mb-2">
-                      <Home className="h-4 w-4 mr-2 text-[#0a4768]" />
-                      <span className="font-medium">Home Size:</span>
-                      <span className="ml-1">{leadAssignment.leads.home_size_sqft.toLocaleString()} sq ft</span>
-                    </div>
-                    <div className="mb-2">
-                      <span className="font-medium">Areas Needed:</span>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {leadAssignment.leads.areas_needed.map((area, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {area}
-                          </Badge>
-                        ))}
+                <>
+                  {/* Customer Contact Information */}
+                  <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <h3 className="font-semibold text-green-800 mb-3 flex items-center">
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Customer Contact Information
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <div className="flex items-center mb-2">
+                          <Mail className="h-4 w-4 mr-2 text-green-600" />
+                          <span className="font-medium">Email:</span>
+                          <a href={`mailto:${leadAssignment.leads.customer_email}`} 
+                             className="ml-2 text-blue-600 hover:text-blue-800 underline">
+                            {leadAssignment.leads.customer_email}
+                          </a>
+                        </div>
+                        <div className="flex items-center mb-2">
+                          <Phone className="h-4 w-4 mr-2 text-green-600" />
+                          <span className="font-medium">Phone:</span>
+                          <a href={`tel:${leadAssignment.leads.customer_phone}`} 
+                             className="ml-2 text-blue-600 hover:text-blue-800 underline">
+                            {leadAssignment.leads.customer_phone}
+                          </a>
+                        </div>
+                        {leadAssignment.leads.property_address && (
+                          <div className="flex items-center mb-2">
+                            <MapPin className="h-4 w-4 mr-2 text-green-600" />
+                            <span className="font-medium">Address:</span>
+                            <span className="ml-2">{leadAssignment.leads.property_address}</span>
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        {leadAssignment.quote_amount && (
+                          <div className="mb-2">
+                            <span className="font-medium">Your Quote:</span>
+                            <div className="text-lg font-bold text-green-600">
+                              ${leadAssignment.quote_amount.toLocaleString()}
+                            </div>
+                          </div>
+                        )}
+                        {leadAssignment.quote_notes && (
+                          <div>
+                            <span className="font-medium">Quote Notes:</span>
+                            <p className="text-sm text-gray-600 mt-1">{leadAssignment.quote_notes}</p>
+                          </div>
+                        )}
                       </div>
                     </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4 mb-6">
                     <div>
-                      <span className="font-medium">Insulation Types:</span>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {leadAssignment.leads.insulation_types.map((type, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {type}
-                          </Badge>
-                        ))}
+                      <div className="flex items-center mb-2">
+                        <Home className="h-4 w-4 mr-2 text-[#0a4768]" />
+                        <span className="font-medium">Home Size:</span>
+                        <span className="ml-1">{leadAssignment.leads.home_size_sqft.toLocaleString()} sq ft</span>
+                      </div>
+                      <div className="mb-2">
+                        <span className="font-medium">Areas Needed:</span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {leadAssignment.leads.areas_needed.map((area, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {area}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <span className="font-medium">Insulation Types:</span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {leadAssignment.leads.insulation_types.map((type, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {type}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                     </div>
+                    
                   </div>
                   
-                  <div className="space-y-2">
-                    <div className="flex items-center">
-                      <Mail className="h-4 w-4 mr-2 text-[#0a4768]" />
-                      <span className="text-sm">{leadAssignment.leads.customer_email}</span>
-                    </div>
-                    {leadAssignment.leads.customer_phone && (
-                      <div className="flex items-center">
-                        <Phone className="h-4 w-4 mr-2 text-[#0a4768]" />
-                        <span className="text-sm">{leadAssignment.leads.customer_phone}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                  {/* Quote Submission Form */}
+                  <QuoteSubmissionForm
+                    leadAssignmentId={leadAssignment.id}
+                    contractorId={contractorId}
+                    onQuoteSubmitted={() => {
+                      fetchLeads()
+                    }}
+                  />
+                </>
               ) : (
                 <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm text-blue-800 mb-2">
                     <span className="font-semibold">New Lead Available</span>
                   </p>
                   <p className="text-sm text-blue-700">
-                    Accept this lead to view complete project details and customer contact information.
+                    Accept this lead to view complete project details. Customer contact information will be provided if you win the bid.
                   </p>
                 </div>
               )}
 
-              {(leadAssignment.status === 'pending' || leadAssignment.status === 'sent') && (
+              {/* Show quote submission form for pending leads (contractor accepted but hasn't submitted quote yet) */}
+              {leadAssignment.status === 'pending' && leadAssignment.responded_at && (
+                <>
+                  <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h3 className="font-semibold text-blue-800 mb-3 flex items-center">
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Lead Accepted - Submit Your Quote
+                    </h3>
+                    <p className="text-sm text-blue-700">
+                      You've accepted this lead. Submit your quote to compete for the project.
+                    </p>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                      <div className="flex items-center mb-2">
+                        <Home className="h-4 w-4 mr-2 text-[#0a4768]" />
+                        <span className="font-medium">Home Size:</span>
+                        <span className="ml-1">{leadAssignment.leads.home_size_sqft.toLocaleString()} sq ft</span>
+                      </div>
+                      <div className="mb-2">
+                        <span className="font-medium">Areas Needed:</span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {leadAssignment.leads.areas_needed.map((area, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {area}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <span className="font-medium">Insulation Types:</span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {leadAssignment.leads.insulation_types.map((type, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {type}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Quote Submission Form */}
+                  <QuoteSubmissionForm
+                    leadAssignmentId={leadAssignment.id}
+                    contractorId={contractorId}
+                    onQuoteSubmitted={() => {
+                      fetchLeads()
+                    }}
+                  />
+                </>
+              )}
+
+              {(leadAssignment.status === 'pending' || leadAssignment.status === 'sent') && !leadAssignment.responded_at && (
                 <div className="flex gap-3">
                   <Button
                     onClick={() => respondToLead(leadAssignment.id, 'accept')}
@@ -399,19 +513,6 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                   </Button>
                 </div>
               )}
-
-              {leadAssignment.status === 'accepted' && (
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <div className="flex items-center text-green-800">
-                    <CheckCircle className="h-5 w-5 mr-2" />
-                    <span className="font-medium">Lead Accepted</span>
-                  </div>
-                  <p className="text-green-700 text-sm mt-1">
-                    You can now contact the customer directly using the information above.
-                  </p>
-                </div>
-              )}
-
 
               <div className="text-xs text-gray-500 mt-4">
                 <Clock className="h-3 w-3 inline mr-1" />

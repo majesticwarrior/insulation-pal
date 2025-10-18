@@ -14,6 +14,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { ChevronLeft, ChevronRight, Home, Wrench, Phone } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
+import { assignLeadToContractors } from '@/lib/lead-assignment'
 
 const quoteSchema = z.object({
   homeSize: z.string().min(1, 'Home size is required'),
@@ -60,6 +62,7 @@ const steps = [
 export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
 
   const form = useForm<QuoteFormData>({
     resolver: zodResolver(quoteSchema),
@@ -111,6 +114,14 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
     setIsSubmitting(true)
     try {
       const formData = form.getValues()
+      
+      // All leads now use random assignment - redirect to success page
+      if (formData.quotePreference === 'choose_three') {
+        // Redirect to success page since random assignment is now automatic
+        onClose()
+        router.push('/quote-success')
+        return
+      }
       
       // Enhanced debugging for Supabase configuration
       console.log('🔍 Supabase Configuration Check:', {
@@ -226,14 +237,9 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
 
       // Auto-assign lead to 3 contractors in the customer's city
       console.log('🎯 Auto-assigning lead to 3 contractors in:', formData.city, formData.state)
-      const assignmentResult = await assignRandomContractors(lead.id, formData.city, formData.state)
-
-      if (assignmentResult.success) {
-        toast.success(`Quote request submitted successfully! Your request has been sent to ${assignmentResult.count} contractor${assignmentResult.count !== 1 ? 's' : ''} in your area.`)
-      } else {
-        toast.warning('Quote request submitted, but no contractors with available credits were found in your area. We will notify you when contractors become available.')
-      }
+      await assignLeadToContractors(lead)
       
+      toast.success('Quote request submitted successfully! Your request has been sent to contractors in your area.')
       onClose()
       form.reset()
       setCurrentStep(1)
@@ -245,135 +251,6 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
     }
   }
 
-  const assignRandomContractors = async (leadId: string, city: string, state: string) => {
-    try {
-      console.log('🔄 Assigning contractors for lead:', leadId, 'in', city, state)
-      
-      // Normalize state to abbreviation
-      const stateAbbr = state === 'Arizona' ? 'AZ' : state
-      console.log('📍 Normalized state:', state, '=>', stateAbbr)
-      
-      // First, try to get contractors by service areas
-      let contractors: any[] = []
-      let contractorError = null
-      
-      try {
-        console.log('🔍 Trying to get contractors by service areas for:', city, stateAbbr)
-        
-        // First get service areas for the city
-        const { data: areas, error: areaError } = await supabase
-          .from('contractor_service_areas')
-          .select('contractor_id')
-          .eq('city', city)
-          .eq('state', stateAbbr)
-        
-        if (areaError) throw areaError
-        
-        const contractorIds = areas?.map((a: any) => a.contractor_id) || []
-        console.log('📍 Found', contractorIds.length, 'contractors serving', city)
-        
-        if (contractorIds.length > 0) {
-          // Then get those contractors who have credits
-          const { data, error } = await supabase
-            .from('contractors')
-            .select('id, business_name, status, credits')
-            .in('id', contractorIds)
-            .eq('status', 'approved')
-            .gt('credits', 0)
-            .limit(10)
-          
-          contractors = data || []
-          console.log('✅ Found', contractors.length, 'contractors with credits in', city)
-        }
-      } catch (serviceAreaError) {
-        console.error('❌ Service area query exception:', serviceAreaError)
-        contractorError = serviceAreaError
-      }
-
-      // Fallback: Get contractors by business city if service areas failed
-      if (!contractors || contractors.length === 0) {
-        console.log('🔄 Fallback: Getting contractors by business city...')
-        try {
-          const { data, error } = await supabase
-            .from('contractors')
-            .select('id, business_name, business_city, business_state, credits')
-            .eq('status', 'approved')
-            .eq('business_city', city)
-            .eq('business_state', stateAbbr)
-            .gt('credits', 0)
-            .limit(10)
-          
-          if (error) {
-            console.error('❌ Business city fallback failed:', error)
-            throw error
-          }
-          
-          contractors = data || []
-          console.log('✅ Fallback found', contractors.length, 'contractors by business city')
-        } catch (fallbackError) {
-          console.error('❌ Both contractor queries failed:', fallbackError)
-        }
-      }
-
-      if (contractors && contractors.length > 0) {
-        console.log('🎯 Available contractors:', contractors.map((c: any) => ({ id: c.id, name: c.business_name })))
-        
-        // Randomly select up to 3 contractors
-        const shuffled = contractors.sort(() => 0.5 - Math.random())
-        const selected = shuffled.slice(0, Math.min(3, contractors.length))
-        
-        console.log('🎲 Selected contractors:', selected.map((c: any) => ({ id: c.id, name: c.business_name })))
-
-        // Create lead assignments
-        const assignments = selected.map((contractor: any) => ({
-          lead_id: leadId,
-          contractor_id: contractor.id,
-          status: 'pending', // Valid assignment_status enum value
-          cost: 20.00
-        }))
-
-        console.log('📋 Creating assignments:', assignments)
-        
-        // Insert the lead assignments
-        const { data: assignmentData, error: assignmentError } = await (supabase as any)
-          .from('lead_assignments')
-          .insert(assignments)
-          .select()
-
-        console.log('🔍 Assignment insertion result:', {
-          data: assignmentData,
-          error: assignmentError,
-          errorKeys: assignmentError ? Object.keys(assignmentError) : [],
-          errorStringified: JSON.stringify(assignmentError, null, 2),
-          assignmentsAttempted: assignments.length
-        })
-
-        if (assignmentError) {
-          console.error('❌ Assignment insertion failed:', assignmentError)
-          console.error('❌ Error details:', {
-            message: assignmentError.message || 'No message',
-            code: assignmentError.code || 'No code',
-            details: assignmentError.details || 'No details',
-            hint: assignmentError.hint || 'No hint'
-          })
-          return { success: false, count: 0, error: assignmentError.message || 'Assignment insertion failed' }
-        }
-        
-        console.log('✅ Successfully assigned lead to', selected.length, 'contractors:', assignmentData)
-        
-        // TODO: Send notifications to contractors
-        // This would integrate with email/SMS service
-        
-        return { success: true, count: selected.length }
-      } else {
-        console.warn('⚠️ No contractors with credits found in', city, state)
-        return { success: false, count: 0, error: 'No contractors with credits available' }
-      }
-    } catch (error: any) {
-      console.error('❌ Error assigning contractors:', error)
-      return { success: false, count: 0, error: error.message || 'Unknown error' }
-    }
-  }
 
   const handleAreaChange = (areaId: string, checked: boolean) => {
     const currentAreas = form.getValues('areas')

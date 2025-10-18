@@ -28,8 +28,10 @@ export interface Contractor {
 export async function assignLeadToContractors(lead: Lead) {
   try {
     console.log('🎯 Assigning lead to contractors in:', lead.city, lead.state)
+    console.log('🔍 Lead details:', { id: lead.id, city: lead.city, state: lead.state })
     
     // 1. Find contractors in the customer's city with available credits
+    console.log('🔍 Searching for contractors...')
     const { data: contractors, error: contractorError } = await (supabase as any)
       .from('contractors')
       .select(`
@@ -37,7 +39,9 @@ export async function assignLeadToContractors(lead: Lead) {
         user_id,
         business_name,
         credits,
-        payment_preference,
+        contact_email,
+        contact_phone,
+        lead_delivery_preference,
         users(email, phone),
         contractor_service_areas!inner(city, state)
       `)
@@ -46,7 +50,12 @@ export async function assignLeadToContractors(lead: Lead) {
       .eq('contractor_service_areas.state', lead.state || 'AZ')
       .gt('credits', 0) // Only contractors with available credits
 
-    if (contractorError) throw contractorError
+    console.log('🔍 Contractor query result:', { contractors, contractorError })
+
+    if (contractorError) {
+      console.error('❌ Contractor query error:', contractorError)
+      throw contractorError
+    }
 
     if (!contractors || contractors.length === 0) {
       console.log(`❌ No contractors available in ${lead.city}, ${lead.state}`)
@@ -64,72 +73,122 @@ export async function assignLeadToContractors(lead: Lead) {
       selectedContractors.map((c: any) => c.business_name))
 
     // 3. Create lead assignments
+    console.log('📋 Creating lead assignments...')
     const assignments = selectedContractors.map((contractor: any) => ({
       lead_id: (lead as any).id,
       contractor_id: contractor.id,
       cost: 20.00, // Cost per lead
-      status: 'sent'
+      status: 'pending'
     }))
+
+    console.log('📋 Assignment data:', assignments)
 
     const { error: assignmentError } = await (supabase as any)
       .from('lead_assignments')
       .insert(assignments)
 
-    if (assignmentError) throw assignmentError
+    console.log('📋 Assignment creation result:', { assignmentError })
 
-    // 4. Deduct credits from contractors (only for per_lead payment preference)
+    if (assignmentError) {
+      console.error('❌ Assignment creation error:', assignmentError)
+      throw assignmentError
+    }
+
+    // 4. Deduct credits from contractors
+    console.log('💳 Deducting credits from contractors...')
     for (const contractor of selectedContractors) {
-      if (contractor.payment_preference === 'per_lead' || !contractor.payment_preference) {
-        // Only deduct credits for per_lead contractors
+      try {
         await (supabase as any)
           .from('contractors')
           .update({ credits: (contractor as any).credits - 1 })
           .eq('id', contractor.id)
+        console.log(`✅ Deducted credit from ${contractor.business_name}`)
+      } catch (creditError) {
+        console.error(`❌ Failed to deduct credit from ${contractor.business_name}:`, creditError)
+        // Continue with other contractors even if one fails
       }
-      // For per_job_completed contractors, no credits are deducted
     }
 
     // 5. Notify contractors
-    await notifyContractors(selectedContractors, lead)
+    try {
+      await notifyContractors(selectedContractors, lead)
+      console.log(`✅ Notifications sent to ${selectedContractors.length} contractors`)
+    } catch (notificationError) {
+      console.error('❌ Error sending notifications:', notificationError)
+      // Don't throw here - lead assignment was successful, notifications are secondary
+    }
 
     console.log(`Lead ${lead.id} assigned to ${selectedContractors.length} contractors`)
     
   } catch (error) {
-    console.error('Error assigning lead:', error)
+    console.error('❌ Error assigning lead:', error)
+    console.error('❌ Error details:', {
+      message: error?.message || 'No message',
+      stack: error?.stack || 'No stack',
+      name: error?.name || 'No name',
+      lead: lead ? { id: lead.id, city: lead.city, state: lead.state } : 'No lead'
+    })
     throw error
   }
 }
 
 async function notifyContractors(contractors: any[], lead: Lead) {
   for (const contractor of contractors) {
-    const user = contractor.users
-
-    // Send email notification
-    if (user.email) {
-      await sendEmail({
-        to: user.email,
-        subject: 'New Lead Available - InsulationPal',
-        template: 'new-lead',
-        data: {
-          contractorName: contractor.business_name,
-          customerName: lead.customer_name,
-          city: lead.city,
-          state: lead.state,
-          homeSize: lead.home_size_sqft,
-          areasNeeded: lead.areas_needed.join(', '),
-          insulationTypes: lead.insulation_types.join(', '),
-          dashboardLink: `${process.env.NEXT_PUBLIC_SITE_URL}/contractor-dashboard`
+    try {
+      const deliveryPreference = contractor.lead_delivery_preference || 'email'
+      const contactEmail = contractor.contact_email
+      const contactPhone = contractor.contact_phone
+      
+      console.log(`📧 Notifying ${contractor.business_name} via ${deliveryPreference}`)
+      console.log(`📧 Contact email: ${contactEmail}, Contact phone: ${contactPhone}`)
+      
+      // Send email notification based on preference
+      if ((deliveryPreference === 'email' || deliveryPreference === 'both') && contactEmail) {
+        try {
+              await sendEmail({
+                to: contactEmail,
+                subject: 'New Lead Available - InsulationPal',
+                template: 'new-lead',
+                data: {
+                  contractorName: contractor.business_name,
+                  city: lead.city,
+                  state: lead.state,
+                  propertyAddress: lead.property_address,
+                  homeSize: lead.home_size_sqft,
+                  areasNeeded: lead.areas_needed.join(', '),
+                  insulationTypes: lead.insulation_types.join(', '),
+                  projectTimeline: lead.project_timeline,
+                  budgetRange: lead.budget_range,
+                  dashboardLink: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/contractor-dashboard`
+                }
+              })
+          console.log(`✅ Email notification sent to ${contractor.business_name} at ${contactEmail}`)
+        } catch (emailError) {
+          console.error(`❌ Failed to send email to ${contractor.business_name}:`, emailError)
         }
-      })
-    }
-
-    // Send SMS notification (if phone available)
-    if (user.phone) {
-      await sendSMS({
-        to: user.phone,
-        message: `New lead: ${lead.customer_name} in ${lead.city}, ${lead.state}. View details: ${process.env.NEXT_PUBLIC_SITE_URL}/contractor-dashboard`,
-        type: 'new-lead'
-      })
+      }
+      
+      // Send SMS notification based on preference
+      if ((deliveryPreference === 'text' || deliveryPreference === 'both') && contactPhone) {
+        try {
+          await sendSMS({
+            to: contactPhone,
+            message: `New lead available in ${lead.city}, ${lead.state}. View details: ${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/contractor-dashboard`,
+            type: 'new-lead'
+          })
+          console.log(`✅ SMS notification sent to ${contractor.business_name} at ${contactPhone}`)
+        } catch (smsError) {
+          console.error(`❌ Failed to send SMS to ${contractor.business_name}:`, smsError)
+        }
+      }
+      
+      // Log if no contact info available
+      if (!contactEmail && !contactPhone) {
+        console.warn(`⚠️ No contact information available for ${contractor.business_name}`)
+      }
+    } catch (error) {
+      console.error(`❌ Error notifying contractor ${contractor.business_name}:`, error)
+      // Continue with other contractors even if one fails
     }
   }
 }
@@ -144,7 +203,7 @@ export async function handleContractorResponse(
     const { error } = await (supabase as any)
       .from('lead_assignments')
       .update({
-        status: response === 'accept' ? 'accepted' : 'declined',
+        status: response === 'accept' ? 'pending' : 'declined',
         responded_at: new Date().toISOString()
       })
       .eq('id', leadAssignmentId)
@@ -215,23 +274,8 @@ export async function handleContractorResponse(
 
         console.log('✅ Assignment details:', assignment)
 
-        if (assignment?.leads?.customer_email) {
-          console.log('📧 Sending email notification...')
-          await sendEmail({
-            to: assignment.leads.customer_email,
-            subject: 'Contractor Interested in Your Project',
-            template: 'contractor-response',
-            data: {
-              customerName: assignment.leads.customer_name,
-              contractorName: assignment.contractors.business_name,
-              contractorEmail: assignment.contractors.users.email,
-              contractorPhone: assignment.contractors.users.phone
-            }
-          })
-          console.log('✅ Email notification sent')
-        } else {
-          console.log('⚠️ No customer email found, skipping notification')
-        }
+        // Email notification removed as requested
+        console.log('📧 Email notification skipped (removed)')
       } catch (emailError) {
         console.error('❌ Email notification failed:', emailError)
         // Don't throw - email notification is optional, lead acceptance should still work
