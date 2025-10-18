@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { ContractorLogin } from '@/components/forms/ContractorLogin'
 import { toast } from 'sonner'
 
-export default function ContractorLoginPage() {
+function ContractorLoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [showEmailMessage, setShowEmailMessage] = useState(false)
@@ -74,5 +74,25 @@ export default function ContractorLoginPage() {
       
       <Footer />
     </main>
+  )
+}
+
+export default function ContractorLoginPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto px-4 py-20">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0a4768] mx-auto mb-4"></div>
+            <h2 className="text-xl font-semibold text-[#0a4768] mb-2">Loading...</h2>
+            <p className="text-gray-600">Please wait while we load the login page.</p>
+          </div>
+        </div>
+        <Footer />
+      </main>
+    }>
+      <ContractorLoginContent />
+    </Suspense>
   )
 }

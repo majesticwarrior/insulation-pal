@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import { sendServerEmail } from './server-email-service'
+import { sendEmail } from './email-service'
 import { sendSMS } from './sms-service'
 
 export interface Lead {
@@ -168,7 +168,7 @@ async function notifyContractors(contractors: any[], lead: Lead) {
       // Send email notification based on preference
       if ((deliveryPreference === 'email' || deliveryPreference === 'both') && contactEmail) {
         try {
-          await sendServerEmail({
+          await sendEmail({
             to: contactEmail,
             subject: 'New Lead Available - InsulationPal',
             template: 'new-lead',
@@ -182,7 +182,7 @@ async function notifyContractors(contractors: any[], lead: Lead) {
               insulationTypes: lead.insulation_types.join(', '),
               projectTimeline: lead.project_timeline,
               budgetRange: lead.budget_range,
-              dashboardLink: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/contractor-dashboard`
+              dashboardLink: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'}/contractor-dashboard?from=email`
             }
           })
           console.log(`✅ Email notification sent to ${contractor.business_name} at ${contactEmail}`)
