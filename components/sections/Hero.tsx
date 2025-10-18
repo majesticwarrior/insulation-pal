@@ -59,7 +59,7 @@ const Hero = () => {
                 <div className="bg-white rounded-full p-3 shadow-md mb-2">
                   <Users className="h-6 w-6 text-[#0a4768]" />
                 </div>
-                <div className="text-2xl font-bold text-[#0a4768]">1000's</div>
+                <div className="text-2xl font-bold text-[#0a4768]">1000's of</div>
                 <div className="text-sm text-gray-600">Happy Customers</div>
               </div>
               <div className="flex flex-col items-center">
