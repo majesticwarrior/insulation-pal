@@ -4,11 +4,27 @@
 -- First, delete all lead assignments (foreign key constraint)
 DELETE FROM lead_assignments;
 
--- Delete all project gallery entries (if they reference leads)
-DELETE FROM project_gallery;
+-- Delete project gallery entries (only if table exists)
+DO $$ 
+BEGIN
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'project_gallery') THEN
+        DELETE FROM project_gallery;
+        RAISE NOTICE 'Deleted project_gallery entries';
+    ELSE
+        RAISE NOTICE 'project_gallery table does not exist, skipping';
+    END IF;
+END $$;
 
--- Delete all reviews (if they reference lead assignments)
-DELETE FROM reviews;
+-- Delete reviews (only if table exists)
+DO $$ 
+BEGIN
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'reviews') THEN
+        DELETE FROM reviews;
+        RAISE NOTICE 'Deleted reviews';
+    ELSE
+        RAISE NOTICE 'reviews table does not exist, skipping';
+    END IF;
+END $$;
 
 -- Delete all leads
 DELETE FROM leads;
@@ -16,10 +32,20 @@ DELETE FROM leads;
 -- Verify deletion
 SELECT 
     (SELECT COUNT(*) FROM leads) as leads_count,
-    (SELECT COUNT(*) FROM lead_assignments) as assignments_count,
-    (SELECT COUNT(*) FROM project_gallery) as gallery_count,
-    (SELECT COUNT(*) FROM reviews) as reviews_count;
+    (SELECT COUNT(*) FROM lead_assignments) as assignments_count;
 
--- Optional: Reset any sequences if they exist
--- ALTER SEQUENCE IF EXISTS leads_id_seq RESTART WITH 1;
--- ALTER SEQUENCE IF EXISTS lead_assignments_id_seq RESTART WITH 1;
+-- Check if other tables exist and show their counts
+DO $$ 
+BEGIN
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'project_gallery') THEN
+        RAISE NOTICE 'project_gallery count: %', (SELECT COUNT(*) FROM project_gallery);
+    ELSE
+        RAISE NOTICE 'project_gallery: N/A (table does not exist)';
+    END IF;
+    
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'reviews') THEN
+        RAISE NOTICE 'reviews count: %', (SELECT COUNT(*) FROM reviews);
+    ELSE
+        RAISE NOTICE 'reviews: N/A (table does not exist)';
+    END IF;
+END $$;
