@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import { sendEmail } from './email-service'
+import { sendServerEmail } from './server-email-service'
 import { sendSMS } from './sms-service'
 
 export interface Lead {
@@ -168,23 +168,23 @@ async function notifyContractors(contractors: any[], lead: Lead) {
       // Send email notification based on preference
       if ((deliveryPreference === 'email' || deliveryPreference === 'both') && contactEmail) {
         try {
-              await sendEmail({
-                to: contactEmail,
-                subject: 'New Lead Available - InsulationPal',
-                template: 'new-lead',
-                data: {
-                  contractorName: contractor.business_name,
-                  city: lead.city,
-                  state: lead.state,
-                  propertyAddress: lead.property_address,
-                  homeSize: lead.home_size_sqft,
-                  areasNeeded: lead.areas_needed.join(', '),
-                  insulationTypes: lead.insulation_types.join(', '),
-                  projectTimeline: lead.project_timeline,
-                  budgetRange: lead.budget_range,
-                  dashboardLink: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/contractor-dashboard`
-                }
-              })
+          await sendServerEmail({
+            to: contactEmail,
+            subject: 'New Lead Available - InsulationPal',
+            template: 'new-lead',
+            data: {
+              contractorName: contractor.business_name,
+              city: lead.city,
+              state: lead.state,
+              propertyAddress: lead.property_address,
+              homeSize: lead.home_size_sqft,
+              areasNeeded: lead.areas_needed.join(', '),
+              insulationTypes: lead.insulation_types.join(', '),
+              projectTimeline: lead.project_timeline,
+              budgetRange: lead.budget_range,
+              dashboardLink: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/contractor-dashboard`
+            }
+          })
           console.log(`✅ Email notification sent to ${contractor.business_name} at ${contactEmail}`)
         } catch (emailError) {
           console.error(`❌ Failed to send email to ${contractor.business_name}:`, emailError)
