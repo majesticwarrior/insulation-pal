@@ -84,16 +84,29 @@ export default function ContractorDashboard() {
     
     if (!contractorData) {
       console.log('❌ No contractor data in localStorage, redirecting to login')
-      router.push('/contractor-login')
+      // Show a message to the user before redirecting
+      toast.info('Please log in to access your dashboard', {
+        description: 'You will be redirected to the login page.'
+      })
+      setTimeout(() => {
+        router.push('/contractor-login')
+      }, 2000)
       return
     }
 
-    const parsedContractor = JSON.parse(contractorData)
-    console.log('👤 Parsed contractor from localStorage:', parsedContractor)
-    console.log('💳 Contractor credits from localStorage:', parsedContractor.credits)
-    
-    setContractor(parsedContractor)
-    loadDashboardData(parsedContractor.id)
+    try {
+      const parsedContractor = JSON.parse(contractorData)
+      console.log('👤 Parsed contractor from localStorage:', parsedContractor)
+      console.log('💳 Contractor credits from localStorage:', parsedContractor.credits)
+      
+      setContractor(parsedContractor)
+      loadDashboardData(parsedContractor.id)
+    } catch (error) {
+      console.error('❌ Error parsing contractor data:', error)
+      toast.error('Invalid session data. Please log in again.')
+      localStorage.removeItem('contractor')
+      router.push('/contractor-login')
+    }
   }, [router])
 
   const loadDashboardData = async (contractorIdParam?: string) => {
@@ -259,7 +272,11 @@ export default function ContractorDashboard() {
       <main className="min-h-screen bg-gray-50">
         <Header />
         <div className="container mx-auto px-4 py-20">
-          <div className="text-center">Loading...</div>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0a4768] mx-auto mb-4"></div>
+            <h2 className="text-xl font-semibold text-[#0a4768] mb-2">Loading Dashboard...</h2>
+            <p className="text-gray-600">Please wait while we load your contractor information.</p>
+          </div>
         </div>
         <Footer />
       </main>

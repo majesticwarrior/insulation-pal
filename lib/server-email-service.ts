@@ -131,7 +131,7 @@ const emailTemplates = {
           <p style="color: #333; font-size: 16px; margin-bottom: 20px;">Good luck!</p>
           <p style="color: #666; font-size: 14px; margin-bottom: 20px;">The InsulationPal Team</p>
           
-          <a href="${data.dashboardLink}" 
+          <a href="${data.dashboardLink}?from=email" 
              style="background-color: #F5DD22; color: #0a4768; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; margin-bottom: 20px;">
             SUBMIT MY QUOTE
           </a>
