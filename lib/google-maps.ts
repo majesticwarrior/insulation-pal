@@ -37,7 +37,7 @@ export function getPropertyImages(address: string, city: string, state: string):
 
 // Fallback function to get a placeholder image if Google Maps API is not available
 export function getPlaceholderImage(type: 'street' | 'satellite' | 'map'): string {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'
   
   switch (type) {
     case 'street':

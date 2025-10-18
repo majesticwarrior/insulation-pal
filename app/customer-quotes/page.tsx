@@ -631,7 +631,7 @@ function CustomerQuoteReviewContent() {
                 state: lead.state,
                 propertyAddress: lead.property_address
               },
-              dashboardLink: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/contractor-dashboard`
+              dashboardLink: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'}/contractor-dashboard`
             }
           })
         })

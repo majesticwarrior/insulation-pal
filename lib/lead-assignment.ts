@@ -198,7 +198,7 @@ async function notifyContractors(contractors: any[], lead: Lead) {
         try {
           await sendSMS({
             to: contactPhone,
-            message: `New lead available in ${lead.city}, ${lead.state}. View details: ${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/contractor-dashboard`,
+            message: `New lead available in ${lead.city}, ${lead.state}. View details: ${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'}/contractor-dashboard`,
             type: 'new-lead'
           })
           console.log(`✅ SMS notification sent to ${contractor.business_name} at ${contactPhone}`)

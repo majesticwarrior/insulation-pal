@@ -10,7 +10,7 @@ export interface ServerEmailData {
 
 const emailTemplates = {
   'new-lead': (data: any) => {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'
     const logoUrl = `${siteUrl}/insulation-pal-logo.png`
     
     // Get property images (simplified for server-side)

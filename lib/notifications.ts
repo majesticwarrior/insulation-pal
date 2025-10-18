@@ -134,7 +134,7 @@ export async function sendReviewRequest({
   leadId: string
   preference?: 'email' | 'sms' | 'both'
 }) {
-  const reviewLink = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/review/${contractorId}?lead=${leadId}`
+  const reviewLink = `${process.env.NEXTAUTH_URL || 'http://localhost:3001'}/review/${contractorId}?lead=${leadId}`
   
   const data = {
     customerName,
@@ -193,7 +193,7 @@ export async function sendLeadNotification({
   projectDetails: string
   preference?: 'email' | 'sms' | 'both'
 }) {
-  const dashboardLink = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/contractor-dashboard`
+  const dashboardLink = `${process.env.NEXTAUTH_URL || 'http://localhost:3001'}/contractor-dashboard`
   
   const data = {
     contractorName,
