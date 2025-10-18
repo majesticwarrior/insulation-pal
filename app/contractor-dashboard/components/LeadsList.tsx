@@ -211,7 +211,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
         return
       }
 
-      await handleContractorResponse(leadAssignmentId, response)
+      await handleContractorResponse(leadAssignmentId, contractorId, response)
       
       // Refresh the leads list
       await fetchLeads()
