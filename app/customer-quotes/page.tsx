@@ -46,12 +46,15 @@ interface Lead {
   id: string
   customer_name: string
   customer_email: string
+  customer_phone?: string
   home_size_sqft: number
   areas_needed: string[]
   insulation_types: string[]
   city: string
   state: string
   zip_code?: string
+  project_timeline?: string
+  budget_range?: string
   created_at: string
 }
 
