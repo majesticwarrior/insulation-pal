@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sendEmail } from '@/lib/email-service'
+import { sendServerEmailDirect } from '@/lib/server-email-direct'
 
 export async function POST(req: NextRequest) {
   try {
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       try {
         console.log(`📧 Notifying ${contractor.business_name} at ${contractor.contact_email}`)
         
-        const emailResult = await sendEmail({
+        const emailResult = await sendServerEmailDirect({
           to: contractor.contact_email,
           subject: 'New Lead Available - InsulationPal',
           template: 'new-lead',
