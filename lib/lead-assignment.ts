@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import { sendServerEmail } from './server-email-service'
+import { sendEmail } from './email-service'
 import { sendSMS } from './sms-service'
 
 export interface Lead {
@@ -176,7 +176,7 @@ async function notifyContractors(contractors: any[], lead: Lead) {
       if ((deliveryPreference === 'email' || deliveryPreference === 'both') && contactEmail) {
         try {
           console.log(`📧 Attempting to send email to ${contractor.business_name} at ${contactEmail}`)
-          const emailResult = await sendServerEmail({
+          const emailResult = await sendEmail({
             to: contactEmail,
             subject: 'New Lead Available - InsulationPal',
             template: 'new-lead',

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sendServerEmail } from '@/lib/server-email-service'
+import { sendEmail } from '@/lib/email-service'
 
 export async function POST(req: NextRequest) {
   try {
@@ -60,13 +60,13 @@ export async function POST(req: NextRequest) {
 
     // Send notifications to each contractor
     for (const assignment of assignments) {
-      const contractor = assignment.contractors
+      const contractor = assignment.contractors as any
       if (!contractor) continue
 
       try {
         console.log(`📧 Notifying ${contractor.business_name} at ${contractor.contact_email}`)
         
-        const emailResult = await sendServerEmail({
+        const emailResult = await sendEmail({
           to: contractor.contact_email,
           subject: 'New Lead Available - InsulationPal',
           template: 'new-lead',

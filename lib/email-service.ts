@@ -8,7 +8,11 @@ export interface EmailData {
 
 export async function sendEmail({ to, subject, template, data }: EmailData) {
   try {
-    const response = await fetch('/api/send-email', {
+    // Get the base URL - use environment variable or construct from current context
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 
+                   (typeof window !== 'undefined' ? window.location.origin : 'https://insulationpal.com')
+    
+    const response = await fetch(`${baseUrl}/api/send-email`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
