@@ -78,7 +78,9 @@ export async function assignLeadToContractors(lead: Lead) {
       lead_id: (lead as any).id,
       contractor_id: contractor.id,
       cost: 20.00, // Cost per lead
-      status: 'pending'
+      status: 'pending',
+      assigned_at: new Date().toISOString(),
+      response_deadline: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
     }))
 
     console.log('📋 Assignment data:', assignments)

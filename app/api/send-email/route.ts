@@ -436,6 +436,142 @@ const emailTemplates = {
     </body>
     </html>
     `
+  },
+  
+  'project-completion-review': (data: any) => {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    const logoUrl = `${siteUrl}/insulation-pal-logo.png`
+    
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>How was your insulation project? - InsulationPal</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a4768; font-family: Arial, sans-serif;">
+      
+      <!-- Header -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <img src="${logoUrl}" alt="InsulationPal" style="height: 40px; width: auto;">
+        <div style="color: white; font-size: 14px; margin-top: 10px; text-align: right;">
+          ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+        </div>
+      </div>
+      
+      <!-- Main Content Card -->
+      <div style="background-color: white; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        
+        <!-- Project Completion Header -->
+        <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 30px; text-align: center;">
+          <div style="color: white; font-size: 28px; font-weight: bold; margin-bottom: 10px;">
+            🏠 Project Complete!
+          </div>
+          <div style="color: white; font-size: 18px;">
+            How was your insulation project in ${data.projectDetails?.city || 'your area'}?
+          </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div style="padding: 30px;">
+          <h2 style="color: #0a4768; margin: 0 0 20px 0; font-size: 22px;">
+            Hi ${data.customerName || 'Valued Customer'},
+          </h2>
+          
+          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+            We hope you're enjoying the improved comfort and energy efficiency in your home! 
+            Your insulation project has been completed, and now we'd love to hear about your experience.
+          </p>
+          
+          <!-- Project Details -->
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+            <h3 style="color: #0a4768; margin: 0 0 15px 0; font-size: 18px;">Your Project Details</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 14px;">
+              <div>
+                <strong style="color: #0a4768;">Home Size:</strong> ${(data.projectDetails?.homeSize || 0).toLocaleString()} sq ft
+              </div>
+              <div>
+                <strong style="color: #0a4768;">Location:</strong> ${data.projectDetails?.city || 'Unknown'}, ${data.projectDetails?.state || 'Unknown'}
+              </div>
+              <div>
+                <strong style="color: #0a4768;">Areas Insulated:</strong> ${data.projectDetails?.areasNeeded?.join(', ') || 'Not specified'}
+              </div>
+              <div>
+                <strong style="color: #0a4768;">Insulation Types:</strong> ${data.projectDetails?.insulationTypes?.join(', ') || 'Not specified'}
+              </div>
+            </div>
+          </div>
+          
+          <!-- Review Request -->
+          <div style="background-color: #eff6ff; padding: 25px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #3b82f6;">
+            <h3 style="color: #1e40af; margin: 0 0 15px 0; font-size: 18px;">
+              ⭐ Share Your Experience
+            </h3>
+            <p style="color: #1e40af; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+              Your feedback helps other homeowners make informed decisions and helps us maintain our high standards. 
+              Please take a moment to review your contractor's work.
+            </p>
+            
+            <!-- Review Button -->
+            <div style="text-align: center; margin: 25px 0;">
+              <a href="${data.reviewLink || '#'}" 
+                 style="background-color: #0a4768; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 16px;">
+                LEAVE YOUR REVIEW
+              </a>
+            </div>
+            
+            <p style="color: #6b7280; font-size: 14px; text-align: center; margin: 0;">
+              Takes less than 2 minutes • Helps other homeowners
+            </p>
+          </div>
+          
+          <!-- What to Review -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="color: #0a4768; margin: 0 0 15px 0; font-size: 18px;">What We'd Like to Know:</h3>
+            <ul style="color: #374151; font-size: 16px; line-height: 1.6; padding-left: 20px;">
+              <li style="margin-bottom: 8px;">How was the communication throughout the project?</li>
+              <li style="margin-bottom: 8px;">Was the work completed on time and as promised?</li>
+              <li style="margin-bottom: 8px;">How would you rate the quality of the installation?</li>
+              <li style="margin-bottom: 8px;">Would you recommend this contractor to others?</li>
+              <li style="margin-bottom: 8px;">Any additional comments about your experience?</li>
+            </ul>
+          </div>
+          
+          <!-- Benefits of Reviewing -->
+          <div style="background-color: #f0fdf4; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+            <h3 style="color: #166534; margin: 0 0 15px 0; font-size: 16px;">Why Your Review Matters:</h3>
+            <div style="color: #166534; font-size: 14px; line-height: 1.5;">
+              <div style="margin-bottom: 8px;">✓ Helps other homeowners choose the right contractor</div>
+              <div style="margin-bottom: 8px;">✓ Encourages contractors to maintain high standards</div>
+              <div style="margin-bottom: 8px;">✓ Builds trust in the InsulationPal community</div>
+              <div>✓ Your feedback helps us improve our service</div>
+            </div>
+          </div>
+          
+          <!-- Contact Information -->
+          <div style="text-align: center; margin-top: 30px;">
+            <p style="color: #6b7280; font-size: 14px; margin-bottom: 10px;">
+              Questions about your project or need assistance?
+            </p>
+            <p style="color: #0a4768; font-size: 14px; margin: 0;">
+              Contact us at <a href="mailto:team@insulationpal.com" style="color: #0a4768; text-decoration: none;">team@insulationpal.com</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <p style="color: white; font-size: 12px; margin: 0;">Serving those that serve others</p>
+        <p style="color: white; font-size: 12px; margin: 10px 0 0 0;">
+          <a href="${siteUrl}/unsubscribe" style="color: #F5DD22; text-decoration: none;">unsubscribe from this list</a>
+        </p>
+      </div>
+      
+    </body>
+    </html>
+    `
   }
 }
 
