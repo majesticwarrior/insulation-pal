@@ -127,8 +127,8 @@ export async function assignLeadToContractors(lead: Lead) {
     } catch (notificationError) {
       console.error('❌ CRITICAL: Error sending notifications:', notificationError)
       console.error('❌ Notification error details:', {
-        message: notificationError?.message,
-        stack: notificationError?.stack,
+        message: (notificationError as any)?.message,
+        stack: (notificationError as any)?.stack,
         leadId: lead.id,
         contractorCount: selectedContractors.length
       })
@@ -200,8 +200,8 @@ async function notifyContractors(contractors: any[], lead: Lead) {
           console.error(`❌ Email error details:`, {
             contractor: contractor.business_name,
             email: contactEmail,
-            error: emailError?.message,
-            stack: emailError?.stack
+            error: (emailError as any)?.message,
+            stack: (emailError as any)?.stack
           })
         }
       } else if (deliveryPreference === 'email' || deliveryPreference === 'both') {
