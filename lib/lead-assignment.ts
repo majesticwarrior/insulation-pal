@@ -14,6 +14,9 @@ export interface Lead {
   customer_name: string
   customer_email: string
   customer_phone?: string
+  property_address?: string
+  project_timeline?: string
+  budget_range?: string
 }
 
 export interface Contractor {
@@ -122,7 +125,7 @@ export async function assignLeadToContractors(lead: Lead) {
 
     console.log(`Lead ${lead.id} assigned to ${selectedContractors.length} contractors`)
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Error assigning lead:', error)
     console.error('❌ Error details:', {
       message: error?.message || 'No message',

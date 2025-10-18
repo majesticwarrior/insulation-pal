@@ -119,7 +119,7 @@ export function ProjectImageUpload({
       }
 
       // Save to database
-      const { error: dbError } = await supabase
+      const { error: dbError } = await (supabase as any)
         .from('project_gallery')
         .insert(uploadedUrls.map(img => ({
           lead_assignment_id: leadAssignmentId,
@@ -136,7 +136,7 @@ export function ProjectImageUpload({
       }
 
       // Update lead assignment status to completed
-      const { error: statusError } = await supabase
+      const { error: statusError } = await (supabase as any)
         .from('lead_assignments')
         .update({ 
           status: 'completed',

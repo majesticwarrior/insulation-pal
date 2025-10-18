@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -47,7 +47,7 @@ interface LeadData {
   zipCode: string
 }
 
-export default function SelectContractorsPage() {
+function SelectContractorsContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [contractors, setContractors] = useState<Contractor[]>([])
@@ -699,5 +699,13 @@ export default function SelectContractorsPage() {
 
       <Footer />
     </main>
+  )
+}
+
+export default function SelectContractorsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SelectContractorsContent />
+    </Suspense>
   )
 }

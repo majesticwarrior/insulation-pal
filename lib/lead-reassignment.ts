@@ -48,7 +48,7 @@ export async function checkAndReassignExpiredLeads() {
     console.log('🕐 Checking for expired lead assignments...')
     
     // Find assignments that are past their response deadline and still pending
-    const { data: expiredAssignments, error: expiredError } = await supabase
+    const { data: expiredAssignments, error: expiredError } = await (supabase as any)
       .from('lead_assignments')
       .select(`
         id,
@@ -106,7 +106,7 @@ async function processExpiredAssignment(assignment: any) {
     console.log(`🔄 Processing expired assignment for lead ${lead.id}`)
 
     // 1. Mark the expired assignment as expired
-    const { error: updateError } = await supabase
+    const { error: updateError } = await (supabase as any)
       .from('lead_assignments')
       .update({ 
         status: 'expired',
@@ -120,7 +120,7 @@ async function processExpiredAssignment(assignment: any) {
     }
 
     // 2. Check how many active assignments this lead has
-    const { data: activeAssignments, error: activeError } = await supabase
+    const { data: activeAssignments, error: activeError } = await (supabase as any)
       .from('lead_assignments')
       .select('id, contractor_id, status')
       .eq('lead_id', lead.id)
@@ -139,7 +139,7 @@ async function processExpiredAssignment(assignment: any) {
       const neededCount = 3 - activeCount
       console.log(`🎯 Need to assign ${neededCount} more contractors`)
       
-      await assignNewContractorsToLead(lead, neededCount, activeAssignments?.map(a => a.contractor_id) || [])
+      await assignNewContractorsToLead(lead, neededCount, activeAssignments?.map((a: any) => a.contractor_id) || [])
     }
 
   } catch (error) {
@@ -213,7 +213,7 @@ async function createLeadAssignment(lead: Lead, contractor: Contractor) {
     console.log(`📝 Creating assignment for contractor ${contractor.id}`)
 
     // Create the assignment
-    const { data: assignment, error: assignmentError } = await supabase
+    const { data: assignment, error: assignmentError } = await (supabase as any)
       .from('lead_assignments')
       .insert({
         lead_id: lead.id,
@@ -232,7 +232,7 @@ async function createLeadAssignment(lead: Lead, contractor: Contractor) {
     }
 
     // Deduct credit from contractor
-    const { error: creditError } = await supabase
+    const { error: creditError } = await (supabase as any)
       .from('contractors')
       .update({ credits: contractor.credits - 1 })
       .eq('id', contractor.id)
@@ -297,14 +297,8 @@ async function notifyContractor(lead: Lead, contractor: Contractor, assignmentId
     if (contactPhone && contractor.lead_delivery_preference === 'phone') {
       await sendSMS({
         to: contactPhone,
-        template: 'lead-response',
-        data: {
-          contractorName: contractor.business_name,
-          customerName: lead.customer_name,
-          city: lead.city,
-          state: lead.state,
-          responseLink: `${siteUrl}/contractor-dashboard`
-        }
+        message: `New lead available! ${lead.customer_name} in ${lead.city}, ${lead.state} needs insulation for ${lead.home_size_sqft} sq ft. Check your dashboard: ${siteUrl}/contractor-dashboard`,
+        type: 'new-lead'
       })
     }
 
@@ -321,7 +315,7 @@ async function notifyContractor(lead: Lead, contractor: Contractor, assignmentId
  */
 export async function getLeadAssignmentStats() {
   try {
-    const { data: stats, error } = await supabase
+    const { data: stats, error } = await (supabase as any)
       .from('lead_assignments')
       .select(`
         status,
@@ -336,13 +330,13 @@ export async function getLeadAssignmentStats() {
     }
 
     const now = new Date()
-    const expiredCount = stats?.filter(s => 
+    const expiredCount = stats?.filter((s: any) => 
       s.status === 'pending' && 
       new Date(s.response_deadline) < now
     ).length || 0
 
-    const pendingCount = stats?.filter(s => s.status === 'pending').length || 0
-    const acceptedCount = stats?.filter(s => s.status === 'accepted').length || 0
+    const pendingCount = stats?.filter((s: any) => s.status === 'pending').length || 0
+    const acceptedCount = stats?.filter((s: any) => s.status === 'accepted').length || 0
 
     return {
       total: stats?.length || 0,

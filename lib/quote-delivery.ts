@@ -14,7 +14,7 @@ export async function sendQuoteToCustomer(quoteData: QuoteData) {
     console.log('📧 Starting sendQuoteToCustomer with data:', quoteData)
     
     // Get lead and contractor details
-    const { data: assignmentData, error: assignmentError } = await supabase
+    const { data: assignmentData, error: assignmentError } = await (supabase as any)
       .from('lead_assignments')
       .select(`
         id,
@@ -88,7 +88,7 @@ export async function sendQuoteToCustomer(quoteData: QuoteData) {
 
     // Update status to 'accepted' to indicate quote was sent
     console.log('🔄 Updating status to accepted for assignment:', quoteData.leadAssignmentId)
-    const { error: updateError } = await supabase
+    const { error: updateError } = await (supabase as any)
       .from('lead_assignments')
       .update({ status: 'accepted' })
       .eq('id', quoteData.leadAssignmentId)
@@ -123,7 +123,7 @@ export async function submitAndSendQuote(quoteData: QuoteData) {
     // Only update columns that actually exist in the database
     console.log('📝 Attempting database update for assignment:', quoteData.leadAssignmentId)
     
-    const { error: updateError } = await supabase
+    const { error: updateError } = await (supabase as any)
       .from('lead_assignments')
       .update({
         quote_amount: quoteData.quoteAmount,

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
@@ -39,6 +39,7 @@ interface Quote {
     license_number?: string
     license_verified: boolean
     insurance_verified: boolean
+    years_in_business?: number
   }
 }
 
@@ -58,7 +59,7 @@ interface Lead {
   created_at: string
 }
 
-export default function CustomerQuoteReview() {
+function CustomerQuoteReviewContent() {
   const searchParams = useSearchParams()
   const leadId = searchParams.get('leadId')
   
@@ -561,7 +562,7 @@ export default function CustomerQuoteReview() {
       if (!quoteData) throw new Error('Quote not found')
 
       // Update assignment status to accepted
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('lead_assignments')
         .update({ status: 'accepted' })
         .eq('id', quoteId)
@@ -1011,5 +1012,13 @@ export default function CustomerQuoteReview() {
 
       <Footer />
     </div>
+  )
+}
+
+export default function CustomerQuoteReview() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CustomerQuoteReviewContent />
+    </Suspense>
   )
 }

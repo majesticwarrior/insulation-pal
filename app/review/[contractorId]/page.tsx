@@ -60,8 +60,13 @@ export default function ContractorReview() {
 
   const fetchProjectDetails = async () => {
     try {
+      if (!leadId || !contractorId) {
+        toast.error('Invalid review link')
+        return
+      }
+
       // Fetch lead assignment and related data
-      const { data: assignment, error: assignmentError } = await supabase
+      const { data: assignment, error: assignmentError } = await (supabase as any)
         .from('lead_assignments')
         .select(`
           id,
@@ -146,7 +151,7 @@ export default function ContractorReview() {
     setSubmitting(true)
     try {
       // Submit review to database
-      const { error: reviewError } = await supabase
+      const { error: reviewError } = await (supabase as any)
         .from('reviews')
         .insert({
           contractor_id: contractorId,
@@ -230,7 +235,7 @@ export default function ContractorReview() {
               Help other homeowners by sharing your experience with {contractorDetails.business_name}
             </p>
           </div>
-
+          
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Project Details */}
             <div className="lg:col-span-1">
@@ -378,7 +383,7 @@ export default function ContractorReview() {
           </div>
         </div>
       </div>
-
+      
       <Footer />
     </div>
   )
