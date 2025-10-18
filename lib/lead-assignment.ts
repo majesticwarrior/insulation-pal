@@ -120,11 +120,18 @@ export async function assignLeadToContractors(lead: Lead) {
     }
 
     // 5. Notify contractors
+    console.log('📧 Starting contractor notifications...')
     try {
       await notifyContractors(selectedContractors, lead)
       console.log(`✅ Notifications sent to ${selectedContractors.length} contractors`)
     } catch (notificationError) {
-      console.error('❌ Error sending notifications:', notificationError)
+      console.error('❌ CRITICAL: Error sending notifications:', notificationError)
+      console.error('❌ Notification error details:', {
+        message: notificationError?.message,
+        stack: notificationError?.stack,
+        leadId: lead.id,
+        contractorCount: selectedContractors.length
+      })
       // Don't throw here - lead assignment was successful, notifications are secondary
     }
 
@@ -168,7 +175,8 @@ async function notifyContractors(contractors: any[], lead: Lead) {
       // Send email notification based on preference
       if ((deliveryPreference === 'email' || deliveryPreference === 'both') && contactEmail) {
         try {
-          await sendEmail({
+          console.log(`📧 Attempting to send email to ${contractor.business_name} at ${contactEmail}`)
+          const emailResult = await sendEmail({
             to: contactEmail,
             subject: 'New Lead Available - InsulationPal',
             template: 'new-lead',
@@ -186,8 +194,15 @@ async function notifyContractors(contractors: any[], lead: Lead) {
             }
           })
           console.log(`✅ Email notification sent to ${contractor.business_name} at ${contactEmail}`)
+          console.log(`📧 Email result:`, emailResult)
         } catch (emailError) {
-          console.error(`❌ Failed to send email to ${contractor.business_name}:`, emailError)
+          console.error(`❌ CRITICAL: Failed to send email to ${contractor.business_name}:`, emailError)
+          console.error(`❌ Email error details:`, {
+            contractor: contractor.business_name,
+            email: contactEmail,
+            error: emailError?.message,
+            stack: emailError?.stack
+          })
         }
       } else if (deliveryPreference === 'email' || deliveryPreference === 'both') {
         console.warn(`⚠️ Contractor ${contractor.business_name} prefers email but has no email address`)
