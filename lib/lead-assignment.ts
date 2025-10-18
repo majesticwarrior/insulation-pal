@@ -62,6 +62,11 @@ export async function assignLeadToContractors(lead: Lead) {
 
     if (!contractors || contractors.length === 0) {
       console.log(`❌ No contractors available in ${lead.city}, ${lead.state}`)
+      console.log(`❌ This could be due to:`)
+      console.log(`   - No contractors registered in this city`)
+      console.log(`   - No contractors with available credits`)
+      console.log(`   - No contractors with approved status`)
+      console.log(`   - No contractors with service areas in this city`)
       return
     }
 
@@ -141,11 +146,24 @@ async function notifyContractors(contractors: any[], lead: Lead) {
   for (const contractor of contractors) {
     try {
       const deliveryPreference = contractor.lead_delivery_preference || 'email'
-      const contactEmail = contractor.contact_email
-      const contactPhone = contractor.contact_phone
+      // Try to get contact info from contractor fields first, then fall back to user fields
+      const contactEmail = contractor.contact_email || contractor.users?.email
+      const contactPhone = contractor.contact_phone || contractor.users?.phone
       
       console.log(`📧 Notifying ${contractor.business_name} via ${deliveryPreference}`)
       console.log(`📧 Contact email: ${contactEmail}, Contact phone: ${contactPhone}`)
+      
+      // Check if contractor has any contact information
+      if (!contactEmail && !contactPhone) {
+        console.error(`❌ No contact information found for contractor ${contractor.business_name} (ID: ${contractor.id})`)
+        console.error(`❌ Contractor data:`, {
+          contact_email: contractor.contact_email,
+          contact_phone: contractor.contact_phone,
+          user_email: contractor.users?.email,
+          user_phone: contractor.users?.phone
+        })
+        continue // Skip this contractor
+      }
       
       // Send email notification based on preference
       if ((deliveryPreference === 'email' || deliveryPreference === 'both') && contactEmail) {
@@ -171,6 +189,8 @@ async function notifyContractors(contractors: any[], lead: Lead) {
         } catch (emailError) {
           console.error(`❌ Failed to send email to ${contractor.business_name}:`, emailError)
         }
+      } else if (deliveryPreference === 'email' || deliveryPreference === 'both') {
+        console.warn(`⚠️ Contractor ${contractor.business_name} prefers email but has no email address`)
       }
       
       // Send SMS notification based on preference
@@ -185,11 +205,8 @@ async function notifyContractors(contractors: any[], lead: Lead) {
         } catch (smsError) {
           console.error(`❌ Failed to send SMS to ${contractor.business_name}:`, smsError)
         }
-      }
-      
-      // Log if no contact info available
-      if (!contactEmail && !contactPhone) {
-        console.warn(`⚠️ No contact information available for ${contractor.business_name}`)
+      } else if (deliveryPreference === 'text' || deliveryPreference === 'both') {
+        console.warn(`⚠️ Contractor ${contractor.business_name} prefers SMS but has no phone number`)
       }
     } catch (error) {
       console.error(`❌ Error notifying contractor ${contractor.business_name}:`, error)
