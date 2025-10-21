@@ -85,35 +85,52 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Update assignment status to accepted (customer selected this contractor)
-    console.log('📝 Attempting to update quote status to "accepted" for quote:', quoteId)
-    
-    const { data: updateData, error: updateError } = await supabaseAdmin
-      .from('lead_assignments')
-      .update({ status: 'accepted' })
-      .eq('id', quoteId)
-      .select()
+      // Update winning assignment status to 'won' (customer selected this contractor)
+      console.log('📝 Attempting to update quote status to "won" for quote:', quoteId)
+      
+      const { data: updateData, error: updateError } = await supabaseAdmin
+        .from('lead_assignments')
+        .update({ status: 'won' })
+        .eq('id', quoteId)
+        .select()
 
-    if (updateError) {
-      console.error('❌ Error updating quote status:', updateError)
-      console.error('❌ Update error details:', {
-        message: updateError.message,
-        code: updateError.code,
-        details: updateError.details,
-        hint: updateError.hint
-      })
-      return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Failed to update quote status',
-          details: updateError.message 
-        },
-        { status: 500 }
-      )
-    }
+      if (updateError) {
+        console.error('❌ Error updating quote status:', updateError)
+        console.error('❌ Update error details:', {
+          message: updateError.message,
+          code: updateError.code,
+          details: updateError.details,
+          hint: updateError.hint
+        })
+        return NextResponse.json(
+          { 
+            success: false, 
+            error: 'Failed to update quote status',
+            details: updateError.message 
+          },
+          { status: 500 }
+        )
+      }
 
-    console.log('✅ Quote updated successfully:', updateData)
-    console.log('✅ Quote status updated to accepted')
+      console.log('✅ Winning quote updated successfully:', updateData)
+      console.log('✅ Quote status updated to won')
+
+      // Update all other quotes for the same lead to 'declined' (they lost the bid)
+      console.log('📝 Marking all other quotes for lead', quoteData.lead_id, 'as declined')
+      
+      const { error: declineError } = await supabaseAdmin
+        .from('lead_assignments')
+        .update({ status: 'declined' })
+        .eq('lead_id', quoteData.lead_id)
+        .neq('id', quoteId) // Don't update the winning quote
+        .select()
+
+      if (declineError) {
+        console.error('⚠️ Error updating losing quotes (non-fatal):', declineError)
+        // Don't fail the request if this update fails
+      } else {
+        console.log('✅ All other quotes marked as declined')
+      }
 
     // Notify the winning contractor
     try {
