@@ -597,7 +597,9 @@ function CustomerQuoteReviewContent() {
       const data = await response.json()
 
       if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Failed to accept quote')
+        const errorMessage = data.details || data.error || 'Failed to accept quote'
+        console.error('❌ Server error details:', data)
+        throw new Error(errorMessage)
       }
 
       console.log('✅ Quote accepted successfully')

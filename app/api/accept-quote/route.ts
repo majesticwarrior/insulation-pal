@@ -85,21 +85,35 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Update assignment status to won (customer selected this contractor)
-    const { error: updateError } = await supabaseAdmin
+    // Update assignment status to accepted (customer selected this contractor)
+    console.log('📝 Attempting to update quote status to "accepted" for quote:', quoteId)
+    
+    const { data: updateData, error: updateError } = await supabaseAdmin
       .from('lead_assignments')
-      .update({ status: 'won' })
+      .update({ status: 'accepted' })
       .eq('id', quoteId)
+      .select()
 
     if (updateError) {
       console.error('❌ Error updating quote status:', updateError)
+      console.error('❌ Update error details:', {
+        message: updateError.message,
+        code: updateError.code,
+        details: updateError.details,
+        hint: updateError.hint
+      })
       return NextResponse.json(
-        { success: false, error: 'Failed to update quote status' },
+        { 
+          success: false, 
+          error: 'Failed to update quote status',
+          details: updateError.message 
+        },
         { status: 500 }
       )
     }
 
-    console.log('✅ Quote status updated to won')
+    console.log('✅ Quote updated successfully:', updateData)
+    console.log('✅ Quote status updated to accepted')
 
     // Notify the winning contractor
     try {
