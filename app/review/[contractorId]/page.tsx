@@ -35,7 +35,7 @@ interface ProjectDetails {
 export default function ContractorReview({ params }: { params: Promise<{ contractorId: string }> }) {
   const [contractorId, setContractorId] = useState<string>('')
   const searchParams = useSearchParams()
-  const leadId = searchParams.get('lead')
+  const leadId = searchParams.get('leadId')
   
   useEffect(() => {
     params.then(({ contractorId }) => setContractorId(contractorId))
