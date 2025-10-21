@@ -31,6 +31,8 @@ export async function POST(request: NextRequest) {
     console.log('🔍 API: Submit review route called')
     
     const body = await request.json()
+    console.log('🔍 API: Raw request body:', JSON.stringify(body, null, 2))
+    
     const { 
       contractorId, 
       leadAssignmentId, 
@@ -41,7 +43,7 @@ export async function POST(request: NextRequest) {
       comments 
     } = body
     
-    console.log('🔍 API: Review data:', { 
+    console.log('🔍 API: Parsed review data:', { 
       contractorId, 
       leadAssignmentId, 
       customerName, 
@@ -53,8 +55,40 @@ export async function POST(request: NextRequest) {
     
     if (!contractorId || !leadAssignmentId || !customerName || !customerEmail || !rating || !insulationAdded || !comments) {
       console.log('❌ API: Missing required fields')
+      console.log('❌ API: Field check:', {
+        contractorId: !!contractorId,
+        leadAssignmentId: !!leadAssignmentId,
+        customerName: !!customerName,
+        customerEmail: !!customerEmail,
+        rating: !!rating,
+        insulationAdded: !!insulationAdded,
+        comments: !!comments
+      })
       return NextResponse.json(
-        { success: false, error: 'Missing required fields' },
+        { 
+          success: false, 
+          error: 'Missing required fields',
+          debug: {
+            receivedFields: {
+              contractorId,
+              leadAssignmentId,
+              customerName,
+              customerEmail,
+              rating,
+              insulationAdded,
+              comments
+            },
+            fieldCheck: {
+              contractorId: !!contractorId,
+              leadAssignmentId: !!leadAssignmentId,
+              customerName: !!customerName,
+              customerEmail: !!customerEmail,
+              rating: !!rating,
+              insulationAdded: !!insulationAdded,
+              comments: !!comments
+            }
+          }
+        },
         { status: 400 }
       )
     }
