@@ -28,7 +28,7 @@ function getSupabaseAdmin() {
 
 export async function GET(request: NextRequest) {
   try {
-    console.log('🔍 API: Review data route called')
+    console.log('🔍 API: Review data route called - v2 with fixed data mapping')
     
     const { searchParams } = new URL(request.url)
     const contractorId = searchParams.get('contractorId')
