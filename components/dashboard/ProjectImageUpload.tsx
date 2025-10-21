@@ -94,8 +94,12 @@ export function ProjectImageUpload({
           console.error('❌ Storage upload error:', uploadError)
           console.error('❌ Upload error details:', {
             message: uploadError.message,
-            error: uploadError
+            error: uploadError,
+            filePath: filePath,
+            fileName: fileName,
+            bucketName: 'contractor_images'
           })
+          console.error('❌ Full error object:', JSON.stringify(uploadError, null, 2))
           toast.error(`Failed to upload ${file.name}: ${uploadError.message}`)
           continue
         }
