@@ -92,7 +92,17 @@ export async function GET(request: NextRequest) {
         hint: assignmentError.hint
       })
       return NextResponse.json(
-        { success: false, error: 'Project not found or access denied' },
+        { 
+          success: false, 
+          error: 'Project not found or access denied',
+          debug: {
+            allAssignments,
+            allError,
+            assignments,
+            assignmentError,
+            searchParams: { contractorId, leadId }
+          }
+        },
         { status: 404 }
       )
     }
@@ -100,7 +110,17 @@ export async function GET(request: NextRequest) {
     if (!assignments || assignments.length === 0) {
       console.log('❌ API: No assignment found')
       return NextResponse.json(
-        { success: false, error: 'Project not found' },
+        { 
+          success: false, 
+          error: 'Project not found',
+          debug: {
+            allAssignments,
+            allError,
+            assignments,
+            assignmentError,
+            searchParams: { contractorId, leadId }
+          }
+        },
         { status: 404 }
       )
     }
