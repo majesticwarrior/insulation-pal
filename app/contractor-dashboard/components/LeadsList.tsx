@@ -329,42 +329,19 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           </div>
         </div>
 
-        {/* Show project image upload for won leads */}
+        {/* Show customer contact info and project upload for won leads */}
         {leadAssignment.status === 'won' || leadAssignment.status === 'hired' || leadAssignment.status === 'completed' ? (
-          <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
-            <h3 className="font-semibold text-emerald-800 mb-3 flex items-center">
-              <CheckCircle className="h-4 w-4 mr-2" />
-              Project Completed - Add Images
-            </h3>
-            <p className="text-sm text-emerald-700 mb-4">
-              Upload project completion images to showcase your work and request a customer review.
-            </p>
-            <ProjectImageUpload
-              leadAssignmentId={leadAssignment.id}
-              contractorId={contractorId}
-              customerName={leadAssignment.leads.customer_name}
-              customerEmail={leadAssignment.leads.customer_email || ''}
-              projectDetails={{
-                homeSize: leadAssignment.leads.home_size_sqft,
-                areasNeeded: leadAssignment.leads.areas_needed,
-                insulationTypes: leadAssignment.leads.insulation_types,
-                city: leadAssignment.leads.city,
-                state: leadAssignment.leads.state
-              }}
-              onImagesUploaded={() => {
-                fetchLeads()
-              }}
-            />
-          </div>
-        ) : leadAssignment.status === 'won' ? (
           <>
-            {/* Customer Contact Information */}
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+            {/* Customer Contact Information - CONGRATULATIONS! */}
+            <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg">
               <h3 className="font-semibold text-green-800 mb-3 flex items-center">
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Customer Contact Information
+                <Trophy className="h-5 w-5 mr-2 text-green-600" />
+                🎉 Congratulations! You Won This Bid!
               </h3>
-              <div className="grid md:grid-cols-2 gap-4">
+              <p className="text-sm text-green-700 mb-4">
+                The customer has selected your quote. Here's their contact information:
+              </p>
+              <div className="grid md:grid-cols-2 gap-4 bg-white rounded-lg p-4">
                 <div>
                   <div className="flex items-center mb-2">
                     <Mail className="h-4 w-4 mr-2 text-green-600" />
@@ -393,30 +370,51 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                 <div>
                   {leadAssignment.quote_amount && (
                     <div className="mb-2">
-                      <span className="font-medium">Your Quote:</span>
-                      <div className="text-lg font-bold text-green-600">
+                      <span className="font-medium">Your Winning Quote:</span>
+                      <div className="text-xl font-bold text-green-600">
                         ${leadAssignment.quote_amount.toLocaleString()}
                       </div>
                     </div>
                   )}
                   {leadAssignment.quote_notes && (
                     <div>
-                      <span className="font-medium">Quote Notes:</span>
+                      <span className="font-medium">Your Quote Notes:</span>
                       <p className="text-sm text-gray-600 mt-1">{leadAssignment.quote_notes}</p>
                     </div>
                   )}
                 </div>
               </div>
+              <div className="mt-3 text-sm text-green-700">
+                <strong>Next Steps:</strong> Contact the customer to schedule the project and confirm details.
+              </div>
             </div>
-            
-            {/* Quote Submission Form */}
-            <QuoteSubmissionForm
-              leadAssignmentId={leadAssignment.id}
-              contractorId={contractorId}
-              onQuoteSubmitted={() => {
-                fetchLeads()
-              }}
-            />
+
+            {/* Project Image Upload */}
+            <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+              <h3 className="font-semibold text-emerald-800 mb-3 flex items-center">
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Project Completed - Add Images
+              </h3>
+              <p className="text-sm text-emerald-700 mb-4">
+                After completing the project, upload images to showcase your work and request a customer review.
+              </p>
+              <ProjectImageUpload
+                leadAssignmentId={leadAssignment.id}
+                contractorId={contractorId}
+                customerName={leadAssignment.leads.customer_name}
+                customerEmail={leadAssignment.leads.customer_email || ''}
+                projectDetails={{
+                  homeSize: leadAssignment.leads.home_size_sqft,
+                  areasNeeded: leadAssignment.leads.areas_needed,
+                  insulationTypes: leadAssignment.leads.insulation_types,
+                  city: leadAssignment.leads.city,
+                  state: leadAssignment.leads.state
+                }}
+                onImagesUploaded={() => {
+                  fetchLeads()
+                }}
+              />
+            </div>
           </>
         ) : (
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
