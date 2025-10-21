@@ -91,10 +91,16 @@ export function ProjectImageUpload({
           .upload(filePath, file)
 
         if (uploadError) {
-          console.error('Upload error:', uploadError)
-          toast.error(`Failed to upload ${file.name}`)
+          console.error('❌ Storage upload error:', uploadError)
+          console.error('❌ Upload error details:', {
+            message: uploadError.message,
+            error: uploadError
+          })
+          toast.error(`Failed to upload ${file.name}: ${uploadError.message}`)
           continue
         }
+        
+        console.log('✅ Image uploaded to storage:', filePath)
 
         // Get public URL
         const { data: { publicUrl } } = supabase.storage
@@ -104,7 +110,13 @@ export function ProjectImageUpload({
         // Save to contractor_portfolio table (so it shows in public gallery)
         const projectTitle = `${projectDetails.areasNeeded.join(', ')} Insulation - ${projectDetails.city}, ${projectDetails.state}`
         
-        const { error: dbError } = await (supabase as any)
+        console.log('💾 Saving to contractor_portfolio:', {
+          contractor_id: contractorId,
+          title: projectTitle,
+          image_url: publicUrl
+        })
+        
+        const { data: insertData, error: dbError } = await (supabase as any)
           .from('contractor_portfolio')
           .insert({
             contractor_id: contractorId,
@@ -119,12 +131,21 @@ export function ProjectImageUpload({
             is_featured: false,
             display_order: 999 + i // Put at end of gallery
           })
+          .select()
 
         if (dbError) {
-          console.error('Database error:', dbError)
-          toast.error(`Failed to save ${file.name} to portfolio`)
+          console.error('❌ Database insert error:', dbError)
+          console.error('❌ DB error details:', {
+            message: dbError.message,
+            code: dbError.code,
+            details: dbError.details,
+            hint: dbError.hint
+          })
+          toast.error(`Failed to save ${file.name} to portfolio: ${dbError.message}`)
           continue
         }
+        
+        console.log('✅ Image saved to portfolio:', insertData)
       }
 
       // Update lead assignment status to completed
