@@ -48,15 +48,6 @@ export async function GET(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin()
 
-    // First, let's check if the lead_assignments table has any data
-    const { data: allAssignments, error: allError } = await supabaseAdmin
-      .from('lead_assignments')
-      .select('id, lead_id, contractor_id, status')
-      .limit(5)
-
-    console.log('🔍 API: Sample lead_assignments:', allAssignments)
-    console.log('🔍 API: All assignments error:', allError)
-
     // Fetch lead assignment and related data using service role (bypasses RLS)
     const { data: assignments, error: assignmentError } = await supabaseAdmin
       .from('lead_assignments')
@@ -78,7 +69,7 @@ export async function GET(request: NextRequest) {
           license_number
         )
       `)
-      .eq('lead_id', leadId)
+      .eq('id', leadId)
       .eq('contractor_id', contractorId)
 
     console.log('🔍 API: Query result:', { assignments, assignmentError })
@@ -92,17 +83,7 @@ export async function GET(request: NextRequest) {
         hint: assignmentError.hint
       })
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Project not found or access denied',
-          debug: {
-            allAssignments,
-            allError,
-            assignments,
-            assignmentError,
-            searchParams: { contractorId, leadId }
-          }
-        },
+        { success: false, error: 'Project not found or access denied' },
         { status: 404 }
       )
     }
@@ -110,17 +91,7 @@ export async function GET(request: NextRequest) {
     if (!assignments || assignments.length === 0) {
       console.log('❌ API: No assignment found')
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Project not found',
-          debug: {
-            allAssignments,
-            allError,
-            assignments,
-            assignmentError,
-            searchParams: { contractorId, leadId }
-          }
-        },
+        { success: false, error: 'Project not found' },
         { status: 404 }
       )
     }
