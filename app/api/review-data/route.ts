@@ -28,11 +28,16 @@ function getSupabaseAdmin() {
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('🔍 API: Review data route called')
+    
     const { searchParams } = new URL(request.url)
     const contractorId = searchParams.get('contractorId')
     const leadId = searchParams.get('leadId')
     
+    console.log('🔍 API: Parameters:', { contractorId, leadId })
+    
     if (!contractorId || !leadId) {
+      console.log('❌ API: Missing parameters')
       return NextResponse.json(
         { success: false, error: 'Missing contractorId or leadId' },
         { status: 400 }
