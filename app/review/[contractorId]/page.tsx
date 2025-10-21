@@ -83,12 +83,19 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
 
       console.log('✅ Project details fetched successfully:', result.data)
 
+      // Add defensive checks for data structure
+      if (!result.data || !result.data.projectDetails || !result.data.contractorDetails) {
+        console.error('❌ Invalid data structure:', result.data)
+        toast.error('Invalid project data received')
+        return
+      }
+
       setProjectDetails(result.data.projectDetails)
       setContractorDetails(result.data.contractorDetails)
       setReviewData(prev => ({
         ...prev,
-        customerName: result.data.projectDetails.customerName,
-        customerEmail: result.data.projectDetails.customerEmail
+        customerName: result.data.projectDetails.customerName || '',
+        customerEmail: result.data.projectDetails.customerEmail || ''
       }))
 
     } catch (error) {
@@ -185,6 +192,10 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
               <p className="text-gray-600">
                 This project could not be found or you don't have permission to review it.
               </p>
+              <div className="mt-4 text-sm text-gray-500">
+                <p>Contractor ID: {contractorId}</p>
+                <p>Lead ID: {leadId}</p>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -205,7 +216,7 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
               How was your insulation project?
             </h1>
             <p className="text-gray-600 text-lg">
-              Help other homeowners by sharing your experience with {contractorDetails.business_name}
+              Help other homeowners by sharing your experience with {contractorDetails.business_name || 'this contractor'}
             </p>
           </div>
           
@@ -219,38 +230,38 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-2">
                     <Home className="h-4 w-4 text-[#0a4768]" />
-                    <span className="font-medium">{projectDetails.homeSize.toLocaleString()} sq ft</span>
+                    <span className="font-medium">{projectDetails.homeSize?.toLocaleString() || 'N/A'} sq ft</span>
                   </div>
                   
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-[#0a4768]" />
-                    <span>{projectDetails.city}, {projectDetails.state}</span>
+                    <span>{projectDetails.city || 'N/A'}, {projectDetails.state || 'N/A'}</span>
                   </div>
                   
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-[#0a4768]" />
-                    <span>Completed {new Date(projectDetails.completedAt).toLocaleDateString()}</span>
+                    <span>Completed {projectDetails.completedAt ? new Date(projectDetails.completedAt).toLocaleDateString() : 'N/A'}</span>
                   </div>
 
                   <div>
                     <h4 className="font-medium mb-2">Areas Insulated:</h4>
                     <div className="flex flex-wrap gap-1">
-                      {projectDetails.areasNeeded.map((area, index) => (
+                      {projectDetails.areasNeeded?.map((area, index) => (
                         <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
                           {area}
                         </span>
-                      ))}
+                      )) || <span className="text-gray-500">N/A</span>}
                     </div>
                   </div>
 
                   <div>
                     <h4 className="font-medium mb-2">Insulation Types:</h4>
                     <div className="flex flex-wrap gap-1">
-                      {projectDetails.insulationTypes.map((type, index) => (
+                      {projectDetails.insulationTypes?.map((type, index) => (
                         <span key={index} className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
                           {type}
                         </span>
-                      ))}
+                      )) || <span className="text-gray-500">N/A</span>}
                     </div>
                   </div>
                 </CardContent>
