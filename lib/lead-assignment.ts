@@ -1,3 +1,5 @@
+'use server'
+
 import { supabase } from './supabase'
 import { sendServerEmailDirect } from './server-email-direct'
 import { sendSMS } from './sms-service'

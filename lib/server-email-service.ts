@@ -1,5 +1,11 @@
-// Server-side email service using nodemailer directly
-import nodemailer from 'nodemailer'
+'use server'
+
+// Server-side email service using SendGrid
+import sgMail from '@sendgrid/mail'
+
+// Initialize SendGrid with API key
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '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'
+sgMail.setApiKey(SENDGRID_API_KEY)
 
 export interface ServerEmailData {
   to: string
@@ -159,57 +165,49 @@ const emailTemplates = {
 
 export async function sendServerEmail({ to, subject, template, data }: ServerEmailData) {
   try {
-    console.log('📧 Sending server email:', { to, subject, template })
+    console.log('📧 Sending server email via SendGrid:', { to, subject, template })
     
-    // Create transporter with Outlook SMTP configuration
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.office365.com',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: process.env.SMTP_USER || 'team@insulationpal.com',
-        pass: process.env.SMTP_PASS || 'JitY*&4^%4tGTr22#'
-      },
-      tls: {
-        ciphers: 'SSLv3',
-        rejectUnauthorized: false
-      }
-    })
-
     // Get HTML content from template
     const htmlContent = emailTemplates[template as keyof typeof emailTemplates]?.(data) || 
                        '<p>Default email content</p>'
 
-    // Email options
-    const mailOptions = {
-      from: {
-        name: process.env.SMTP_FROM_NAME || 'Insulation Pal',
-        address: process.env.SMTP_FROM_EMAIL || 'team@insulationpal.com'
-      },
+    // SendGrid email configuration
+    const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'team@quote.insulationpal.com'
+    const fromName = process.env.SENDGRID_FROM_NAME || 'Insulation Pal'
+    
+    const msg = {
       to: to,
-      replyTo: process.env.SMTP_REPLY_TO || 'team@insulationpal.com',
+      from: {
+        email: fromEmail,
+        name: fromName
+      },
+      replyTo: process.env.SENDGRID_REPLY_TO || fromEmail,
       subject: subject,
       html: htmlContent
     }
 
-    // Send email
-    const info = await transporter.sendMail(mailOptions)
+    // Send email via SendGrid
+    const response = await sgMail.send(msg)
     
-    console.log('✅ Server email sent successfully:', {
-      messageId: info.messageId,
+    console.log('✅ Server email sent successfully via SendGrid:', {
+      statusCode: response[0].statusCode,
       to: to,
       subject: subject,
       template: template
     })
     
-    return { success: true, messageId: info.messageId }
+    return { 
+      success: true, 
+      messageId: response[0].headers['x-message-id'] || 'sent',
+      statusCode: response[0].statusCode
+    }
     
   } catch (error: any) {
-    console.error('❌ Server email send error:', error)
+    console.error('❌ SendGrid email send error:', error)
     console.error('❌ Error details:', {
       message: error.message,
       code: error.code,
-      response: error.response,
+      response: error.response?.body || error.response,
       stack: error.stack
     })
     throw error

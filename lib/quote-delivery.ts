@@ -1,3 +1,5 @@
+'use server'
+
 // Quote delivery system for sending contractor quotes to customers
 import { supabase } from '@/lib/supabase'
 import { sendEmail } from '@/lib/email-service'

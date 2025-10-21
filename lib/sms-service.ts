@@ -1,3 +1,5 @@
+'use server'
+
 // SMS service placeholder - will be implemented when Twilio is installed
 
 // import twilio from 'twilio'

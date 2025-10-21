@@ -1,7 +1,11 @@
 // API route for sending emails (server-side only)
 import { NextRequest, NextResponse } from 'next/server'
-import nodemailer from 'nodemailer'
+import sgMail from '@sendgrid/mail'
 import { getPropertyImages, getPlaceholderImage, extractStreetName } from '@/lib/google-maps'
+
+// Initialize SendGrid with API key
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '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'
+sgMail.setApiKey(SENDGRID_API_KEY)
 
 const emailTemplates = {
   'new-lead': (data: any) => {
@@ -579,21 +583,6 @@ export async function POST(request: NextRequest) {
   try {
     const { to, subject, template, data } = await request.json()
 
-    // Create transporter with Outlook SMTP configuration
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.office365.com',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: process.env.SMTP_USER || 'team@insulationpal.com',
-        pass: process.env.SMTP_PASS || 'JitY*&4^%4tGTr22#'
-      },
-      tls: {
-        ciphers: 'SSLv3',
-        rejectUnauthorized: false
-      }
-    })
-
     // Debug email data
     if (template === 'contractor-quote') {
       console.log('🔍 Email template data:', {
@@ -608,23 +597,26 @@ export async function POST(request: NextRequest) {
     const htmlContent = emailTemplates[template as keyof typeof emailTemplates]?.(data) || 
                        '<p>Default email content</p>'
 
-    // Email options
-    const mailOptions = {
-      from: {
-        name: process.env.SMTP_FROM_NAME || 'Insulation Pal',
-        address: process.env.SMTP_FROM_EMAIL || 'team@insulationpal.com'
-      },
+    // SendGrid email configuration
+    const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'team@quote.insulationpal.com'
+    const fromName = process.env.SENDGRID_FROM_NAME || 'Insulation Pal'
+    
+    const msg = {
       to: to,
-      replyTo: process.env.SMTP_REPLY_TO || 'team@insulationpal.com',
+      from: {
+        email: fromEmail,
+        name: fromName
+      },
+      replyTo: process.env.SENDGRID_REPLY_TO || fromEmail,
       subject: subject,
       html: htmlContent
     }
 
-    // Send email
-    const info = await transporter.sendMail(mailOptions)
+    // Send email via SendGrid
+    const response = await sgMail.send(msg)
     
-    console.log('✅ Email sent successfully:', {
-      messageId: info.messageId,
+    console.log('✅ Email sent successfully via SendGrid:', {
+      statusCode: response[0].statusCode,
       to: to,
       subject: subject,
       template: template
@@ -632,15 +624,16 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json({ 
       success: true, 
-      messageId: info.messageId 
+      messageId: response[0].headers['x-message-id'] || 'sent',
+      statusCode: response[0].statusCode
     })
     
   } catch (error: any) {
-    console.error('❌ Email send error:', error)
+    console.error('❌ SendGrid email send error:', error)
     console.error('❌ Error details:', {
       message: error.message,
       code: error.code,
-      response: error.response,
+      response: error.response?.body || error.response,
       stack: error.stack
     })
     return NextResponse.json({ 
@@ -648,7 +641,7 @@ export async function POST(request: NextRequest) {
       error: error.message,
       details: {
         code: error.code,
-        response: error.response
+        response: error.response?.body || error.response
       }
     }, { status: 500 })
   }
