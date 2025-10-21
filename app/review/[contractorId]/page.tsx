@@ -71,11 +71,15 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
       console.log('🔍 Fetching project details:', { contractorId, leadId })
 
       // Use API route to bypass RLS policies
+      console.log('🔍 Fetching from API:', `/api/review-data?contractorId=${contractorId}&leadId=${leadId}`)
       const response = await fetch(`/api/review-data?contractorId=${contractorId}&leadId=${leadId}`)
+      console.log('🔍 API Response status:', response.status)
       const result = await response.json()
+      console.log('🔍 API Response body:', result)
 
       if (!response.ok || !result.success) {
         console.error('❌ Error fetching project details:', result.error)
+        console.error('❌ Full error response:', result)
         toast.error(result.error || 'Project not found or access denied')
         return
       }
