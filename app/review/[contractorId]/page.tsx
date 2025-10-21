@@ -10,7 +10,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Star, CheckCircle, AlertCircle, Home, MapPin, Calendar } from 'lucide-react'
 import { toast } from 'sonner'
-import { supabase } from '@/lib/supabase'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 
@@ -130,23 +129,28 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
 
     setSubmitting(true)
     try {
-      // Submit review to database
-      const { error: reviewError } = await (supabase as any)
-        .from('reviews')
-        .insert({
-          contractor_id: contractorId,
-          lead_assignment_id: leadId,
-          customer_name: reviewData.customerName,
-          customer_email: reviewData.customerEmail,
+      // Submit review using API route (bypasses RLS)
+      const response = await fetch('/api/submit-review', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contractorId: contractorId,
+          leadAssignmentId: leadId,
+          customerName: reviewData.customerName,
+          customerEmail: reviewData.customerEmail,
           rating: reviewData.rating,
-          insulation_added: reviewData.insulationAdded,
-          comments: reviewData.comments,
-          review_date: new Date().toISOString()
+          insulationAdded: reviewData.insulationAdded,
+          comments: reviewData.comments
         })
+      })
 
-      if (reviewError) {
-        console.error('Review submission error:', reviewError)
-        toast.error('Failed to submit review')
+      const result = await response.json()
+
+      if (!response.ok || !result.success) {
+        console.error('Review submission error:', result.error)
+        toast.error(result.error || 'Failed to submit review')
         return
       }
 
