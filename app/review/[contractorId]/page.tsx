@@ -32,10 +32,14 @@ interface ProjectDetails {
   completedAt: string
 }
 
-export default function ContractorReview() {
+export default function ContractorReview({ params }: { params: Promise<{ contractorId: string }> }) {
+  const [contractorId, setContractorId] = useState<string>('')
   const searchParams = useSearchParams()
-  const contractorId = searchParams.get('contractorId')
-  const leadId = searchParams.get('leadId')
+  const leadId = searchParams.get('lead')
+  
+  useEffect(() => {
+    params.then(({ contractorId }) => setContractorId(contractorId))
+  }, [params])
   
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
