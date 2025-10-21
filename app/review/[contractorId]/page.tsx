@@ -71,63 +71,24 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
 
       console.log('🔍 Fetching project details:', { contractorId, leadId })
 
-      // Fetch lead assignment and related data
-      const { data: assignment, error: assignmentError } = await (supabase as any)
-        .from('lead_assignments')
-        .select(`
-          id,
-          status,
-          project_completed_at,
-          leads(
-            customer_name,
-            customer_email,
-            home_size_sqft,
-            areas_needed,
-            insulation_types,
-            city,
-            state
-          ),
-          contractors(
-            business_name,
-            license_number
-          )
-        `)
-        .eq('lead_id', leadId)
-        .eq('contractor_id', contractorId)
-        .single()
+      // Use API route to bypass RLS policies
+      const response = await fetch(`/api/review-data?contractorId=${contractorId}&leadId=${leadId}`)
+      const result = await response.json()
 
-      if (assignmentError) {
-        console.error('❌ Error fetching assignment:', assignmentError)
-        console.error('❌ Assignment error details:', {
-          message: assignmentError.message,
-          code: assignmentError.code,
-          details: assignmentError.details,
-          hint: assignmentError.hint
-        })
-        toast.error('Project not found or access denied')
+      if (!response.ok || !result.success) {
+        console.error('❌ Error fetching project details:', result.error)
+        toast.error(result.error || 'Project not found or access denied')
         return
       }
 
-      if (!assignment || assignment.status !== 'completed') {
-        toast.error('This project is not yet completed')
-        return
-      }
+      console.log('✅ Project details fetched successfully:', result.data)
 
-      setProjectDetails({
-        customerName: assignment.leads.customer_name,
-        homeSize: assignment.leads.home_size_sqft,
-        areasNeeded: assignment.leads.areas_needed,
-        insulationTypes: assignment.leads.insulation_types,
-        city: assignment.leads.city,
-        state: assignment.leads.state,
-        completedAt: assignment.project_completed_at
-      })
-
-      setContractorDetails(assignment.contractors)
+      setProjectDetails(result.data.projectDetails)
+      setContractorDetails(result.data.contractorDetails)
       setReviewData(prev => ({
         ...prev,
-        customerName: assignment.leads.customer_name,
-        customerEmail: assignment.leads.customer_email
+        customerName: result.data.projectDetails.customerName,
+        customerEmail: result.data.projectDetails.customerEmail
       }))
 
     } catch (error) {
