@@ -48,6 +48,15 @@ export async function GET(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin()
 
+    // First, let's check if the lead_assignments table has any data
+    const { data: allAssignments, error: allError } = await supabaseAdmin
+      .from('lead_assignments')
+      .select('id, lead_id, contractor_id, status')
+      .limit(5)
+
+    console.log('🔍 API: Sample lead_assignments:', allAssignments)
+    console.log('🔍 API: All assignments error:', allError)
+
     // Fetch lead assignment and related data using service role (bypasses RLS)
     const { data: assignments, error: assignmentError } = await supabaseAdmin
       .from('lead_assignments')
@@ -71,6 +80,8 @@ export async function GET(request: NextRequest) {
       `)
       .eq('lead_id', leadId)
       .eq('contractor_id', contractorId)
+
+    console.log('🔍 API: Query result:', { assignments, assignmentError })
 
     if (assignmentError) {
       console.error('❌ API: Error fetching assignment:', assignmentError)
