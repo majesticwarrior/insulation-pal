@@ -27,13 +27,6 @@ interface ProjectImageUploadProps {
   onImagesUploaded: () => void
 }
 
-interface ProjectImage {
-  id: string
-  url: string
-  caption?: string
-  uploaded_at: string
-}
-
 export function ProjectImageUpload({ 
   leadAssignmentId, 
   contractorId, 
@@ -46,7 +39,6 @@ export function ProjectImageUpload({
   const [uploading, setUploading] = useState(false)
   const [images, setImages] = useState<File[]>([])
   const [captions, setCaptions] = useState<{ [key: number]: string }>({})
-  const [uploadedImages, setUploadedImages] = useState<ProjectImage[]>([])
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || [])
@@ -86,8 +78,7 @@ export function ProjectImageUpload({
 
     setUploading(true)
     try {
-      const uploadedUrls: ProjectImage[] = []
-
+      // Upload each image and create portfolio entries
       for (let i = 0; i < images.length; i++) {
         const file = images[i]
         const fileExt = file.name.split('.').pop()
@@ -110,29 +101,30 @@ export function ProjectImageUpload({
           .from('contractor-images')
           .getPublicUrl(filePath)
 
-        uploadedUrls.push({
-          id: `${leadAssignmentId}-${i}`,
-          url: publicUrl,
-          caption: captions[i] || '',
-          uploaded_at: new Date().toISOString()
-        })
-      }
+        // Save to contractor_portfolio table (so it shows in public gallery)
+        const projectTitle = `${projectDetails.areasNeeded.join(', ')} Insulation - ${projectDetails.city}, ${projectDetails.state}`
+        
+        const { error: dbError } = await (supabase as any)
+          .from('contractor_portfolio')
+          .insert({
+            contractor_id: contractorId,
+            title: projectTitle,
+            description: captions[i] || `Completed ${projectDetails.areasNeeded.join(' and ')} insulation project`,
+            service_type: projectDetails.areasNeeded[0]?.toLowerCase() || 'attic',
+            project_size_sqft: projectDetails.homeSize,
+            completion_date: new Date().toISOString(),
+            after_image_url: publicUrl, // Use as "after" image
+            project_city: projectDetails.city,
+            project_state: projectDetails.state,
+            is_featured: false,
+            display_order: 999 + i // Put at end of gallery
+          })
 
-      // Save to database
-      const { error: dbError } = await (supabase as any)
-        .from('project_gallery')
-        .insert(uploadedUrls.map(img => ({
-          lead_assignment_id: leadAssignmentId,
-          contractor_id: contractorId,
-          image_url: img.url,
-          caption: img.caption,
-          uploaded_at: img.uploaded_at
-        })))
-
-      if (dbError) {
-        console.error('Database error:', dbError)
-        toast.error('Failed to save image data')
-        return
+        if (dbError) {
+          console.error('Database error:', dbError)
+          toast.error(`Failed to save ${file.name} to portfolio`)
+          continue
+        }
       }
 
       // Update lead assignment status to completed
@@ -151,13 +143,12 @@ export function ProjectImageUpload({
       // Send review request email to customer
       await sendReviewRequestEmail()
 
-      setUploadedImages(prev => [...prev, ...uploadedUrls])
       setImages([])
       setCaptions({})
       setIsOpen(false)
       onImagesUploaded()
       
-      toast.success('Project images uploaded successfully! Review request sent to customer.')
+      toast.success('Project images added to your portfolio! Review request sent to customer.')
       
     } catch (error) {
       console.error('Upload error:', error)
@@ -295,32 +286,6 @@ export function ProjectImageUpload({
                           />
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Uploaded Images */}
-          {uploadedImages.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-600" />
-                Uploaded Images
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                {uploadedImages.map((image, index) => (
-                  <Card key={image.id}>
-                    <CardContent className="p-4">
-                      <img
-                        src={image.url}
-                        alt={`Uploaded ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg mb-2"
-                      />
-                      {image.caption && (
-                        <p className="text-sm text-gray-600">{image.caption}</p>
-                      )}
                     </CardContent>
                   </Card>
                 ))}
