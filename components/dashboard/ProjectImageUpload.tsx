@@ -87,7 +87,7 @@ export function ProjectImageUpload({
 
         // Upload to Supabase Storage
         const { error: uploadError } = await supabase.storage
-          .from('contractor-images')
+          .from('contractor_images')
           .upload(filePath, file)
 
         if (uploadError) {
@@ -104,7 +104,7 @@ export function ProjectImageUpload({
 
         // Get public URL
         const { data: { publicUrl } } = supabase.storage
-          .from('contractor-images')
+          .from('contractor_images')
           .getPublicUrl(filePath)
 
         // Save to contractor_portfolio table (so it shows in public gallery)
