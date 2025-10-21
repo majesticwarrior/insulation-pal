@@ -35,10 +35,22 @@ export async function GET(request: NextRequest) {
     const leadId = searchParams.get('leadId')
     
     console.log('🔍 API: Parameters:', { contractorId, leadId })
+    console.log('🔍 API: Raw URL:', request.url)
+    console.log('🔍 API: Search params object:', Object.fromEntries(searchParams.entries()))
     
     if (!contractorId || !leadId) {
+      console.log('❌ API: Missing parameters - contractorId:', contractorId, 'leadId:', leadId)
       return NextResponse.json(
-        { success: false, error: 'Missing contractorId or leadId' },
+        { 
+          success: false, 
+          error: 'Missing contractorId or leadId',
+          debug: {
+            url: request.url,
+            searchParams: Object.fromEntries(searchParams.entries()),
+            contractorId,
+            leadId
+          }
+        },
         { status: 400 }
       )
     }
