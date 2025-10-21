@@ -83,7 +83,7 @@ export function ProjectImageUpload({
         const file = images[i]
         const fileExt = file.name.split('.').pop()
         const fileName = `${contractorId}-${leadAssignmentId}-${Date.now()}-${i}.${fileExt}`
-        const filePath = fileName // Simplified: no nested folders, just root of bucket
+        const filePath = fileName // Simplified: no nested folders, just root of bucket - v2 fix
 
         // Upload to Supabase Storage
         const { error: uploadError } = await supabase.storage
