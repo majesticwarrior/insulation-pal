@@ -73,6 +73,7 @@ export async function GET(request: NextRequest) {
       .eq('contractor_id', contractorId)
 
     console.log('🔍 API: Query result:', { assignments, assignmentError })
+    console.log('🔍 API: Raw assignment data:', JSON.stringify(assignments, null, 2))
 
     if (assignmentError) {
       console.error('❌ API: Error fetching assignment:', assignmentError)
@@ -109,7 +110,7 @@ export async function GET(request: NextRequest) {
 
     console.log('✅ API: Project details fetched successfully:', assignment)
 
-    return NextResponse.json({
+    const response = {
       success: true,
       data: {
         projectDetails: {
@@ -127,7 +128,11 @@ export async function GET(request: NextRequest) {
           licenseNumber: assignment.contractors?.[0]?.license_number
         }
       }
-    })
+    }
+
+    console.log('🔍 API: Final response:', JSON.stringify(response, null, 2))
+
+    return NextResponse.json(response)
 
   } catch (error: any) {
     console.error('❌ API: Error in review data fetch:', error)

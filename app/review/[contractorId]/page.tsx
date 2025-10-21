@@ -81,6 +81,7 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
       }
 
       console.log('✅ Project details fetched successfully:', result.data)
+      console.log('🔍 Full API response:', result)
 
       // Add defensive checks for data structure
       if (!result.data || !result.data.projectDetails || !result.data.contractorDetails) {
@@ -88,6 +89,9 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
         toast.error('Invalid project data received')
         return
       }
+
+      console.log('🔍 Project details:', result.data.projectDetails)
+      console.log('🔍 Contractor details:', result.data.contractorDetails)
 
       setProjectDetails(result.data.projectDetails)
       setContractorDetails(result.data.contractorDetails)
