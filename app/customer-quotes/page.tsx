@@ -40,6 +40,7 @@ interface Quote {
     license_verified: boolean
     insurance_verified: boolean
     years_in_business?: number
+    review_count?: number
   }
 }
 
@@ -140,7 +141,8 @@ function CustomerQuoteReviewContent() {
                 business_name: 'Desert Insulation Pros',
                 license_number: 'ROC123456',
                 license_verified: true,
-                insurance_verified: true
+                insurance_verified: true,
+                review_count: 42
               }
             },
             {
@@ -156,7 +158,8 @@ function CustomerQuoteReviewContent() {
                 business_name: 'Phoenix Energy Solutions',
                 license_number: 'ROC789012',
                 license_verified: true,
-                insurance_verified: true
+                insurance_verified: true,
+                review_count: 38
               }
             },
             {
@@ -172,7 +175,8 @@ function CustomerQuoteReviewContent() {
                 business_name: 'Arizona Insulation Co',
                 license_number: 'ROC345678',
                 license_verified: true,
-                insurance_verified: false
+                insurance_verified: false,
+                review_count: 25
               }
             }
           ]
@@ -221,7 +225,8 @@ function CustomerQuoteReviewContent() {
                 business_name: 'Desert Insulation Pros',
                 license_number: 'ROC123456',
                 license_verified: true,
-                insurance_verified: true
+                insurance_verified: true,
+                review_count: 42
               }
             },
             {
@@ -237,7 +242,8 @@ function CustomerQuoteReviewContent() {
                 business_name: 'Phoenix Energy Solutions',
                 license_number: 'ROC789012',
                 license_verified: true,
-                insurance_verified: true
+                insurance_verified: true,
+                review_count: 38
               }
             },
             {
@@ -253,7 +259,8 @@ function CustomerQuoteReviewContent() {
                 business_name: 'Arizona Insulation Co',
                 license_number: 'ROC345678',
                 license_verified: true,
-                insurance_verified: false
+                insurance_verified: false,
+                review_count: 25
               }
             }
           ]
@@ -338,7 +345,8 @@ function CustomerQuoteReviewContent() {
                 business_name: 'Desert Insulation Pros',
                 license_number: 'ROC123456',
                 license_verified: true,
-                insurance_verified: true
+                insurance_verified: true,
+                review_count: 42
               }
             },
             {
@@ -354,7 +362,8 @@ function CustomerQuoteReviewContent() {
                 business_name: 'Phoenix Energy Solutions',
                 license_number: 'ROC789012',
                 license_verified: true,
-                insurance_verified: true
+                insurance_verified: true,
+                review_count: 38
               }
             },
             {
@@ -370,7 +379,8 @@ function CustomerQuoteReviewContent() {
                 business_name: 'Arizona Insulation Co',
                 license_number: 'ROC345678',
                 license_verified: true,
-                insurance_verified: false
+                insurance_verified: false,
+                review_count: 25
               }
             }
           ]
@@ -419,7 +429,8 @@ function CustomerQuoteReviewContent() {
                 business_name: 'Desert Insulation Pros',
                 license_number: 'ROC123456',
                 license_verified: true,
-                insurance_verified: true
+                insurance_verified: true,
+                review_count: 42
               }
             },
             {
@@ -435,7 +446,8 @@ function CustomerQuoteReviewContent() {
                 business_name: 'Phoenix Energy Solutions',
                 license_number: 'ROC789012',
                 license_verified: true,
-                insurance_verified: true
+                insurance_verified: true,
+                review_count: 38
               }
             },
             {
@@ -451,7 +463,8 @@ function CustomerQuoteReviewContent() {
                 business_name: 'Arizona Insulation Co',
                 license_number: 'ROC345678',
                 license_verified: true,
-                insurance_verified: false
+                insurance_verified: false,
+                review_count: 25
               }
             }
           ]
@@ -496,9 +509,48 @@ function CustomerQuoteReviewContent() {
       console.log('🔍 Raw quotes data:', quotesData)
       console.log('🔍 Filtered quotes:', filteredQuotes)
 
+      // Fetch review counts for each contractor
+      const quotesWithReviewCounts = await Promise.all(
+        filteredQuotes.map(async (quote: any) => {
+          try {
+            const { count, error } = await supabase
+              .from('reviews')
+              .select('*', { count: 'exact', head: true })
+              .eq('contractor_id', quote.contractor_id)
+            
+            if (error) {
+              console.error('Error fetching review count for contractor:', quote.contractor_id, error)
+              return {
+                ...quote,
+                contractors: {
+                  ...quote.contractors,
+                  review_count: 0
+                }
+              }
+            }
+            
+            return {
+              ...quote,
+              contractors: {
+                ...quote.contractors,
+                review_count: count || 0
+              }
+            }
+          } catch (error) {
+            console.error('Error in review count fetch:', error)
+            return {
+              ...quote,
+              contractors: {
+                ...quote.contractors,
+                review_count: 0
+              }
+            }
+          }
+        })
+      )
 
       setLead(leadData)
-      setQuotes(filteredQuotes)
+      setQuotes(quotesWithReviewCounts)
     } catch (error: any) {
       // Show more specific error messages
       if (error.message?.includes('JWT')) {
@@ -526,52 +578,29 @@ function CustomerQuoteReviewContent() {
       if (quoteId.startsWith('demo-')) {
         console.log('🎭 Demo Mode: Simulating quote acceptance')
         toast.success('Quote accepted! The contractor will contact you soon.')
+        setAcceptedQuoteId(quoteId)
+        setQuotes(prev => prev.filter(q => q.id !== quoteId))
         return
       }
 
-      // Get the quote details first
-      const { data: quoteData, error: quoteError } = await supabase
-        .from('lead_assignments')
-        .select(`
-          id,
-          lead_id,
-          contractor_id,
-          quote_amount,
-          quote_notes,
-          leads(
-            customer_name,
-            customer_email,
-            customer_phone,
-            home_size_sqft,
-            areas_needed,
-            insulation_types,
-            city,
-            state,
-            property_address
-          ),
-          contractors(
-            business_name,
-            contact_email,
-            contact_phone,
-            lead_delivery_preference
-          )
-        `)
-        .eq('id', quoteId)
-        .single()
+      console.log('📋 Accepting quote via API:', quoteId)
 
-      if (quoteError) throw quoteError
-      if (!quoteData) throw new Error('Quote not found')
+      // Call the API route to accept the quote (uses service role key server-side)
+      const response = await fetch('/api/accept-quote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ quoteId })
+      })
 
-      // Update assignment status to won (customer selected this contractor)
-      const { error } = await (supabase as any)
-        .from('lead_assignments')
-        .update({ status: 'won' })
-        .eq('id', quoteId)
+      const data = await response.json()
 
-      if (error) throw error
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to accept quote')
+      }
 
-      // Notify the winning contractor
-      await notifyWinningContractor(quoteData)
+      console.log('✅ Quote accepted successfully')
 
       // Set the accepted quote ID to show success message
       setAcceptedQuoteId(quoteId)
@@ -581,73 +610,18 @@ function CustomerQuoteReviewContent() {
       // Remove accepted quote from list
       setQuotes(prev => prev.filter(q => q.id !== quoteId))
     } catch (error: any) {
-      console.error('Error accepting quote:', error)
-      toast.error('Failed to accept quote')
+      console.error('❌ Error accepting quote:', error)
+      
+      // Show specific error messages based on error type
+      if (error.message?.includes('Quote not found')) {
+        toast.error('Quote not found. It may have already been accepted.')
+      } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+        toast.error('Network error. Please check your connection and try again.')
+      } else {
+        toast.error(`Failed to accept quote: ${error.message || 'Unknown error'}`)
+      }
     } finally {
       setAcceptingQuote(null)
-    }
-  }
-
-  async function notifyWinningContractor(quoteData: any) {
-    try {
-      const lead = quoteData.leads
-      const contractor = quoteData.contractors
-
-      if (!lead || !contractor) {
-        console.error('Missing lead or contractor data')
-        return
-      }
-
-      // Determine contact method based on contractor preference
-      const contactEmail = contractor.lead_delivery_preference === 'email' 
-        ? contractor.contact_email 
-        : contractor.contact_email
-      const contactPhone = contractor.lead_delivery_preference === 'phone' 
-        ? contractor.contact_phone 
-        : contractor.contact_phone
-
-      // Send email notification
-      if (contactEmail) {
-        await fetch('/api/send-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            to: contactEmail,
-            subject: `🎉 Congratulations! You Won the Bid - ${lead.customer_name} - InsulationPal`,
-            template: 'quote-accepted',
-            data: {
-              contractorName: contractor.business_name,
-              customerName: lead.customer_name,
-              customerEmail: lead.customer_email,
-              customerPhone: lead.customer_phone,
-              quoteAmount: quoteData.quote_amount,
-              quoteNotes: quoteData.quote_notes,
-              projectDetails: {
-                homeSize: lead.home_size_sqft,
-                areasNeeded: lead.areas_needed.join(', '),
-                insulationTypes: lead.insulation_types.join(', '),
-                city: lead.city,
-                state: lead.state,
-                propertyAddress: lead.property_address
-              },
-              dashboardLink: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'}/contractor-dashboard`
-            }
-          })
-        })
-      }
-
-      // Send SMS notification if phone is available and preferred
-      if (contactPhone && contractor.lead_delivery_preference === 'phone') {
-        // SMS functionality would go here if implemented
-        console.log('📱 SMS notification would be sent to:', contactPhone)
-      }
-
-      console.log('✅ Winning contractor notified successfully')
-    } catch (error: any) {
-      console.error('❌ Error notifying winning contractor:', error)
-      // Don't throw - this shouldn't prevent quote acceptance
     }
   }
 
@@ -859,7 +833,7 @@ function CustomerQuoteReviewContent() {
                               <div className="flex items-center space-x-1">
                                 <Star className="h-4 w-4 text-yellow-500 fill-current" />
                                 <span>5.0</span>
-                                <span>({Math.floor(Math.random() * 100) + 1} reviews)</span>
+                                <span>({quote.contractors.review_count || 0} reviews)</span>
                               </div>
                               {quote.contractors.years_in_business && (
                                 <div className="flex items-center space-x-1">
