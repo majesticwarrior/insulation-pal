@@ -44,7 +44,7 @@ const emailTemplates = {
       
       <!-- Header -->
       <div style="background-color: #0a4768; padding: 20px; text-align: center;">
-        <img src="${logoUrl}" alt="InsulationPal" style="height: 40px; width: auto;">
+        <img src="${logoUrl}" alt="InsulationPal" style="height: 80px; width: auto;">
         <div style="color: white; font-size: 14px; margin-top: 10px; text-align: right;">
           ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
         </div>
