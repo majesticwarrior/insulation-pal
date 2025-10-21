@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin()
 
     // Fetch lead assignment and related data using service role (bypasses RLS)
-    const { data: assignment, error: assignmentError } = await supabaseAdmin
+    const { data: assignments, error: assignmentError } = await supabaseAdmin
       .from('lead_assignments')
       .select(`
         id,
@@ -71,7 +71,6 @@ export async function GET(request: NextRequest) {
       `)
       .eq('lead_id', leadId)
       .eq('contractor_id', contractorId)
-      .single()
 
     if (assignmentError) {
       console.error('❌ API: Error fetching assignment:', assignmentError)
@@ -87,13 +86,15 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    if (!assignment) {
+    if (!assignments || assignments.length === 0) {
       console.log('❌ API: No assignment found')
       return NextResponse.json(
         { success: false, error: 'Project not found' },
         { status: 404 }
       )
     }
+
+    const assignment = assignments[0]
 
     // Check if project is completed (more lenient - allow 'won' status too)
     if (assignment.status !== 'completed' && assignment.status !== 'won') {
