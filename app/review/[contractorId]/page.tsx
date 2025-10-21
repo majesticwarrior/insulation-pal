@@ -69,6 +69,8 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
         return
       }
 
+      console.log('🔍 Fetching project details:', { contractorId, leadId })
+
       // Fetch lead assignment and related data
       const { data: assignment, error: assignmentError } = await (supabase as any)
         .from('lead_assignments')
@@ -90,12 +92,18 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
             license_number
           )
         `)
-        .eq('id', leadId)
+        .eq('lead_id', leadId)
         .eq('contractor_id', contractorId)
         .single()
 
       if (assignmentError) {
-        console.error('Error fetching assignment:', assignmentError)
+        console.error('❌ Error fetching assignment:', assignmentError)
+        console.error('❌ Assignment error details:', {
+          message: assignmentError.message,
+          code: assignmentError.code,
+          details: assignmentError.details,
+          hint: assignmentError.hint
+        })
         toast.error('Project not found or access denied')
         return
       }
