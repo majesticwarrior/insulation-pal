@@ -10,7 +10,8 @@ sgMail.setApiKey(SENDGRID_API_KEY)
 const emailTemplates = {
   'new-lead': (data: any) => {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
-    const logoUrl = `${siteUrl}/insulation-pal-logo.png`
+    // Use absolute URL - will use localhost in dev, production domain when deployed
+    const logoUrl = `${siteUrl}/insulation-pal-logo-footer.png`
     
     // Get property images
     const propertyImages = getPropertyImages(data.propertyAddress || '', data.city, data.state)
@@ -154,7 +155,8 @@ const emailTemplates = {
   
   'contractor-quote': (data: any) => {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
-    const logoUrl = `${siteUrl}/insulation-pal-logo.png`
+    // Use absolute URL for email compatibility
+    const logoUrl = 'https://insulationpal.com/insulation-pal-logo-footer.png'
     
     // Extract street name (remove house number)
     const streetName = data.projectDetails?.propertyAddress ? 
@@ -323,7 +325,8 @@ const emailTemplates = {
 
   'quote-accepted': (data: any) => {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
-    const logoUrl = `${siteUrl}/insulation-pal-logo.png`
+    // Use absolute URL for email compatibility
+    const logoUrl = 'https://insulationpal.com/insulation-pal-logo-footer.png'
     
     return `
     <!DOCTYPE html>
@@ -444,7 +447,8 @@ const emailTemplates = {
   
   'project-completion-review': (data: any) => {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
-    const logoUrl = `${siteUrl}/insulation-pal-logo.png`
+    // Use absolute URL for email compatibility  
+    const logoUrl = 'https://insulationpal.com/insulation-pal-logo-footer.png'
     
     return `
     <!DOCTYPE html>

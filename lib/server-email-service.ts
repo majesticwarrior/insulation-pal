@@ -17,7 +17,8 @@ export interface ServerEmailData {
 const emailTemplates = {
   'new-lead': (data: any) => {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
-    const logoUrl = `${siteUrl}/insulation-pal-logo.png`
+    // Use absolute URL - will use localhost in dev, production domain when deployed
+    const logoUrl = `${siteUrl}/insulation-pal-logo-footer.png`
     
     // Get property images (simplified for server-side)
     const streetViewUrl = `https://maps.googleapis.com/maps/api/streetview?size=400x300&location=${encodeURIComponent(data.propertyAddress || data.city + ', ' + data.state)}&key=${process.env.GOOGLE_MAPS_API_KEY || ''}`
