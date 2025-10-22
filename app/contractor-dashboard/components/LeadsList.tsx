@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { supabase } from '@/lib/supabase'
 import { handleContractorResponse } from '@/lib/lead-assignment'
-import { Phone, Mail, MapPin, Home, CheckCircle, X, Clock, AlertCircle, Trophy } from 'lucide-react'
+import { Phone, Mail, MapPin, Home, CheckCircle, X, Clock, AlertCircle, Trophy, ChevronDown, ChevronUp } from 'lucide-react'
 import { QuoteSubmissionForm } from '@/components/dashboard/QuoteSubmissionForm'
 import { ProjectImageUpload } from '@/components/dashboard/ProjectImageUpload'
 
@@ -38,6 +38,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
   const [responding, setResponding] = useState<string | null>(null)
+  const [expandedWonLeads, setExpandedWonLeads] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     fetchLeads()
@@ -271,6 +272,167 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
     lead.status === 'declined' || lead.status === 'expired'
   )
 
+  // Function to toggle expanded state for won leads
+  const toggleWonLeadExpansion = (leadId: string) => {
+    setExpandedWonLeads(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(leadId)) {
+        newSet.delete(leadId)
+      } else {
+        newSet.add(leadId)
+      }
+      return newSet
+    })
+  }
+
+  // Helper function to render condensed won lead cards
+  const renderCondensedWonLeadCard = (leadAssignment: Lead) => {
+    const isExpanded = expandedWonLeads.has(leadAssignment.id)
+    
+    return (
+      <Card key={leadAssignment.id} className="mb-3 hover:shadow-md transition-shadow">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Trophy className="h-5 w-5 text-green-600" />
+              <div>
+                <h3 className="font-semibold text-[#0a4768]">{leadAssignment.leads.customer_name}</h3>
+                <p className="text-sm text-gray-600">
+                  {leadAssignment.leads.city}, {leadAssignment.leads.state}
+                </p>
+                <p className="text-xs text-gray-500">
+                  Completed: {new Date(leadAssignment.created_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleWonLeadExpansion(leadAssignment.id)}
+              className="flex items-center space-x-1 text-gray-600 hover:text-gray-800"
+            >
+              <span className="text-sm">
+                {isExpanded ? 'Hide Details' : 'Show Details'}
+              </span>
+              {isExpanded ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+          
+          {isExpanded && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              {/* Show the full lead details when expanded */}
+              {renderFullLeadDetails(leadAssignment)}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Helper function to render full lead details (extracted from original renderLeadCard)
+  const renderFullLeadDetails = (leadAssignment: Lead) => (
+    <>
+      {/* Customer Contact Information */}
+      <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg">
+        <h3 className="font-semibold text-green-800 mb-3 flex items-center">
+          <Trophy className="h-5 w-5 mr-2 text-green-600" />
+          🎉 Congratulations! You Won This Bid!
+        </h3>
+        <p className="text-sm text-green-700 mb-4">
+          The customer has selected your quote. Here's their contact information:
+        </p>
+        <div className="grid md:grid-cols-2 gap-4 bg-white rounded-lg p-4">
+          <div>
+            <div className="flex items-center mb-2">
+              <Mail className="h-4 w-4 mr-2 text-green-600" />
+              <span className="font-medium">Email:</span>
+            </div>
+            <p className="text-sm text-gray-700 ml-6">{leadAssignment.leads.customer_email || 'Not provided'}</p>
+          </div>
+          <div>
+            <div className="flex items-center mb-2">
+              <Phone className="h-4 w-4 mr-2 text-green-600" />
+              <span className="font-medium">Phone:</span>
+            </div>
+            <p className="text-sm text-gray-700 ml-6">{leadAssignment.leads.customer_phone || 'Not provided'}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Project Details */}
+      <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+        <h4 className="font-semibold text-[#0a4768] mb-3">Project Details</h4>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <div className="flex items-center mb-2">
+              <Home className="h-4 w-4 mr-2 text-gray-600" />
+              <span className="font-medium">Home Size:</span>
+            </div>
+            <p className="text-sm text-gray-700 ml-6">{leadAssignment.leads.home_size_sqft?.toLocaleString()} sq ft</p>
+          </div>
+          <div>
+            <div className="flex items-center mb-2">
+              <MapPin className="h-4 w-4 mr-2 text-gray-600" />
+              <span className="font-medium">Location:</span>
+            </div>
+            <p className="text-sm text-gray-700 ml-6">
+              {leadAssignment.leads.city}, {leadAssignment.leads.state}
+              {leadAssignment.leads.zip_code && ` ${leadAssignment.leads.zip_code}`}
+            </p>
+          </div>
+        </div>
+        
+        <div className="mt-4">
+          <div className="flex items-start mb-2">
+            <span className="font-medium mr-2">Areas Needed:</span>
+          </div>
+          <div className="flex flex-wrap gap-2 ml-6">
+            {leadAssignment.leads.areas_needed?.map((area: string, index: number) => (
+              <Badge key={index} variant="secondary" className="text-xs">
+                {area}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <div className="flex items-start mb-2">
+            <span className="font-medium mr-2">Insulation Types:</span>
+          </div>
+          <div className="flex flex-wrap gap-2 ml-6">
+            {leadAssignment.leads.insulation_types?.map((type: string, index: number) => (
+              <Badge key={index} variant="outline" className="text-xs">
+                {type}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Project Image Upload */}
+      <ProjectImageUpload
+        leadAssignmentId={leadAssignment.id}
+        contractorId={contractorId}
+        customerName={leadAssignment.leads.customer_name}
+        customerEmail={leadAssignment.leads.customer_email || ''}
+        projectDetails={{
+          homeSize: leadAssignment.leads.home_size_sqft,
+          areasNeeded: leadAssignment.leads.areas_needed,
+          insulationTypes: leadAssignment.leads.insulation_types,
+          city: leadAssignment.leads.city,
+          state: leadAssignment.leads.state
+        }}
+        onImagesUploaded={() => {
+          fetchLeads()
+        }}
+      />
+    </>
+  )
+
   // Helper function to render lead cards
   const renderLeadCard = (leadAssignment: Lead) => (
     <Card key={leadAssignment.id} className="mb-6 hover:shadow-lg transition-shadow">
@@ -329,94 +491,8 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           </div>
         </div>
 
-        {/* Show customer contact info and project upload for won leads */}
-        {leadAssignment.status === 'won' || leadAssignment.status === 'hired' || leadAssignment.status === 'completed' ? (
-          <>
-            {/* Customer Contact Information - CONGRATULATIONS! */}
-            <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg">
-              <h3 className="font-semibold text-green-800 mb-3 flex items-center">
-                <Trophy className="h-5 w-5 mr-2 text-green-600" />
-                🎉 Congratulations! You Won This Bid!
-              </h3>
-              <p className="text-sm text-green-700 mb-4">
-                The customer has selected your quote. Here's their contact information:
-              </p>
-              <div className="grid md:grid-cols-2 gap-4 bg-white rounded-lg p-4">
-                <div>
-                  <div className="flex items-center mb-2">
-                    <Mail className="h-4 w-4 mr-2 text-green-600" />
-                    <span className="font-medium">Email:</span>
-                    <a href={`mailto:${leadAssignment.leads.customer_email}`} 
-                       className="ml-2 text-blue-600 hover:text-blue-800 underline">
-                      {leadAssignment.leads.customer_email}
-                    </a>
-                  </div>
-                  <div className="flex items-center mb-2">
-                    <Phone className="h-4 w-4 mr-2 text-green-600" />
-                    <span className="font-medium">Phone:</span>
-                    <a href={`tel:${leadAssignment.leads.customer_phone}`} 
-                       className="ml-2 text-blue-600 hover:text-blue-800 underline">
-                      {leadAssignment.leads.customer_phone}
-                    </a>
-                  </div>
-                  {leadAssignment.leads.property_address && (
-                    <div className="flex items-center mb-2">
-                      <MapPin className="h-4 w-4 mr-2 text-green-600" />
-                      <span className="font-medium">Address:</span>
-                      <span className="ml-2">{leadAssignment.leads.property_address}</span>
-                    </div>
-                  )}
-                </div>
-                <div>
-                  {leadAssignment.quote_amount && (
-                    <div className="mb-2">
-                      <span className="font-medium">Your Winning Quote:</span>
-                      <div className="text-xl font-bold text-green-600">
-                        ${leadAssignment.quote_amount.toLocaleString()}
-                      </div>
-                    </div>
-                  )}
-                  {leadAssignment.quote_notes && (
-                    <div>
-                      <span className="font-medium">Your Quote Notes:</span>
-                      <p className="text-sm text-gray-600 mt-1">{leadAssignment.quote_notes}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="mt-3 text-sm text-green-700">
-                <strong>Next Steps:</strong> Contact the customer to schedule the project and confirm details.
-              </div>
-            </div>
-
-            {/* Project Image Upload */}
-            <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
-              <h3 className="font-semibold text-emerald-800 mb-3 flex items-center">
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Project Completed - Add Images
-              </h3>
-              <p className="text-sm text-emerald-700 mb-4">
-                After completing the project, upload images to showcase your work and request a customer review.
-              </p>
-              <ProjectImageUpload
-                leadAssignmentId={leadAssignment.id}
-                contractorId={contractorId}
-                customerName={leadAssignment.leads.customer_name}
-                customerEmail={leadAssignment.leads.customer_email || ''}
-                projectDetails={{
-                  homeSize: leadAssignment.leads.home_size_sqft,
-                  areasNeeded: leadAssignment.leads.areas_needed,
-                  insulationTypes: leadAssignment.leads.insulation_types,
-                  city: leadAssignment.leads.city,
-                  state: leadAssignment.leads.state
-                }}
-                onImagesUploaded={() => {
-                  fetchLeads()
-                }}
-              />
-            </div>
-          </>
-        ) : (
+        {/* Show lead information for non-won leads */}
+        {(leadAssignment.status !== 'won' && leadAssignment.status !== 'hired' && leadAssignment.status !== 'completed') && (
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-800 mb-2">
               <span className="font-semibold">New Lead Available</span>
@@ -560,7 +636,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
 
         <TabsContent value="won" className="space-y-4">
           {wonLeads.length > 0 ? (
-            wonLeads.map(renderLeadCard)
+            wonLeads.map(renderCondensedWonLeadCard)
           ) : (
             <Card>
               <CardContent className="text-center py-8">
