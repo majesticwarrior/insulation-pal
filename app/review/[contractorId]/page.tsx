@@ -102,8 +102,8 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
       
       const newReviewData = {
         ...reviewData,
-        customerName: result.data.projectDetails.customerName || '',
-        customerEmail: result.data.projectDetails.customerEmail || ''
+        customerName: result.data.projectDetails.customerName || 'Betty Wilcox',
+        customerEmail: result.data.projectDetails.customerEmail || 'shannon.adams78@gmail.com'
       }
       
       console.log('🔍 Setting review data:', newReviewData)

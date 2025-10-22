@@ -101,12 +101,9 @@ export async function POST(request: NextRequest) {
       .insert({
         contractor_id: contractorId,
         lead_assignment_id: leadAssignmentId,
-        customer_name: customerName,
-        customer_email: customerEmail,
         rating: rating,
-        insulation_added: insulationAdded,
-        comments: comments,
-        review_date: new Date().toISOString(),
+        comment: comments,
+        service_type: insulationAdded,
         verified: true // Mark as verified since it's from a completed project
       })
       .select()
@@ -127,16 +124,7 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ API: Review submitted successfully:', reviewData)
 
-    // Update contractor's review count and average rating
-    const { error: updateError } = await supabaseAdmin
-      .rpc('update_contractor_reviews', {
-        contractor_id_param: contractorId
-      })
-
-    if (updateError) {
-      console.error('❌ API: Error updating contractor stats:', updateError)
-      // Don't fail the request, just log the error
-    }
+    // Note: Contractor stats are automatically updated via database trigger
 
     return NextResponse.json({
       success: true,
