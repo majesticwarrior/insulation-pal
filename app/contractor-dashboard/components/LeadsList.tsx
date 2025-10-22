@@ -338,7 +338,12 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             <div className="flex items-center space-x-3">
               <Trophy className="h-5 w-5 text-green-600" />
               <div>
-                <h3 className="font-semibold text-[#0a4768]">{leadAssignment.leads.customer_name}</h3>
+                <h3 
+                  className="font-semibold text-[#0a4768] cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => toggleWonLeadExpansion(leadAssignment.id)}
+                >
+                  {leadAssignment.leads.customer_name}
+                </h3>
                 <p className="text-sm text-gray-600">
                   {leadAssignment.leads.city}, {leadAssignment.leads.state}
                 </p>
@@ -386,7 +391,12 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             <div className="flex items-center space-x-3">
               <Clock className="h-5 w-5 text-blue-600" />
               <div>
-                <h3 className="font-semibold text-[#0a4768]">{leadAssignment.leads.customer_name}</h3>
+                <h3 
+                  className="font-semibold text-[#0a4768] cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => toggleAvailableLeadExpansion(leadAssignment.id)}
+                >
+                  {leadAssignment.leads.customer_name}
+                </h3>
                 <p className="text-sm text-gray-600">
                   {leadAssignment.leads.city}, {leadAssignment.leads.state}
                 </p>
@@ -434,7 +444,12 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             <div className="flex items-center space-x-3">
               <Trophy className="h-5 w-5 text-orange-600" />
               <div>
-                <h3 className="font-semibold text-[#0a4768]">{leadAssignment.leads.customer_name}</h3>
+                <h3 
+                  className="font-semibold text-[#0a4768] cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => toggleAcceptedLeadExpansion(leadAssignment.id)}
+                >
+                  {leadAssignment.leads.customer_name}
+                </h3>
                 <p className="text-sm text-gray-600">
                   {leadAssignment.leads.city}, {leadAssignment.leads.state}
                 </p>
@@ -482,7 +497,12 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             <div className="flex items-center space-x-3">
               <AlertCircle className="h-5 w-5 text-red-600" />
               <div>
-                <h3 className="font-semibold text-[#0a4768]">{leadAssignment.leads.customer_name}</h3>
+                <h3 
+                  className="font-semibold text-[#0a4768] cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => toggleDidntWinLeadExpansion(leadAssignment.id)}
+                >
+                  {leadAssignment.leads.customer_name}
+                </h3>
                 <p className="text-sm text-gray-600">
                   {leadAssignment.leads.city}, {leadAssignment.leads.state}
                 </p>
@@ -681,6 +701,30 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           Accept this lead to view complete project details. Customer contact information will be provided if you win the bid.
         </p>
       </div>
+
+      {/* Accept/Decline buttons for available leads */}
+      {(leadAssignment.status === 'pending' || leadAssignment.status === 'sent') && !leadAssignment.responded_at && (
+        <div className="flex gap-3">
+          <Button
+            onClick={() => respondToLead(leadAssignment.id, 'accept')}
+            disabled={responding === leadAssignment.id || (contractorCredits !== undefined && contractorCredits <= 0)}
+            className="bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-400"
+          >
+            <CheckCircle className="h-4 w-4 mr-2" />
+            {responding === leadAssignment.id ? 'Responding...' : 
+             (contractorCredits !== undefined && contractorCredits <= 0) ? 'No Credits' : 'Accept Lead'}
+          </Button>
+          <Button
+            onClick={() => respondToLead(leadAssignment.id, 'decline')}
+            disabled={responding === leadAssignment.id}
+            variant="outline"
+            className="border-red-300 text-red-700 hover:bg-red-50"
+          >
+            <X className="h-4 w-4 mr-2" />
+            Decline
+          </Button>
+        </div>
+      )}
     </>
   )
 
