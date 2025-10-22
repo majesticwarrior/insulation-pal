@@ -48,56 +48,60 @@ export async function GET(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin()
 
-    // Fetch lead assignment and related data using service role (bypasses RLS)
-    const { data: assignments, error: assignmentError } = await supabaseAdmin
+    // Fetch assignment data first
+    const { data: assignment, error: assignmentError } = await supabaseAdmin
       .from('lead_assignments')
-      .select(`
-        id,
-        status,
-        project_completed_at,
-        leads(
-          customer_name,
-          customer_email,
-          home_size_sqft,
-          areas_needed,
-          insulation_types,
-          city,
-          state
-        ),
-        contractors(
-          business_name,
-          license_number
-        )
-      `)
+      .select('*')
       .eq('id', leadId)
       .eq('contractor_id', contractorId)
+      .single()
 
-    console.log('🔍 API: Query result:', { assignments, assignmentError })
-    console.log('🔍 API: Raw assignment data:', JSON.stringify(assignments, null, 2))
+    console.log('🔍 API: Assignment data:', assignment)
+    console.log('🔍 API: Assignment error:', assignmentError)
 
-    if (assignmentError) {
+    if (assignmentError || !assignment) {
       console.error('❌ API: Error fetching assignment:', assignmentError)
-      console.error('❌ API: Assignment error details:', {
-        message: assignmentError.message,
-        code: assignmentError.code,
-        details: assignmentError.details,
-        hint: assignmentError.hint
-      })
       return NextResponse.json(
         { success: false, error: 'Project not found or access denied' },
         { status: 404 }
       )
     }
 
-    if (!assignments || assignments.length === 0) {
-      console.log('❌ API: No assignment found')
+    // Fetch lead data separately
+    const { data: lead, error: leadError } = await supabaseAdmin
+      .from('leads')
+      .select('*')
+      .eq('id', assignment.lead_id)
+      .single()
+
+    console.log('🔍 API: Lead data:', lead)
+    console.log('🔍 API: Lead error:', leadError)
+
+    if (leadError || !lead) {
+      console.error('❌ API: Error fetching lead:', leadError)
       return NextResponse.json(
-        { success: false, error: 'Project not found' },
+        { success: false, error: 'Lead data not found' },
         { status: 404 }
       )
     }
 
-    const assignment = assignments[0]
+    // Fetch contractor data separately
+    const { data: contractor, error: contractorError } = await supabaseAdmin
+      .from('contractors')
+      .select('*')
+      .eq('id', contractorId)
+      .single()
+
+    console.log('🔍 API: Contractor data:', contractor)
+    console.log('🔍 API: Contractor error:', contractorError)
+
+    if (contractorError || !contractor) {
+      console.error('❌ API: Error fetching contractor:', contractorError)
+      return NextResponse.json(
+        { success: false, error: 'Contractor data not found' },
+        { status: 404 }
+      )
+    }
 
     // Check if project is completed (more lenient - allow 'won' status too)
     if (assignment.status !== 'completed' && assignment.status !== 'won') {
@@ -114,18 +118,18 @@ export async function GET(request: NextRequest) {
       success: true,
       data: {
         projectDetails: {
-          customerName: assignment.leads?.[0]?.customer_name,
-          customerEmail: assignment.leads?.[0]?.customer_email,
-          homeSize: assignment.leads?.[0]?.home_size_sqft,
-          areasNeeded: assignment.leads?.[0]?.areas_needed,
-          insulationTypes: assignment.leads?.[0]?.insulation_types,
-          city: assignment.leads?.[0]?.city,
-          state: assignment.leads?.[0]?.state,
+          customerName: lead.customer_name,
+          customerEmail: lead.customer_email,
+          homeSize: lead.home_size_sqft,
+          areasNeeded: lead.areas_needed,
+          insulationTypes: lead.insulation_types,
+          city: lead.city,
+          state: lead.state,
           completedAt: assignment.project_completed_at
         },
         contractorDetails: {
-          businessName: assignment.contractors?.[0]?.business_name,
-          licenseNumber: assignment.contractors?.[0]?.license_number
+          businessName: contractor.business_name,
+          licenseNumber: contractor.license_number
         }
       }
     }
