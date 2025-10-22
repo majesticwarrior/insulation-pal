@@ -99,11 +99,18 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
 
       setProjectDetails(result.data.projectDetails)
       setContractorDetails(result.data.contractorDetails)
-      setReviewData(prev => ({
-        ...prev,
+      
+      const newReviewData = {
+        ...reviewData,
         customerName: result.data.projectDetails.customerName || '',
         customerEmail: result.data.projectDetails.customerEmail || ''
-      }))
+      }
+      
+      console.log('🔍 Setting review data:', newReviewData)
+      console.log('🔍 Customer name from API:', result.data.projectDetails.customerName)
+      console.log('🔍 Customer email from API:', result.data.projectDetails.customerEmail)
+      
+      setReviewData(newReviewData)
 
     } catch (error) {
       console.error('Error fetching project details:', error)
