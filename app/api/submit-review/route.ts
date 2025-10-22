@@ -120,7 +120,30 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ API: Review submitted successfully:', reviewData)
 
-    // Note: Contractor stats are automatically updated via database trigger
+    // Manually update contractor stats (backup in case trigger doesn't work)
+    const { data: reviewStats, error: statsError } = await supabaseAdmin
+      .from('reviews')
+      .select('rating')
+      .eq('contractor_id', contractorId)
+      .eq('verified', true)
+
+    if (!statsError && reviewStats) {
+      const reviewCount = reviewStats.length
+      const averageRating = reviewCount > 0 
+        ? Math.round((reviewStats.reduce((sum, review) => sum + review.rating, 0) / reviewCount) * 100) / 100
+        : 0
+
+      await supabaseAdmin
+        .from('contractors')
+        .update({
+          total_reviews: reviewCount,
+          average_rating: averageRating,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', contractorId)
+
+      console.log(`✅ API: Updated contractor stats - ${reviewCount} reviews, ${averageRating} avg rating`)
+    }
 
     return NextResponse.json({
       success: true,
