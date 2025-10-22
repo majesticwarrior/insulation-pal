@@ -52,12 +52,11 @@ export async function POST(request: NextRequest) {
 
     // Update each contractor's review count and average rating
     for (const contractor of contractors || []) {
-      // Get review count and average rating for this contractor
+      // Get review count and average rating for this contractor (all reviews, verified and unverified)
       const { data: reviewStats, error: reviewError } = await supabaseAdmin
         .from('reviews')
         .select('rating')
         .eq('contractor_id', contractor.id)
-        .eq('verified', true)
 
       if (reviewError) {
         console.error(`❌ API: Error fetching reviews for ${contractor.business_name}:`, reviewError)

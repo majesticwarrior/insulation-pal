@@ -120,12 +120,11 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ API: Review submitted successfully:', reviewData)
 
-    // Manually update contractor stats (backup in case trigger doesn't work)
+    // Manually update contractor stats (backup in case trigger doesn't work) - count all reviews
     const { data: reviewStats, error: statsError } = await supabaseAdmin
       .from('reviews')
       .select('rating')
       .eq('contractor_id', contractorId)
-      .eq('verified', true)
 
     if (!statsError && reviewStats) {
       const reviewCount = reviewStats.length
