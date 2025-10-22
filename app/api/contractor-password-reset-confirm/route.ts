@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
         reset_token: null,
         reset_token_expiry: null
       })
-      .eq('id', contractor.id)
+      .eq('id', (contractor as any).id)
 
     if (updateError) {
       console.error('Error updating password:', updateError)
