@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       .update({
         reset_token: resetToken,
         reset_token_expiry: resetTokenExpiry.toISOString()
-      })
+      } as any)
       .eq('id', contractor.id)
 
     if (updateError) {

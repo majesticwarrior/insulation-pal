@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
         password_hash: hashedPassword,
         reset_token: null,
         reset_token_expiry: null
-      })
+      } as any)
       .eq('id', contractorId)
 
     if (updateError) {
