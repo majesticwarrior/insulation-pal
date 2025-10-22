@@ -54,15 +54,15 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
   useEffect(() => {
     if (contractorId && leadId) {
       fetchProjectDetails()
-    } else {
-      setLoading(false)
     }
+    // Don't set loading to false here - let fetchProjectDetails handle it
   }, [contractorId, leadId])
 
   const fetchProjectDetails = async () => {
     try {
       if (!leadId || !contractorId) {
-        toast.error('Invalid review link')
+        console.error('Missing required parameters:', { contractorId, leadId })
+        setLoading(false)
         return
       }
 
@@ -79,6 +79,7 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
         console.error('❌ Error fetching project details:', result.error)
         console.error('❌ Full error response:', result)
         toast.error(result.error || 'Project not found or access denied')
+        setLoading(false)
         return
       }
 
@@ -89,6 +90,7 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
       if (!result.data || !result.data.projectDetails || !result.data.contractorDetails) {
         console.error('❌ Invalid data structure:', result.data)
         toast.error('Invalid project data received')
+        setLoading(false)
         return
       }
 
