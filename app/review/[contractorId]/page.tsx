@@ -15,7 +15,6 @@ import Footer from '@/components/layout/Footer'
 
 interface ReviewData {
   rating: number
-  insulationAdded: string
   comments: string
   customerName: string
   customerEmail: string
@@ -46,7 +45,6 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
   const [contractorDetails, setContractorDetails] = useState<any>(null)
   const [reviewData, setReviewData] = useState<ReviewData>({
     rating: 0,
-    insulationAdded: '',
     comments: '',
     customerName: '',
     customerEmail: ''
@@ -132,10 +130,6 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
       return
     }
 
-    if (!reviewData.insulationAdded.trim()) {
-      toast.error('Please specify what insulation was added')
-      return
-    }
 
     if (!reviewData.comments.trim()) {
       toast.error('Please provide comments about your experience')
@@ -156,7 +150,6 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
           customerName: reviewData.customerName,
           customerEmail: reviewData.customerEmail,
           rating: reviewData.rating,
-          insulationAdded: reviewData.insulationAdded,
           comments: reviewData.comments
         })
       })
@@ -327,21 +320,6 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
                       </div>
                     </div>
 
-                    {/* Insulation Added */}
-                    <div>
-                      <Label htmlFor="insulation-added" className="text-base font-medium">
-                        What insulation was added? *
-                      </Label>
-                      <Textarea
-                        id="insulation-added"
-                        placeholder="e.g., R-38 fiberglass in attic, R-13 cellulose in walls..."
-                        value={reviewData.insulationAdded}
-                        onChange={(e) => setReviewData(prev => ({ ...prev, insulationAdded: e.target.value }))}
-                        className="mt-2"
-                        rows={3}
-                        required
-                      />
-                    </div>
 
                     {/* Comments */}
                     <div>

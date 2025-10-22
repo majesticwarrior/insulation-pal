@@ -39,7 +39,6 @@ export async function POST(request: NextRequest) {
       customerName, 
       customerEmail, 
       rating, 
-      insulationAdded, 
       comments 
     } = body
     
@@ -49,11 +48,10 @@ export async function POST(request: NextRequest) {
       customerName, 
       customerEmail, 
       rating, 
-      insulationAdded, 
       comments 
     })
     
-    if (!contractorId || !leadAssignmentId || !customerName || !customerEmail || !rating || !insulationAdded || !comments) {
+    if (!contractorId || !leadAssignmentId || !customerName || !customerEmail || !rating || !comments) {
       console.log('❌ API: Missing required fields')
       console.log('❌ API: Field check:', {
         contractorId: !!contractorId,
@@ -61,7 +59,6 @@ export async function POST(request: NextRequest) {
         customerName: !!customerName,
         customerEmail: !!customerEmail,
         rating: !!rating,
-        insulationAdded: !!insulationAdded,
         comments: !!comments
       })
       return NextResponse.json(
@@ -75,7 +72,6 @@ export async function POST(request: NextRequest) {
               customerName,
               customerEmail,
               rating,
-              insulationAdded,
               comments
             },
             fieldCheck: {
@@ -84,7 +80,6 @@ export async function POST(request: NextRequest) {
               customerName: !!customerName,
               customerEmail: !!customerEmail,
               rating: !!rating,
-              insulationAdded: !!insulationAdded,
               comments: !!comments
             }
           }
@@ -105,7 +100,6 @@ export async function POST(request: NextRequest) {
         customer_email: customerEmail,
         rating: rating,
         comment: comments,
-        service_type: insulationAdded,
         verified: true // Mark as verified since it's from a completed project
       })
       .select()
