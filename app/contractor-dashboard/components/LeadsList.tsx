@@ -366,8 +366,8 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           
           {isExpanded && (
             <div className="mt-4 pt-4 border-t border-gray-200">
-              {/* Show the full lead details when expanded */}
-              {renderFullLeadDetails(leadAssignment)}
+              {/* Show the full won lead details when expanded */}
+              {renderFullWonLeadDetails(leadAssignment)}
             </div>
           )}
         </CardContent>
@@ -519,8 +519,8 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
     )
   }
 
-  // Helper function to render full lead details (extracted from original renderLeadCard)
-  const renderFullLeadDetails = (leadAssignment: Lead) => (
+  // Helper function to render full lead details for won leads
+  const renderFullWonLeadDetails = (leadAssignment: Lead) => (
     <>
       {/* Customer Contact Information */}
       <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg">
@@ -616,6 +616,71 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           fetchLeads()
         }}
       />
+    </>
+  )
+
+  // Helper function to render full lead details for non-won leads
+  const renderFullLeadDetails = (leadAssignment: Lead) => (
+    <>
+      {/* Project Details */}
+      <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+        <h4 className="font-semibold text-[#0a4768] mb-3">Project Details</h4>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <div className="flex items-center mb-2">
+              <Home className="h-4 w-4 mr-2 text-gray-600" />
+              <span className="font-medium">Home Size:</span>
+            </div>
+            <p className="text-sm text-gray-700 ml-6">{leadAssignment.leads.home_size_sqft?.toLocaleString()} sq ft</p>
+          </div>
+          <div>
+            <div className="flex items-center mb-2">
+              <MapPin className="h-4 w-4 mr-2 text-gray-600" />
+              <span className="font-medium">Location:</span>
+            </div>
+            <p className="text-sm text-gray-700 ml-6">
+              {leadAssignment.leads.city}, {leadAssignment.leads.state}
+              {leadAssignment.leads.zip_code && ` ${leadAssignment.leads.zip_code}`}
+            </p>
+          </div>
+        </div>
+        
+        <div className="mt-4">
+          <div className="flex items-start mb-2">
+            <span className="font-medium mr-2">Areas Needed:</span>
+          </div>
+          <div className="flex flex-wrap gap-2 ml-6">
+            {leadAssignment.leads.areas_needed?.map((area: string, index: number) => (
+              <Badge key={index} variant="secondary" className="text-xs">
+                {area}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <div className="flex items-start mb-2">
+            <span className="font-medium mr-2">Insulation Types:</span>
+          </div>
+          <div className="flex flex-wrap gap-2 ml-6">
+            {leadAssignment.leads.insulation_types?.map((type: string, index: number) => (
+              <Badge key={index} variant="outline" className="text-xs">
+                {type}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Show lead information for non-won leads */}
+      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <p className="text-sm text-blue-800 mb-2">
+          <span className="font-semibold">New Lead Available</span>
+        </p>
+        <p className="text-sm text-blue-700">
+          Accept this lead to view complete project details. Customer contact information will be provided if you win the bid.
+        </p>
+      </div>
     </>
   )
 
