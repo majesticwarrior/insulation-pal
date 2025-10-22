@@ -101,6 +101,8 @@ export async function POST(request: NextRequest) {
       .insert({
         contractor_id: contractorId,
         lead_assignment_id: leadAssignmentId,
+        customer_name: customerName,
+        customer_email: customerEmail,
         rating: rating,
         comment: comments,
         service_type: insulationAdded,
