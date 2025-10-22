@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { QuoteButton } from '@/components/ui/quote-button'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import { TruncatedText } from '@/components/ui/TruncatedText'
 import Link from 'next/link'
 import Image from 'next/image'
 import { 
@@ -827,9 +828,11 @@ export default async function PhoenixInsulationContractors() {
                             </h4>
                           )}
                           
-                          <blockquote className="text-gray-700 mb-4 flex-grow text-sm">
-                            "{review.comment}"
-                          </blockquote>
+                          <TruncatedText 
+                            text={review.comment || ''} 
+                            maxLength={400}
+                            className="mb-4 flex-grow"
+                          />
                           
                           <div className="text-xs text-gray-600 mt-auto">
                             <div className="font-medium">{review.customer_name}</div>

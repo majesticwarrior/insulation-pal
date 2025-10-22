@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { QuoteButton } from '@/components/ui/quote-button'
+import { TruncatedText } from '@/components/ui/TruncatedText'
 import { 
   Star, 
   MapPin, 
@@ -649,7 +650,11 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                     {review.service}
                   </Badge>
                   
-                  <p className="text-gray-700">{review.comment}</p>
+                  <TruncatedText 
+                    text={review.comment || ''} 
+                    maxLength={400}
+                    className="text-gray-700"
+                  />
                 </CardContent>
               </Card>
             ))}
