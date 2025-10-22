@@ -55,11 +55,11 @@ export async function POST(request: NextRequest) {
     
     try {
       await sendEmail({
-        to: contractor.email,
+        to: (contractor as any).email,
         subject: 'Password Reset Request - Insulation Pal',
         template: 'password_reset',
         data: {
-          contractorName: contractor.business_name,
+          contractorName: (contractor as any).business_name,
           resetLink,
           expiryTime: '1 hour'
         }

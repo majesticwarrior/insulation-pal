@@ -63,12 +63,15 @@ export async function POST(request: NextRequest) {
 
     // Send notification email to contractor
     try {
+      const contractorEmail = (contractor as any).email
+      const contractorBusinessName = (contractor as any).business_name
+      
       await sendEmail({
-        to: contractor.email,
+        to: contractorEmail,
         subject: 'Your Password Has Been Reset - Insulation Pal',
         template: 'admin_password_reset',
         data: {
-          contractorName: contractor.business_name,
+          contractorName: contractorBusinessName,
           loginLink: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/contractor-login`
         }
       })
@@ -79,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `Password has been successfully reset for ${contractor.business_name}`
+      message: `Password has been successfully reset for ${(contractor as any).business_name}`
     })
 
   } catch (error) {
