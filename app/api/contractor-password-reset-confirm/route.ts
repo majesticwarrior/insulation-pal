@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
 
     // Check if token has expired
     const now = new Date()
-    const tokenExpiry = new Date(contractor.reset_token_expiry)
+    const tokenExpiry = new Date((contractor as any).reset_token_expiry)
     
     if (now > tokenExpiry) {
       return NextResponse.json(
