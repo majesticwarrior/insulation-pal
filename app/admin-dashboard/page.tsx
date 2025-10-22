@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Shield, Users, Clock, CheckCircle, XCircle, Eye, DollarSign, LogOut, Edit, Plus, Star, UserCog } from 'lucide-react'
+import { Shield, Users, Clock, CheckCircle, XCircle, Eye, DollarSign, LogOut, Edit, Plus, Star, UserCog, Key } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 
@@ -96,6 +96,12 @@ export default function AdminDashboard() {
   const [isViewReviewDialogOpen, setIsViewReviewDialogOpen] = useState(false)
   const [isDeletingReview, setIsDeletingReview] = useState(false)
   const [isEditReviewDialogOpen, setIsEditReviewDialogOpen] = useState(false)
+  
+  // Password reset state
+  const [isPasswordResetDialogOpen, setIsPasswordResetDialogOpen] = useState(false)
+  const [selectedContractorForPasswordReset, setSelectedContractorForPasswordReset] = useState<Contractor | null>(null)
+  const [newPassword, setNewPassword] = useState('')
+  const [isResettingPassword, setIsResettingPassword] = useState(false)
   const [isUpdatingReview, setIsUpdatingReview] = useState(false)
   const [selectedContractorForReviews, setSelectedContractorForReviews] = useState<string>('')
   const [isManageReviewsDialogOpen, setIsManageReviewsDialogOpen] = useState(false)
@@ -489,6 +495,55 @@ export default function AdminDashboard() {
       console.error('Error updating credits:', error)
       toast.error('Failed to update credits')
     }
+  }
+
+  const resetContractorPassword = async () => {
+    if (!selectedContractorForPasswordReset || !newPassword) {
+      toast.error('Please select a contractor and enter a new password')
+      return
+    }
+
+    if (newPassword.length < 8) {
+      toast.error('Password must be at least 8 characters long')
+      return
+    }
+
+    setIsResettingPassword(true)
+    try {
+      const response = await fetch('/api/admin-reset-contractor-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contractorId: selectedContractorForPasswordReset.id,
+          newPassword: newPassword,
+          adminId: 'admin' // You might want to get this from admin session
+        }),
+      })
+
+      const result = await response.json()
+      
+      if (result.success) {
+        toast.success(result.message)
+        setIsPasswordResetDialogOpen(false)
+        setNewPassword('')
+        setSelectedContractorForPasswordReset(null)
+      } else {
+        toast.error(result.error || 'Failed to reset password')
+      }
+    } catch (error) {
+      console.error('Password reset error:', error)
+      toast.error('An error occurred while resetting the password')
+    } finally {
+      setIsResettingPassword(false)
+    }
+  }
+
+  const openPasswordResetDialog = (contractor: Contractor) => {
+    setSelectedContractorForPasswordReset(contractor)
+    setNewPassword('')
+    setIsPasswordResetDialogOpen(true)
   }
 
   const deleteContractor = async (contractorId: string, businessName: string) => {
@@ -1351,6 +1406,16 @@ export default function AdminDashboard() {
                               <Button
                                 size="sm"
                                 variant="outline"
+                                onClick={() => openPasswordResetDialog(contractor)}
+                                className="text-orange-600 hover:bg-orange-50"
+                              >
+                                <Key className="h-3 w-3 mr-1" />
+                                Reset Password
+                              </Button>
+                              
+                              <Button
+                                size="sm"
+                                variant="outline"
                                 onClick={() => {
                                   setSelectedContractorForReviews(contractor.id)
                                   loadReviews(contractor.id)
@@ -1969,6 +2034,71 @@ export default function AdminDashboard() {
                 onClick={() => setIsManageReviewsDialogOpen(false)}
               >
                 Close
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Password Reset Dialog */}
+        <Dialog open={isPasswordResetDialogOpen} onOpenChange={setIsPasswordResetDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Reset Contractor Password</DialogTitle>
+            </DialogHeader>
+            
+            {selectedContractorForPasswordReset && (
+              <div className="space-y-4">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold">Contractor Information</h3>
+                  <p className="text-sm text-gray-600">
+                    <strong>Business:</strong> {selectedContractorForPasswordReset.business_name}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <strong>Email:</strong> {selectedContractorForPasswordReset.email}
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="newPassword">New Password</Label>
+                  <Input
+                    id="newPassword"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Enter new password"
+                    className="mt-1"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Password must be at least 8 characters long
+                  </p>
+                </div>
+
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <p className="text-sm text-yellow-800">
+                    <strong>⚠️ Warning:</strong> This will immediately reset the contractor's password. 
+                    They will need to use this new password to log in, and they will be notified via email.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-end space-x-2 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsPasswordResetDialogOpen(false)
+                  setNewPassword('')
+                  setSelectedContractorForPasswordReset(null)
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={resetContractorPassword}
+                disabled={isResettingPassword || !newPassword}
+                className="bg-orange-600 hover:bg-orange-700 text-white"
+              >
+                {isResettingPassword ? 'Resetting...' : 'Reset Password'}
               </Button>
             </div>
           </DialogContent>

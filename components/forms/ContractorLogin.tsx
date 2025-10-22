@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { loginContractor } from '@/lib/auth'
 import { toast } from 'sonner'
 import { Eye, EyeOff } from 'lucide-react'
+import Link from 'next/link'
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -126,6 +127,15 @@ export function ContractorLogin({ onLoginSuccess }: ContractorLoginProps) {
               </Button>
             </form>
           </Form>
+          
+          <div className="mt-4 text-center">
+            <Link 
+              href="/contractor-forgot-password" 
+              className="text-sm text-[#0a4768] hover:text-blue-600 underline"
+            >
+              Forgot your password?
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>

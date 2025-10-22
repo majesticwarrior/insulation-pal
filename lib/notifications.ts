@@ -82,6 +82,40 @@ async function sendEmail({ to, template, data }: { to: string, template: string,
         Best regards,
         The Insulation Pal Team
       `
+    },
+    password_reset: {
+      subject: 'Password Reset Request - Insulation Pal',
+      body: `
+        Hi ${data.contractorName},
+
+        You requested a password reset for your Insulation Pal contractor account.
+
+        To reset your password, click the link below:
+        ${data.resetLink}
+
+        This link will expire in ${data.expiryTime}.
+
+        If you didn't request this password reset, please ignore this email or contact our support team.
+
+        Best regards,
+        The Insulation Pal Team
+      `
+    },
+    admin_password_reset: {
+      subject: 'Your Password Has Been Reset - Insulation Pal',
+      body: `
+        Hi ${data.contractorName},
+
+        Your password has been reset by an administrator.
+
+        Please log in to your contractor dashboard using your new password:
+        ${data.loginLink}
+
+        If you have any questions or concerns, please contact our support team.
+
+        Best regards,
+        The Insulation Pal Team
+      `
     }
   }
 
