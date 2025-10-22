@@ -39,6 +39,9 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
   const [loading, setLoading] = useState(true)
   const [responding, setResponding] = useState<string | null>(null)
   const [expandedWonLeads, setExpandedWonLeads] = useState<Set<string>>(new Set())
+  const [expandedAvailableLeads, setExpandedAvailableLeads] = useState<Set<string>>(new Set())
+  const [expandedAcceptedLeads, setExpandedAcceptedLeads] = useState<Set<string>>(new Set())
+  const [expandedDidntWinLeads, setExpandedDidntWinLeads] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     fetchLeads()
@@ -285,6 +288,45 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
     })
   }
 
+  // Function to toggle expanded state for available leads
+  const toggleAvailableLeadExpansion = (leadId: string) => {
+    setExpandedAvailableLeads(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(leadId)) {
+        newSet.delete(leadId)
+      } else {
+        newSet.add(leadId)
+      }
+      return newSet
+    })
+  }
+
+  // Function to toggle expanded state for accepted leads
+  const toggleAcceptedLeadExpansion = (leadId: string) => {
+    setExpandedAcceptedLeads(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(leadId)) {
+        newSet.delete(leadId)
+      } else {
+        newSet.add(leadId)
+      }
+      return newSet
+    })
+  }
+
+  // Function to toggle expanded state for didn't win leads
+  const toggleDidntWinLeadExpansion = (leadId: string) => {
+    setExpandedDidntWinLeads(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(leadId)) {
+        newSet.delete(leadId)
+      } else {
+        newSet.add(leadId)
+      }
+      return newSet
+    })
+  }
+
   // Helper function to render condensed won lead cards
   const renderCondensedWonLeadCard = (leadAssignment: Lead) => {
     const isExpanded = expandedWonLeads.has(leadAssignment.id)
@@ -309,6 +351,150 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
               variant="ghost"
               size="sm"
               onClick={() => toggleWonLeadExpansion(leadAssignment.id)}
+              className="flex items-center space-x-1 text-gray-600 hover:text-gray-800"
+            >
+              <span className="text-sm">
+                {isExpanded ? 'Hide Details' : 'Show Details'}
+              </span>
+              {isExpanded ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+          
+          {isExpanded && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              {/* Show the full lead details when expanded */}
+              {renderFullLeadDetails(leadAssignment)}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Helper function to render condensed available lead cards
+  const renderCondensedAvailableLeadCard = (leadAssignment: Lead) => {
+    const isExpanded = expandedAvailableLeads.has(leadAssignment.id)
+    
+    return (
+      <Card key={leadAssignment.id} className="mb-3 hover:shadow-md transition-shadow">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Clock className="h-5 w-5 text-blue-600" />
+              <div>
+                <h3 className="font-semibold text-[#0a4768]">{leadAssignment.leads.customer_name}</h3>
+                <p className="text-sm text-gray-600">
+                  {leadAssignment.leads.city}, {leadAssignment.leads.state}
+                </p>
+                <p className="text-xs text-gray-500">
+                  Received: {new Date(leadAssignment.created_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleAvailableLeadExpansion(leadAssignment.id)}
+              className="flex items-center space-x-1 text-gray-600 hover:text-gray-800"
+            >
+              <span className="text-sm">
+                {isExpanded ? 'Hide Details' : 'Show Details'}
+              </span>
+              {isExpanded ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+          
+          {isExpanded && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              {/* Show the full lead details when expanded */}
+              {renderFullLeadDetails(leadAssignment)}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Helper function to render condensed accepted lead cards
+  const renderCondensedAcceptedLeadCard = (leadAssignment: Lead) => {
+    const isExpanded = expandedAcceptedLeads.has(leadAssignment.id)
+    
+    return (
+      <Card key={leadAssignment.id} className="mb-3 hover:shadow-md transition-shadow">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Trophy className="h-5 w-5 text-orange-600" />
+              <div>
+                <h3 className="font-semibold text-[#0a4768]">{leadAssignment.leads.customer_name}</h3>
+                <p className="text-sm text-gray-600">
+                  {leadAssignment.leads.city}, {leadAssignment.leads.state}
+                </p>
+                <p className="text-xs text-gray-500">
+                  Accepted: {new Date(leadAssignment.responded_at || leadAssignment.created_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleAcceptedLeadExpansion(leadAssignment.id)}
+              className="flex items-center space-x-1 text-gray-600 hover:text-gray-800"
+            >
+              <span className="text-sm">
+                {isExpanded ? 'Hide Details' : 'Show Details'}
+              </span>
+              {isExpanded ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+          
+          {isExpanded && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              {/* Show the full lead details when expanded */}
+              {renderFullLeadDetails(leadAssignment)}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Helper function to render condensed didn't win lead cards
+  const renderCondensedDidntWinLeadCard = (leadAssignment: Lead) => {
+    const isExpanded = expandedDidntWinLeads.has(leadAssignment.id)
+    
+    return (
+      <Card key={leadAssignment.id} className="mb-3 hover:shadow-md transition-shadow">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <AlertCircle className="h-5 w-5 text-red-600" />
+              <div>
+                <h3 className="font-semibold text-[#0a4768]">{leadAssignment.leads.customer_name}</h3>
+                <p className="text-sm text-gray-600">
+                  {leadAssignment.leads.city}, {leadAssignment.leads.state}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {leadAssignment.status === 'declined' ? 'Declined' : 'Expired'}: {new Date(leadAssignment.created_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleDidntWinLeadExpansion(leadAssignment.id)}
               className="flex items-center space-x-1 text-gray-600 hover:text-gray-800"
             >
               <span className="text-sm">
@@ -608,7 +794,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
 
         <TabsContent value="available" className="space-y-4">
           {availableLeads.length > 0 ? (
-            availableLeads.map(renderLeadCard)
+            availableLeads.map(renderCondensedAvailableLeadCard)
           ) : (
             <Card>
               <CardContent className="text-center py-8">
@@ -622,7 +808,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
 
         <TabsContent value="accepted" className="space-y-4">
           {acceptedLeads.length > 0 ? (
-            acceptedLeads.map(renderLeadCard)
+            acceptedLeads.map(renderCondensedAcceptedLeadCard)
           ) : (
             <Card>
               <CardContent className="text-center py-8">
@@ -650,7 +836,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
 
         <TabsContent value="didnt-win" className="space-y-4">
           {didntWinLeads.length > 0 ? (
-            didntWinLeads.map(renderLeadCard)
+            didntWinLeads.map(renderCondensedDidntWinLeadCard)
           ) : (
             <Card>
               <CardContent className="text-center py-8">
