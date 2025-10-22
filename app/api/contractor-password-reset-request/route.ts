@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         reset_token: resetToken,
         reset_token_expiry: resetTokenExpiry.toISOString()
       })
-      .eq('id', contractor.id)
+      .eq('id', (contractor as any).id)
 
     if (updateError) {
       console.error('Error storing reset token:', updateError)
