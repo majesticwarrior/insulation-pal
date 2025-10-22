@@ -34,12 +34,12 @@ export async function POST(request: NextRequest) {
     const resetTokenExpiry = new Date(Date.now() + 3600000) // 1 hour from now
 
     // Store reset token in database
-    const { error: updateError } = await supabase
+    const { error: updateError } = await (supabase as any)
       .from('contractors')
       .update({
         reset_token: resetToken,
         reset_token_expiry: resetTokenExpiry.toISOString()
-      } as any)
+      })
       .eq('id', contractor.id)
 
     if (updateError) {

@@ -44,13 +44,13 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(newPassword, saltRounds)
 
     // Update password and clear any existing reset tokens
-    const { error: updateError } = await supabase
+    const { error: updateError } = await (supabase as any)
       .from('contractors')
       .update({
         password_hash: hashedPassword,
         reset_token: null,
         reset_token_expiry: null
-      } as any)
+      })
       .eq('id', contractorId)
 
     if (updateError) {
