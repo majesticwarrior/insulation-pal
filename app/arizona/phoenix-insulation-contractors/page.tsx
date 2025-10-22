@@ -830,7 +830,7 @@ export default async function PhoenixInsulationContractors() {
                           
                           <TruncatedText 
                             text={review.comment || ''} 
-                            maxLength={400}
+                            maxLength={350}
                             className="mb-4 flex-grow"
                           />
                           

@@ -9,7 +9,7 @@ interface TruncatedTextProps {
   className?: string
 }
 
-export function TruncatedText({ text, maxLength = 400, className = '' }: TruncatedTextProps) {
+export function TruncatedText({ text, maxLength = 350, className = '' }: TruncatedTextProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   
   if (!text) return null

@@ -652,7 +652,7 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                   
                   <TruncatedText 
                     text={review.comment || ''} 
-                    maxLength={400}
+                    maxLength={350}
                     className="text-gray-700"
                   />
                 </CardContent>
