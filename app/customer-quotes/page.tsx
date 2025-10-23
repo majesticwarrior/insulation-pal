@@ -21,19 +21,21 @@ import {
   ChevronUp,
   DollarSign,
   Calendar,
-  Shield
+  Shield,
+  Users
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { ContractorInvitationModal } from '@/components/modals/ContractorInvitationModal'
 
 interface Quote {
   id: string
   lead_id: string
-  contractor_id: string
+  contractor_id?: string
   quote_notes?: string
   quote_amount?: number
   responded_at?: string
   status: string
-  contractors: {
+  contractors?: {
     id: string
     business_name: string
     license_number?: string
@@ -42,6 +44,13 @@ interface Quote {
     years_in_business?: number
     review_count?: number
   }
+  // For invited contractor quotes
+  contractor_name?: string
+  contractor_email?: string
+  business_name?: string
+  license_number?: string
+  estimated_timeline?: string
+  created_at?: string
 }
 
 interface Lead {
@@ -69,7 +78,9 @@ function CustomerQuoteReviewContent() {
   const [loading, setLoading] = useState(true)
   const [acceptingQuote, setAcceptingQuote] = useState<string | null>(null)
   const [expandedFAQ, setExpandedFAQ] = useState<string | null>(null)
-  const [acceptedQuoteId, setAcceptedQuoteId] = useState<string | null>(null)
+  const [inviteUrl, setInviteUrl] = useState<string | null>(null)
+  const [generatingInvite, setGeneratingInvite] = useState(false)
+  const [isInvitationModalOpen, setIsInvitationModalOpen] = useState(false)
 
   useEffect(() => {
     if (leadId) {
@@ -509,6 +520,17 @@ function CustomerQuoteReviewContent() {
       console.log('🔍 Raw quotes data:', quotesData)
       console.log('🔍 Filtered quotes:', filteredQuotes)
 
+      // Fetch invited contractor quotes
+      const { data: invitedQuotes, error: invitedError } = await supabase
+        .from('contractor_quotes')
+        .select('*')
+        .eq('lead_id', leadId)
+        .order('created_at', { ascending: false })
+
+      if (invitedError) {
+        console.log('🔍 Invited quotes query error:', invitedError)
+      }
+
       // Fetch review counts for each contractor
       const quotesWithReviewCounts = await Promise.all(
         filteredQuotes.map(async (quote: any) => {
@@ -549,8 +571,18 @@ function CustomerQuoteReviewContent() {
         })
       )
 
+      // Combine regular quotes with invited contractor quotes
+      const allQuotes = [
+        ...quotesWithReviewCounts,
+        ...(invitedQuotes || []).map((quote: any) => ({
+          ...quote,
+          status: 'submitted',
+          responded_at: quote.created_at
+        }))
+      ]
+
       setLead(leadData)
-      setQuotes(quotesWithReviewCounts)
+      setQuotes(allQuotes)
     } catch (error: any) {
       // Show more specific error messages
       if (error.message?.includes('JWT')) {
@@ -627,10 +659,40 @@ function CustomerQuoteReviewContent() {
     }
   }
 
-  function copyShareLink() {
-    const shareUrl = `${window.location.origin}/customer-quotes?leadId=${leadId}`
-    navigator.clipboard.writeText(shareUrl)
-    toast.success('Share link copied to clipboard!')
+  async function generateInviteLink() {
+    if (!leadId) return
+    
+    setGeneratingInvite(true)
+    try {
+      const response = await fetch('/api/invitations/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ leadId })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to generate invitation')
+      }
+
+      setInviteUrl(data.inviteUrl)
+      toast.success('Invitation link generated!')
+    } catch (error: any) {
+      console.error('Error generating invite:', error)
+      toast.error(error.message || 'Failed to generate invitation link')
+    } finally {
+      setGeneratingInvite(false)
+    }
+  }
+
+  function copyInviteLink() {
+    if (inviteUrl) {
+      navigator.clipboard.writeText(inviteUrl)
+      toast.success('Invitation link copied to clipboard!')
+    }
   }
 
   const faqItems = [
@@ -821,33 +883,61 @@ function CustomerQuoteReviewContent() {
                           <div className="flex-1">
                             <div className="flex items-center space-x-3 mb-2">
                               <h3 className="text-xl font-bold text-gray-900">
-                                {quote.contractors.business_name}
+                                {quote.contractors?.business_name || quote.business_name}
                               </h3>
-                              {quote.contractors.license_verified && quote.contractors.insurance_verified && (
+                              {quote.contractors?.license_verified && quote.contractors?.insurance_verified && (
                                 <Badge className="bg-blue-100 text-blue-800 flex items-center space-x-1">
                                   <Shield className="h-3 w-3" />
                                   <span>Licensed & Insured</span>
                                 </Badge>
                               )}
+                              {quote.business_name && !quote.contractors && (
+                                <Badge className="bg-green-100 text-green-800 flex items-center space-x-1">
+                                  <span>Invited Contractor</span>
+                                </Badge>
+                              )}
                             </div>
                             
                             <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
-                              <div className="flex items-center space-x-1">
-                                <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                                <span>5.0</span>
-                                <span>({quote.contractors.review_count || 0} reviews)</span>
-                              </div>
-                              {quote.contractors.years_in_business && (
-                                <div className="flex items-center space-x-1">
-                                  <Calendar className="h-4 w-4" />
-                                  <span>{quote.contractors.years_in_business} years in business</span>
-                                </div>
-                              )}
-                              {quote.contractors.license_number && (
-                                <div className="flex items-center space-x-1">
-                                  <Shield className="h-4 w-4" />
-                                  <span>ROC #{quote.contractors.license_number?.replace(/^ROC\s*/i, '') || ''}</span>
-                                </div>
+                              {quote.contractors ? (
+                                <>
+                                  <div className="flex items-center space-x-1">
+                                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                                    <span>5.0</span>
+                                    <span>({quote.contractors.review_count || 0} reviews)</span>
+                                  </div>
+                                  {quote.contractors.years_in_business && (
+                                    <div className="flex items-center space-x-1">
+                                      <Calendar className="h-4 w-4" />
+                                      <span>{quote.contractors.years_in_business} years in business</span>
+                                    </div>
+                                  )}
+                                  {quote.contractors.license_number && (
+                                    <div className="flex items-center space-x-1">
+                                      <Shield className="h-4 w-4" />
+                                      <span>ROC #{quote.contractors.license_number?.replace(/^ROC\s*/i, '') || ''}</span>
+                                    </div>
+                                  )}
+                                </>
+                              ) : (
+                                <>
+                                  <div className="flex items-center space-x-1">
+                                    <User className="h-4 w-4" />
+                                    <span>{quote.contractor_name}</span>
+                                  </div>
+                                  {quote.license_number && (
+                                    <div className="flex items-center space-x-1">
+                                      <Shield className="h-4 w-4" />
+                                      <span>ROC #{quote.license_number}</span>
+                                    </div>
+                                  )}
+                                  {quote.estimated_timeline && (
+                                    <div className="flex items-center space-x-1">
+                                      <Calendar className="h-4 w-4" />
+                                      <span>{quote.estimated_timeline}</span>
+                                    </div>
+                                  )}
+                                </>
                               )}
                             </div>
                           </div>
@@ -876,14 +966,21 @@ function CustomerQuoteReviewContent() {
                               <Calendar className="h-4 w-4" />
                               <span>Available Now</span>
                             </div>
-                            <a 
-                              href={`/contractor/${quote.contractors.id}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 underline"
-                            >
-                              <span>View Profile</span>
-                            </a>
+                            {quote.contractors ? (
+                              <a 
+                                href={`/contractor/${quote.contractors.id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 underline"
+                              >
+                                <span>View Profile</span>
+                              </a>
+                            ) : (
+                              <div className="flex items-center space-x-1 text-gray-600">
+                                <Mail className="h-4 w-4" />
+                                <span>{quote.contractor_email}</span>
+                              </div>
+                            )}
                           </div>
                           
                           <Button
@@ -931,25 +1028,35 @@ function CustomerQuoteReviewContent() {
             </Card>
           )}
 
-          {/* Share Link Section */}
+          {/* Invite Additional Contractors Section */}
           {quotes.length > 0 && (
             <Card className="mt-8">
               <CardContent className="p-6">
-                <h3 className="text-lg font-semibold mb-4">Share your quote request</h3>
-                <div className="flex items-center space-x-4">
-                  <div className="flex-1 bg-gray-100 p-3 rounded-lg">
-                    <code className="text-sm">
-                      {typeof window !== 'undefined' ? window.location.href : ''}
-                    </code>
-                  </div>
-                  <Button onClick={copyShareLink} variant="outline">
-                    <Copy className="h-4 w-4 mr-2" />
-                    Copy
-                  </Button>
-                </div>
-                <p className="text-sm text-gray-600 mt-2">
-                  Share this link to get additional quotes from other contractors
+                <h3 className="text-lg font-semibold mb-4">Get More Quotes</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Invite additional contractors in your area to submit quotes for your project. 
+                  This helps you compare more options and get the best price.
                 </p>
+                
+                <div className="space-y-4">
+                  <Button 
+                    onClick={() => setIsInvitationModalOpen(true)}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    Invite Contractors in Your Area
+                  </Button>
+                  
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-blue-800 mb-2">How it works:</h4>
+                    <ul className="text-blue-700 text-sm space-y-1">
+                      <li>• Browse contractors in your area</li>
+                      <li>• Select contractors you'd like to invite</li>
+                      <li>• They'll receive email invitations with your project details</li>
+                      <li>• You'll get notified when they submit quotes</li>
+                    </ul>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           )}
@@ -988,6 +1095,23 @@ function CustomerQuoteReviewContent() {
       </div>
 
       <Footer />
+
+      {/* Contractor Invitation Modal */}
+      {lead && (
+        <ContractorInvitationModal
+          isOpen={isInvitationModalOpen}
+          onClose={() => setIsInvitationModalOpen(false)}
+          leadId={lead.id}
+          customerCity={lead.city}
+          customerState={lead.state}
+          customerZip={lead.zip_code}
+          projectDetails={{
+            homeSize: lead.home_size_sqft,
+            areas: lead.areas_needed,
+            insulationTypes: lead.insulation_types
+          }}
+        />
+      )}
     </div>
   )
 }

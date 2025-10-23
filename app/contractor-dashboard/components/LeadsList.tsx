@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { supabase } from '@/lib/supabase'
 import { handleContractorResponse } from '@/lib/lead-assignment'
-import { Phone, Mail, MapPin, Home, CheckCircle, X, Clock, AlertCircle, Trophy, ChevronDown, ChevronUp } from 'lucide-react'
+import { Phone, Mail, MapPin, Home, CheckCircle, X, Clock, AlertCircle, Trophy, ChevronDown, ChevronUp, FileText } from 'lucide-react'
 import { QuoteSubmissionForm } from '@/components/dashboard/QuoteSubmissionForm'
 import { ProjectImageUpload } from '@/components/dashboard/ProjectImageUpload'
 
@@ -85,12 +85,12 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           {
             id: 'demo-2',
             lead_id: 'demo-lead-2',
-            status: 'accepted',
+            status: 'pending',
             cost: 20,
             created_at: new Date(Date.now() - 86400000).toISOString(),
             responded_at: new Date().toISOString(),
-            quote_amount: 3500,
-            quote_notes: 'Complete attic insulation with R-38 fiberglass',
+            quote_amount: undefined, // No quote submitted yet
+            quote_notes: undefined,
             leads: {
               customer_name: 'Sarah Johnson',
               customer_email: 'sarah@example.com',
@@ -107,7 +107,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           {
             id: 'demo-3',
             lead_id: 'demo-lead-3',
-            status: 'won',
+            status: 'accepted',
             cost: 20,
             created_at: new Date(Date.now() - 172800000).toISOString(),
             responded_at: new Date(Date.now() - 86400000).toISOString(),
@@ -129,13 +129,35 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           {
             id: 'demo-4',
             lead_id: 'demo-lead-4',
+            status: 'won',
+            cost: 20,
+            created_at: new Date(Date.now() - 259200000).toISOString(),
+            responded_at: new Date(Date.now() - 172800000).toISOString(),
+            quote_amount: 3800,
+            quote_notes: 'Complete attic insulation with R-38 fiberglass',
+            leads: {
+              customer_name: 'Lisa Brown',
+              customer_email: 'lisa@example.com',
+              customer_phone: '555-0321',
+              home_size_sqft: 1500,
+              areas_needed: ['Attic'],
+              insulation_types: ['Fiberglass'],
+              city: 'Phoenix',
+              state: 'AZ',
+              zip_code: '85004',
+              property_address: '321 Elm St'
+            }
+          },
+          {
+            id: 'demo-5',
+            lead_id: 'demo-lead-5',
             status: 'declined',
             cost: 20,
             created_at: new Date(Date.now() - 259200000).toISOString(),
             responded_at: new Date(Date.now() - 172800000).toISOString(),
             leads: {
-              customer_name: 'Lisa Brown',
-              customer_email: 'lisa@example.com',
+              customer_name: 'Tom Davis',
+              customer_email: 'tom@example.com',
               customer_phone: '555-0321',
               home_size_sqft: 1500,
               areas_needed: ['Attic'],
@@ -436,6 +458,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
   // Helper function to render condensed accepted lead cards
   const renderCondensedAcceptedLeadCard = (leadAssignment: Lead) => {
     const isExpanded = expandedAcceptedLeads.has(leadAssignment.id)
+    const needsQuoteSubmission = leadAssignment.status === 'pending' && leadAssignment.responded_at && !leadAssignment.quote_amount
     
     return (
       <Card key={leadAssignment.id} className="mb-3 hover:shadow-md transition-shadow">
@@ -456,6 +479,11 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                 <p className="text-xs text-gray-500">
                   Accepted: {new Date(leadAssignment.responded_at || leadAssignment.created_at).toLocaleDateString()}
                 </p>
+                {needsQuoteSubmission && (
+                  <Badge variant="outline" className="text-xs text-orange-600 border-orange-300 mt-1">
+                    Quote Required
+                  </Badge>
+                )}
               </div>
             </div>
             <Button
@@ -474,6 +502,29 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
               )}
             </Button>
           </div>
+          
+          {/* Show quote submission form directly for leads that need it */}
+          {needsQuoteSubmission && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                <h3 className="font-semibold text-orange-800 mb-2 flex items-center">
+                  <FileText className="h-4 w-4 mr-2" />
+                  Quote Submission Required
+                </h3>
+                <p className="text-sm text-orange-700">
+                  You've accepted this lead. Submit your quote to compete for the project.
+                </p>
+              </div>
+              
+              <QuoteSubmissionForm
+                leadAssignmentId={leadAssignment.id}
+                contractorId={contractorId}
+                onQuoteSubmitted={() => {
+                  fetchLeads()
+                }}
+              />
+            </div>
+          )}
           
           {isExpanded && (
             <div className="mt-4 pt-4 border-t border-gray-200">
