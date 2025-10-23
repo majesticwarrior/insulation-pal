@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
       .select(`
         id,
         business_name,
+        email,
         license_number,
         license_verified,
         insurance_verified,
@@ -91,10 +92,8 @@ export async function GET(request: NextRequest) {
 
     // If we have a leadId, also filter out contractors whose emails match invited quotes
     let finalContractors = cityFilteredContractors
-    if (leadId) {
-      // Get contractor emails from the filtered list
-      const contractorEmails = cityFilteredContractors.map(c => c.email).filter(Boolean)
-      const excludedEmails = invitedQuotes?.map(q => q.contractor_email) || []
+    if (leadId && invitedQuotes && invitedQuotes.length > 0) {
+      const excludedEmails = invitedQuotes.map(q => q.contractor_email)
       
       finalContractors = cityFilteredContractors.filter(contractor => 
         !excludedEmails.includes(contractor.email)
