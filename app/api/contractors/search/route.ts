@@ -33,6 +33,7 @@ export async function GET(request: NextRequest) {
       .from('contractors')
       .select(`
         id,
+        user_id,
         business_name,
         license_number,
         license_verified,
@@ -61,25 +62,27 @@ export async function GET(request: NextRequest) {
 
     console.log('✅ Found contractors:', contractors?.length || 0)
 
-    // Get emails for contractors separately to avoid complex joins
+    // Get emails for contractors using user_id relationship
     let contractorEmails: { [key: string]: string } = {}
     if (contractors && contractors.length > 0) {
       console.log('🔍 Fetching contractor emails...')
-      const contractorIds = contractors.map(c => c.id)
+      const userIds = contractors.map(c => c.user_id).filter(Boolean)
       
-      const { data: users, error: usersError } = await supabaseAdmin
-        .from('users')
-        .select('id, email')
-        .in('id', contractorIds)
-      
-      if (usersError) {
-        console.error('❌ Failed to fetch contractor emails:', usersError)
-      } else {
-        console.log('✅ Found contractor emails:', users?.length || 0)
-        contractorEmails = users?.reduce((acc, user) => {
-          acc[user.id] = user.email
-          return acc
-        }, {} as { [key: string]: string }) || {}
+      if (userIds.length > 0) {
+        const { data: users, error: usersError } = await supabaseAdmin
+          .from('users')
+          .select('id, email')
+          .in('id', userIds)
+        
+        if (usersError) {
+          console.error('❌ Failed to fetch contractor emails:', usersError)
+        } else {
+          console.log('✅ Found contractor emails:', users?.length || 0)
+          contractorEmails = users?.reduce((acc, user) => {
+            acc[user.id] = user.email
+            return acc
+          }, {} as { [key: string]: string }) || {}
+        }
       }
     }
 
@@ -97,7 +100,7 @@ export async function GET(request: NextRequest) {
       founded_year: c.founded_year,
       employee_count: c.employee_count,
       status: c.status,
-      email: contractorEmails[c.id] || '',
+      email: contractorEmails[c.user_id] || '',
       review_count: 0, // Placeholder - will be updated when reviews system is ready
       average_rating: 0 // Placeholder - will be updated when reviews system is ready
     })) || []

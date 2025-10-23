@@ -30,16 +30,16 @@ export async function POST(request: NextRequest) {
       throw leadError
     }
 
-    // Get contractor details with user email
+    // Get contractor details
     const { data: contractors, error: contractorsError } = await supabaseAdmin
       .from('contractors')
       .select(`
         id, 
+        user_id,
         business_name, 
         business_city, 
         business_state,
-        credits,
-        users!inner(email)
+        credits
       `)
       .in('id', contractorIds)
 
@@ -128,10 +128,19 @@ export async function POST(request: NextRequest) {
         // Send email invitation using the same service as lead notifications
         const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/invite/${inviteToken}`
         
-        // Extract email from users relationship (users is an array with one element)
-        const contractorEmail = Array.isArray(contractor.users) 
-          ? (contractor.users as any)[0]?.email 
-          : (contractor.users as any)?.email
+        // Get contractor email from users table
+        const { data: user, error: userError } = await supabaseAdmin
+          .from('users')
+          .select('email')
+          .eq('id', contractor.user_id)
+          .single()
+        
+        if (userError || !user) {
+          console.error('❌ Failed to fetch contractor email:', userError)
+          throw new Error('Contractor email not found')
+        }
+        
+        const contractorEmail = user.email
         
         console.log('📧 Sending contractor invitation email:', {
           to: contractorEmail,
