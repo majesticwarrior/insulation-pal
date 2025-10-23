@@ -207,9 +207,9 @@ const emailTemplates = {
             </ul>
           </div>
           
-          <p>Click the button below to view full project details and submit your quote:</p>
+          <p>Click the button below to go to your dashboard and submit your quote:</p>
           
-          <a href="${data.inviteUrl}" class="cta-button">Submit Quote Now</a>
+          <a href="${data.inviteUrl}" class="cta-button">Go to Dashboard</a>
           
           <p><strong>Important:</strong> This invitation expires in 30 days.</p>
           

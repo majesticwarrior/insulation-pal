@@ -486,6 +486,73 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                 )}
               </div>
             </div>
+            
+            {/* Show project details for leads that need quote submission */}
+            {needsQuoteSubmission && (
+              <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <h4 className="font-semibold text-[#0a4768] mb-2 text-sm">Project Details</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                  <div className="flex items-center">
+                    <Home className="h-3 w-3 mr-1 text-gray-600" />
+                    <span className="font-medium">Home Size:</span>
+                    <span className="ml-1 text-gray-700">{leadAssignment.leads.home_size_sqft?.toLocaleString()} sq ft</span>
+                  </div>
+                  <div className="flex items-center">
+                    <MapPin className="h-3 w-3 mr-1 text-gray-600" />
+                    <span className="font-medium">Location:</span>
+                    <span className="ml-1 text-gray-700">{leadAssignment.leads.city}, {leadAssignment.leads.state}</span>
+                  </div>
+                </div>
+                <div className="mt-2">
+                  <div className="flex items-start">
+                    <span className="font-medium text-xs mr-2">Areas:</span>
+                    <div className="flex flex-wrap gap-1">
+                      {leadAssignment.leads.areas_needed?.map((area: string, index: number) => (
+                        <Badge key={index} variant="secondary" className="text-xs px-1 py-0">
+                          {area}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-1">
+                  <div className="flex items-start">
+                    <span className="font-medium text-xs mr-2">Insulation:</span>
+                    <div className="flex flex-wrap gap-1">
+                      {leadAssignment.leads.insulation_types?.map((type: string, index: number) => (
+                        <Badge key={index} variant="outline" className="text-xs px-1 py-0">
+                          {type}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <Trophy className="h-5 w-5 text-orange-600" />
+                <div>
+                  <h3 
+                    className="font-semibold text-[#0a4768] cursor-pointer hover:text-blue-600 transition-colors"
+                    onClick={() => toggleAcceptedLeadExpansion(leadAssignment.id)}
+                  >
+                    {leadAssignment.leads.customer_name}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {leadAssignment.leads.city}, {leadAssignment.leads.state}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Accepted: {new Date(leadAssignment.responded_at || leadAssignment.created_at).toLocaleDateString()}
+                  </p>
+                  {needsQuoteSubmission && (
+                    <Badge variant="outline" className="text-xs text-orange-600 border-orange-300 mt-1">
+                      Quote Required
+                    </Badge>
+                  )}
+              </div>
+            </div>
             <Button
               variant="ghost"
               size="sm"

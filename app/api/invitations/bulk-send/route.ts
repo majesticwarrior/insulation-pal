@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
         })
 
         // Send email invitation using the same service as lead notifications
-        const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/invite/${inviteToken}`
+        const dashboardUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/contractor-dashboard`
         
         // Use contact_email field directly from contractors table
         const contractorEmail = contractor.contact_email
@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
           to: contractorEmail,
           contractorName: contractor.business_name,
           customerName: lead.customer_name,
-          inviteUrl
+          dashboardUrl
         })
 
         // Use the same email service as lead notifications
@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
             state: lead.state,
             timeline: lead.project_timeline,
             budget: lead.budget_range,
-            inviteUrl
+            inviteUrl: dashboardUrl
           }
         })
 
