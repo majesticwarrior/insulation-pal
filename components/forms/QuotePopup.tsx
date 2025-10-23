@@ -21,6 +21,10 @@ const quoteSchema = z.object({
   homeSize: z.string().min(1, 'Home size is required'),
   areas: z.array(z.string()).min(1, 'Please select at least one area'),
   insulationTypes: z.array(z.string()).min(1, 'Please select at least one insulation type'),
+  additionalServices: z.array(z.string()).optional(),
+  ceilingFanCount: z.string().optional(),
+  projectType: z.enum(['residential', 'commercial']).optional(),
+  atticInsulationDepth: z.string().optional(),
   quotePreference: z.enum(['random_three', 'choose_three']),
   customerName: z.string().min(2, 'Name must be at least 2 characters'),
   customerEmail: z.string().email('Email address is required'),
@@ -53,6 +57,19 @@ const insulationTypes = [
   { id: 'other', label: 'Other/Unsure' }
 ]
 
+const additionalServices = [
+  { id: 'energy_audit', label: 'Energy Audit' },
+  { id: 'ceiling_fan_installation', label: 'Ceiling Fan Installation' },
+  { id: 'air_sealing', label: 'Air Sealing' },
+  { id: 'duct_sealing', label: 'Duct Sealing' }
+]
+
+const atticInsulationDepths = [
+  { id: '3_inches', label: '3 inches' },
+  { id: '6_inches', label: '6 inches' },
+  { id: '12_inches', label: '12 inches' }
+]
+
 const steps = [
   { id: 1, title: 'Home Size', icon: Home },
   { id: 2, title: 'Areas & Type', icon: Wrench },
@@ -70,6 +87,10 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
       homeSize: '',
       areas: [],
       insulationTypes: [],
+      additionalServices: [],
+      ceilingFanCount: '',
+      projectType: 'residential',
+      atticInsulationDepth: '',
       quotePreference: 'random_three',
       customerName: '',
       customerEmail: '',
@@ -155,6 +176,10 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
         home_size_sqft: parseInt(formData.homeSize),
         areas_needed: formData.areas,
         insulation_types: formData.insulationTypes,
+        additional_services: formData.additionalServices || [],
+        ceiling_fan_count: formData.ceilingFanCount ? parseInt(formData.ceilingFanCount) : null,
+        project_type: formData.projectType || 'residential',
+        attic_insulation_depth: formData.atticInsulationDepth || null,
         quote_preference: formData.quotePreference,
         customer_name: formData.customerName,
         customer_email: formData.customerEmail,
@@ -270,6 +295,15 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
     }
   }
 
+  const handleAdditionalServiceChange = (serviceId: string, checked: boolean) => {
+    const currentServices = form.getValues('additionalServices') || []
+    if (checked) {
+      form.setValue('additionalServices', [...currentServices, serviceId])
+    } else {
+      form.setValue('additionalServices', currentServices.filter(id => id !== serviceId))
+    }
+  }
+
   const renderStep = () => {
     switch (currentStep) {
       case 1:
@@ -347,6 +381,102 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
                 <p className="text-sm text-red-600 mt-1">{form.formState.errors.insulationTypes.message}</p>
               )}
             </div>
+
+            {/* Attic Insulation Depth - only show if attic is selected */}
+            {form.watch('areas')?.includes('attic') && (
+              <div>
+                <Label className="text-base font-medium">Attic Insulation Depth:</Label>
+                <div className="grid grid-cols-3 gap-3 mt-3">
+                  {atticInsulationDepths.map((depth) => (
+                    <div key={depth.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={depth.id}
+                        checked={form.watch('atticInsulationDepth') === depth.id}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            form.setValue('atticInsulationDepth', depth.id)
+                          } else {
+                            form.setValue('atticInsulationDepth', '')
+                          }
+                        }}
+                      />
+                      <Label htmlFor={depth.id} className="text-sm font-normal">{depth.label}</Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Project Type */}
+            <FormField
+              control={form.control}
+              name="projectType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base font-medium">Project Type:</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="mt-3"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="residential" id="residential" />
+                        <Label htmlFor="residential" className="text-sm font-normal">
+                          Residential
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="commercial" id="commercial" />
+                        <Label htmlFor="commercial" className="text-sm font-normal">
+                          Commercial
+                        </Label>
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Additional Services */}
+            <div>
+              <Label className="text-base font-medium">Additional Services:</Label>
+              <div className="grid grid-cols-2 gap-3 mt-3">
+                {additionalServices.map((service) => (
+                  <div key={service.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={service.id}
+                      checked={form.watch('additionalServices')?.includes(service.id)}
+                      onCheckedChange={(checked) => handleAdditionalServiceChange(service.id, checked as boolean)}
+                    />
+                    <Label htmlFor={service.id} className="text-sm font-normal">{service.label}</Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Ceiling Fan Count - only show if ceiling fan installation is selected */}
+            {form.watch('additionalServices')?.includes('ceiling_fan_installation') && (
+              <FormField
+                control={form.control}
+                name="ceilingFanCount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>How many ceiling fans?</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., 3"
+                        type="number"
+                        {...field}
+                        className="text-center"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}
