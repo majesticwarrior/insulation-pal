@@ -93,8 +93,7 @@ export async function GET(request: NextRequest) {
         business_name: c.business_name, 
         business_city: c.business_city, 
         business_state: c.business_state,
-        status: c.status,
-        email: c.email 
+        status: c.status
       })) 
     })
 
