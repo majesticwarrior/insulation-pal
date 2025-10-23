@@ -487,6 +487,46 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
               </div>
             </div>
             
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <Trophy className="h-5 w-5 text-orange-600" />
+                <div>
+                  <h3 
+                    className="font-semibold text-[#0a4768] cursor-pointer hover:text-blue-600 transition-colors"
+                    onClick={() => toggleAcceptedLeadExpansion(leadAssignment.id)}
+                  >
+                    {leadAssignment.leads.customer_name}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {leadAssignment.leads.city}, {leadAssignment.leads.state}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Accepted: {new Date(leadAssignment.responded_at || leadAssignment.created_at).toLocaleDateString()}
+                  </p>
+                  {needsQuoteSubmission && (
+                    <Badge variant="outline" className="text-xs text-orange-600 border-orange-300 mt-1">
+                      Quote Required
+                    </Badge>
+                  )}
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => toggleAcceptedLeadExpansion(leadAssignment.id)}
+                className="flex items-center space-x-1 text-gray-600 hover:text-gray-800"
+              >
+                <span className="text-sm">
+                  {isExpanded ? 'Hide Details' : 'Show Details'}
+                </span>
+                {isExpanded ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+            
             {/* Show project details for leads that need quote submission */}
             {needsQuoteSubmission && (
               <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
@@ -530,47 +570,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
               </div>
             )}
             
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <Trophy className="h-5 w-5 text-orange-600" />
-                <div>
-                  <h3 
-                    className="font-semibold text-[#0a4768] cursor-pointer hover:text-blue-600 transition-colors"
-                    onClick={() => toggleAcceptedLeadExpansion(leadAssignment.id)}
-                  >
-                    {leadAssignment.leads.customer_name}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {leadAssignment.leads.city}, {leadAssignment.leads.state}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Accepted: {new Date(leadAssignment.responded_at || leadAssignment.created_at).toLocaleDateString()}
-                  </p>
-                  {needsQuoteSubmission && (
-                    <Badge variant="outline" className="text-xs text-orange-600 border-orange-300 mt-1">
-                      Quote Required
-                    </Badge>
-                  )}
-              </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => toggleAcceptedLeadExpansion(leadAssignment.id)}
-              className="flex items-center space-x-1 text-gray-600 hover:text-gray-800"
-            >
-              <span className="text-sm">
-                {isExpanded ? 'Hide Details' : 'Show Details'}
-              </span>
-              {isExpanded ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
-          
-          {/* Show quote submission form directly for leads that need it */}
+            {/* Show quote submission form directly for leads that need it */}
           {needsQuoteSubmission && (
             <div className="mt-4 pt-4 border-t border-gray-200">
               <div className="mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
