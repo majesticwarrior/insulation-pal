@@ -208,12 +208,12 @@ const emailTemplates = {
           <div class="project-details">
             <h3>📋 Project Details:</h3>
             <ul>
-              <li><strong>Home Size:</strong> ${data.projectDetails.homeSize.toLocaleString()} sq ft</li>
-              <li><strong>Location:</strong> ${data.projectDetails.city}, ${data.projectDetails.state}</li>
-              <li><strong>Areas Needed:</strong> ${data.projectDetails.areas}</li>
-              <li><strong>Insulation Types:</strong> ${data.projectDetails.insulationTypes}</li>
-              ${data.projectDetails.timeline ? `<li><strong>Timeline:</strong> ${data.projectDetails.timeline}</li>` : ''}
-              ${data.projectDetails.budget ? `<li><strong>Budget Range:</strong> ${data.projectDetails.budget}</li>` : ''}
+              <li><strong>Home Size:</strong> ${data.homeSize.toLocaleString()} sq ft</li>
+              <li><strong>Location:</strong> ${data.city}, ${data.state}</li>
+              <li><strong>Areas Needed:</strong> ${data.areas}</li>
+              <li><strong>Insulation Types:</strong> ${data.insulationTypes}</li>
+              ${data.timeline ? `<li><strong>Timeline:</strong> ${data.timeline}</li>` : ''}
+              ${data.budget ? `<li><strong>Budget Range:</strong> ${data.budget}</li>` : ''}
             </ul>
           </div>
           

@@ -148,15 +148,13 @@ export async function POST(request: NextRequest) {
           data: {
             contractorName: contractor.business_name,
             customerName: lead.customer_name,
-            projectDetails: {
-              homeSize: lead.home_size_sqft,
-              areas: lead.areas_needed,
-              insulationTypes: lead.insulation_types,
-              city: lead.city,
-              state: lead.state,
-              timeline: lead.project_timeline,
-              budget: lead.budget_range
-            },
+            homeSize: lead.home_size_sqft,
+            areas: lead.areas_needed,
+            insulationTypes: lead.insulation_types,
+            city: lead.city,
+            state: lead.state,
+            timeline: lead.project_timeline,
+            budget: lead.budget_range,
             inviteUrl
           }
         })
