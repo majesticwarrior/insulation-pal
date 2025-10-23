@@ -16,8 +16,7 @@ import {
   CheckCircle,
   AlertCircle,
   Loader2,
-  Search,
-  Coins
+  Search
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -31,12 +30,11 @@ interface Contractor {
   business_state?: string
   business_zip?: string
   bio?: string
-  years_in_business?: number
+  founded_year?: number
   employee_count?: number
   certifications?: string[]
   review_count: number
   average_rating: number
-  credits?: number
 }
 
 interface ContractorInvitationModalProps {
@@ -291,7 +289,7 @@ export function ContractorInvitationModal({
                             )}
                             <div className="flex items-center space-x-1 text-sm text-gray-600">
                               <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                              <span>{contractor.average_rating || 'N/A'}</span>
+                              <span>{contractor.average_rating > 0 ? contractor.average_rating.toFixed(1) : 'No reviews'}</span>
                               <span>({contractor.review_count} reviews)</span>
                             </div>
                           </div>
@@ -305,10 +303,10 @@ export function ContractorInvitationModal({
                               {contractor.business_zip && ` ${contractor.business_zip}`}
                             </span>
                           </div>
-                          {contractor.years_in_business && (
+                          {contractor.founded_year && (
                             <div className="flex items-center space-x-1">
                               <Calendar className="h-4 w-4" />
-                              <span>{contractor.years_in_business} years in business</span>
+                              <span>{new Date().getFullYear() - contractor.founded_year} years in business</span>
                             </div>
                           )}
                           {contractor.employee_count && (
@@ -325,12 +323,6 @@ export function ContractorInvitationModal({
                           </div>
                         )}
 
-                        {contractor.credits && contractor.credits > 0 && (
-                          <div className="text-sm text-green-600 mb-2 flex items-center">
-                            <Coins className="h-4 w-4 mr-1" />
-                            <span className="font-medium">{contractor.credits} credits available</span>
-                          </div>
-                        )}
 
                         {contractor.bio && (
                           <p className="text-sm text-gray-600 line-clamp-2">

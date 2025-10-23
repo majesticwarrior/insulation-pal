@@ -27,8 +27,8 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Get contractors in the area with credits and email
-    console.log('🔍 Fetching contractors with credits...')
+    // Get contractors in the area with credits, email, and review info
+    console.log('🔍 Fetching contractors with credits and reviews...')
     const { data: contractors, error: contractorError } = await supabaseAdmin
       .from('contractors')
       .select(`
@@ -45,7 +45,8 @@ export async function GET(request: NextRequest) {
         employee_count,
         status,
         credits,
-        users!inner(email)
+        users!inner(email),
+        reviews!left(count, avg_rating)
       `)
       .eq('business_city', city)
       .eq('business_state', state)
@@ -62,12 +63,21 @@ export async function GET(request: NextRequest) {
 
     console.log('✅ Found contractors:', contractors?.length || 0)
 
-    // Transform the data to include email
+    // Transform the data to include email and review info (exclude credits from customer view)
     const transformedContractors = contractors?.map(c => {
       // Extract email safely from users relationship
       const userEmail = Array.isArray(c.users) 
         ? (c.users as any)[0]?.email 
         : (c.users as any)?.email
+      
+      // Extract review data safely
+      const reviewCount = Array.isArray(c.reviews) 
+        ? (c.reviews as any)[0]?.count || 0
+        : (c.reviews as any)?.count || 0
+      
+      const averageRating = Array.isArray(c.reviews) 
+        ? (c.reviews as any)[0]?.avg_rating || 0
+        : (c.reviews as any)?.avg_rating || 0
       
       return {
         id: c.id,
@@ -82,8 +92,9 @@ export async function GET(request: NextRequest) {
         founded_year: c.founded_year,
         employee_count: c.employee_count,
         status: c.status,
-        credits: c.credits,
-        email: userEmail
+        email: userEmail,
+        review_count: reviewCount,
+        average_rating: averageRating
       }
     }) || []
 
