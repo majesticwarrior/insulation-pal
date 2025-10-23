@@ -65,6 +65,7 @@ export function ContractorInvitationModal({
   const [loading, setLoading] = useState(false)
   const [sendingInvitations, setSendingInvitations] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [excludedCount, setExcludedCount] = useState(0)
 
   useEffect(() => {
     if (isOpen) {
@@ -93,6 +94,7 @@ export function ContractorInvitationModal({
         ok: response.ok, 
         status: response.status, 
         contractorsCount: data.contractors?.length || 0,
+        excludedCount: data.excludedCount || 0,
         data 
       })
 
@@ -101,6 +103,7 @@ export function ContractorInvitationModal({
       }
 
       setContractors(data.contractors || [])
+      setExcludedCount(data.excludedCount || 0)
     } catch (error: any) {
       console.error('Error fetching contractors:', error)
       toast.error('Failed to load contractors')
@@ -176,7 +179,7 @@ export function ContractorInvitationModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
+      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center">
             <Users className="h-5 w-5 mr-2" />
@@ -184,7 +187,7 @@ export function ContractorInvitationModal({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 overflow-hidden flex flex-col">
+        <div className="flex flex-col flex-1 min-h-0 space-y-4">
           {/* Project Summary */}
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="p-4">
@@ -230,11 +233,17 @@ export function ContractorInvitationModal({
             </div>
             <div className="text-sm text-gray-600">
               {selectedContractors.size} of {filteredContractors.length} selected
+              {excludedCount > 0 && (
+                <span className="ml-2 text-blue-600">
+                  ({excludedCount} already invited)
+                </span>
+              )}
             </div>
           </div>
 
-          {/* Contractors List */}
-          <div className="flex-1 overflow-y-auto space-y-3">
+          {/* Contractors List - Scrollable */}
+          <div className="flex-1 overflow-y-auto min-h-0 border border-gray-200 rounded-lg">
+            <div className="p-4 space-y-3">
             {loading ? (
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
@@ -342,6 +351,7 @@ export function ContractorInvitationModal({
                 </Card>
               ))
             )}
+            </div>
           </div>
 
           {/* Action Buttons */}

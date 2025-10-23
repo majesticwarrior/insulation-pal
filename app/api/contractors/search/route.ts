@@ -74,6 +74,13 @@ export async function GET(request: NextRequest) {
       excludedContractorIds = existingQuotes?.map(q => q.contractor_id) || []
       excludedEmails = invitedQuotes?.map(q => q.contractor_email) || []
 
+      console.log('Excluding contractors:', { 
+        existingQuotesCount: existingQuotes?.length || 0,
+        invitedQuotesCount: invitedQuotes?.length || 0,
+        excludedContractorIds,
+        excludedEmails 
+      })
+
       if (excludedContractorIds.length > 0) {
         query = query.not('id', 'in', `(${excludedContractorIds.join(',')})`)
       }
@@ -181,7 +188,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       contractors: contractorsWithReviews,
-      total: contractorsWithReviews.length
+      total: contractorsWithReviews.length,
+      excludedCount: excludedContractorIds.length + excludedEmails.length
     })
 
   } catch (error: any) {
