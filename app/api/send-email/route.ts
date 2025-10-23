@@ -661,6 +661,15 @@ export async function POST(request: NextRequest) {
   try {
     const { to, subject, template, data } = await request.json()
 
+    console.log('📧 Email service called:', {
+      to,
+      subject,
+      template,
+      hasData: !!data,
+      siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
+      hasSendGridKey: !!process.env.SENDGRID_API_KEY
+    })
+
     // Debug email data
     if (template === 'contractor-quote') {
       console.log('🔍 Email template data:', {

@@ -140,7 +140,10 @@ export async function POST(request: NextRequest) {
         })
 
         // Use the existing email service API
-        const emailResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/send-email`, {
+        const emailApiUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/send-email`
+        console.log('📧 Calling email API:', emailApiUrl)
+        
+        const emailResponse = await fetch(emailApiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -166,9 +169,16 @@ export async function POST(request: NextRequest) {
           })
         })
 
+        console.log('📧 Email API response status:', emailResponse.status)
+        console.log('📧 Email API response ok:', emailResponse.ok)
+
         if (!emailResponse.ok) {
           const errorData = await emailResponse.json()
-          console.error('❌ Email sending failed:', errorData)
+          console.error('❌ Email sending failed:', {
+            status: emailResponse.status,
+            statusText: emailResponse.statusText,
+            error: errorData
+          })
           throw new Error(`Email sending failed: ${errorData.error || 'Unknown error'}`)
         }
 
