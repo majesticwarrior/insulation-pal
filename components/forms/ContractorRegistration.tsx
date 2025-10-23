@@ -241,8 +241,6 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
                     )}
                   />
 
-                  <div></div>
-
                   <FormField
                     control={form.control}
                     name="password"
