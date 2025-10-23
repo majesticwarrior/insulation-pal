@@ -689,14 +689,31 @@ export default function AdminDashboard() {
 
     setIsUpdating(true)
     try {
-      const { error } = await (supabase as any)
+      // Update contractor profile
+      const { error: contractorError } = await (supabase as any)
         .from('contractors')
         .update(editFormData)
         .eq('id', selectedContractor.id)
 
-      if (error) throw error
+      if (contractorError) throw contractorError
 
-      toast.success('Contractor profile updated successfully')
+      // If contact_email was changed, also update the users table email
+      if (editFormData.contact_email && editFormData.contact_email !== selectedContractor.contact_email) {
+        const { error: userError } = await (supabase as any)
+          .from('users')
+          .update({ email: editFormData.contact_email })
+          .eq('id', selectedContractor.user_id)
+
+        if (userError) {
+          console.error('Error updating user email:', userError)
+          toast.error('Contractor profile updated, but failed to update login email. Please contact support.')
+        } else {
+          toast.success('Contractor profile and login email updated successfully')
+        }
+      } else {
+        toast.success('Contractor profile updated successfully')
+      }
+
       setIsEditDialogOpen(false)
       loadContractors()
     } catch (error) {
