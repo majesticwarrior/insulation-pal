@@ -9,13 +9,18 @@ const supabaseAdmin = createClient(
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('🚀 Contractor search API called')
+    
     const { searchParams } = new URL(request.url)
     const city = searchParams.get('city')
     const state = searchParams.get('state')
     const zipCode = searchParams.get('zipCode')
     const leadId = searchParams.get('leadId')
 
+    console.log('🔍 Contractor search request:', { city, state, leadId, zipCode })
+
     if (!city || !state) {
+      console.log('❌ Missing required parameters')
       return NextResponse.json(
         { error: 'City and state are required' },
         { status: 400 }
@@ -56,25 +61,45 @@ export async function GET(request: NextRequest) {
       // Get contractor IDs who already have quotes for this lead
       // We want to exclude contractors who have ANY assignment for this lead, regardless of status
       // because they've already been given the opportunity to quote
+      console.log('🔍 Fetching lead assignments...')
       const { data: existingQuotes, error: quotesError } = await supabaseAdmin
         .from('lead_assignments')
         .select('contractor_id, status')
         .eq('lead_id', leadId)
 
       if (quotesError) {
-        console.error('Error fetching existing quotes:', quotesError)
+        console.error('❌ Error fetching existing quotes:', quotesError)
+        console.error('❌ Lead assignments error details:', {
+          message: quotesError.message,
+          details: quotesError.details,
+          hint: quotesError.hint,
+          code: quotesError.code
+        })
+        // Don't throw here, just log and continue without exclusions
+      } else {
+        console.log('✅ Lead assignments query successful:', { count: existingQuotes?.length || 0 })
       }
 
       console.log('📋 Existing lead assignments:', existingQuotes)
 
       // Also check invited contractor quotes
+      console.log('🔍 Fetching contractor quotes...')
       const { data: invitedQuotes, error: invitedError } = await supabaseAdmin
         .from('contractor_quotes')
         .select('contractor_email')
         .eq('lead_id', leadId)
 
       if (invitedError) {
-        console.error('Error fetching invited quotes:', invitedError)
+        console.error('❌ Error fetching invited quotes:', invitedError)
+        console.error('❌ Contractor quotes error details:', {
+          message: invitedError.message,
+          details: invitedError.details,
+          hint: invitedError.hint,
+          code: invitedError.code
+        })
+        // Don't throw here, just log and continue without exclusions
+      } else {
+        console.log('✅ Contractor quotes query successful:', { count: invitedQuotes?.length || 0 })
       }
 
       console.log('📧 Invited contractor quotes:', invitedQuotes)
@@ -103,12 +128,21 @@ export async function GET(request: NextRequest) {
       hasExclusions: excludedContractorIds.length > 0 || excludedEmails.length > 0
     })
 
+    console.log('🔍 Executing main contractors query...')
     const { data: contractors, error } = await query
 
     if (error) {
-      console.error('Contractor search error:', error)
+      console.error('❌ Contractor search error:', error)
+      console.error('❌ Error details:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      })
       throw error
     }
+
+    console.log('✅ Main contractors query successful:', { contractorsCount: contractors?.length || 0 })
 
     console.log('Raw contractors query result:', { 
       contractorsCount: contractors?.length || 0, 
@@ -212,9 +246,20 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error: any) {
-    console.error('Error fetching contractors:', error)
+    console.error('💥 Unhandled error in contractor search API:', error)
+    console.error('💥 Error stack:', error.stack)
+    console.error('💥 Error details:', {
+      message: error.message,
+      name: error.name,
+      cause: error.cause
+    })
+    
     return NextResponse.json(
-      { error: 'Failed to fetch contractors', details: error.message },
+      { 
+        error: 'Failed to fetch contractors', 
+        details: error.message,
+        timestamp: new Date().toISOString()
+      },
       { status: 500 }
     )
   }
