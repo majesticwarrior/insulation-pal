@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
           newCredits: contractor.credits - 1
         })
 
-        // Send email invitation
+        // Send email invitation using the existing email service
         const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/invite/${inviteToken}`
         
         // Extract email from users relationship (users is an array with one element)
@@ -132,21 +132,48 @@ export async function POST(request: NextRequest) {
           ? (contractor.users as any)[0]?.email 
           : (contractor.users as any)?.email
         
-        await sendContractorInvitation({
+        console.log('📧 Sending contractor invitation email:', {
+          to: contractorEmail,
           contractorName: contractor.business_name,
-          contractorEmail: contractorEmail,
           customerName: lead.customer_name,
-          projectDetails: {
-            homeSize: lead.home_size_sqft,
-            areas: lead.areas_needed,
-            insulationTypes: lead.insulation_types,
-            city: lead.city,
-            state: lead.state,
-            timeline: lead.project_timeline,
-            budget: lead.budget_range
-          },
           inviteUrl
         })
+
+        // Use the existing email service API
+        const emailResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/send-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: contractorEmail,
+            subject: `New Project Invitation from ${lead.customer_name} - InsulationPal`,
+            template: 'contractor-invitation',
+            data: {
+              contractorName: contractor.business_name,
+              customerName: lead.customer_name,
+              projectDetails: {
+                homeSize: lead.home_size_sqft,
+                areas: lead.areas_needed,
+                insulationTypes: lead.insulation_types,
+                city: lead.city,
+                state: lead.state,
+                timeline: lead.project_timeline,
+                budget: lead.budget_range
+              },
+              inviteUrl
+            }
+          })
+        })
+
+        if (!emailResponse.ok) {
+          const errorData = await emailResponse.json()
+          console.error('❌ Email sending failed:', errorData)
+          throw new Error(`Email sending failed: ${errorData.error || 'Unknown error'}`)
+        }
+
+        const emailResult = await emailResponse.json()
+        console.log('✅ Email sent successfully:', emailResult)
 
         results.push({
           contractorId: contractor.id,
@@ -192,139 +219,3 @@ function generateInviteToken(): string {
   return result
 }
 
-async function sendContractorInvitation({
-  contractorName,
-  contractorEmail,
-  customerName,
-  projectDetails,
-  inviteUrl
-}: {
-  contractorName: string
-  contractorEmail: string
-  customerName: string
-  projectDetails: any
-  inviteUrl: string
-}) {
-  const subject = `New Project Invitation from ${customerName} - InsulationPal`
-  
-  const htmlBody = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Invitation - InsulationPal</title>
-  <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: #0a4768; color: white; padding: 20px; text-align: center; }
-    .content { padding: 20px; background: #f9f9f9; }
-    .project-details { background: white; padding: 15px; border-radius: 5px; margin: 15px 0; }
-    .cta-button { 
-      display: inline-block; 
-      background: #0a4768; 
-      color: white; 
-      padding: 12px 24px; 
-      text-decoration: none; 
-      border-radius: 5px; 
-      margin: 15px 0;
-    }
-    .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>🏠 InsulationPal</h1>
-      <h2>New Project Invitation</h2>
-    </div>
-    
-    <div class="content">
-      <p>Hi <strong>${contractorName}</strong>,</p>
-      
-      <p>You've been invited to submit a quote for an insulation project by <strong>${customerName}</strong>.</p>
-      
-      <div class="project-details">
-        <h3>📋 Project Details:</h3>
-        <ul>
-          <li><strong>Home Size:</strong> ${projectDetails.homeSize.toLocaleString()} sq ft</li>
-          <li><strong>Location:</strong> ${projectDetails.city}, ${projectDetails.state}</li>
-          <li><strong>Areas Needed:</strong> ${projectDetails.areas.join(', ')}</li>
-          <li><strong>Insulation Types:</strong> ${projectDetails.insulationTypes.join(', ')}</li>
-          ${projectDetails.timeline ? `<li><strong>Timeline:</strong> ${projectDetails.timeline}</li>` : ''}
-          ${projectDetails.budget ? `<li><strong>Budget Range:</strong> ${projectDetails.budget}</li>` : ''}
-        </ul>
-      </div>
-      
-      <p>Click the button below to view full project details and submit your quote:</p>
-      
-      <a href="${inviteUrl}" class="cta-button">Submit Quote Now</a>
-      
-      <p><strong>Important:</strong> This invitation expires in 30 days.</p>
-      
-      <p>You can also copy and paste this link into your browser:<br>
-      <a href="${inviteUrl}">${inviteUrl}</a></p>
-    </div>
-    
-    <div class="footer">
-      <p>Best regards,<br>The InsulationPal Team</p>
-      <p>This email was sent because you were invited to bid on a project.</p>
-    </div>
-  </div>
-</body>
-</html>
-  `
-
-  const textBody = `
-Hi ${contractorName},
-
-You've been invited to submit a quote for an insulation project by ${customerName}.
-
-Project Details:
-- Home Size: ${projectDetails.homeSize.toLocaleString()} sq ft
-- Location: ${projectDetails.city}, ${projectDetails.state}
-- Areas Needed: ${projectDetails.areas.join(', ')}
-- Insulation Types: ${projectDetails.insulationTypes.join(', ')}
-${projectDetails.timeline ? `- Timeline: ${projectDetails.timeline}` : ''}
-${projectDetails.budget ? `- Budget Range: ${projectDetails.budget}` : ''}
-
-Click the link below to view full project details and submit your quote:
-${inviteUrl}
-
-This invitation expires in 30 days.
-
-Best regards,
-The InsulationPal Team
-  `
-
-  console.log('📧 Sending contractor invitation email:', {
-    to: contractorEmail,
-    subject,
-    contractorName,
-    customerName,
-    inviteUrl
-  })
-
-  // In production, integrate with email service like SendGrid, Resend, or AWS SES
-  // For now, we'll simulate successful email sending
-  try {
-    // Example integration with Resend (uncomment when ready):
-    /*
-    const { Resend } = require('resend')
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    
-    await resend.emails.send({
-      from: 'InsulationPal <noreply@insulationpal.com>',
-      to: contractorEmail,
-      subject,
-      html: htmlBody,
-      text: textBody
-    })
-    */
-    
-    return { success: true }
-  } catch (error) {
-    console.error('Email sending failed:', error)
-    throw new Error('Failed to send email notification')
-  }
-}

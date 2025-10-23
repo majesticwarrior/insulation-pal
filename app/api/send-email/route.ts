@@ -152,6 +152,80 @@ const emailTemplates = {
     </html>
     `
   },
+
+  'contractor-invitation': (data: any) => {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
+    const logoUrl = `${siteUrl}/insulation-pal-logo-footer.png`
+    
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>New Project Invitation - InsulationPal</title>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #0a4768; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; background: #f9f9f9; }
+        .project-details { background: white; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .cta-button { 
+          display: inline-block; 
+          background: #0a4768; 
+          color: white; 
+          padding: 12px 24px; 
+          text-decoration: none; 
+          border-radius: 5px; 
+          margin: 15px 0;
+        }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img src="${logoUrl}" alt="InsulationPal" style="height: 60px; width: auto;">
+          <h1>🏠 InsulationPal</h1>
+          <h2>New Project Invitation</h2>
+        </div>
+        
+        <div class="content">
+          <p>Hi <strong>${data.contractorName}</strong>,</p>
+          
+          <p>You've been invited to submit a quote for an insulation project by <strong>${data.customerName}</strong>.</p>
+          
+          <div class="project-details">
+            <h3>📋 Project Details:</h3>
+            <ul>
+              <li><strong>Home Size:</strong> ${data.projectDetails.homeSize.toLocaleString()} sq ft</li>
+              <li><strong>Location:</strong> ${data.projectDetails.city}, ${data.projectDetails.state}</li>
+              <li><strong>Areas Needed:</strong> ${data.projectDetails.areas}</li>
+              <li><strong>Insulation Types:</strong> ${data.projectDetails.insulationTypes}</li>
+              ${data.projectDetails.timeline ? `<li><strong>Timeline:</strong> ${data.projectDetails.timeline}</li>` : ''}
+              ${data.projectDetails.budget ? `<li><strong>Budget Range:</strong> ${data.projectDetails.budget}</li>` : ''}
+            </ul>
+          </div>
+          
+          <p>Click the button below to view full project details and submit your quote:</p>
+          
+          <a href="${data.inviteUrl}" class="cta-button">Submit Quote Now</a>
+          
+          <p><strong>Important:</strong> This invitation expires in 30 days.</p>
+          
+          <p>You can also copy and paste this link into your browser:<br>
+          <a href="${data.inviteUrl}">${data.inviteUrl}</a></p>
+        </div>
+        
+        <div class="footer">
+          <p>Best regards,<br>The InsulationPal Team</p>
+          <p>This email was sent because you were invited to bid on a project.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+    `
+  },
   
   'contractor-quote': (data: any) => {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
