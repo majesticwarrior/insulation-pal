@@ -45,7 +45,8 @@ export async function GET(request: NextRequest) {
         founded_year,
         employee_count,
         status,
-        credits
+        credits,
+        contact_email
       `)
       .eq('business_city', city)
       .eq('business_state', state)
@@ -62,29 +63,8 @@ export async function GET(request: NextRequest) {
 
     console.log('✅ Found contractors:', contractors?.length || 0)
 
-    // Get emails for contractors using user_id relationship
-    let contractorEmails: { [key: string]: string } = {}
-    if (contractors && contractors.length > 0) {
-      console.log('🔍 Fetching contractor emails...')
-      const userIds = contractors.map(c => c.user_id).filter(Boolean)
-      
-      if (userIds.length > 0) {
-        const { data: users, error: usersError } = await supabaseAdmin
-          .from('users')
-          .select('id, email')
-          .in('id', userIds)
-        
-        if (usersError) {
-          console.error('❌ Failed to fetch contractor emails:', usersError)
-        } else {
-          console.log('✅ Found contractor emails:', users?.length || 0)
-          contractorEmails = users?.reduce((acc, user) => {
-            acc[user.id] = user.email
-            return acc
-          }, {} as { [key: string]: string }) || {}
-        }
-      }
-    }
+    // Use contact_email field directly from contractors table
+    console.log('🔍 Using contact_email from contractors table...')
 
     // Transform the data (exclude credits from customer view, add placeholder review data)
     const transformedContractors = contractors?.map(c => ({
@@ -100,7 +80,7 @@ export async function GET(request: NextRequest) {
       founded_year: c.founded_year,
       employee_count: c.employee_count,
       status: c.status,
-      email: contractorEmails[c.user_id] || '',
+      email: c.contact_email || '',
       review_count: 0, // Placeholder - will be updated when reviews system is ready
       average_rating: 0 // Placeholder - will be updated when reviews system is ready
     })) || []

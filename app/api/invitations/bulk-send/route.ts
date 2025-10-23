@@ -10,7 +10,10 @@ const supabaseAdmin = createClient(
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🚀 Bulk send invitations API called')
     const { leadId, contractorIds, customerName, projectDetails } = await request.json()
+    
+    console.log('📋 Bulk send request:', { leadId, contractorIds, customerName })
 
     if (!leadId || !contractorIds || !Array.isArray(contractorIds) || contractorIds.length === 0) {
       return NextResponse.json(
@@ -27,7 +30,11 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (leadError) {
-      throw leadError
+      console.error('❌ Failed to fetch lead:', leadError)
+      return NextResponse.json(
+        { error: 'Lead not found', details: leadError.message },
+        { status: 404 }
+      )
     }
 
     // Get contractor details
@@ -39,12 +46,17 @@ export async function POST(request: NextRequest) {
         business_name, 
         business_city, 
         business_state,
-        credits
+        credits,
+        contact_email
       `)
       .in('id', contractorIds)
 
     if (contractorsError) {
-      throw contractorsError
+      console.error('❌ Failed to fetch contractors:', contractorsError)
+      return NextResponse.json(
+        { error: 'Failed to fetch contractors', details: contractorsError.message },
+        { status: 500 }
+      )
     }
 
     const results = []
@@ -128,19 +140,13 @@ export async function POST(request: NextRequest) {
         // Send email invitation using the same service as lead notifications
         const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/invite/${inviteToken}`
         
-        // Get contractor email from users table
-        const { data: user, error: userError } = await supabaseAdmin
-          .from('users')
-          .select('email')
-          .eq('id', contractor.user_id)
-          .single()
+        // Use contact_email field directly from contractors table
+        const contractorEmail = contractor.contact_email
         
-        if (userError || !user) {
-          console.error('❌ Failed to fetch contractor email:', userError)
-          throw new Error('Contractor email not found')
+        if (!contractorEmail) {
+          console.error('❌ Contractor contact_email not found:', contractor.business_name)
+          throw new Error('Contractor contact email not found')
         }
-        
-        const contractorEmail = user.email
         
         console.log('📧 Sending contractor invitation email:', {
           to: contractorEmail,
