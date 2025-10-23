@@ -63,22 +63,29 @@ export async function GET(request: NextRequest) {
     console.log('✅ Found contractors:', contractors?.length || 0)
 
     // Transform the data to include email
-    const transformedContractors = contractors?.map(c => ({
-      id: c.id,
-      business_name: c.business_name,
-      license_number: c.license_number,
-      license_verified: c.license_verified,
-      insurance_verified: c.insurance_verified,
-      business_city: c.business_city,
-      business_state: c.business_state,
-      business_zip: c.business_zip,
-      bio: c.bio,
-      founded_year: c.founded_year,
-      employee_count: c.employee_count,
-      status: c.status,
-      credits: c.credits,
-      email: Array.isArray(c.users) ? c.users[0]?.email : c.users?.email
-    })) || []
+    const transformedContractors = contractors?.map(c => {
+      // Extract email safely from users relationship
+      const userEmail = Array.isArray(c.users) 
+        ? (c.users as any)[0]?.email 
+        : (c.users as any)?.email
+      
+      return {
+        id: c.id,
+        business_name: c.business_name,
+        license_number: c.license_number,
+        license_verified: c.license_verified,
+        insurance_verified: c.insurance_verified,
+        business_city: c.business_city,
+        business_state: c.business_state,
+        business_zip: c.business_zip,
+        bio: c.bio,
+        founded_year: c.founded_year,
+        employee_count: c.employee_count,
+        status: c.status,
+        credits: c.credits,
+        email: userEmail
+      }
+    }) || []
 
     let excludedCount = 0
     let finalContractors = transformedContractors
