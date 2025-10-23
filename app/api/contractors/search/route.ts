@@ -27,8 +27,8 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Get contractors in the area with credits, email, and review info
-    console.log('🔍 Fetching contractors with credits and reviews...')
+    // First, test basic contractor query without complex joins
+    console.log('🔍 Testing basic contractor query...')
     const { data: contractors, error: contractorError } = await supabaseAdmin
       .from('contractors')
       .select(`
@@ -44,9 +44,7 @@ export async function GET(request: NextRequest) {
         founded_year,
         employee_count,
         status,
-        credits,
-        users!inner(email),
-        reviews!left(count, avg_rating)
+        credits
       `)
       .eq('business_city', city)
       .eq('business_state', state)
@@ -63,40 +61,46 @@ export async function GET(request: NextRequest) {
 
     console.log('✅ Found contractors:', contractors?.length || 0)
 
-    // Transform the data to include email and review info (exclude credits from customer view)
-    const transformedContractors = contractors?.map(c => {
-      // Extract email safely from users relationship
-      const userEmail = Array.isArray(c.users) 
-        ? (c.users as any)[0]?.email 
-        : (c.users as any)?.email
+    // Get emails for contractors separately to avoid complex joins
+    let contractorEmails: { [key: string]: string } = {}
+    if (contractors && contractors.length > 0) {
+      console.log('🔍 Fetching contractor emails...')
+      const contractorIds = contractors.map(c => c.id)
       
-      // Extract review data safely
-      const reviewCount = Array.isArray(c.reviews) 
-        ? (c.reviews as any)[0]?.count || 0
-        : (c.reviews as any)?.count || 0
+      const { data: users, error: usersError } = await supabaseAdmin
+        .from('users')
+        .select('id, email')
+        .in('id', contractorIds)
       
-      const averageRating = Array.isArray(c.reviews) 
-        ? (c.reviews as any)[0]?.avg_rating || 0
-        : (c.reviews as any)?.avg_rating || 0
-      
-      return {
-        id: c.id,
-        business_name: c.business_name,
-        license_number: c.license_number,
-        license_verified: c.license_verified,
-        insurance_verified: c.insurance_verified,
-        business_city: c.business_city,
-        business_state: c.business_state,
-        business_zip: c.business_zip,
-        bio: c.bio,
-        founded_year: c.founded_year,
-        employee_count: c.employee_count,
-        status: c.status,
-        email: userEmail,
-        review_count: reviewCount,
-        average_rating: averageRating
+      if (usersError) {
+        console.error('❌ Failed to fetch contractor emails:', usersError)
+      } else {
+        console.log('✅ Found contractor emails:', users?.length || 0)
+        contractorEmails = users?.reduce((acc, user) => {
+          acc[user.id] = user.email
+          return acc
+        }, {} as { [key: string]: string }) || {}
       }
-    }) || []
+    }
+
+    // Transform the data (exclude credits from customer view, add placeholder review data)
+    const transformedContractors = contractors?.map(c => ({
+      id: c.id,
+      business_name: c.business_name,
+      license_number: c.license_number,
+      license_verified: c.license_verified,
+      insurance_verified: c.insurance_verified,
+      business_city: c.business_city,
+      business_state: c.business_state,
+      business_zip: c.business_zip,
+      bio: c.bio,
+      founded_year: c.founded_year,
+      employee_count: c.employee_count,
+      status: c.status,
+      email: contractorEmails[c.id] || '',
+      review_count: 0, // Placeholder - will be updated when reviews system is ready
+      average_rating: 0 // Placeholder - will be updated when reviews system is ready
+    })) || []
 
     let excludedCount = 0
     let finalContractors = transformedContractors
@@ -107,6 +111,7 @@ export async function GET(request: NextRequest) {
       
       try {
         // Get contractors who already have lead assignments for this lead
+        console.log('🔍 Checking existing lead assignments...')
         const { data: existingAssignments, error: assignmentError } = await supabaseAdmin
           .from('lead_assignments')
           .select('contractor_id')
@@ -114,6 +119,12 @@ export async function GET(request: NextRequest) {
         
         if (assignmentError) {
           console.error('❌ Failed to fetch existing assignments:', assignmentError)
+          console.error('❌ Assignment error details:', {
+            message: assignmentError.message,
+            details: assignmentError.details,
+            hint: assignmentError.hint,
+            code: assignmentError.code
+          })
         } else {
           console.log('📊 Existing assignments:', existingAssignments?.length || 0)
           
@@ -127,6 +138,7 @@ export async function GET(request: NextRequest) {
         }
         
         // Get contractors who already submitted quotes for this lead
+        console.log('🔍 Checking existing contractor quotes...')
         const { data: existingQuotes, error: quoteError } = await supabaseAdmin
           .from('contractor_quotes')
           .select('contractor_email')
@@ -134,6 +146,12 @@ export async function GET(request: NextRequest) {
         
         if (quoteError) {
           console.error('❌ Failed to fetch existing quotes:', quoteError)
+          console.error('❌ Quote error details:', {
+            message: quoteError.message,
+            details: quoteError.details,
+            hint: quoteError.hint,
+            code: quoteError.code
+          })
         } else {
           console.log('📊 Existing quotes:', existingQuotes?.length || 0)
           
@@ -152,6 +170,10 @@ export async function GET(request: NextRequest) {
         
       } catch (filterError) {
         console.error('❌ Error during filtering:', filterError)
+        console.error('❌ Filter error details:', {
+          message: filterError instanceof Error ? filterError.message : 'Unknown error',
+          stack: filterError instanceof Error ? filterError.stack : undefined
+        })
         // Continue with unfiltered results if filtering fails
       }
     }
