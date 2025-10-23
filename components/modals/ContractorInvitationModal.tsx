@@ -16,7 +16,8 @@ import {
   CheckCircle,
   AlertCircle,
   Loader2,
-  Search
+  Search,
+  Coins
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -35,6 +36,7 @@ interface Contractor {
   certifications?: string[]
   review_count: number
   average_rating: number
+  credits?: number
 }
 
 interface ContractorInvitationModalProps {
@@ -320,6 +322,13 @@ export function ContractorInvitationModal({
                         {contractor.license_number && (
                           <div className="text-sm text-gray-600 mb-2">
                             <span className="font-medium">License:</span> {contractor.license_number}
+                          </div>
+                        )}
+
+                        {contractor.credits && contractor.credits > 0 && (
+                          <div className="text-sm text-green-600 mb-2 flex items-center">
+                            <Coins className="h-4 w-4 mr-1" />
+                            <span className="font-medium">{contractor.credits} credits available</span>
                           </div>
                         )}
 

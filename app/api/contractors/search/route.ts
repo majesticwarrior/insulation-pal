@@ -37,10 +37,12 @@ export async function GET(request: NextRequest) {
         bio,
         founded_year,
         employee_count,
-        status
+        status,
+        credits
       `)
       .eq('business_state', state)
       .eq('status', 'approved') // Only approved contractors
+      .gt('credits', 0) // Only contractors with credits available
       .order('business_name')
 
     // Variables to store excluded contractors
@@ -49,16 +51,21 @@ export async function GET(request: NextRequest) {
 
     // If we have a leadId, exclude contractors who already have quotes for this lead
     if (leadId) {
+      console.log('🔍 Filtering contractors for leadId:', leadId)
+      
       // Get contractor IDs who already have quotes for this lead
+      // We want to exclude contractors who have ANY assignment for this lead, regardless of status
+      // because they've already been given the opportunity to quote
       const { data: existingQuotes, error: quotesError } = await supabaseAdmin
         .from('lead_assignments')
-        .select('contractor_id')
+        .select('contractor_id, status')
         .eq('lead_id', leadId)
-        .not('status', 'in', ['declined', 'expired'])
 
       if (quotesError) {
         console.error('Error fetching existing quotes:', quotesError)
       }
+
+      console.log('📋 Existing lead assignments:', existingQuotes)
 
       // Also check invited contractor quotes
       const { data: invitedQuotes, error: invitedError } = await supabaseAdmin
@@ -69,6 +76,8 @@ export async function GET(request: NextRequest) {
       if (invitedError) {
         console.error('Error fetching invited quotes:', invitedError)
       }
+
+      console.log('📧 Invited contractor quotes:', invitedQuotes)
 
       // Store excluded contractors
       excludedContractorIds = existingQuotes?.map(q => q.contractor_id) || []
@@ -82,9 +91,17 @@ export async function GET(request: NextRequest) {
       })
 
       if (excludedContractorIds.length > 0) {
-        query = query.not('id', 'in', `(${excludedContractorIds.join(',')})`)
+        console.log('🚫 Applying contractor ID filter:', excludedContractorIds)
+        query = query.not('id', 'in', excludedContractorIds)
       }
     }
+
+    console.log('🔍 Final query being executed:', {
+      leadId,
+      excludedContractorIds,
+      excludedEmails,
+      hasExclusions: excludedContractorIds.length > 0 || excludedEmails.length > 0
+    })
 
     const { data: contractors, error } = await query
 
@@ -100,7 +117,8 @@ export async function GET(request: NextRequest) {
         business_name: c.business_name, 
         business_city: c.business_city, 
         business_state: c.business_state,
-        status: c.status
+        status: c.status,
+        credits: c.credits
       })) 
     })
 
@@ -181,7 +199,8 @@ export async function GET(request: NextRequest) {
       contractors: contractorsWithReviews.map(c => ({ 
         id: c.id, 
         business_name: c.business_name, 
-        business_city: c.business_city
+        business_city: c.business_city,
+        credits: c.credits
       }))
     })
 
