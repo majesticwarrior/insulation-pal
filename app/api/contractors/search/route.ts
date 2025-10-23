@@ -45,6 +45,10 @@ export async function GET(request: NextRequest) {
       .eq('status', 'approved') // Only approved contractors
       .order('business_name')
 
+    // Variables to store excluded contractors
+    let excludedContractorIds: string[] = []
+    let excludedEmails: string[] = []
+
     // If we have a leadId, exclude contractors who already have quotes for this lead
     if (leadId) {
       // Get contractor IDs who already have quotes for this lead
@@ -68,15 +72,13 @@ export async function GET(request: NextRequest) {
         console.error('Error fetching invited quotes:', invitedError)
       }
 
-      // Exclude contractors who already have quotes
-      const excludedContractorIds = existingQuotes?.map(q => q.contractor_id) || []
-      const excludedEmails = invitedQuotes?.map(q => q.contractor_email) || []
+      // Store excluded contractors
+      excludedContractorIds = existingQuotes?.map(q => q.contractor_id) || []
+      excludedEmails = invitedQuotes?.map(q => q.contractor_email) || []
 
       if (excludedContractorIds.length > 0) {
         query = query.not('id', 'in', `(${excludedContractorIds.join(',')})`)
       }
-
-      // We'll filter by email on the client side since we can't easily join here
     }
 
     const { data: contractors, error } = await query
@@ -92,9 +94,7 @@ export async function GET(request: NextRequest) {
 
     // If we have a leadId, also filter out contractors whose emails match invited quotes
     let finalContractors = cityFilteredContractors
-    if (leadId && invitedQuotes && invitedQuotes.length > 0) {
-      const excludedEmails = invitedQuotes.map(q => q.contractor_email)
-      
+    if (leadId && excludedEmails.length > 0) {
       finalContractors = cityFilteredContractors.filter(contractor => 
         !excludedEmails.includes(contractor.email)
       )
