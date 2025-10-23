@@ -81,6 +81,7 @@ function CustomerQuoteReviewContent() {
   const [inviteUrl, setInviteUrl] = useState<string | null>(null)
   const [generatingInvite, setGeneratingInvite] = useState(false)
   const [isInvitationModalOpen, setIsInvitationModalOpen] = useState(false)
+  const [acceptedQuoteId, setAcceptedQuoteId] = useState<string | null>(null)
 
   useEffect(() => {
     if (leadId) {
