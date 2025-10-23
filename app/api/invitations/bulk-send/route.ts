@@ -127,9 +127,12 @@ export async function POST(request: NextRequest) {
         // Send email invitation
         const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/invite/${inviteToken}`
         
+        // Extract email from users relationship (users is an array with one element)
+        const contractorEmail = Array.isArray(contractor.users) ? contractor.users[0]?.email : contractor.users?.email
+        
         await sendContractorInvitation({
           contractorName: contractor.business_name,
-          contractorEmail: contractor.users.email,
+          contractorEmail: contractorEmail,
           customerName: lead.customer_name,
           projectDetails: {
             homeSize: lead.home_size_sqft,
