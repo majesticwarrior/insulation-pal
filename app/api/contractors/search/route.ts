@@ -78,12 +78,23 @@ export async function GET(request: NextRequest) {
 
     console.log('✅ Contractors query successful:', { contractorsCount: contractors?.length || 0 })
 
+    // Filter contractors by city (case-insensitive)
+    const cityFilteredContractors = contractors?.filter(contractor => 
+      contractor.business_city?.toLowerCase().includes(city.toLowerCase())
+    ) || []
+
+    console.log('City filtering result:', { 
+      searchCity: city, 
+      searchState: state,
+      cityFilteredCount: cityFilteredContractors.length
+    })
+
     // Return simplified response for now
     return NextResponse.json({
       success: true,
-      contractors: contractors || [],
-      total: contractors?.length || 0,
-      message: 'Simplified query successful'
+      contractors: cityFilteredContractors || [],
+      total: cityFilteredContractors?.length || 0,
+      message: 'Simplified query successful - contractor_quotes table not found, skipping exclusions'
     })
 
   } catch (error: any) {
