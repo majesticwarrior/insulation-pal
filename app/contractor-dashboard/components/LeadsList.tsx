@@ -549,7 +549,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                   <div className="flex flex-wrap gap-1">
                     {leadAssignment.leads.areas_needed?.map((area: string, index: number) => (
                       <Badge key={index} variant="secondary" className="text-xs px-1 py-0">
-                        {area}
+                        {area.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                       </Badge>
                     ))}
                   </div>
@@ -561,7 +561,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                   <div className="flex flex-wrap gap-1">
                     {leadAssignment.leads.insulation_types?.map((type: string, index: number) => (
                       <Badge key={index} variant="outline" className="text-xs px-1 py-0">
-                        {type}
+                        {type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                       </Badge>
                     ))}
                   </div>
@@ -762,7 +762,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           <div className="flex flex-wrap gap-2 ml-6">
             {leadAssignment.leads.areas_needed?.map((area: string, index: number) => (
               <Badge key={index} variant="secondary" className="text-xs">
-                {area}
+                {area.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
               </Badge>
             ))}
           </div>
@@ -775,7 +775,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           <div className="flex flex-wrap gap-2 ml-6">
             {leadAssignment.leads.insulation_types?.map((type: string, index: number) => (
               <Badge key={index} variant="outline" className="text-xs">
-                {type}
+                {type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
               </Badge>
             ))}
           </div>
@@ -835,7 +835,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           <div className="flex flex-wrap gap-2 ml-6">
             {leadAssignment.leads.areas_needed?.map((area: string, index: number) => (
               <Badge key={index} variant="secondary" className="text-xs">
-                {area}
+                {area.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
               </Badge>
             ))}
           </div>
@@ -848,7 +848,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           <div className="flex flex-wrap gap-2 ml-6">
             {leadAssignment.leads.insulation_types?.map((type: string, index: number) => (
               <Badge key={index} variant="outline" className="text-xs">
-                {type}
+                {type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
               </Badge>
             ))}
           </div>
@@ -989,7 +989,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
               <div className="flex flex-wrap gap-1 mt-1">
                 {leadAssignment.leads.areas_needed.map((area, index) => (
                   <Badge key={index} variant="outline" className="text-xs">
-                    {area}
+                    {area.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                   </Badge>
                 ))}
               </div>
@@ -999,7 +999,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
               <div className="flex flex-wrap gap-1 mt-1">
                 {leadAssignment.leads.insulation_types.map((type, index) => (
                   <Badge key={index} variant="outline" className="text-xs">
-                    {type}
+                    {type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                   </Badge>
                 ))}
               </div>
