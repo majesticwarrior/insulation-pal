@@ -527,100 +527,100 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             </Button>
           </div>
           
-          {/* Show project details for leads that need quote submission */}
-            {needsQuoteSubmission && (
-              <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <h4 className="font-semibold text-[#0a4768] mb-2 text-sm">Project Details</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                  <div className="flex items-center">
-                    <Home className="h-3 w-3 mr-1 text-gray-600" />
-                    <span className="font-medium">Home Size:</span>
-                    <span className="ml-1 text-gray-700">{leadAssignment.leads.home_size_sqft?.toLocaleString()} sq ft</span>
-                  </div>
-                  <div className="flex items-center">
-                    <MapPin className="h-3 w-3 mr-1 text-gray-600" />
-                    <span className="font-medium">Location:</span>
-                    <span className="ml-1 text-gray-700">{leadAssignment.leads.city}, {leadAssignment.leads.state}</span>
+          {/* Show project details for leads that need quote submission OR when expanded */}
+          {(needsQuoteSubmission || isExpanded) && (
+            <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <h4 className="font-semibold text-[#0a4768] mb-2 text-sm">Project Details</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div className="flex items-center">
+                  <Home className="h-3 w-3 mr-1 text-gray-600" />
+                  <span className="font-medium">Home Size:</span>
+                  <span className="ml-1 text-gray-700">{leadAssignment.leads.home_size_sqft?.toLocaleString()} sq ft</span>
+                </div>
+                <div className="flex items-center">
+                  <MapPin className="h-3 w-3 mr-1 text-gray-600" />
+                  <span className="font-medium">Location:</span>
+                  <span className="ml-1 text-gray-700">{leadAssignment.leads.city}, {leadAssignment.leads.state}</span>
+                </div>
+              </div>
+              <div className="mt-2">
+                <div className="flex items-start">
+                  <span className="font-medium text-xs mr-2">Areas:</span>
+                  <div className="flex flex-wrap gap-1">
+                    {leadAssignment.leads.areas_needed?.map((area: string, index: number) => (
+                      <Badge key={index} variant="secondary" className="text-xs px-1 py-0">
+                        {area}
+                      </Badge>
+                    ))}
                   </div>
                 </div>
-                <div className="mt-2">
-                  <div className="flex items-start">
-                    <span className="font-medium text-xs mr-2">Areas:</span>
-                    <div className="flex flex-wrap gap-1">
-                      {leadAssignment.leads.areas_needed?.map((area: string, index: number) => (
-                        <Badge key={index} variant="secondary" className="text-xs px-1 py-0">
-                          {area}
-                        </Badge>
-                      ))}
-                    </div>
+              </div>
+              <div className="mt-1">
+                <div className="flex items-start">
+                  <span className="font-medium text-xs mr-2">Insulation:</span>
+                  <div className="flex flex-wrap gap-1">
+                    {leadAssignment.leads.insulation_types?.map((type: string, index: number) => (
+                      <Badge key={index} variant="outline" className="text-xs px-1 py-0">
+                        {type}
+                      </Badge>
+                    ))}
                   </div>
                 </div>
+              </div>
+              
+              {/* Attic Insulation Depth */}
+              {leadAssignment.leads.attic_insulation_depth && (
                 <div className="mt-1">
                   <div className="flex items-start">
-                    <span className="font-medium text-xs mr-2">Insulation:</span>
+                    <span className="font-medium text-xs mr-2">Attic Depth:</span>
+                    <Badge variant="outline" className="text-xs px-1 py-0">
+                      {leadAssignment.leads.attic_insulation_depth.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+              
+              {/* Project Type */}
+              {leadAssignment.leads.project_type && (
+                <div className="mt-1">
+                  <div className="flex items-start">
+                    <span className="font-medium text-xs mr-2">Type:</span>
+                    <Badge variant="outline" className="text-xs px-1 py-0 capitalize">
+                      {leadAssignment.leads.project_type}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+              
+              {/* Additional Services */}
+              {leadAssignment.leads.additional_services && leadAssignment.leads.additional_services.length > 0 && (
+                <div className="mt-1">
+                  <div className="flex items-start">
+                    <span className="font-medium text-xs mr-2">Additional Services:</span>
                     <div className="flex flex-wrap gap-1">
-                      {leadAssignment.leads.insulation_types?.map((type: string, index: number) => (
-                        <Badge key={index} variant="outline" className="text-xs px-1 py-0">
-                          {type}
+                      {leadAssignment.leads.additional_services.map((service: string, index: number) => (
+                        <Badge key={index} variant="secondary" className="text-xs px-1 py-0">
+                          {service.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                         </Badge>
                       ))}
                     </div>
                   </div>
                 </div>
-                
-                {/* Attic Insulation Depth */}
-                {leadAssignment.leads.attic_insulation_depth && (
-                  <div className="mt-1">
-                    <div className="flex items-start">
-                      <span className="font-medium text-xs mr-2">Attic Depth:</span>
-                      <Badge variant="outline" className="text-xs px-1 py-0">
-                        {leadAssignment.leads.attic_insulation_depth.replace('_', ' ')}
-                      </Badge>
-                    </div>
+              )}
+              
+              {/* Ceiling Fan Count */}
+              {leadAssignment.leads.ceiling_fan_count && (
+                <div className="mt-1">
+                  <div className="flex items-start">
+                    <span className="font-medium text-xs mr-2">Fans:</span>
+                    <Badge variant="outline" className="text-xs px-1 py-0">
+                      {leadAssignment.leads.ceiling_fan_count} fan{leadAssignment.leads.ceiling_fan_count > 1 ? 's' : ''}
+                    </Badge>
                   </div>
-                )}
-                
-                {/* Project Type */}
-                {leadAssignment.leads.project_type && (
-                  <div className="mt-1">
-                    <div className="flex items-start">
-                      <span className="font-medium text-xs mr-2">Type:</span>
-                      <Badge variant="outline" className="text-xs px-1 py-0 capitalize">
-                        {leadAssignment.leads.project_type}
-                      </Badge>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Additional Services */}
-                {leadAssignment.leads.additional_services && leadAssignment.leads.additional_services.length > 0 && (
-                  <div className="mt-1">
-                    <div className="flex items-start">
-                      <span className="font-medium text-xs mr-2">Services:</span>
-                      <div className="flex flex-wrap gap-1">
-                        {leadAssignment.leads.additional_services.map((service: string, index: number) => (
-                          <Badge key={index} variant="secondary" className="text-xs px-1 py-0">
-                            {service.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Ceiling Fan Count */}
-                {leadAssignment.leads.ceiling_fan_count && (
-                  <div className="mt-1">
-                    <div className="flex items-start">
-                      <span className="font-medium text-xs mr-2">Fans:</span>
-                      <Badge variant="outline" className="text-xs px-1 py-0">
-                        {leadAssignment.leads.ceiling_fan_count} fan{leadAssignment.leads.ceiling_fan_count > 1 ? 's' : ''}
-                      </Badge>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
+          )}
             
             {/* Show quote submission form directly for leads that need it */}
           {needsQuoteSubmission && (
@@ -642,13 +642,6 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                   fetchLeads()
                 }}
               />
-            </div>
-          )}
-          
-          {isExpanded && (
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              {/* Show the full lead details when expanded */}
-              {renderFullLeadDetails(leadAssignment)}
             </div>
           )}
         </CardContent>
@@ -869,7 +862,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             </div>
             <div className="ml-6">
               <Badge variant="outline" className="text-xs">
-                {leadAssignment.leads.attic_insulation_depth.replace('_', ' ')}
+                {leadAssignment.leads.attic_insulation_depth.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
               </Badge>
             </div>
           </div>
