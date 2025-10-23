@@ -157,7 +157,7 @@ export function ContractorInvitationModal({
         throw new Error(data.error || 'Failed to send invitations')
       }
 
-      toast.success(`Invitations sent to ${data.totalInvited} contractors!`)
+      toast.success(`Invitations sent to ${data.totalInvited} contractors! ${data.totalCreditsUsed ? `(${data.totalCreditsUsed} credits used)` : ''}`)
       
       if (data.errors && data.errors.length > 0) {
         toast.warning(`${data.totalErrors} invitations failed to send`)
