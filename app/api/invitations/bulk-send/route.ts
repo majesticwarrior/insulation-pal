@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { sendServerEmailDirect } from '@/lib/server-email-direct'
 
 // Use service role for server-side operations
 const supabaseAdmin = createClient(
@@ -124,7 +125,7 @@ export async function POST(request: NextRequest) {
           newCredits: contractor.credits - 1
         })
 
-        // Send email invitation using the existing email service
+        // Send email invitation using the same service as lead notifications
         const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/invite/${inviteToken}`
         
         // Extract email from users relationship (users is an array with one element)
@@ -139,50 +140,27 @@ export async function POST(request: NextRequest) {
           inviteUrl
         })
 
-        // Use the existing email service API
-        const emailApiUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/send-email`
-        console.log('📧 Calling email API:', emailApiUrl)
-        
-        const emailResponse = await fetch(emailApiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            to: contractorEmail,
-            subject: `New Project Invitation from ${lead.customer_name} - InsulationPal`,
-            template: 'contractor-invitation',
-            data: {
-              contractorName: contractor.business_name,
-              customerName: lead.customer_name,
-              projectDetails: {
-                homeSize: lead.home_size_sqft,
-                areas: lead.areas_needed,
-                insulationTypes: lead.insulation_types,
-                city: lead.city,
-                state: lead.state,
-                timeline: lead.project_timeline,
-                budget: lead.budget_range
-              },
-              inviteUrl
-            }
-          })
+        // Use the same email service as lead notifications
+        const emailResult = await sendServerEmailDirect({
+          to: contractorEmail,
+          subject: `New Project Invitation from ${lead.customer_name} - InsulationPal`,
+          template: 'contractor-invitation',
+          data: {
+            contractorName: contractor.business_name,
+            customerName: lead.customer_name,
+            projectDetails: {
+              homeSize: lead.home_size_sqft,
+              areas: lead.areas_needed,
+              insulationTypes: lead.insulation_types,
+              city: lead.city,
+              state: lead.state,
+              timeline: lead.project_timeline,
+              budget: lead.budget_range
+            },
+            inviteUrl
+          }
         })
 
-        console.log('📧 Email API response status:', emailResponse.status)
-        console.log('📧 Email API response ok:', emailResponse.ok)
-
-        if (!emailResponse.ok) {
-          const errorData = await emailResponse.json()
-          console.error('❌ Email sending failed:', {
-            status: emailResponse.status,
-            statusText: emailResponse.statusText,
-            error: errorData
-          })
-          throw new Error(`Email sending failed: ${errorData.error || 'Unknown error'}`)
-        }
-
-        const emailResult = await emailResponse.json()
         console.log('✅ Email sent successfully:', emailResult)
 
         results.push({
