@@ -85,8 +85,16 @@ export function ContractorInvitationModal({
         params.append('zipCode', customerZip)
       }
 
+      console.log('🔍 Fetching contractors with params:', params.toString())
       const response = await fetch(`/api/contractors/search?${params}`)
       const data = await response.json()
+      
+      console.log('📊 API response:', { 
+        ok: response.ok, 
+        status: response.status, 
+        contractorsCount: data.contractors?.length || 0,
+        data 
+      })
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to fetch contractors')

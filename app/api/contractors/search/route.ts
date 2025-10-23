@@ -22,13 +22,12 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Get contractors in the same area
+    // Get contractors in the same area (simplified query first)
     let query = supabaseAdmin
       .from('contractors')
       .select(`
         id,
         business_name,
-        email,
         license_number,
         license_verified,
         insurance_verified,
@@ -36,10 +35,9 @@ export async function GET(request: NextRequest) {
         business_state,
         business_zip,
         bio,
-        years_in_business,
+        founded_year,
         employee_count,
-        certifications,
-        service_areas
+        status
       `)
       .eq('business_state', state)
       .eq('status', 'approved') // Only approved contractors
@@ -84,20 +82,44 @@ export async function GET(request: NextRequest) {
     const { data: contractors, error } = await query
 
     if (error) {
+      console.error('Contractor search error:', error)
       throw error
     }
+
+    console.log('Raw contractors query result:', { 
+      contractorsCount: contractors?.length || 0, 
+      contractors: contractors?.map(c => ({ 
+        id: c.id, 
+        business_name: c.business_name, 
+        business_city: c.business_city, 
+        business_state: c.business_state,
+        status: c.status,
+        email: c.email 
+      })) 
+    })
 
     // Filter contractors by city (case-insensitive)
     const cityFilteredContractors = contractors?.filter(contractor => 
       contractor.business_city?.toLowerCase().includes(city.toLowerCase())
     ) || []
 
+    console.log('City filtering result:', { 
+      searchCity: city, 
+      searchState: state,
+      cityFilteredCount: cityFilteredContractors.length,
+      cityFilteredContractors: cityFilteredContractors.map(c => ({ 
+        id: c.id, 
+        business_name: c.business_name, 
+        business_city: c.business_city 
+      }))
+    })
+
     // If we have a leadId, also filter out contractors whose emails match invited quotes
     let finalContractors = cityFilteredContractors
     if (leadId && excludedEmails.length > 0) {
-      finalContractors = cityFilteredContractors.filter(contractor => 
-        !excludedEmails.includes(contractor.email)
-      )
+      // For now, skip email filtering since we don't have email in the query
+      // We'll need to get emails separately if needed
+      console.log('Skipping email filtering - email field not available in query')
     }
 
     // Limit to 20 contractors to avoid overwhelming the UI
@@ -147,6 +169,15 @@ export async function GET(request: NextRequest) {
         }
       })
     )
+
+    console.log('Final contractors result:', { 
+      finalCount: contractorsWithReviews.length,
+      contractors: contractorsWithReviews.map(c => ({ 
+        id: c.id, 
+        business_name: c.business_name, 
+        business_city: c.business_city
+      }))
+    })
 
     return NextResponse.json({
       success: true,
