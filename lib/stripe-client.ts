@@ -49,6 +49,35 @@ export const redirectToCheckout = async (packageId: string, contractorId: string
   try {
     console.log('🔄 Starting checkout process...', { packageId, contractorId })
     
+    // Check if Stripe is configured
+    const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+    if (!stripePublishableKey || stripePublishableKey.includes('placeholder')) {
+      console.log('🎭 Demo Mode: Stripe not configured, simulating payment')
+      
+      // Simulate a successful payment in demo mode
+      const response = await fetch('/api/stripe/simulate-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          packageId,
+          contractorId,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Demo payment simulation failed')
+      }
+
+      const result = await response.json()
+      console.log('✅ Demo payment completed:', result)
+      
+      // Show success message and redirect
+      window.location.href = '/contractor-dashboard?payment=success&demo=true'
+      return
+    }
+    
     const stripe = await stripePromise
     
     if (!stripe) {

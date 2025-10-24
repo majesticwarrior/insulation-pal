@@ -109,6 +109,31 @@ export default function ContractorDashboard() {
       } else {
         throw new Error('Invalid contractor data structure')
       }
+
+      // Check for payment success in URL parameters
+      const urlParams = new URLSearchParams(window.location.search)
+      const paymentStatus = urlParams.get('payment')
+      const isDemo = urlParams.get('demo')
+      
+      if (paymentStatus === 'success') {
+        if (isDemo === 'true') {
+          toast.success('Demo payment completed successfully!', {
+            description: 'Credits have been added to your account.'
+          })
+        } else {
+          toast.success('Payment completed successfully!', {
+            description: 'Credits have been added to your account.'
+          })
+        }
+        // Refresh the page to update credits
+        setTimeout(() => {
+          window.location.href = '/contractor-dashboard'
+        }, 2000)
+      } else if (paymentStatus === 'cancelled') {
+        toast.info('Payment was cancelled.', {
+          description: 'You can try again anytime.'
+        })
+      }
     } catch (error) {
       console.error('❌ Error parsing contractor data:', error)
       toast.error('Invalid session data. Please log in again.')

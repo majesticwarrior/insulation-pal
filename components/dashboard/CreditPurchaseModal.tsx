@@ -28,9 +28,11 @@ export function CreditPurchaseModal({ contractorId, currentCredits, onClose }: C
       
       // Provide more specific error messages
       if (error.message?.includes('Stripe failed to initialize')) {
-        toast.error('Payment system not configured. Please contact support.')
+        toast.error('Payment system not configured. Running in demo mode.')
       } else if (error.message?.includes('Failed to create checkout session')) {
         toast.error('Unable to create payment session. Please check your connection and try again.')
+      } else if (error.message?.includes('Demo payment simulation failed')) {
+        toast.error('Demo payment failed. Please try again.')
       } else {
         toast.error('Failed to start payment process. Please try again.')
       }
@@ -141,6 +143,13 @@ export function CreditPurchaseModal({ contractorId, currentCredits, onClose }: C
                 <span>Powered by Stripe</span>
               </div>
             </div>
+            {(!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY.includes('placeholder')) && (
+              <div className="mt-2 text-center">
+                <div className="inline-flex items-center px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">
+                  🎭 Demo Mode - Payments are simulated
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Help Text */}
