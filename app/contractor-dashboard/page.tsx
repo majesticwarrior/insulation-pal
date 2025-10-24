@@ -414,12 +414,12 @@ export default function ContractorDashboard() {
           </TabsContent>
 
           <TabsContent value="images">
-            <ImageUploadManager contractorId={contractor?.id || '33333333-3333-3333-3333-333333333331'} />
+            <ImageUploadManager contractorId={contractor?.id || '2eb88780-76ae-4bb9-a99e-70e8cf9d3ced'} />
           </TabsContent>
 
           <TabsContent value="packages">
             <CreditPurchaseManager 
-              contractorId={contractor?.id || '33333333-3333-3333-3333-333333333331'}
+              contractorId={contractor?.id || '2eb88780-76ae-4bb9-a99e-70e8cf9d3ced'}
               currentCredits={stats.credits}
               onCreditsUpdate={(newCredits) => {
                 setStats(prev => ({ ...prev, credits: newCredits }))
@@ -444,7 +444,7 @@ export default function ContractorDashboard() {
           setSelectedLead(null)
         }}
         onResponse={handleLeadResponse}
-        contractorId={contractor?.id || '33333333-3333-3333-3333-333333333331'}
+        contractorId={contractor?.id || '2eb88780-76ae-4bb9-a99e-70e8cf9d3ced'}
       />
     </main>
   )
