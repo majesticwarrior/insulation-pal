@@ -8,35 +8,66 @@ export const stripePromise = loadStripe(
 
 // Helper function to create checkout session
 export const createCheckoutSession = async (packageId: string, contractorId: string) => {
-  const response = await fetch('/api/stripe/create-checkout-session', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      packageId,
-      contractorId,
-    }),
-  })
+  try {
+    console.log('🔄 Creating checkout session...', { packageId, contractorId })
+    
+    const response = await fetch('/api/stripe/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        packageId,
+        contractorId,
+      }),
+    })
 
-  if (!response.ok) {
-    throw new Error('Failed to create checkout session')
+    console.log('📡 API response status:', response.status)
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('❌ API error response:', errorText)
+      throw new Error(`Failed to create checkout session: ${response.status} ${errorText}`)
+    }
+
+    const data = await response.json()
+    console.log('✅ Checkout session data:', data)
+    
+    if (!data.sessionId) {
+      throw new Error('No session ID returned from API')
+    }
+    
+    return data.sessionId
+  } catch (error: any) {
+    console.error('❌ Error in createCheckoutSession:', error)
+    throw error
   }
-
-  const { sessionId } = await response.json()
-  return sessionId
 }
 
 // Helper function to redirect to checkout
 export const redirectToCheckout = async (packageId: string, contractorId: string) => {
-  const stripe = await stripePromise
-  
-  if (!stripe) {
-    throw new Error('Stripe failed to initialize')
-  }
+  try {
+    console.log('🔄 Starting checkout process...', { packageId, contractorId })
+    
+    const stripe = await stripePromise
+    
+    if (!stripe) {
+      console.error('❌ Stripe failed to initialize')
+      throw new Error('Stripe failed to initialize')
+    }
 
-  const sessionId = await createCheckoutSession(packageId, contractorId)
-  
-  // Use window.location for redirect instead of stripe.redirectToCheckout
-  window.location.href = `/api/stripe/checkout-redirect?sessionId=${sessionId}`
+    console.log('✅ Stripe initialized successfully')
+    
+    const sessionId = await createCheckoutSession(packageId, contractorId)
+    console.log('✅ Checkout session created:', sessionId)
+    
+    // Use window.location for redirect instead of stripe.redirectToCheckout
+    const redirectUrl = `/api/stripe/checkout-redirect?sessionId=${sessionId}`
+    console.log('🔄 Redirecting to:', redirectUrl)
+    
+    window.location.href = redirectUrl
+  } catch (error: any) {
+    console.error('❌ Error in redirectToCheckout:', error)
+    throw error
+  }
 }
