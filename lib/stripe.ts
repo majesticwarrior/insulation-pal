@@ -34,7 +34,7 @@ export const leadPackages = [
     credits: 25,
     price: 450, // $450
     pricePerCredit: 18,
-    description: 'Best value for established contractors',
+    description: 'Best value for contractors',
     popular: false
   },
   {
@@ -43,7 +43,7 @@ export const leadPackages = [
     credits: 50,
     price: 850, // $850
     pricePerCredit: 17,
-    description: 'Maximum value for high-volume contractors',
+    description: 'Maximum value for contractors',
     popular: false
   }
 ] as const
