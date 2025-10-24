@@ -14,7 +14,7 @@ export function setupGlobalErrorHandling() {
         event.preventDefault()
         
         // Show a user-friendly error message
-        if (typeof window !== 'undefined' && window.alert) {
+        if (typeof window !== 'undefined') {
           // Don't use alert in production, but this helps debug
           console.error('Match error prevented from crashing the app')
         }
