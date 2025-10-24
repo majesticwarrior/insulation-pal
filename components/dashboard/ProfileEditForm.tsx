@@ -832,6 +832,9 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
                   placeholder="(555) 123-4567"
                 />
                 <p className="text-xs text-gray-500 mt-1">For lead notifications only. Not displayed publicly.</p>
+                <p className="text-xs text-gray-600 mt-1 font-medium">
+                  *By selecting Text Messages, you are giving Insulation Pal consent to receive marketing messages.
+                </p>
               </div>
               <div>
                 <Label htmlFor="contact_email">Email Address</Label>

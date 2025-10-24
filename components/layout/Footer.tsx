@@ -141,12 +141,15 @@ const Footer = () => {
           <div className="text-gray-300 mb-4 md:mb-0">
             © 2024 InsulationPal. All rights reserved.
           </div>
-          <div className="flex space-x-6">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
             <Link href="/privacy" className="text-gray-300 hover:text-[#F5DD22] transition-colors text-sm">
               Privacy Policy
             </Link>
             <Link href="/terms" className="text-gray-300 hover:text-[#F5DD22] transition-colors text-sm">
               Terms of Service
+            </Link>
+            <Link href="/cookies" className="text-gray-300 hover:text-[#F5DD22] transition-colors text-sm">
+              Cookie Policy
             </Link>
             <Link href="/contact" className="text-gray-300 hover:text-[#F5DD22] transition-colors text-sm">
               Contact Us

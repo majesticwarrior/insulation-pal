@@ -213,14 +213,26 @@ async function notifyContractors(contractors: any[], lead: Lead) {
       // Send SMS notification based on preference
       if ((deliveryPreference === 'text' || deliveryPreference === 'both') && contactPhone) {
         try {
-          await sendSMS({
+          console.log(`📱 Attempting to send SMS to ${contractor.business_name} at ${contactPhone}`)
+          
+          const smsMessage = `InsulationPal: New lead in ${lead.city}, ${lead.state}! ${lead.home_size_sqft} sq ft home. Areas: ${lead.areas_needed?.join(', ') || 'Multiple'}. View details: ${process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'}/contractor-dashboard?from=sms`
+          
+          const smsResult = await sendSMS({
             to: contactPhone,
-            message: `New lead available in ${lead.city}, ${lead.state}. View details: ${process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'}/contractor-dashboard`,
+            message: smsMessage,
             type: 'new-lead'
           })
+          
           console.log(`✅ SMS notification sent to ${contractor.business_name} at ${contactPhone}`)
+          console.log(`📱 SMS result:`, smsResult)
         } catch (smsError) {
-          console.error(`❌ Failed to send SMS to ${contractor.business_name}:`, smsError)
+          console.error(`❌ CRITICAL: Failed to send SMS to ${contractor.business_name}:`, smsError)
+          console.error(`❌ SMS error details:`, {
+            contractor: contractor.business_name,
+            phone: contactPhone,
+            error: (smsError as any)?.message,
+            stack: (smsError as any)?.stack
+          })
         }
       } else if (deliveryPreference === 'text' || deliveryPreference === 'both') {
         console.warn(`⚠️ Contractor ${contractor.business_name} prefers SMS but has no phone number`)
