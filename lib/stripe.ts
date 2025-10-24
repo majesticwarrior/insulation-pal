@@ -1,10 +1,12 @@
 // Stripe configuration and utilities
 import Stripe from 'stripe'
 
-// Initialize Stripe with secret key
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-09-30.clover',
-})
+// Initialize Stripe with secret key (only if available)
+export const stripe = process.env.STRIPE_SECRET_KEY 
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-09-30.clover',
+    })
+  : null
 
 // Lead package pricing structure
 export const leadPackages = [
