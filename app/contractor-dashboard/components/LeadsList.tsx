@@ -48,7 +48,9 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
   const [expandedDidntWinLeads, setExpandedDidntWinLeads] = useState<Set<string>>(new Set())
 
   useEffect(() => {
-    fetchLeads()
+    if (contractorId) {
+      fetchLeads()
+    }
   }, [contractorId])
 
   async function fetchLeads() {

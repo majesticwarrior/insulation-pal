@@ -115,7 +115,7 @@ export default function ContractorDashboard() {
       
       // Use the contractor ID from sample data for demo purposes
       // In production, this would come from authentication
-      const contractorId = contractorIdParam || '33333333-3333-3333-3333-333333333331' // Elite Insulation Services
+      const contractorId = contractorIdParam || '2eb88780-76ae-4bb9-a99e-70e8cf9d3ced' // Koala Insulation from your database
       console.log('🎯 Using contractor ID:', contractorId)
       
       // First, fetch fresh contractor data to get updated credits
@@ -284,7 +284,14 @@ export default function ContractorDashboard() {
   }
 
   if (!contractor) {
-    return null
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#0a4768] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading contractor dashboard...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
