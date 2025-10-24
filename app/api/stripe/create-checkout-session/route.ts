@@ -9,8 +9,11 @@ const supabaseAdmin = createClient(
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('Stripe checkout session API called')
+    
     // Check if Stripe is configured
     if (!stripe) {
+      console.log('Stripe not configured')
       return NextResponse.json(
         { error: 'Stripe is not configured. Please add STRIPE_SECRET_KEY to environment variables.' },
         { status: 500 }
@@ -18,6 +21,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { packageId, contractorId } = await request.json()
+    console.log('Received request:', { packageId, contractorId })
 
     if (!packageId || !contractorId) {
       return NextResponse.json(
@@ -35,7 +39,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    console.log('Selected package:', selectedPackage.name)
+
     // Get contractor information
+    console.log('Fetching contractor information...')
     const { data: contractor, error: contractorError } = await supabaseAdmin
       .from('contractors')
       .select('business_name, contact_email')
@@ -45,19 +52,23 @@ export async function POST(request: NextRequest) {
     if (contractorError) {
       console.error('Contractor fetch error:', contractorError)
       return NextResponse.json(
-        { error: 'Contractor not found or database connection failed' },
+        { error: 'Contractor not found or database connection failed', details: contractorError.message },
         { status: 404 }
       )
     }
 
     if (!contractor) {
+      console.log('No contractor found')
       return NextResponse.json(
         { error: 'Contractor not found' },
         { status: 404 }
       )
     }
 
+    console.log('Contractor found:', contractor.business_name)
+
     // Create Stripe checkout session
+    console.log('Creating Stripe checkout session...')
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -88,12 +99,13 @@ export async function POST(request: NextRequest) {
       },
     })
 
+    console.log('Stripe session created:', session.id)
     return NextResponse.json({ sessionId: session.id })
 
   } catch (error: any) {
     console.error('Error creating checkout session:', error)
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      { error: 'Failed to create checkout session', details: error.message },
       { status: 500 }
     )
   }
