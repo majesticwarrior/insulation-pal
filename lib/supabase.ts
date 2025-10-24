@@ -15,7 +15,27 @@ if (!isValidConfig && typeof window !== 'undefined') {
   console.warn('Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your .env.local file')
 }
 
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
+// Create Supabase client with error handling
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  },
+  global: {
+    headers: {
+      'X-Client-Info': 'insulation-pal-web'
+    }
+  },
+  db: {
+    schema: 'public'
+  },
+  realtime: {
+    params: {
+      eventsPerSecond: 10
+    }
+  }
+})
 
 // Client-side supabase instance
 export const createClientComponentClient = () =>

@@ -29,6 +29,8 @@ import { ImageUploadManager } from '@/components/dashboard/ImageUploadManager'
 import { CreditPurchaseManager } from '@/components/dashboard/CreditPurchaseManager'
 import { toast } from 'sonner'
 import { LeadsList } from './components/LeadsList'
+import ErrorBoundary from '@/components/ErrorBoundary'
+import '@/lib/error-handler'
 
 interface Lead {
   id: string
@@ -79,28 +81,34 @@ export default function ContractorDashboard() {
 
   useEffect(() => {
     console.log('🔍 Dashboard useEffect triggered')
-    const contractorData = localStorage.getItem('contractor')
-    console.log('📱 localStorage contractor data:', contractorData)
     
-    if (!contractorData) {
-      console.log('❌ No contractor data in localStorage, redirecting to login')
-      // Show a message to the user before redirecting
-      toast.info('Please log in to access your dashboard', {
-        description: 'You will be redirected to the login page.'
-      })
-      setTimeout(() => {
-        router.push('/contractor-login')
-      }, 2000)
-      return
-    }
-
     try {
+      const contractorData = localStorage.getItem('contractor')
+      console.log('📱 localStorage contractor data:', contractorData)
+      
+      if (!contractorData) {
+        console.log('❌ No contractor data in localStorage, redirecting to login')
+        // Show a message to the user before redirecting
+        toast.info('Please log in to access your dashboard', {
+          description: 'You will be redirected to the login page.'
+        })
+        setTimeout(() => {
+          router.push('/contractor-login')
+        }, 2000)
+        return
+      }
+
       const parsedContractor = JSON.parse(contractorData)
       console.log('👤 Parsed contractor from localStorage:', parsedContractor)
-      console.log('💳 Contractor credits from localStorage:', parsedContractor.credits)
+      console.log('💳 Contractor credits from localStorage:', parsedContractor?.credits)
       
-      setContractor(parsedContractor)
-      loadDashboardData(parsedContractor.id)
+      // Validate contractor data before setting
+      if (parsedContractor && parsedContractor.id) {
+        setContractor(parsedContractor)
+        loadDashboardData(parsedContractor.id)
+      } else {
+        throw new Error('Invalid contractor data structure')
+      }
     } catch (error) {
       console.error('❌ Error parsing contractor data:', error)
       toast.error('Invalid session data. Please log in again.')
@@ -120,11 +128,19 @@ export default function ContractorDashboard() {
       
       // First, fetch fresh contractor data to get updated credits
       console.log('📡 Fetching contractor data from Supabase...')
-      const { data: contractorData, error: contractorError } = await (supabase as any)
-        .from('contractors')
-        .select('*')
-        .eq('id', contractorId)
-        .single()
+      let contractorData, contractorError
+      try {
+        const result = await (supabase as any)
+          .from('contractors')
+          .select('*')
+          .eq('id', contractorId)
+          .single()
+        contractorData = result.data
+        contractorError = result.error
+      } catch (error) {
+        console.error('❌ Error fetching contractor data:', error)
+        contractorError = error
+      }
 
       console.log('📥 Contractor data response:', { contractorData, contractorError })
 
@@ -295,10 +311,11 @@ export default function ContractorDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <Header />
-      
-      <div className="container mx-auto px-4 py-8">
+    <ErrorBoundary>
+      <main className="min-h-screen bg-gray-50">
+        <Header />
+        
+        <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -446,6 +463,7 @@ export default function ContractorDashboard() {
         onResponse={handleLeadResponse}
         contractorId={contractor?.id || '2eb88780-76ae-4bb9-a99e-70e8cf9d3ced'}
       />
-    </main>
+      </main>
+    </ErrorBoundary>
   )
 }

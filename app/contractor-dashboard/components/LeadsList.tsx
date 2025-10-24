@@ -10,6 +10,7 @@ import { handleContractorResponse } from '@/lib/lead-assignment'
 import { Phone, Mail, MapPin, Home, CheckCircle, X, Clock, AlertCircle, Trophy, ChevronDown, ChevronUp, FileText } from 'lucide-react'
 import { QuoteSubmissionForm } from '@/components/dashboard/QuoteSubmissionForm'
 import { ProjectImageUpload } from '@/components/dashboard/ProjectImageUpload'
+import '@/lib/error-handler'
 
 interface Lead {
   id: string
@@ -57,12 +58,28 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
     try {
       console.log('🔍 LeadsList: Fetching leads for contractor:', contractorId)
       
+      // Validate contractorId before proceeding
+      if (!contractorId || typeof contractorId !== 'string') {
+        console.error('❌ Invalid contractor ID:', contractorId)
+        setLeads([])
+        setLoading(false)
+        return
+      }
+      
       // First, test if the tables exist to detect demo mode
       console.log('🔍 Testing table access...')
-      const { data: testData, error: testError } = await supabase
-        .from('lead_assignments')
-        .select('id')
-        .limit(1)
+      let testData, testError
+      try {
+        const result = await supabase
+          .from('lead_assignments')
+          .select('id')
+          .limit(1)
+        testData = result.data
+        testError = result.error
+      } catch (error) {
+        console.error('❌ Error testing table access:', error)
+        testError = error
+      }
 
       console.log('🔍 Table test result:', { testData, testError })
 
@@ -196,36 +213,44 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
       }
 
       console.log('🔍 Executing main query for contractor:', contractorId)
-      const { data: leadAssignments, error: leadError } = await supabase
-        .from('lead_assignments')
-        .select(`
-          id,
-          lead_id,
-          status,
-          cost,
-          created_at,
-          responded_at,
-          quote_amount,
-          quote_notes,
-          leads(
-            customer_name,
-            customer_email,
-            customer_phone,
-            home_size_sqft,
-            areas_needed,
-            insulation_types,
-            additional_services,
-            ceiling_fan_count,
-            project_type,
-            attic_insulation_depth,
-            city,
-            state,
-            zip_code,
-            property_address
-          )
-        `)
-        .eq('contractor_id', contractorId)
-        .order('created_at', { ascending: false })
+      let leadAssignments, leadError
+      try {
+        const result = await supabase
+          .from('lead_assignments')
+          .select(`
+            id,
+            lead_id,
+            status,
+            cost,
+            created_at,
+            responded_at,
+            quote_amount,
+            quote_notes,
+            leads(
+              customer_name,
+              customer_email,
+              customer_phone,
+              home_size_sqft,
+              areas_needed,
+              insulation_types,
+              additional_services,
+              ceiling_fan_count,
+              project_type,
+              attic_insulation_depth,
+              city,
+              state,
+              zip_code,
+              property_address
+            )
+          `)
+          .eq('contractor_id', contractorId)
+          .order('created_at', { ascending: false })
+        leadAssignments = result.data
+        leadError = result.error
+      } catch (error) {
+        console.error('❌ Error executing main query:', error)
+        leadError = error
+      }
 
       console.log('🔍 Lead assignments query result:', { leadAssignments, leadError })
 
@@ -275,6 +300,10 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
   }
 
   function getStatusColor(status: string) {
+    if (!status || typeof status !== 'string') {
+      return 'bg-gray-100 text-gray-800'
+    }
+    
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800'
       case 'accepted': return 'bg-green-100 text-green-800'
@@ -288,6 +317,10 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
   }
 
   function getStatusText(status: string) {
+    if (!status || typeof status !== 'string') {
+      return 'Unknown'
+    }
+    
     switch (status) {
       case 'pending': return 'Pending'
       case 'accepted': return 'Accepted'
@@ -551,7 +584,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                   <div className="flex flex-wrap gap-1">
                     {leadAssignment.leads.areas_needed?.map((area: string, index: number) => (
                       <Badge key={index} variant="secondary" className="text-xs px-1 py-0">
-                        {area.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                        {area && typeof area === 'string' ? area.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : area}
                       </Badge>
                     ))}
                   </div>
@@ -563,7 +596,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                   <div className="flex flex-wrap gap-1">
                     {leadAssignment.leads.insulation_types?.map((type: string, index: number) => (
                       <Badge key={index} variant="outline" className="text-xs px-1 py-0">
-                        {type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                        {type && typeof type === 'string' ? type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : type}
                       </Badge>
                     ))}
                   </div>
@@ -576,7 +609,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                   <div className="flex items-start">
                     <span className="font-medium text-xs mr-2">Attic Depth:</span>
                     <Badge variant="outline" className="text-xs px-1 py-0">
-                      {leadAssignment.leads.attic_insulation_depth.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      {leadAssignment.leads.attic_insulation_depth && typeof leadAssignment.leads.attic_insulation_depth === 'string' ? leadAssignment.leads.attic_insulation_depth.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : leadAssignment.leads.attic_insulation_depth}
                     </Badge>
                   </div>
                 </div>
@@ -602,7 +635,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                     <div className="flex flex-wrap gap-1">
                       {leadAssignment.leads.additional_services.map((service: string, index: number) => (
                         <Badge key={index} variant="secondary" className="text-xs px-1 py-0">
-                          {service.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                          {service && typeof service === 'string' ? service.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : service}
                         </Badge>
                       ))}
                     </div>
@@ -764,7 +797,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           <div className="flex flex-wrap gap-2 ml-6">
             {leadAssignment.leads.areas_needed?.map((area: string, index: number) => (
               <Badge key={index} variant="secondary" className="text-xs">
-                {area.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                {area && typeof area === 'string' ? area.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : area}
               </Badge>
             ))}
           </div>
@@ -777,7 +810,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           <div className="flex flex-wrap gap-2 ml-6">
             {leadAssignment.leads.insulation_types?.map((type: string, index: number) => (
               <Badge key={index} variant="outline" className="text-xs">
-                {type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                {type && typeof type === 'string' ? type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : type}
               </Badge>
             ))}
           </div>
@@ -837,7 +870,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           <div className="flex flex-wrap gap-2 ml-6">
             {leadAssignment.leads.areas_needed?.map((area: string, index: number) => (
               <Badge key={index} variant="secondary" className="text-xs">
-                {area.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                {area && typeof area === 'string' ? area.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : area}
               </Badge>
             ))}
           </div>
@@ -850,7 +883,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           <div className="flex flex-wrap gap-2 ml-6">
             {leadAssignment.leads.insulation_types?.map((type: string, index: number) => (
               <Badge key={index} variant="outline" className="text-xs">
-                {type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                {type && typeof type === 'string' ? type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : type}
               </Badge>
             ))}
           </div>
@@ -864,7 +897,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             </div>
             <div className="ml-6">
               <Badge variant="outline" className="text-xs">
-                {leadAssignment.leads.attic_insulation_depth.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                {leadAssignment.leads.attic_insulation_depth && typeof leadAssignment.leads.attic_insulation_depth === 'string' ? leadAssignment.leads.attic_insulation_depth.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : leadAssignment.leads.attic_insulation_depth}
               </Badge>
             </div>
           </div>
@@ -893,7 +926,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             <div className="flex flex-wrap gap-2 ml-6">
               {leadAssignment.leads.additional_services.map((service: string, index: number) => (
                 <Badge key={index} variant="secondary" className="text-xs">
-                  {service.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  {service && typeof service === 'string' ? service.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : service}
                 </Badge>
               ))}
             </div>
@@ -991,7 +1024,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
               <div className="flex flex-wrap gap-1 mt-1">
                 {leadAssignment.leads.areas_needed.map((area, index) => (
                   <Badge key={index} variant="outline" className="text-xs">
-                    {area.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    {area && typeof area === 'string' ? area.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : area}
                   </Badge>
                 ))}
               </div>
@@ -1001,7 +1034,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
               <div className="flex flex-wrap gap-1 mt-1">
                 {leadAssignment.leads.insulation_types.map((type, index) => (
                   <Badge key={index} variant="outline" className="text-xs">
-                    {type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    {type && typeof type === 'string' ? type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : type}
                   </Badge>
                 ))}
               </div>
