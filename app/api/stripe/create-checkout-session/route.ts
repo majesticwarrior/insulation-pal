@@ -12,6 +12,12 @@ export async function POST(request: NextRequest) {
     console.log('Stripe checkout session API called')
     
     // Check if Stripe is configured
+    console.log('🔍 Stripe configuration check:', { 
+      hasStripe: !!stripe,
+      hasSecretKey: !!process.env.STRIPE_SECRET_KEY,
+      secretKeyPrefix: process.env.STRIPE_SECRET_KEY?.substring(0, 10) + '...'
+    })
+    
     if (!stripe) {
       console.log('Stripe not configured')
       return NextResponse.json(

@@ -143,7 +143,16 @@ export function CreditPurchaseModal({ contractorId, currentCredits, onClose }: C
                 <span>Powered by Stripe</span>
               </div>
             </div>
-            {(!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY.includes('placeholder')) && (
+            {(() => {
+              const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+              const isDemoMode = !stripeKey || stripeKey.includes('placeholder')
+              console.log('🔍 CreditPurchaseModal Stripe check:', { 
+                hasKey: !!stripeKey, 
+                keyPrefix: stripeKey?.substring(0, 10) + '...',
+                isDemoMode 
+              })
+              return isDemoMode
+            })() && (
               <div className="mt-2 text-center">
                 <div className="inline-flex items-center px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">
                   🎭 Demo Mode - Payments are simulated

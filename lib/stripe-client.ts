@@ -51,6 +51,12 @@ export const redirectToCheckout = async (packageId: string, contractorId: string
     
     // Check if Stripe is configured
     const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+    console.log('🔍 Stripe publishable key check:', { 
+      hasKey: !!stripePublishableKey, 
+      keyPrefix: stripePublishableKey?.substring(0, 10) + '...',
+      isPlaceholder: stripePublishableKey?.includes('placeholder')
+    })
+    
     if (!stripePublishableKey || stripePublishableKey.includes('placeholder')) {
       console.log('🎭 Demo Mode: Stripe not configured, simulating payment')
       
