@@ -25,7 +25,15 @@ export function CreditPurchaseModal({ contractorId, currentCredits, onClose }: C
       await redirectToCheckout(packageId, contractorId)
     } catch (error: any) {
       console.error('Payment error:', error)
-      toast.error('Failed to start payment process. Please try again.')
+      
+      // Provide more specific error messages
+      if (error.message?.includes('Stripe failed to initialize')) {
+        toast.error('Payment system not configured. Please contact support.')
+      } else if (error.message?.includes('Failed to create checkout session')) {
+        toast.error('Unable to create payment session. Please check your connection and try again.')
+      } else {
+        toast.error('Failed to start payment process. Please try again.')
+      }
     } finally {
       setIsProcessing(false)
     }
@@ -54,7 +62,7 @@ export function CreditPurchaseModal({ contractorId, currentCredits, onClose }: C
             {leadPackages.map((pkg) => (
               <Card 
                 key={pkg.id} 
-                className={`relative cursor-pointer transition-all ${
+                className={`relative cursor-pointer transition-all h-full flex flex-col ${
                   selectedPackage === pkg.id 
                     ? 'ring-2 ring-[#0a4768] shadow-lg' 
                     : 'hover:shadow-md'
@@ -76,7 +84,7 @@ export function CreditPurchaseModal({ contractorId, currentCredits, onClose }: C
                   <CardDescription>{pkg.description}</CardDescription>
                 </CardHeader>
                 
-                <CardContent className="text-center space-y-4">
+                <CardContent className="text-center space-y-4 flex flex-col flex-1">
                   <div>
                     <div className="text-3xl font-bold text-[#0a4768]">
                       {formatPrice(pkg.price * 100)}
@@ -86,7 +94,7 @@ export function CreditPurchaseModal({ contractorId, currentCredits, onClose }: C
                     </div>
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 flex-1">
                     <div className="flex items-center text-sm">
                       <Check className="h-4 w-4 text-green-500 mr-2" />
                       <span>{pkg.credits} Lead Credits</span>
@@ -102,7 +110,7 @@ export function CreditPurchaseModal({ contractorId, currentCredits, onClose }: C
                   </div>
                   
                   <Button 
-                    className="w-full"
+                    className="w-full mt-auto"
                     onClick={(e) => {
                       e.stopPropagation()
                       handlePurchase(pkg.id)

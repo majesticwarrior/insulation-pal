@@ -42,7 +42,15 @@ export async function POST(request: NextRequest) {
       .eq('id', contractorId)
       .single()
 
-    if (contractorError || !contractor) {
+    if (contractorError) {
+      console.error('Contractor fetch error:', contractorError)
+      return NextResponse.json(
+        { error: 'Contractor not found or database connection failed' },
+        { status: 404 }
+      )
+    }
+
+    if (!contractor) {
       return NextResponse.json(
         { error: 'Contractor not found' },
         { status: 404 }
