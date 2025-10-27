@@ -417,12 +417,11 @@ async function getPhoenixReviews() {
 
 // Add Sun City area cities with 50k+ population
 const sunCityAreaCities = [
-  { name: 'Sun City', population: '275,987' },
-  { name: 'Phoenix', population: '1,608,139' },
-  { name: 'Mesa', population: '504,258' },
-  { name: 'Gilbert', population: '267,918' },
-  { name: 'Tempe', population: '195,805' },
-  { name: 'Scottsdale', population: '241,361' }
+  { name: 'Sun City', population: '38,309', slug: 'sun-city' },
+  { name: 'Peoria', population: '190,985', slug: 'peoria' },
+  { name: 'Glendale', population: '248,325', slug: 'glendale' },
+  { name: 'Phoenix', population: '1,608,139', slug: 'phoenix' },
+  { name: 'Surprise', population: '147,965', slug: 'surprise' }
 ]
 
 
@@ -701,27 +700,37 @@ export default async function SunCityInsulationContractors() {
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {sunCityAreaCities.map((city, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold text-lg text-gray-700">{city.name}</h3>
-                      <p className="text-sm text-gray-500">Pop: {city.population}</p>
+              city.name === 'Sun City' ? (
+                <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-lg text-gray-700">{city.name}</h3>
+                        <p className="text-sm text-gray-500">Pop: {city.population}</p>
+                      </div>
+                      <Badge variant="default" className="bg-[#F5DD22] text-[#0a4768]">
+                        Current Page
+                      </Badge>
                     </div>
-                    <div className="text-right">
-                      {city.name === 'Sun City' ? (
-                        <Badge variant="default" className="bg-[#F5DD22] text-[#0a4768]">
-                          Current Page
-                        </Badge>
-                      ) : (
-                        <Button size="sm" variant="outline" className="text-xs" disabled>
-                          Coming Soon
+                  </CardContent>
+                </Card>
+              ) : (
+                <Link key={index} href={`/arizona/${city.slug}-insulation-contractors`} className="hover:no-underline">
+                  <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-semibold text-lg text-[#0a4768]">{city.name}</h3>
+                          <p className="text-sm text-gray-500">Pop: {city.population}</p>
+                        </div>
+                        <Button size="sm" variant="outline" className="text-xs">
+                          View Contractors
                         </Button>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              )
             ))}
           </div>
         </div>
@@ -732,7 +741,7 @@ export default async function SunCityInsulationContractors() {
         <div className="container mx-auto px-4">
           <div className="rounded-lg overflow-hidden shadow-lg">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d424562.4818431687!2d-111.95077996445466!3d33.30689243162149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s[d%]+!2sSun+City%2C+AZ!5e0!3m2!1sen!2sus!4v1709562834567"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d42424.204835627!2d-112.3192353!3d33.6006094!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872b3f8e8e8e8e8d%3A0x7e8f01e1da73e80!2sSun+City%2C+AZ!5e0!3m2!1sen!2sus!4v1709562834567"
               width="100%"
               height="450"
               style={{ border: 0 }}

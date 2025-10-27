@@ -23,9 +23,9 @@ export const metadata: Metadata = {
 const pressReleases = [
   {
     title: 'InsulationPal Launches New Platform to Connect Homeowners with Trusted Local Insulation Contractors',
-    date: 'October 27, 2025',
-    summary: 'InsulationPal announces the launch of its innovative platform designed to simplify the process of finding and hiring qualified insulation contractors.',
-    content: 'InsulationPal is excited to announce the official launch of its groundbreaking platform that connects homeowners with trusted, local insulation contractors. The platform streamlines the process of finding qualified professionals, comparing quotes, and managing insulation projects from start to finish. With a focus on transparency, quality, and customer satisfaction, InsulationPal is revolutionizing how homeowners approach their insulation needs.',
+    date: 'October 24, 2025',
+    summary: 'InsulationPal launches a new online platform connecting homeowners with licensed local insulation contractors, helping users compare bids, access trusted professionals, and find affordable, high-quality home and commercial insulation solutions.',
+    content: 'Glendale, Arizona – InsulationPal, a newly launched consumer-focused digital platform, is set to transform how homeowners and businesses find and hire licensed insulation contractors across the United States. Designed to make insulation projects easier, faster, and more transparent, the platform allows users to connect with local insulation professionals, compare multiple bids, and confidently choose the right expert for their project – whether for residential, commercial, or industrial spaces.',
     category: 'Company Launch',
     readTime: '3 min read',
     featured: true,

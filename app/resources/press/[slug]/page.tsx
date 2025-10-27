@@ -3,8 +3,9 @@ import Footer from '@/components/layout/Footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
+import { ShareButton } from '@/components/ui/share-button'
 import Link from 'next/link'
-import { Calendar, ArrowLeft, ExternalLink, Share2 } from 'lucide-react'
+import { Calendar, ArrowLeft, ExternalLink } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
@@ -23,22 +24,30 @@ const pressArticles: { [key: string]: {
 }} = {
   'insulationpal-launches-new-platform-to-connect-homeowners-with-trusted-local-insulation-contractors': {
     title: 'InsulationPal Launches New Platform to Connect Homeowners with Trusted Local Insulation Contractors',
-    date: 'October 27, 2025',
+    date: 'October 24, 2025',
     category: 'Company Launch',
-    summary: 'InsulationPal announces the launch of its innovative platform designed to simplify the process of finding and hiring qualified insulation contractors.',
+    summary: 'InsulationPal launches a new online platform connecting homeowners with licensed local insulation contractors, helping users compare bids, access trusted professionals, and find affordable, high-quality home and commercial insulation solutions.',
     content: [
-      'InsulationPal is excited to announce the official launch of its groundbreaking platform that connects homeowners with trusted, local insulation contractors. The platform streamlines the process of finding qualified professionals, comparing quotes, and managing insulation projects from start to finish.',
-      'With a focus on transparency, quality, and customer satisfaction, InsulationPal is revolutionizing how homeowners approach their insulation needs. The platform features a comprehensive network of licensed and insured contractors, verified customer reviews, and detailed project portfolios to help homeowners make informed decisions.',
-      '"We created InsulationPal to solve a common problem homeowners face: finding trustworthy, qualified insulation contractors," said the InsulationPal team. "Our platform makes it easy to connect with local professionals, compare multiple quotes, and feel confident in your hiring decision."',
-      'Key features of the InsulationPal platform include:',
-      '• Verified contractor profiles with licensing and insurance information',
-      '• Real customer reviews and ratings',
-      '• Project portfolio galleries showcasing completed work',
-      '• Free quote request system connecting homeowners with multiple contractors',
-      '• Educational resources about insulation types, costs, and best practices',
-      '• City-specific contractor directories across multiple states',
-      'The platform initially launches with coverage in Arizona, with plans to expand to additional states in the coming months. Homeowners can visit InsulationPal.com to search for contractors in their area, request quotes, and access free educational resources about home insulation.',
-      'For contractors interested in joining the InsulationPal network, the platform offers tools to showcase their work, connect with qualified leads, and grow their business. Licensed and insured insulation professionals can apply at InsulationPal.com/join-contractor.',
+      'Glendale, Arizona – Oct 24, 2025 – InsulationPal, a newly launched consumer-focused digital platform, is set to transform how homeowners and businesses find and hire licensed insulation contractors across the United States. Designed to make insulation projects easier, faster, and more transparent, the platform allows users to connect with local insulation professionals, compare multiple bids, and confidently choose the right expert for their project – whether for residential, commercial, or industrial spaces.',
+      'With energy efficiency and home comfort becoming top priorities for property owners, InsulationPal fills a crucial gap in the home improvement industry. The platform simplifies the process of finding reliable home insulation and commercial insulation services by providing a single destination where users can access verified, insured, and experienced contractors.',
+      '"Choosing the right insulation contractor shouldn\'t be complicated," said Shannon Adams, spokesperson for InsulationPal. "Our goal is to make the process transparent, affordable, and convenient. We help homeowners and businesses make informed decisions while ensuring that only licensed professionals handle their projects."',
+      'A Smarter Way to Hire Insulation Contractors',
+      'The InsulationPal website – https://insulationpal.com/ – features an intuitive design that allows users to easily enter project details and receive estimates from qualified contractors in their area. Whether it\'s upgrading attic insulation, improving wall insulation, or installing specialized materials for commercial properties, the platform provides users with multiple options tailored to their specific needs and budget.',
+      'By partnering exclusively with licensed insulation contractors, InsulationPal ensures that every project is handled by professionals who adhere to industry standards and safety regulations. This commitment to quality gives users peace of mind, knowing their homes and businesses are in expert hands.',
+      'Bridging the Gap Between Homeowners and Professionals',
+      'In today\'s competitive home services market, property owners often struggle to identify trustworthy service providers. Many face issues such as unclear pricing, limited local options, or unverified contractors. InsulationPal addresses these challenges head-on by creating a centralized hub for comparing verified contractors, customer reviews, and fair estimates – all in one place.',
+      'Homeowners can use InsulationPal to:',
+      '• Compare bids from multiple local insulation professionals',
+      '• Verify licensing and credentials before hiring',
+      '• Access expert advice and insulation-related resources',
+      '• Connect with specialists in home, attic, wall, and commercial insulation',
+      'For contractors, the platform offers valuable visibility and access to new leads, helping local professionals grow their businesses while maintaining high industry standards.',
+      'Driving Energy Efficiency and Comfort Nationwide',
+      'Insulation plays a vital role in reducing energy costs, improving indoor air quality, and maintaining comfort year-round. As homeowners look for ways to save on utility bills and support sustainability efforts, the demand for professional insulation services continues to rise.',
+      '"Proper insulation is one of the smartest investments you can make in your home or building," added Adams. "With InsulationPal, we\'re not just connecting people to contractors – we\'re connecting them to long-term comfort and savings."',
+      'The platform is already gaining attention among energy-conscious homeowners, property managers, and business owners seeking reliable insulation solutions that combine affordability with expertise.',
+      'About InsulationPal',
+      'Insulation Pal is a U.S.-based digital platform headquartered in Glendale, Arizona, dedicated to connecting homeowners and businesses with licensed, local insulation contractors. The company\'s mission is to make the process of finding trusted insulation professionals simpler, more transparent, and cost-effective. By offering tools to compare bids, verify credentials, and access professional insights, Insulation Pal ensures that every project receives the right expertise – at the right price.',
     ],
     pressReleaseUrl: 'https://www.abnewswire.com/pressreleases/insulationpal-launches-new-platform-to-connect-homeowners-with-trusted-local-insulation-contractors_770586.html'
   }
@@ -130,34 +139,45 @@ export default async function PressArticlePage({ params }: PressArticlePageProps
                   </Link>
                 </Button>
               )}
-              <Button 
-                variant="outline" 
-                className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
-                onClick={() => {
-                  if (navigator.share) {
-                    navigator.share({
-                      title: article.title,
-                      text: article.summary,
-                      url: window.location.href,
-                    })
-                  } else {
-                    navigator.clipboard.writeText(window.location.href)
-                    alert('Link copied to clipboard!')
-                  }
-                }}
-              >
-                <Share2 className="mr-2 h-4 w-4" />
-                Share
-              </Button>
+              <ShareButton 
+                title={article.title}
+                text={article.summary}
+              />
             </div>
 
             {/* Article Body */}
             <div className="prose prose-lg max-w-none">
-              {article.content.map((paragraph, index) => (
-                <p key={index} className="text-gray-700 mb-6 leading-relaxed text-lg">
-                  {paragraph}
-                </p>
-              ))}
+              {article.content.map((paragraph, index) => {
+                // Check if it's a section header (no period at end, relatively short)
+                const isHeader = !paragraph.endsWith('.') && 
+                                !paragraph.endsWith('"') && 
+                                !paragraph.startsWith('•') && 
+                                paragraph.length < 100 &&
+                                !paragraph.includes('–') // Not the dateline
+                
+                // Check if it's a bullet point
+                const isBullet = paragraph.startsWith('•')
+                
+                if (isHeader && paragraph.length > 10) {
+                  return (
+                    <h3 key={index} className="text-2xl font-bold text-[#0a4768] mt-12 mb-6">
+                      {paragraph}
+                    </h3>
+                  )
+                } else if (isBullet) {
+                  return (
+                    <p key={index} className="text-gray-700 mb-3 leading-relaxed text-lg pl-6">
+                      {paragraph}
+                    </p>
+                  )
+                } else {
+                  return (
+                    <p key={index} className="text-gray-700 mb-6 leading-relaxed text-lg">
+                      {paragraph}
+                    </p>
+                  )
+                }
+              })}
             </div>
 
             {/* Footer CTA */}

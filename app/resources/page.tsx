@@ -299,63 +299,30 @@ export default function ResourcesPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="hover:shadow-xl transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="bg-[#F5DD22] w-10 h-10 rounded-full flex items-center justify-center mr-3">
-                    <Newspaper className="h-5 w-5 text-[#0a4768]" />
+          <div className="max-w-2xl mx-auto">
+            <Card className="hover:shadow-xl transition-shadow border-2 border-[#F5DD22]">
+              <CardContent className="p-8">
+                <div className="flex items-center mb-6">
+                  <div className="bg-[#F5DD22] w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                    <Newspaper className="h-6 w-6 text-[#0a4768]" />
                   </div>
-                  <span className="text-sm text-gray-500">December 2024</span>
-                </div>
-                <h3 className="text-lg font-bold text-[#0a4768] mb-3">
-                  InsulationPal Expands to New Markets
-                </h3>
-                <p className="text-gray-600 text-sm mb-4">
-                  Company announces expansion into three new states, bringing professional insulation services to more homeowners.
-                </p>
-                <Button asChild variant="outline" size="sm" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
-                  <Link href="/resources/press">Read More</Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-xl transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="bg-[#F5DD22] w-10 h-10 rounded-full flex items-center justify-center mr-3">
-                    <Newspaper className="h-5 w-5 text-[#0a4768]" />
+                  <div>
+                    <span className="bg-[#F5DD22] text-[#0a4768] px-3 py-1 rounded-full text-sm font-medium">
+                      Company Launch
+                    </span>
+                    <p className="text-sm text-gray-500 mt-2">October 24, 2025</p>
                   </div>
-                  <span className="text-sm text-gray-500">November 2024</span>
                 </div>
-                <h3 className="text-lg font-bold text-[#0a4768] mb-3">
-                  Energy Efficiency Partnership
+                <h3 className="text-2xl font-bold text-[#0a4768] mb-4 leading-tight">
+                  InsulationPal Launches New Platform to Connect Homeowners with Trusted Local Insulation Contractors
                 </h3>
-                <p className="text-gray-600 text-sm mb-4">
-                  InsulationPal partners with local utilities to offer rebate programs for energy-efficient home improvements.
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  InsulationPal launches a new online platform connecting homeowners with licensed local insulation contractors, helping users compare bids, access trusted professionals, and find affordable, high-quality home and commercial insulation solutions.
                 </p>
-                <Button asChild variant="outline" size="sm" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
-                  <Link href="/resources/press">Read More</Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-xl transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="bg-[#F5DD22] w-10 h-10 rounded-full flex items-center justify-center mr-3">
-                    <Newspaper className="h-5 w-5 text-[#0a4768]" />
-                  </div>
-                  <span className="text-sm text-gray-500">October 2024</span>
-                </div>
-                <h3 className="text-lg font-bold text-[#0a4768] mb-3">
-                  Industry Recognition Award
-                </h3>
-                <p className="text-gray-600 text-sm mb-4">
-                  InsulationPal receives "Best Customer Service" award from the National Insulation Association.
-                </p>
-                <Button asChild variant="outline" size="sm" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
-                  <Link href="/resources/press">Read More</Link>
+                <Button asChild className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
+                  <Link href="/resources/press/insulationpal-launches-new-platform-to-connect-homeowners-with-trusted-local-insulation-contractors">
+                    Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
                 </Button>
               </CardContent>
             </Card>

@@ -417,12 +417,11 @@ async function getPhoenixReviews() {
 
 // Add Maricopa area cities with 50k+ population
 const maricopaAreaCities = [
-  { name: 'Maricopa', population: '275,987' },
-  { name: 'Phoenix', population: '1,608,139' },
-  { name: 'Mesa', population: '504,258' },
-  { name: 'Gilbert', population: '267,918' },
-  { name: 'Tempe', population: '195,805' },
-  { name: 'Scottsdale', population: '241,361' }
+  { name: 'Maricopa', population: '61,908', slug: 'maricopa' },
+  { name: 'Phoenix', population: '1,608,139', slug: 'phoenix' },
+  { name: 'Chandler', population: '275,987', slug: 'chandler' },
+  { name: 'Gilbert', population: '267,918', slug: 'gilbert' },
+  { name: 'Casa Grande', population: '55,653', slug: 'casa-grande' }
 ]
 
 
@@ -701,27 +700,37 @@ export default async function MaricopaInsulationContractors() {
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {maricopaAreaCities.map((city, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold text-lg text-gray-700">{city.name}</h3>
-                      <p className="text-sm text-gray-500">Pop: {city.population}</p>
+              city.name === 'Maricopa' ? (
+                <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-lg text-gray-700">{city.name}</h3>
+                        <p className="text-sm text-gray-500">Pop: {city.population}</p>
+                      </div>
+                      <Badge variant="default" className="bg-[#F5DD22] text-[#0a4768]">
+                        Current Page
+                      </Badge>
                     </div>
-                    <div className="text-right">
-                      {city.name === 'Maricopa' ? (
-                        <Badge variant="default" className="bg-[#F5DD22] text-[#0a4768]">
-                          Current Page
-                        </Badge>
-                      ) : (
-                        <Button size="sm" variant="outline" className="text-xs" disabled>
-                          Coming Soon
+                  </CardContent>
+                </Card>
+              ) : (
+                <Link key={index} href={`/arizona/${city.slug}-insulation-contractors`} className="hover:no-underline">
+                  <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-semibold text-lg text-[#0a4768]">{city.name}</h3>
+                          <p className="text-sm text-gray-500">Pop: {city.population}</p>
+                        </div>
+                        <Button size="sm" variant="outline" className="text-xs">
+                          View Contractors
                         </Button>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              )
             ))}
           </div>
         </div>
@@ -732,7 +741,7 @@ export default async function MaricopaInsulationContractors() {
         <div className="container mx-auto px-4">
           <div className="rounded-lg overflow-hidden shadow-lg">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d424562.4818431687!2d-111.95077996445466!3d33.30689243162149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s[d%]+!2sMaricopa%2C+AZ!5e0!3m2!1sen!2sus!4v1709562834567"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d52852.05642346523!2d-112.0476029!3d33.0581063!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872ade8e8e8e8e8d%3A0x7e8f01e1da73e80!2sMaricopa%2C%20AZ!5e0!3m2!1sen!2sus!4v1709562834567"
               width="100%"
               height="450"
               style={{ border: 0 }}

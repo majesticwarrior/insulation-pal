@@ -760,31 +760,37 @@ export default async function TucsonInsulationContractors() {
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {tucsonAreaCities.map((city, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Link href={`/arizona/${city.slug}-insulation-contractors`} className="text-[#0a4768] hover:underline">
+              city.name === 'Tucson' ? (
+                <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
                         <h3 className="font-semibold text-lg text-gray-700">{city.name}</h3>
-                      </Link>
-                      <p className="text-sm text-gray-500">Pop: {city.population}</p>
+                        <p className="text-sm text-gray-500">Pop: {city.population}</p>
+                      </div>
+                      <Badge variant="default" className="bg-[#F5DD22] text-[#0a4768]">
+                        Current Page
+                      </Badge>
                     </div>
-                    <div className="text-right">
-                      {city.name === 'Tucson' ? (
-                        <Badge variant="default" className="bg-[#F5DD22] text-[#0a4768]">
-                          Current Page
-                        </Badge>
-                      ) : (
-                        <Link href={`/arizona/${city.slug}-insulation-contractors`}>
-                          <Button size="sm" variant="outline" className="text-xs">
-                            View Contractors
-                          </Button>
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Link key={index} href={`/arizona/${city.slug}-insulation-contractors`} className="hover:no-underline">
+                  <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-semibold text-lg text-[#0a4768]">{city.name}</h3>
+                          <p className="text-sm text-gray-500">Pop: {city.population}</p>
+                        </div>
+                        <Button size="sm" variant="outline" className="text-xs">
+                          View Contractors
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              )
             ))}
           </div>
         </div>
@@ -795,7 +801,7 @@ export default async function TucsonInsulationContractors() {
         <div className="container mx-auto px-4">
           <div className="rounded-lg overflow-hidden shadow-lg">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d424562.4818431687!2d-111.95077996445466!3d33.30689243162149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s[d%]+!2sTucson%2C+AZ!5e0!3m2!1sen!2sus!4v1709562834567"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d172130.47463250574!2d-111.0376866015625!3d32.253341!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x86d67a9a0e9bb385%3A0x1d4e192bb3c300b3!2sTucson%2C%20AZ!5e0!3m2!1sen!2sus!4v1709562834567"
               width="100%"
               height="450"
               style={{ border: 0 }}
