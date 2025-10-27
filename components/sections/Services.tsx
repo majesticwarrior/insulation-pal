@@ -48,7 +48,7 @@ const Services = () => {
       features: ['Foundation walls', 'Rim joists', 'Ceiling insulation'],
       price: 'Starting at $1.45/sq ft',
       disclaimer: 'Based on material & region',
-      link: '/services/basement'
+      link: '/services/basement-insulation'
     },
     {
       icon: '/insulation-removal-icon.jpg',
