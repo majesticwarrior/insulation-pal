@@ -3,6 +3,7 @@ import Footer from '@/components/layout/Footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { QuoteButton } from '@/components/ui/quote-button'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Newspaper, Calendar, ExternalLink, ArrowLeft, Download, Mail } from 'lucide-react'
@@ -21,31 +22,14 @@ export const metadata: Metadata = {
 
 const pressReleases = [
   {
-    title: 'InsulationPal Expands to Three New States',
-    date: 'December 15, 2024',
-    summary: 'Company announces expansion into Texas, Florida, and Colorado, bringing professional insulation services to more homeowners across the United States.',
-    content: 'InsulationPal, the leading platform connecting homeowners with licensed insulation contractors, today announced its expansion into three new states: Texas, Florida, and Colorado. This expansion brings the company\'s services to over 25 states nationwide, making professional insulation services more accessible to homeowners seeking to improve their home\'s energy efficiency...',
-    category: 'Company News',
+    title: 'InsulationPal Launches New Platform to Connect Homeowners with Trusted Local Insulation Contractors',
+    date: 'October 27, 2025',
+    summary: 'InsulationPal announces the launch of its innovative platform designed to simplify the process of finding and hiring qualified insulation contractors.',
+    content: 'InsulationPal is excited to announce the official launch of its groundbreaking platform that connects homeowners with trusted, local insulation contractors. The platform streamlines the process of finding qualified professionals, comparing quotes, and managing insulation projects from start to finish. With a focus on transparency, quality, and customer satisfaction, InsulationPal is revolutionizing how homeowners approach their insulation needs.',
+    category: 'Company Launch',
     readTime: '3 min read',
-    featured: true
-  },
-  {
-    title: 'InsulationPal Partners with Local Utilities for Energy Efficiency Rebates',
-    date: 'November 28, 2024',
-    summary: 'New partnership program offers homeowners rebates of up to $500 for energy-efficient insulation improvements.',
-    content: 'InsulationPal has partnered with utility companies in 15 states to offer rebate programs for energy-efficient home improvements. Homeowners who install qualified insulation through InsulationPal contractors can receive rebates of up to $500...',
-    category: 'Partnerships',
-    readTime: '2 min read',
-    featured: false
-  },
-  {
-    title: 'InsulationPal Receives "Best Customer Service" Award',
-    date: 'October 10, 2024',
-    summary: 'National Insulation Association recognizes InsulationPal for exceptional customer service and contractor quality.',
-    content: 'The National Insulation Association (NIA) has awarded InsulationPal the "Best Customer Service" award for 2024. The award recognizes the company\'s commitment to connecting homeowners with qualified, licensed contractors and providing exceptional customer support throughout the insulation process...',
-    category: 'Awards',
-    readTime: '2 min read',
-    featured: false
+    featured: true,
+    pressReleaseUrl: 'https://www.abnewswire.com/pressreleases/insulationpal-launches-new-platform-to-connect-homeowners-with-trusted-local-insulation-contractors_770586.html'
   }
 ]
 
@@ -86,24 +70,9 @@ const mediaCoverage = [
 
 const companyMilestones = [
   {
-    year: '2024',
-    title: 'National Expansion',
-    description: 'Expanded services to 25 states across the United States'
-  },
-  {
-    year: '2023',
-    title: '10,000 Projects Completed',
-    description: 'Reached milestone of 10,000 successful insulation projects'
-  },
-  {
-    year: '2022',
-    title: 'Series A Funding',
-    description: 'Raised $5M in Series A funding to accelerate growth'
-  },
-  {
-    year: '2021',
-    title: 'Platform Launch',
-    description: 'Officially launched InsulationPal platform'
+    year: '2025',
+    title: 'InsulationPal App Launches',
+    description: 'Official launch of InsulationPal platform connecting homeowners with trusted local insulation contractors'
   }
 ]
 
@@ -111,6 +80,12 @@ export default function PressPage() {
   return (
     <main className="min-h-screen">
       <Header />
+      
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Resources', href: '/resources' },
+        { label: 'Press and Media' }
+      ]} />
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
@@ -197,13 +172,22 @@ export default function PressPage() {
                     {release.content}
                   </p>
                   
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between flex-wrap gap-4">
                     <span className="text-sm text-gray-500">{release.readTime}</span>
-                    <Button asChild variant="outline" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
-                      <Link href={`/resources/press/${release.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                        Read Full Article
-                      </Link>
-                    </Button>
+                    <div className="flex gap-3">
+                      <Button asChild variant="outline" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
+                        <Link href={`/resources/press/${release.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                          Read Full Article
+                        </Link>
+                      </Button>
+                      {release.pressReleaseUrl && (
+                        <Button asChild className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]">
+                          <Link href={release.pressReleaseUrl} target="_blank" rel="noopener noreferrer">
+                            Press Release <ExternalLink className="ml-2 h-4 w-4" />
+                          </Link>
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>

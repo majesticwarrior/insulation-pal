@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { ContactForm } from '@/components/forms/ContactForm'
 
 export function ContactPageClient() {
@@ -31,6 +32,11 @@ export function ContactPageClient() {
   return (
     <main className="min-h-screen">
       <Header />
+      
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Contact Us' }
+      ]} />
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">

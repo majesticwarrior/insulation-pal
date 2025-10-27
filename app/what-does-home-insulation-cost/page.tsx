@@ -3,6 +3,7 @@ import Footer from '@/components/layout/Footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { QuoteButton } from '@/components/ui/quote-button'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
 import CostCalculatorDialog from '@/components/pages/CostCalculatorDialog'
 import Link from 'next/link'
 import { Calculator, DollarSign, TrendingUp, MapPin, Clock, Users, ArrowRight, FileText, Wrench, BookOpen, BarChart3, PieChart } from 'lucide-react'
@@ -107,6 +108,11 @@ export default function CostPage() {
   return (
     <main className="min-h-screen overflow-x-hidden">
       <Header />
+      
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'What Does Home Insulation Cost' }
+      ]} />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20 overflow-hidden">

@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { QuoteButton } from '@/components/ui/quote-button'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
 import Image from 'next/image'
 import { 
@@ -308,6 +309,11 @@ export default async function ArizonaInsulationContractors() {
   return (
     <main className="min-h-screen">
       <Header />
+      
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Arizona' }
+      ]} />
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-16">

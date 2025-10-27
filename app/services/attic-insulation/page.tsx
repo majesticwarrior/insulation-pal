@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { QuoteButton } from '@/components/ui/quote-button'
 import { Input } from '@/components/ui/input'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { CheckCircle, Star, Shield, MapPin, ThermometerSun, Snowflake, Wrench } from 'lucide-react'
 import type { Metadata } from 'next'
 
@@ -77,18 +78,11 @@ export default function AtticInsulationPage() {
     <main className="min-h-screen">
       <Header />
       
-      {/* Breadcrumb */}
-      <section className="bg-gray-50 py-4">
-        <div className="container mx-auto px-4">
-          <nav className="flex items-center space-x-2 text-sm">
-            <Link href="/" className="text-gray-500 hover:text-[#0a4768]">Home</Link>
-            <span className="text-gray-300">/</span>
-            <Link href="/services" className="text-gray-500 hover:text-[#0a4768]">Services</Link>
-            <span className="text-gray-300">/</span>
-            <span className="text-gray-900">Attic Insulation</span>
-          </nav>
-        </div>
-      </section>
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Services', href: '/services' },
+        { label: 'Attic Insulation' }
+      ]} />
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">

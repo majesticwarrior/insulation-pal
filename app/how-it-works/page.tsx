@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { QuoteButton } from '@/components/ui/quote-button'
 import { Input } from '@/components/ui/input'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Search, Users, CheckCircle, Star, MapPin, Clock, Shield, DollarSign } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -128,6 +129,11 @@ export default function HowItWorksPage() {
   return (
     <main className="min-h-screen">
       <Header />
+      
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'How It Works' }
+      ]} />
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">

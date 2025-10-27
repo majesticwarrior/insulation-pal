@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { QuoteButton } from '@/components/ui/quote-button'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import { TruncatedText } from '@/components/ui/TruncatedText'
 import Link from 'next/link'
@@ -453,6 +454,12 @@ export default async function GlendaleInsulationContractors() {
   return (
     <main className="min-h-screen">
       <Header />
+      
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Arizona', href: '/arizona' },
+        { label: 'Glendale' }
+      ]} />
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-16">

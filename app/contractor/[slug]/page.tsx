@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { QuoteButton } from '@/components/ui/quote-button'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { TruncatedText } from '@/components/ui/TruncatedText'
 import { 
   Star, 
@@ -388,9 +389,45 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
     ))
   }
 
+  // Build breadcrumb items based on contractor location
+  const breadcrumbItems = [
+    { label: 'Home', href: '/' }
+  ]
+  
+  // Add state if available
+  if (contractorData.business_state) {
+    const stateName = contractorData.business_state.toUpperCase() === 'AZ' ? 'Arizona' : contractorData.business_state
+    const stateUrl = contractorData.business_state.toUpperCase() === 'AZ' ? '/arizona' : undefined
+    
+    if (stateUrl) {
+      breadcrumbItems.push({ label: stateName, href: stateUrl })
+    } else {
+      breadcrumbItems.push({ label: stateName })
+    }
+  }
+  
+  // Add city if available
+  if (contractorData.business_city) {
+    const citySlug = contractorData.business_city.toLowerCase().replace(/\s+/g, '-')
+    const cityUrl = contractorData.business_state?.toUpperCase() === 'AZ' 
+      ? `/arizona/${citySlug}-insulation-contractors` 
+      : undefined
+    
+    if (cityUrl) {
+      breadcrumbItems.push({ label: contractorData.business_city, href: cityUrl })
+    } else {
+      breadcrumbItems.push({ label: contractorData.business_city })
+    }
+  }
+  
+  // Add company name (current page)
+  breadcrumbItems.push({ label: contractorData.business_name })
+
   return (
     <main className="min-h-screen">
       <Header />
+      
+      <Breadcrumb items={breadcrumbItems} />
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-12">

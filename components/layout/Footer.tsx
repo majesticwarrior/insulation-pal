@@ -105,6 +105,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/resources/press" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                  Press and Media
+                </Link>
+              </li>
+              <li>
                 <Link href="/contact" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
                   Contact Us
                 </Link>

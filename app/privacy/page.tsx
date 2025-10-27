@@ -1,5 +1,6 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
 
 export const metadata = {
@@ -11,6 +12,11 @@ export default function PrivacyPage() {
   return (
     <main className="min-h-screen bg-gray-50">
       <Header />
+      
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Privacy Policy' }
+      ]} />
       
       <section className="py-16">
         <div className="container mx-auto px-4">

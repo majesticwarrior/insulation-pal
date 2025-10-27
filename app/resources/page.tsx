@@ -3,6 +3,7 @@ import Footer from '@/components/layout/Footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { QuoteButton } from '@/components/ui/quote-button'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
 import Image from 'next/image'
 import { BookOpen, Lightbulb, Calculator, CheckCircle, Play, ShoppingCart, Newspaper, ArrowRight } from 'lucide-react'
@@ -49,6 +50,11 @@ export default function ResourcesPage() {
   return (
     <main className="min-h-screen">
       <Header />
+      
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Resources' }
+      ]} />
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
