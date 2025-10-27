@@ -30,7 +30,7 @@ const Services = () => {
       features: ['Open-cell spray foam', 'Closed-cell spray foam', 'Air sealing'],
       price: 'Starting at $1.00/sq ft',
       disclaimer: 'Based on material & region',
-      link: '/services/spray-foam'
+      link: '/services/spray-foam-insulation'
     },
     {
       icon: '/crawl-space-insulation-icon.jpg',
@@ -39,7 +39,7 @@ const Services = () => {
       features: ['Vapor barriers', 'Floor joist insulation', 'Encapsulation'],
       price: 'Starting at $.30/board ft',
       disclaimer: 'Based on material & region',
-      link: '/services/crawl-space'
+      link: '/services/crawl-space-insulation'
     },
     {
       icon: '/basement-insulation-icon.jpg',
@@ -57,7 +57,7 @@ const Services = () => {
       features: ['Old insulation removal', 'Contaminated material', 'Pest cleanup'],
       price: 'Starting at $1.00/sq ft',
       disclaimer: 'Based on material & region',
-      link: '/services/removal'
+      link: '/services/insulation-removal'
     }
   ]
 

@@ -49,7 +49,7 @@ export default function ServicesPage() {
       price: 'Starting at $1.00/sq ft',
       benefits: ['Superior R-value', 'Air & moisture seal', 'Long-lasting performance'],
       image: '/spray-foam-insulation-installed.jpg',
-      url: '/services/spray-foam'
+      url: '/services/spray-foam-insulation'
     },
     {
       icon: Snowflake,
@@ -59,7 +59,7 @@ export default function ServicesPage() {
       price: 'Starting at $.30/board ft',
       benefits: ['Prevent moisture issues', 'Warmer floors', 'Improved indoor air quality'],
       image: '/crawl-space-insulation-installed.jpg',
-      url: '/services/crawl-space'
+      url: '/services/crawl-space-insulation'
     },
     {
       icon: Flame,

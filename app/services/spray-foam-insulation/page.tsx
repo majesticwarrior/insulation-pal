@@ -7,65 +7,71 @@ import { Button } from '@/components/ui/button'
 import { QuoteButton } from '@/components/ui/quote-button'
 import { Input } from '@/components/ui/input'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
-import { CheckCircle, Star, Shield, MapPin, AlertTriangle, Recycle, Heart } from 'lucide-react'
+import { CheckCircle, Star, Shield, MapPin, ThermometerSun, Wind, Droplet } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Professional Insulation Removal Services - InsulationPal',
-  description: 'Safe removal of old, damaged, or contaminated insulation with proper disposal and cleanup for a fresh start.',
+  title: 'Premium Spray Foam Insulation Services - InsulationPal | Maximum Energy Efficiency',
+  description: 'Achieve maximum energy efficiency with professional spray foam insulation. Superior R-value and complete air sealing in one application. Connect with certified contractors for free quotes.',
+  keywords: 'spray foam insulation, spray foam contractors, closed cell foam, open cell foam, air sealing, energy efficiency, R-value',
+  openGraph: {
+    title: 'Premium Spray Foam Insulation Services - Maximum Energy Efficiency',
+    description: 'Professional spray foam insulation installation by certified contractors. Get superior R-value and complete air sealing in one application.',
+    type: 'website',
+  },
 }
 
-export default function InsulationRemovalPage() {
+export default function SprayFoamPage() {
   const benefits = [
     {
-      icon: Heart,
-      title: 'Health & Safety',
-      description: 'Remove contaminated or damaged insulation that poses health risks.'
+      icon: ThermometerSun,
+      title: 'Superior R-Value',
+      description: 'Achieve the highest insulation performance per inch with spray foam technology.'
     },
     {
-      icon: Recycle,
-      title: 'Clean Slate',
-      description: 'Prepare your space for new, high-performance insulation installation.'
+      icon: Wind,
+      title: 'Complete Air Sealing',
+      description: 'Eliminate air leaks and drafts with superior air sealing properties.'
     },
     {
-      icon: Shield,
-      title: 'Professional Disposal',
-      description: 'Safe, environmentally responsible disposal of old insulation materials.'
+      icon: Droplet,
+      title: 'Moisture Protection',
+      description: 'Built-in vapor barrier prevents moisture issues and mold growth.'
     }
   ]
 
   const process = [
     {
       step: 1,
-      title: 'Safety Assessment',
-      description: 'Evaluate existing insulation for contamination, damage, or hazardous materials.'
+      title: 'Site Preparation',
+      description: 'Thorough cleaning and preparation of the spray area for optimal application.'
     },
     {
       step: 2,
-      title: 'Containment Setup',
-      description: 'Establish containment barriers to prevent contamination spread.'
+      title: 'Professional Application',
+      description: 'Expert spray foam installation using commercial-grade equipment.'
     },
     {
       step: 3,
-      title: 'Safe Removal',
-      description: 'Careful extraction using specialized equipment and safety protocols.'
+      title: 'Curing Process',
+      description: 'Allow proper curing time for maximum performance and safety.'
     },
     {
       step: 4,
-      title: 'Cleanup & Disposal',
-      description: 'Thorough cleanup and proper disposal according to regulations.'
+      title: 'Quality Inspection',
+      description: 'Final inspection and cleanup to ensure perfect installation.'
     }
   ]
 
   const features = [
-    'Old insulation removal',
-    'Contaminated material cleanup',
-    'Pest damage remediation',
-    'Safe disposal services',
-    'Asbestos testing & removal',
-    'Mold remediation',
-    'Rodent cleanup',
-    'Pre-installation preparation'
+    'Open-cell spray foam insulation',
+    'Closed-cell spray foam application',
+    'Complete air sealing services',
+    'Moisture barrier installation',
+    'R-value optimization',
+    'Energy efficiency improvement',
+    'Rim joist insulation',
+    'Crawl space encapsulation'
   ]
 
   return (
@@ -75,7 +81,7 @@ export default function InsulationRemovalPage() {
       <Breadcrumb items={[
         { label: 'Home', href: '/' },
         { label: 'Services', href: '/services' },
-        { label: 'Insulation Removal' }
+        { label: 'Spray Foam Insulation' }
       ]} />
       
       {/* Hero Section */}
@@ -84,17 +90,17 @@ export default function InsulationRemovalPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0a4768] mb-6 leading-tight">
-                Professional Insulation Removal Services
+                Premium Spray Foam Insulation Services
               </h1>
               <p className="text-xl text-gray-700 mb-8 leading-relaxed">
-                Safe removal of old, damaged, or contaminated insulation with 
-                proper disposal and cleanup for a fresh start.
+                Achieve maximum energy efficiency with professional spray foam insulation. 
+                Superior R-value and complete air sealing in one application.
               </p>
 
               {/* Quote form */}
               <div className="bg-white rounded-lg shadow-xl p-6 mb-8">
                 <h3 className="text-lg font-semibold text-[#0a4768] mb-4">
-                  Get Your Free Removal Quote
+                  Get Your Free Spray Foam Quote
                 </h3>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1 relative">
@@ -124,8 +130,8 @@ export default function InsulationRemovalPage() {
             <div className="relative">
               <div className="bg-white rounded-lg shadow-2xl p-8">
                 <Image
-                  src="/insulation-removal.jpg"
-                  alt="Professional insulation removal"
+                  src="/spray-foam-insulation-installed.jpg"
+                  alt="Professional spray foam insulation application"
                   width={600}
                   height={400}
                   className="w-full h-64 object-cover rounded-lg mb-6"
@@ -133,16 +139,16 @@ export default function InsulationRemovalPage() {
                 />
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Safety Protocol:</span>
-                    <span className="font-bold text-[#0a4768]">OSHA Compliant</span>
+                    <span className="text-gray-600">R-Value Range:</span>
+                    <span className="font-bold text-[#0a4768]">R-6 to R-7 per inch</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Removal Time:</span>
-                    <span className="font-bold text-[#0a4768]">1-2 Days</span>
+                    <span className="text-gray-600">Application Time:</span>
+                    <span className="font-bold text-[#0a4768]">4-6 Hours</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Disposal:</span>
-                    <span className="font-bold text-[#0a4768]">Eco-Friendly</span>
+                    <span className="text-gray-600">Warranty:</span>
+                    <span className="font-bold text-[#0a4768]">Up to Lifetime</span>
                   </div>
                 </div>
               </div>
@@ -156,11 +162,11 @@ export default function InsulationRemovalPage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[#0a4768] mb-6">
-              Why Professional Insulation Removal?
+              Why Choose Spray Foam Insulation?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Professional removal ensures safety, proper disposal, and prepares 
-              your space for optimal new insulation performance.
+              Spray foam insulation provides the highest R-value per inch and creates 
+              a complete thermal barrier with superior air sealing properties.
             </p>
           </div>
 
@@ -188,11 +194,11 @@ export default function InsulationRemovalPage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[#0a4768] mb-6">
-              Safe Removal Process
+              Spray Foam Installation Process
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our systematic approach ensures safe removal while protecting your 
-              home and family from contamination.
+              Professional spray foam application requires specialized equipment and expertise 
+              for optimal performance and safety.
             </p>
           </div>
 
@@ -216,11 +222,11 @@ export default function InsulationRemovalPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-4xl font-bold text-[#0a4768] mb-6">
-                Comprehensive Removal Services
+                Complete Spray Foam Solutions
               </h2>
               <p className="text-xl text-gray-600 mb-8">
-                Our certified contractors handle all types of insulation removal 
-                with specialized equipment and safety protocols.
+                Our certified contractors provide both open-cell and closed-cell spray foam 
+                applications tailored to your specific insulation needs and budget.
               </p>
               
               <div className="grid md:grid-cols-2 gap-4">
@@ -236,7 +242,7 @@ export default function InsulationRemovalPage() {
             <div className="relative">
               <Image
                 src="/professional-insulation-contractor-working-on-home.jpg"
-                alt="Insulation removal process"
+                alt="Spray foam insulation application process"
                 width={600}
                 height={400}
                 className="w-full h-96 object-cover rounded-lg shadow-xl"
@@ -250,11 +256,11 @@ export default function InsulationRemovalPage() {
       <section className="py-20 bg-[#D6D6D6] text-[#0a4768]">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-6">
-            Need Professional Insulation Removal?
+            Ready for Spray Foam Insulation?
           </h2>
           <p className="text-xl text-[#0a4768] mb-8 max-w-2xl mx-auto">
-            Connect with certified removal specialists in your area. 
-            Safe, professional service with proper disposal guaranteed.
+            Connect with certified spray foam contractors in your area. 
+            Get the ultimate in energy efficiency and comfort.
           </p>
           <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
             Find Contractors Near Me
@@ -266,3 +272,4 @@ export default function InsulationRemovalPage() {
     </main>
   )
 }
+

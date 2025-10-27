@@ -183,7 +183,7 @@ export default function CrawlSpaceDIYGuidePage() {
                       </div>
                       <p className="text-sm text-gray-600 mt-1">Expert guides and tips</p>
                     </Link>
-                    <Link href="/services/crawl-space" className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <Link href="/services/crawl-space-insulation" className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="flex items-center text-[#0a4768]">
                         <Wrench className="h-4 w-4 mr-2" />
                         <span className="font-medium">What is Crawl Space Insulation?</span>

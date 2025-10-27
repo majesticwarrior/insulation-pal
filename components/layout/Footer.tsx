@@ -53,12 +53,12 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/services/spray-foam" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                <Link href="/services/spray-foam-insulation" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
                   Spray Foam
                 </Link>
               </li>
               <li>
-                <Link href="/services/crawl-space" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                <Link href="/services/crawl-space-insulation" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
                   Crawl Space
                 </Link>
               </li>
@@ -68,7 +68,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/services/removal" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
+                <Link href="/services/insulation-removal" className="text-gray-300 hover:text-[#F5DD22] transition-colors">
                   Insulation Removal
                 </Link>
               </li>
