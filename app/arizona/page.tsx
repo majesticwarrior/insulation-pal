@@ -71,10 +71,8 @@ async function getArizonaContractors() {
       .limit(50)
 
     if (error) {
-      console.error('Error fetching contractors:', error)
       // If the error is about missing bbb_accredited column, continue without it
       if (error.message && error.message.includes('bbb_accredited')) {
-        console.warn('⚠️ bbb_accredited column not found - BBB badges will not display')
         // Retry query without bbb_accredited column
         const { data: contractorsRetry, error: retryError } = await (supabase as any)
           .from('contractors')
@@ -105,7 +103,6 @@ async function getArizonaContractors() {
           .order('average_rating', { ascending: false })
 
         if (retryError) {
-          console.error('Database error on retry:', retryError)
           return []
         }
         
@@ -213,19 +210,9 @@ async function getArizonaContractors() {
       }
       return acc
     }, [])
-
-    console.log(`Found ${uniqueContractors.length} contractors serving Arizona`)
-    
-    // Debug: Log contractor badge status
-    uniqueContractors.forEach((contractor: any) => {
-      console.log(`🏷️ ${contractor.name}:`)
-      console.log(`   BBB Accredited: ${contractor.bbbAccredited}`)
-      console.log(`   Licensed, Bonded & Insured: ${contractor.licensedBondedInsured}`)
-    })
     
     return uniqueContractors
   } catch (error) {
-    console.error('Database error:', error)
     return []
   }
 }
@@ -233,8 +220,6 @@ async function getArizonaContractors() {
 // Fetch recent insulation projects completed in Arizona
 async function getArizonaRecentProjects() {
   try {
-    console.log('🏗️ Fetching recent projects in Arizona...')
-    
     const { data: projects, error } = await (supabase as any)
       .from('contractor_portfolio')
       .select(`
@@ -258,14 +243,11 @@ async function getArizonaRecentProjects() {
       .limit(12)
 
     if (error) {
-      console.error('Error fetching Arizona projects:', error)
       return []
     }
 
-    console.log(`Found ${projects?.length || 0} recent projects in Arizona`)
     return projects || []
   } catch (error) {
-    console.error('Error in getArizonaRecentProjects:', error)
     return []
   }
 }
@@ -288,16 +270,13 @@ export default async function ArizonaInsulationContractors() {
   { name: 'Tempe', population: '195,805', slug: 'tempe' },
   { name: 'Peoria', population: '190,985', slug: 'peoria' },
   { name: 'Surprise', population: '147,965', slug: 'surprise' },
-  { name: 'Yuma', population: '95,548', slug: 'yuma' },
   { name: 'Avondale', population: '87,931', slug: 'avondale' },
   { name: 'Goodyear', population: '95,294', slug: 'goodyear' },
-  { name: 'Flagstaff', population: '76,831', slug: 'flagstaff' },
   { name: 'Buckeye', population: '91,502', slug: 'buckeye' },
-  { name: 'Lake Havasu City', population: '57,144', slug: 'lake-havasu-city' },
-  { name: 'Casa Grande', population: '55,477', slug: 'casa-grande' },
-  { name: 'Sierra Vista', population: '43,888', slug: 'sierra-vista' },
+  { name: 'Flagstaff', population: '76,831', slug: 'flagstaff' },
+  { name: 'Prescott', population: '45,827', slug: 'prescott' },
   { name: 'Maricopa', population: '62,720', slug: 'maricopa' },
-  { name: 'Oro Valley', population: '47,070', slug: 'oro-valley' }
+  { name: 'Sun City', population: '37,070', slug: 'sun-city' }
 ]
 
   const stats = {
@@ -559,27 +538,17 @@ export default async function ArizonaInsulationContractors() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      {city.slug === 'phoenix' ? (
-                        <Link href={`/arizona/${city.slug}-insulation-contractors`} className="text-[#0a4768] hover:underline">
-                          <h3 className="font-semibold text-lg">{city.name}</h3>
-                        </Link>
-                      ) : (
-                        <h3 className="font-semibold text-lg text-gray-700">{city.name}</h3>
-                      )}
+                      <Link href={`/arizona/${city.slug}-insulation-contractors`} className="text-[#0a4768] hover:underline">
+                        <h3 className="font-semibold text-lg">{city.name}</h3>
+                      </Link>
                       <p className="text-sm text-gray-500">Pop: {city.population}</p>
                     </div>
                     <div className="text-right">
-                      {city.slug === 'phoenix' ? (
-                        <Link href={`/arizona/${city.slug}-insulation-contractors`}>
-                          <Button size="sm" variant="outline" className="text-xs">
-                            View Contractors
-                          </Button>
-                        </Link>
-                      ) : (
-                        <Button size="sm" variant="outline" className="text-xs" disabled>
-                          Coming Soon
+                      <Link href={`/arizona/${city.slug}-insulation-contractors`}>
+                        <Button size="sm" variant="outline" className="text-xs">
+                          View Contractors
                         </Button>
-                      )}
+                      </Link>
                     </div>
                   </div>
                 </CardContent>

@@ -103,6 +103,7 @@ export async function POST(request: NextRequest) {
         packageId: selectedPackage.id,
         credits: selectedPackage.credits.toString(),
       },
+      locale: 'en',
     })
 
     console.log('Stripe session created:', session.id)

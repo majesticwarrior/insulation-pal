@@ -30,31 +30,31 @@ import { getContractorLogo } from '@/lib/contractor-utils'
 // Revalidate this page every 60 seconds to show updated contractor data
 export const revalidate = 60
 
-// Generate dynamic metadata based on Phoenix contractor data
+// Generate dynamic metadata based on Maricopa contractor data
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const contractors = await getPhoenixContractors()
+    const contractors = await getMaricopaContractors()
     const contractorCount = contractors.length
     const topContractor = contractors[0]
     
-    const baseTitle = 'Phoenix Insulation Contractors'
-    const baseDescription = 'Find the best insulation contractors in Phoenix, AZ'
+    const baseTitle = 'Maricopa Insulation Contractors'
+    const baseDescription = 'Find the best insulation contractors in Maricopa, AZ'
     
     return {
-      title: `Phoenix Insulation Contractors, Find Top Rated Local Companies Near You`,
+      title: `Maricopa Insulation Contractors, Find Top Rated Local Companies Near You`,
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
-        'Phoenix insulation contractors',
-        'Phoenix attic insulation',
-        'Phoenix spray foam insulation',
-        'Phoenix wall insulation',
-        'Phoenix basement insulation',
-        'Phoenix crawl space insulation',
-        'Phoenix energy efficiency',
+        'Maricopa insulation contractors',
+        'Maricopa attic insulation',
+        'Maricopa spray foam insulation',
+        'Maricopa wall insulation',
+        'Maricopa basement insulation',
+        'Maricopa crawl space insulation',
+        'Maricopa energy efficiency',
         'Arizona insulation services',
-        'Phoenix insulation quotes',
-        'licensed insulation contractors Phoenix',
-        'verified insulation professionals Phoenix'
+        'Maricopa insulation quotes',
+        'licensed insulation contractors Maricopa',
+        'verified insulation professionals Maricopa'
       ],
       openGraph: {
         title: `${baseTitle} - ${contractorCount} Top-Rated Professionals`,
@@ -76,22 +76,22 @@ export async function generateMetadata(): Promise<Metadata> {
         images: topContractor?.profile_image ? [topContractor.profile_image] : undefined,
       },
       alternates: {
-        canonical: 'https://insulationpal.com/arizona/phoenix-insulation-contractors',
+        canonical: 'https://insulationpal.com/arizona/maricopa-insulation-contractors',
       },
     }
   } catch (error) {
     return {
-      title: 'Phoenix Insulation Contractors - InsulationPal',
-      description: 'Find the best insulation contractors in Phoenix, AZ. Get free quotes from licensed professionals.',
+      title: 'Maricopa Insulation Contractors - InsulationPal',
+      description: 'Find the best insulation contractors in Maricopa, AZ. Get free quotes from licensed professionals.',
     }
   }
 }
 
 
-// Fetch Phoenix contractors from Supabase database
-async function getPhoenixContractors() {
+// Fetch Maricopa contractors from Supabase database
+async function getMaricopaContractors() {
   try {
-    // Get contractors based in Phoenix (business city from their profile)
+    // Get contractors based in Maricopa (business city from their profile)
     // Service areas are only used for lead bidding, not for city page display
     // Only show contractors with available credits
     const { data: contractors, error } = await (supabase as any)
@@ -221,15 +221,15 @@ async function getPhoenixContractors() {
       return []
     }
 
-    // Filter contractors who are based in Phoenix (business_city from their business address)
+    // Filter contractors who are based in Maricopa (business_city from their business address)
     // Service areas are NOT used for city page display - they're only for lead bidding
-    const phoenixContractors = contractors?.filter((contractor: any) => {
-      const isBasedInPhoenix = contractor.business_city?.toLowerCase() === 'phoenix'
-      return isBasedInPhoenix
+    const maricopaContractors = contractors?.filter((contractor: any) => {
+      const isBasedInMaricopa = contractor.business_city?.toLowerCase() === 'maricopa'
+      return isBasedInMaricopa
     }) || []
 
     // Remove duplicates and transform data to match component format
-    const uniqueContractors = phoenixContractors.reduce((acc: any[], contractor: any) => {
+    const uniqueContractors = maricopaContractors.reduce((acc: any[], contractor: any) => {
       const existingContractor = acc.find(c => c.id === contractor.id)
       if (!existingContractor) {
         // Extract services offered from contractor_services and capitalize them
@@ -315,10 +315,10 @@ async function getPhoenixRecentProjects() {
   }
 }
 
-// Fetch Phoenix contractor reviews
+// Fetch Maricopa contractor reviews
 async function getPhoenixReviews() {
   try {
-    // Try to fetch reviews with location containing Phoenix
+    // Try to fetch reviews with location containing Maricopa
     const { data: locationReviews, error: locationError } = await (supabase as any)
       .from('reviews')
       .select(`
@@ -339,7 +339,7 @@ async function getPhoenixReviews() {
         )
       `)
       .eq('contractors.status', 'approved')
-      .ilike('location', '%Phoenix%')
+      .ilike('location', '%Maricopa%')
       .order('created_at', { ascending: false })
       .limit(10)
 
@@ -364,7 +364,7 @@ async function getPhoenixReviews() {
         )
       `)
       .eq('contractors.status', 'approved')
-      .ilike('contractors.business_city', '%Phoenix%')
+      .ilike('contractors.business_city', '%Maricopa%')
       .order('created_at', { ascending: false })
       .limit(10)
 
@@ -392,6 +392,16 @@ async function getPhoenixReviews() {
       }
     }
 
+    // If no Maricopa reviews found, fallback to Phoenix reviews
+    if (allReviews.length === 0) {
+      const { data: phoenixLocationReviews } = await (supabase as any)
+        .from('reviews').select(`id,customer_name,rating,title,comment,service_type,location,verified,created_at,contractors!inner(business_name,business_city,business_state,status)`).eq('contractors.status', 'approved').ilike('location', '%Phoenix%').order('created_at', { ascending: false }).limit(10)
+      const { data: phoenixContractorReviews } = await (supabase as any)
+        .from('reviews').select(`id,customer_name,rating,title,comment,service_type,location,verified,created_at,contractors!inner(business_name,business_city,business_state,status)`).eq('contractors.status', 'approved').ilike('contractors.business_city', '%Phoenix%').order('created_at', { ascending: false }).limit(10)
+      if (phoenixLocationReviews) { for (const review of phoenixLocationReviews) { if (!seenIds.has(review.id)) { allReviews.push(review); seenIds.add(review.id); } } }
+      if (phoenixContractorReviews) { for (const review of phoenixContractorReviews) { if (!seenIds.has(review.id)) { allReviews.push(review); seenIds.add(review.id); } } }
+    }
+
     // Sort by created_at descending and limit to 15
     allReviews.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     const finalReviews = allReviews.slice(0, 15)
@@ -404,36 +414,29 @@ async function getPhoenixReviews() {
 
 
 
-// Add Phoenix area cities with 50k+ population
-const phoenixAreaCities = [
-  { name: 'Phoenix', population: '1,608,139', slug: 'phoenix' },
-  { name: 'Mesa', population: '504,258', slug: 'mesa' },
-  { name: 'Chandler', population: '275,987', slug: 'chandler' },
-  { name: 'Scottsdale', population: '241,361', slug: 'scottsdale' },
-  { name: 'Glendale', population: '248,325', slug: 'glendale' },
-  { name: 'Gilbert', population: '267,918', slug: 'gilbert' },
-  { name: 'Tempe', population: '195,805', slug: 'tempe' },
-  { name: 'Peoria', population: '190,985', slug: 'peoria' },
-  { name: 'Surprise', population: '147,965', slug: 'surprise' },
-  { name: 'Avondale', population: '87,931', slug: 'avondale' },
-  { name: 'Goodyear', population: '95,294', slug: 'goodyear' },
-  { name: 'Buckeye', population: '91,502', slug: 'buckeye' },
-  { name: 'Maricopa', population: '62,720', slug: 'maricopa' }
+// Add Maricopa area cities with 50k+ population
+const maricopaAreaCities = [
+  { name: 'Maricopa', population: '275,987' },
+  { name: 'Phoenix', population: '1,608,139' },
+  { name: 'Mesa', population: '504,258' },
+  { name: 'Gilbert', population: '267,918' },
+  { name: 'Tempe', population: '195,805' },
+  { name: 'Scottsdale', population: '241,361' }
 ]
 
 
-export default async function PhoenixInsulationContractors() {
-  const phoenixContractors = await getPhoenixContractors()
+export default async function MaricopaInsulationContractors() {
+  const maricopaContractors = await getMaricopaContractors()
   const recentProjects = await getPhoenixRecentProjects()
   const phoenixReviews = await getPhoenixReviews()
   
   const cityStats = {
-    totalReviews: phoenixContractors.reduce((sum: number, contractor: any) => sum + contractor.reviewCount, 0),
-    averageRating: phoenixContractors.length > 0 ? 
-      (phoenixContractors.reduce((sum: number, contractor: any) => sum + contractor.rating, 0) / phoenixContractors.length).toFixed(1) : 
+    totalReviews: maricopaContractors.reduce((sum: number, contractor: any) => sum + contractor.reviewCount, 0),
+    averageRating: maricopaContractors.length > 0 ? 
+      (maricopaContractors.reduce((sum: number, contractor: any) => sum + contractor.rating, 0) / maricopaContractors.length).toFixed(1) : 
       '4.8',
-    totalContractors: phoenixContractors.length,
-    jobsCompleted: phoenixContractors.reduce((sum: number, contractor: any) => sum + contractor.jobsCompleted, 0)
+    totalContractors: maricopaContractors.length,
+    jobsCompleted: maricopaContractors.reduce((sum: number, contractor: any) => sum + contractor.jobsCompleted, 0)
   }
   
   const renderStars = (rating: number) => {
@@ -456,11 +459,11 @@ export default async function PhoenixInsulationContractors() {
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
-              Phoenix Insulation Contractors
+              Maricopa Insulation Contractors
             </h1>
             <p className="text-xl text-gray-700 mb-8">
-              Find the best insulation contractors in Phoenix, Arizona. Get free quotes from local, 
-              licensed professionals who understand Phoenix's unique climate challenges.
+              Find the best insulation contractors in Maricopa, Arizona. Get free quotes from local, 
+              licensed professionals who understand Maricopa's unique climate challenges.
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               <div className="text-center">
@@ -481,7 +484,7 @@ export default async function PhoenixInsulationContractors() {
               </div>
             </div>
             <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
-              Get Free Phoenix Quotes
+              Get Free Maricopa Quotes
             </QuoteButton>
           </div>
         </div>
@@ -493,7 +496,7 @@ export default async function PhoenixInsulationContractors() {
           <div className="grid lg:grid-cols-3 gap-8">
             <Card>
               <CardHeader>
-                <CardTitle className="text-[#0a4768]">Insulation Types for Phoenix</CardTitle>
+                <CardTitle className="text-[#0a4768]">Insulation Types for Maricopa</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
@@ -576,10 +579,10 @@ export default async function PhoenixInsulationContractors() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-[#0a4768] mb-12 text-center">
-            Top Phoenix Insulation Contractors
+            Top Maricopa Insulation Contractors
           </h2>
           <div className="space-y-8">
-            {phoenixContractors.map((contractor: any) => (
+            {maricopaContractors.map((contractor: any) => (
               <Card key={contractor.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="grid lg:grid-cols-4 gap-6 p-6">
                   {/* Company Info */}
@@ -690,27 +693,23 @@ export default async function PhoenixInsulationContractors() {
             Additional Nearby Cities We Serve
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {phoenixAreaCities.map((city, index) => (
+            {maricopaAreaCities.map((city, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <Link href={`/arizona/${city.slug}-insulation-contractors`} className="text-[#0a4768] hover:underline">
-                        <h3 className="font-semibold text-lg text-gray-700">{city.name}</h3>
-                      </Link>
+                      <h3 className="font-semibold text-lg text-gray-700">{city.name}</h3>
                       <p className="text-sm text-gray-500">Pop: {city.population}</p>
                     </div>
                     <div className="text-right">
-                      {city.name === 'Phoenix' ? (
+                      {city.name === 'Maricopa' ? (
                         <Badge variant="default" className="bg-[#F5DD22] text-[#0a4768]">
                           Current Page
                         </Badge>
                       ) : (
-                        <Link href={`/arizona/${city.slug}-insulation-contractors`}>
-                          <Button size="sm" variant="outline" className="text-xs">
-                            View Contractors
-                          </Button>
-                        </Link>
+                        <Button size="sm" variant="outline" className="text-xs" disabled>
+                          Coming Soon
+                        </Button>
                       )}
                     </div>
                   </div>
@@ -726,19 +725,19 @@ export default async function PhoenixInsulationContractors() {
         <div className="container mx-auto px-4">
           <div className="rounded-lg overflow-hidden shadow-lg">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d422508.0351092426!2d-112.41914644999999!3d33.3586662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872b5d0c0572a2ff%3A0x4aec1cd17f2c4880!2sMaricopa%20County%2C%20AZ!5e0!3m2!1sen!2sus!4v1709562834567!5m2!1sen!2sus"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d424562.4818431687!2d-111.95077996445466!3d33.30689243162149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s[d%]+!2sMaricopa%2C+AZ!5e0!3m2!1sen!2sus!4v1709562834567"
               width="100%"
               height="450"
               style={{ border: 0 }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Maricopa County, Arizona - Service Area Map"
+              title="Maricopa, Arizona - Service Area Map"
             />
           </div>
           <div className="text-center mt-6">
             <p className="text-gray-600 mb-4">
-              Our certified insulation contractors serve all cities and communities throughout Maricopa County, including Phoenix and surrounding areas.
+              Our certified insulation contractors serve all cities and communities throughout Maricopa and the surrounding East Valley area.
             </p>
             <Button 
               asChild 
@@ -746,7 +745,7 @@ export default async function PhoenixInsulationContractors() {
               className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
             >
               <Link 
-                href="https://www.google.com/maps/place/Maricopa+County,+AZ/@33.3586662,-112.0192618,10z/data=!4m6!3m5!1s0x872b5d0c0572a2ff:0x4aec1cd17f2c4880!8m2!3d33.2917968!4d-112.4291464!16zL20vMG0yN24?entry=ttu&g_ep=EgoyMDI1MDkxNy4wIKXMDSoASAFQAw%3D%3D"
+                href="https://www.google.com/maps/place/Maricopa,+AZ"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center"
@@ -766,10 +765,10 @@ export default async function PhoenixInsulationContractors() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Latest Phoenix Reviews
+              Latest Maricopa Reviews
             </h2>
             <p className="text-lg text-gray-600">
-              See what customers are saying about our Phoenix insulation contractors
+              See what customers are saying about our Maricopa insulation contractors
             </p>
           </div>
           
@@ -908,14 +907,14 @@ export default async function PhoenixInsulationContractors() {
       <section className="py-16 bg-[#D6D6D6] text-[#0a4768]">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">
-            Ready to Improve Your Phoenix Home?
+            Ready to Improve Your Maricopa Home?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Connect with Phoenix's most trusted insulation contractors. Get free quotes from verified professionals 
+            Connect with Maricopa's most trusted insulation contractors. Get free quotes from verified professionals 
             who understand the unique insulation needs of desert homes.
           </p>
           <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
-            Get Phoenix Quotes Now
+            Get Maricopa Quotes Now
           </QuoteButton>
         </div>
       </section>

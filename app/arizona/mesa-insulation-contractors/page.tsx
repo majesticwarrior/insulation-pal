@@ -1,0 +1,541 @@
+import Header from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { QuoteButton } from '@/components/ui/quote-button'
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import { TruncatedText } from '@/components/ui/TruncatedText'
+import Link from 'next/link'
+import Image from 'next/image'
+import { 
+  Star, 
+  MapPin, 
+  Phone, 
+  CheckCircle, 
+  Users,
+  TrendingUp,
+  Shield,
+  Award,
+  Quote,
+  Play,
+  ExternalLink
+} from 'lucide-react'
+import type { Metadata } from 'next'
+import { supabase } from '@/lib/supabase'
+import { generateUniqueSlug } from '@/lib/slug-utils'
+import { articles } from '@/lib/articles-data'
+import { getContractorLogo } from '@/lib/contractor-utils'
+
+// Revalidate this page every 60 seconds to show updated contractor data
+export const revalidate = 60
+
+// Generate dynamic metadata based on Mesa contractor data
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const contractors = await getMesaContractors()
+    const contractorCount = contractors.length
+    const topContractor = contractors[0]
+    
+    const baseTitle = 'Mesa Insulation Contractors'
+    const baseDescription = 'Find the best insulation contractors in Mesa, AZ'
+    
+    return {
+      title: `Mesa Insulation Contractors, Find Top Rated Local Companies Near You`,
+      description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
+      keywords: [
+        'Mesa insulation contractors',
+        'Mesa attic insulation',
+        'Mesa spray foam insulation',
+        'Mesa wall insulation',
+        'Mesa basement insulation',
+        'Mesa crawl space insulation',
+        'Mesa energy efficiency',
+        'Arizona insulation services',
+        'Mesa insulation quotes',
+        'licensed insulation contractors Mesa',
+        'verified insulation professionals Mesa'
+      ],
+      openGraph: {
+        title: `${baseTitle} - ${contractorCount} Top-Rated Professionals`,
+        description: `Connect with ${contractorCount} licensed insulation contractors in Mesa, Arizona. Get free quotes for all types of insulation services.`,
+        type: 'website',
+        locale: 'en_US',
+        siteName: 'InsulationPal',
+        images: topContractor?.profile_image ? [{
+          url: topContractor.profile_image,
+          width: 1200,
+          height: 630,
+          alt: `${topContractor.business_name} - Mesa Insulation Contractor`,
+        }] : undefined,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${baseTitle} - ${contractorCount} Top-Rated Professionals`,
+        description: `Connect with ${contractorCount} licensed insulation contractors in Mesa, Arizona. Get free quotes today!`,
+        images: topContractor?.profile_image ? [topContractor.profile_image] : undefined,
+      },
+      alternates: {
+        canonical: 'https://insulationpal.com/arizona/mesa-insulation-contractors',
+      },
+    }
+  } catch (error) {
+    return {
+      title: 'Mesa Insulation Contractors - InsulationPal',
+      description: 'Find the best insulation contractors in Mesa, AZ. Get free quotes from licensed professionals.',
+    }
+  }
+}
+
+
+// Fetch Mesa contractors from Supabase database
+async function getMesaContractors() {
+  try {
+    // Get contractors based in Mesa (business city from their profile)
+    // Service areas are only used for lead bidding, not for city page display
+    // Only show contractors with available credits
+    const { data: contractors, error } = await (supabase as any)
+      .from('contractors')
+      .select(`
+        id,
+        business_name,
+        business_city,
+        business_state,
+        average_rating,
+        total_reviews,
+        total_completed_projects,
+        status,
+        license_verified,
+        insurance_verified,
+        bbb_accredited,
+        license_number,
+        profile_image,
+        bio,
+        founded_year,
+        credits,
+        contractor_service_areas(
+          city,
+          state
+        ),
+        contractor_services(
+          service_type,
+          insulation_types
+        )
+      `)
+      .eq('status', 'approved')
+      .gt('credits', 0)
+      .order('average_rating', { ascending: false })
+
+    if (error) {
+      return []
+    }
+
+    // Filter contractors who are based in Mesa (business_city from their business address)
+    // Service areas are NOT used for city page display - they're only for lead bidding
+    const mesaContractors = contractors?.filter((contractor: any) => {
+      const isBasedInMesa = contractor.business_city?.toLowerCase() === 'mesa'
+      return isBasedInMesa
+    }) || []
+
+    // Remove duplicates and transform data to match component format
+    const uniqueContractors = mesaContractors.reduce((acc: any[], contractor: any) => {
+      const existingContractor = acc.find(c => c.id === contractor.id)
+      if (!existingContractor) {
+        // Extract services offered from contractor_services and capitalize them
+        const servicesOffered = contractor.contractor_services?.map((service: any) => {
+          const serviceType = service.service_type || ''
+          // Capitalize each word in the service type
+          return serviceType.split(' ').map((word: string) => 
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          ).join(' ')
+        }) || []
+        
+        // Extract unique insulation types from all services
+        const allInsulationTypes = contractor.contractor_services?.reduce((acc: string[], service: any) => {
+          if (service.insulation_types && Array.isArray(service.insulation_types)) {
+            return [...acc, ...service.insulation_types]
+          }
+          return acc
+        }, [])
+        const insulationTypes = Array.from(new Set(allInsulationTypes))
+
+        acc.push({
+          id: contractor.id,
+          name: contractor.business_name,
+          slug: generateUniqueSlug(contractor.business_name, contractor.id),
+          rating: contractor.average_rating || 4.5,
+          reviewCount: contractor.total_reviews || 0,
+          jobsCompleted: contractor.total_completed_projects || 0,
+          reliabilityScore: 95, // Could be calculated
+          services: servicesOffered.length > 0 ? servicesOffered : ['Basement', 'Attic', 'Garage', 'Crawl Space', 'Walls'],
+          insulationTypes: insulationTypes.length > 0 ? insulationTypes : ['Fiberglass'],
+          image: getContractorLogo(contractor.profile_image),
+          verified: contractor.license_verified || false,
+          bbbAccredited: contractor.bbb_accredited || false,
+          licensedBondedInsured: Boolean(contractor.license_verified && contractor.insurance_verified),
+          licenseNumber: contractor.license_number || '',
+          yearEstablished: contractor.founded_year || 2020,
+          about: contractor.bio || 'Professional insulation contractor serving the Mesa area.'
+        })
+      }
+      return acc
+    }, [])
+    
+    return uniqueContractors
+  } catch (error) {
+    return []
+  }
+}
+
+// Add Mesa area cities with 50k+ population
+const mesaAreaCities = [
+  { name: 'Mesa', population: '504,258' },
+  { name: 'Phoenix', population: '1,608,139' },
+  { name: 'Chandler', population: '275,987' },
+  { name: 'Scottsdale', population: '241,361' },
+  { name: 'Gilbert', population: '267,918' },
+  { name: 'Tempe', population: '195,805' },
+  { name: 'Apache Junction', population: '38,499' }
+]
+
+export default async function MesaInsulationContractors() {
+  const mesaContractors = await getMesaContractors()
+  
+  const cityStats = {
+    totalReviews: mesaContractors.reduce((sum: number, contractor: any) => sum + contractor.reviewCount, 0),
+    averageRating: mesaContractors.length > 0 ? 
+      (mesaContractors.reduce((sum: number, contractor: any) => sum + contractor.rating, 0) / mesaContractors.length).toFixed(1) : 
+      '4.8',
+    totalContractors: mesaContractors.length,
+    jobsCompleted: mesaContractors.reduce((sum: number, contractor: any) => sum + contractor.jobsCompleted, 0)
+  }
+  
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        className={`w-4 h-4 ${
+          i < Math.floor(rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+        }`}
+      />
+    ))
+  }
+
+  return (
+    <main className="min-h-screen">
+      <Header />
+      
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
+              Mesa Insulation Contractors
+            </h1>
+            <p className="text-xl text-gray-700 mb-8">
+              Find the best insulation contractors in Mesa, Arizona. Get free quotes from local, 
+              licensed professionals who understand Mesa's unique climate challenges.
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[#0a4768]">{cityStats.totalReviews}</div>
+                <div className="text-gray-600">Total Reviews</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[#0a4768]">{cityStats.averageRating}</div>
+                <div className="text-gray-600">Avg Rating</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[#0a4768]">{cityStats.totalContractors}</div>
+                <div className="text-gray-600">Contractors</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[#0a4768]">{cityStats.jobsCompleted}</div>
+                <div className="text-gray-600">Jobs Done</div>
+              </div>
+            </div>
+            <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+              Get Free Mesa Quotes
+            </QuoteButton>
+          </div>
+        </div>
+      </section>
+
+      {/* Insulation Information */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-3 gap-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-[#0a4768]">Insulation Types for Mesa</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                    Spray Foam - Best for hot climates
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                    Blown-in Cellulose - Cost-effective
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                    Fiberglass Batts - DIY friendly
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                    Radiant Barriers - Reflects heat
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-[#0a4768]">Where to Insulate</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                    Attics - Highest priority
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                    Walls - Exterior/Interior facing
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                    Crawl Spaces - Moisture control
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                    Garages - Additional comfort
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-[#0a4768]">How It Works</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ol className="space-y-2">
+                  <li className="flex items-start">
+                    <span className="bg-[#F5DD22] text-[#0a4768] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2 mt-0.5">1</span>
+                    Get free quotes from verified contractors
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-[#F5DD22] text-[#0a4768] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2 mt-0.5">2</span>
+                    Compare prices and services
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-[#F5DD22] text-[#0a4768] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2 mt-0.5">3</span>
+                    Schedule installation
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-[#F5DD22] text-[#0a4768] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2 mt-0.5">4</span>
+                    Enjoy lower energy bills
+                  </li>
+                </ol>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Mini Profiles */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-12 text-center">
+            Top Mesa Insulation Contractors
+          </h2>
+          <div className="space-y-8">
+            {mesaContractors.map((contractor: any) => (
+              <Card key={contractor.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="grid lg:grid-cols-4 gap-6 p-6">
+                  {/* Company Info */}
+                  <div className="lg:col-span-1">
+                    <div className="flex items-center space-x-4 mb-4">
+                      <div className="relative">
+                        <Image
+                          src={contractor.image}
+                          alt={contractor.name}
+                          width={100}
+                          height={100}
+                          className="w-25 h-25 rounded-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-[#0a4768]">{contractor.name}</h3>
+                        <p className="text-gray-600">Est. {contractor.yearEstablished}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center">
+                        {renderStars(contractor.rating)}
+                        <span className="ml-2 font-semibold">{contractor.rating}</span>
+                        <span className="text-gray-600 ml-1">({contractor.reviewCount})</span>
+                      </div>
+                      <div>
+                        <span className="font-medium">Jobs Completed:</span> {contractor.jobsCompleted}
+                      </div>
+                      <div className="space-y-1">
+                        {contractor.bbbAccredited && (
+                          <div className="flex items-center text-green-600 text-sm">
+                            <Award className="w-4 h-4 mr-1" />
+                            BBB Accredited
+                          </div>
+                        )}
+                        {contractor.licensedBondedInsured && (
+                          <div className="flex items-center text-green-600 text-sm">
+                            <Shield className="w-4 h-4 mr-1" />
+                            <span>Licensed, Bonded & Insured</span>
+                          </div>
+                        )}
+                        {contractor.licenseNumber && (
+                          <div className="flex items-center text-gray-600 text-xs ml-5">
+                            {contractor.verified && (
+                              <div className="bg-green-500 rounded-full p-0.5 mr-1.5">
+                                <CheckCircle className="w-3 h-3 text-white" />
+                              </div>
+                            )}
+                            License # {contractor.licenseNumber}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Services & About */}
+                  <div className="lg:col-span-2">
+                    <h4 className="font-semibold text-[#0a4768] mb-2">About</h4>
+                    <p className="text-gray-700 mb-4 text-sm leading-[24px]">{contractor.about}</p>
+                    
+                    <h4 className="font-semibold text-[#0a4768] mb-2">Services Offered</h4>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {contractor.services.map((service: any, index: number) => (
+                        <Badge key={index} variant="secondary" className="text-xs">
+                          {service}
+                        </Badge>
+                      ))}
+                    </div>
+
+                    <h4 className="font-semibold text-[#0a4768] mb-2">Types of Insulation Offered</h4>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {contractor.insulationTypes.map((type: any, index: number) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {type}
+                        </Badge>
+                      ))}
+                    </div>
+
+                  </div>
+
+                  {/* Actions */}
+                  <div className="lg:col-span-1 flex flex-col space-y-3">
+                    <QuoteButton className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
+                      Get Quote
+                    </QuoteButton>
+                    <Button 
+                      asChild
+                      variant="outline" 
+                      className="w-full"
+                    >
+                      <Link href={`/contractor/${contractor.slug}`}>
+                        View Full Profile
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Mesa Area Cities */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
+            Additional Nearby Cities We Serve
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {mesaAreaCities.map((city, index) => (
+              <Card key={index} className="hover:shadow-lg transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold text-lg text-gray-700">{city.name}</h3>
+                      <p className="text-sm text-gray-500">Pop: {city.population}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Service Areas Map */}
+      <section className="py-8 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="rounded-lg overflow-hidden shadow-lg">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d423284.8680465754!2d-111.78901482465712!3d33.41504410602074!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872ba7525443e4c7%3A0x71e8f01e1da73e80!2sMesa%2C%20AZ!5e0!3m2!1sen!2sus!4v1709562834567"
+              width="100%"
+              height="450"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Mesa, Arizona - Service Area Map"
+            />
+          </div>
+          <div className="text-center mt-6">
+            <p className="text-gray-600 mb-4">
+              Our certified insulation contractors serve all cities and communities throughout Mesa and the surrounding East Valley area.
+            </p>
+            <Button 
+              asChild 
+              variant="outline"
+              className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
+            >
+              <Link 
+                href="https://www.google.com/maps/place/Mesa,+AZ"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center"
+              >
+                View Full Map
+                <ExternalLink className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-[#D6D6D6] text-[#0a4768]">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">
+            Ready to Improve Your Mesa Home?
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Connect with Mesa's most trusted insulation contractors. Get free quotes from verified professionals 
+            who understand the unique insulation needs of desert homes.
+          </p>
+          <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+            Get Mesa Quotes Now
+          </QuoteButton>
+        </div>
+      </section>
+
+      <Footer />
+    </main>
+  )
+}
+
