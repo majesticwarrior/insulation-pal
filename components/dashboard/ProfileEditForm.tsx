@@ -833,7 +833,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
                 />
                 <p className="text-xs text-gray-500 mt-1">For lead notifications only. Not displayed publicly.</p>
                 <p className="text-xs text-gray-600 mt-1 font-medium">
-                  *By selecting Text Messages, you are giving Insulation Pal consent to receive marketing messages.
+                  *By selecting Text Messages, you are giving InsulationPal consent to send marketing messages.
                 </p>
               </div>
               <div>

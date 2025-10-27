@@ -86,6 +86,17 @@ export default function ServicesPage() {
     <main className="min-h-screen">
       <Header />
       
+      {/* Breadcrumb */}
+      <section className="bg-gray-50 py-4">
+        <div className="container mx-auto px-4">
+          <nav className="flex items-center space-x-2 text-sm">
+            <Link href="/" className="text-gray-500 hover:text-[#0a4768]">Home</Link>
+            <span className="text-gray-300">/</span>
+            <span className="text-gray-900">Services</span>
+          </nav>
+        </div>
+      </section>
+      
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
         <div className="container mx-auto px-4">

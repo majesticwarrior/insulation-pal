@@ -168,12 +168,18 @@ export function ImageUploadManager({ contractorId }: ImageUploadManagerProps) {
       let beforeImageUrl = ''
       let afterImageUrl = ''
 
-      // Upload images
+      // Apply watermark and upload images
       if (beforeImageFile) {
-        beforeImageUrl = await uploadImageToSupabase(beforeImageFile)
+        // Apply watermark to image before upload
+        const { addWatermarkToImage } = await import('@/lib/image-watermark')
+        const watermarkedBeforeFile = await addWatermarkToImage(beforeImageFile)
+        beforeImageUrl = await uploadImageToSupabase(watermarkedBeforeFile)
       }
       if (afterImageFile) {
-        afterImageUrl = await uploadImageToSupabase(afterImageFile)
+        // Apply watermark to image before upload
+        const { addWatermarkToImage } = await import('@/lib/image-watermark')
+        const watermarkedAfterFile = await addWatermarkToImage(afterImageFile)
+        afterImageUrl = await uploadImageToSupabase(watermarkedAfterFile)
       }
 
       // Save to database

@@ -1,4 +1,5 @@
-// Utility function to add watermark to images before upload
+// Utility function to add watermark logo to images before upload
+// Watermark appears in the bottom right corner
 
 export const addWatermarkToImage = async (file: File): Promise<File> => {
   return new Promise((resolve, reject) => {
@@ -14,7 +15,7 @@ export const addWatermarkToImage = async (file: File): Promise<File> => {
     reader.onload = (e) => {
       const img = new Image()
       
-      img.onload = () => {
+      img.onload = async () => {
         try {
           // Create canvas
           const canvas = document.createElement('canvas')
@@ -32,22 +33,78 @@ export const addWatermarkToImage = async (file: File): Promise<File> => {
           // Draw original image
           ctx.drawImage(img, 0, 0)
 
-          // Add watermark
-          ctx.globalAlpha = 0.3 // Semi-transparent watermark
-          ctx.font = `bold ${Math.max(img.width, img.height) / 15}px Arial`
-          ctx.fillStyle = '#F5DD22'
-          ctx.textAlign = 'center'
-          ctx.textBaseline = 'middle'
+          // Load and draw logo if available
+          let logoImg: HTMLImageElement | null = null
           
-          // Center text
-          const text = 'InsulationPal.com'
-          const x = canvas.width / 2
-          const y = canvas.height / 2
-          
-          // Add text shadow for visibility
-          ctx.shadowColor = '#000'
-          ctx.shadowBlur = 10
-          ctx.fillText(text, x, y)
+          // Try to load the logo image
+          try {
+            logoImg = new Image()
+            logoImg.crossOrigin = 'anonymous'
+            logoImg.src = '/insulation-pal-logo.png' // Path to logo in public folder
+            
+            await new Promise<void>((resolve) => {
+              if (logoImg) {
+                logoImg.onload = () => resolve()
+                logoImg.onerror = () => {
+                  // If logo fails to load, continue without logo
+                  logoImg = null
+                  resolve()
+                }
+              } else {
+                resolve()
+              }
+            })
+          } catch (error) {
+            // If logo can't be loaded, continue without logo
+            logoImg = null
+          }
+
+          // Add watermark - either logo or text
+          if (logoImg) {
+            // Add logo watermark in bottom right
+            const logoSize = Math.min(img.width, img.height) * 0.15 // 15% of smaller dimension
+            const padding = Math.min(img.width, img.height) * 0.02 // 2% padding
+            const x = canvas.width - logoSize - padding
+            const y = canvas.height - logoSize - padding
+            
+            // Draw logo with opacity
+            ctx.globalAlpha = 0.6
+            ctx.drawImage(logoImg, x, y, logoSize, logoSize)
+            ctx.globalAlpha = 1.0
+          } else {
+            // Fallback: text watermark if logo not available
+            const fontSize = Math.max(img.width, img.height) / 25
+            ctx.font = `bold ${fontSize}px Arial`
+            ctx.fillStyle = '#F5DD22'
+            ctx.textAlign = 'right'
+            ctx.textBaseline = 'bottom'
+            
+            // Add semi-transparent background for text
+            ctx.globalAlpha = 0.7
+            const text = 'InsulationPal.com'
+            const metrics = ctx.measureText(text)
+            const textWidth = metrics.width
+            const textHeight = fontSize
+            
+            // Draw background rectangle
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
+            const padding = fontSize * 0.3
+            ctx.fillRect(
+              canvas.width - textWidth - padding * 2 - fontSize * 0.5,
+              canvas.height - textHeight - padding - fontSize * 0.5,
+              textWidth + padding * 2,
+              textHeight + padding * 2
+            )
+            
+            // Draw text
+            ctx.fillStyle = '#F5DD22'
+            ctx.fillText(
+              text,
+              canvas.width - padding - fontSize * 0.5,
+              canvas.height - padding - fontSize * 0.5
+            )
+            ctx.globalAlpha = 1.0
+          }
 
           // Convert canvas to blob
           canvas.toBlob((blob) => {
@@ -66,8 +123,8 @@ export const addWatermarkToImage = async (file: File): Promise<File> => {
           }, file.type)
 
         } catch (error) {
-          console.error('Error adding watermark:', error)
           // If watermarking fails, return original file
+          console.error('Error adding watermark:', error)
           resolve(file)
         }
       }

@@ -80,15 +80,18 @@ export function ProjectImageUpload({
     try {
       // Upload each image and create portfolio entries
       for (let i = 0; i < images.length; i++) {
-        const file = images[i]
-        const fileExt = file.name.split('.').pop()
+        // Apply watermark to image before upload
+        const { addWatermarkToImage } = await import('@/lib/image-watermark')
+        const watermarkedFile = await addWatermarkToImage(images[i])
+        
+        const fileExt = watermarkedFile.name.split('.').pop()
         const fileName = `${contractorId}-${leadAssignmentId}-${Date.now()}-${i}.${fileExt}`
         const filePath = fileName // Simplified: no nested folders, just root of bucket - v2 fix
 
         // Upload to Supabase Storage
         const { error: uploadError } = await supabase.storage
           .from('contractor_images')
-          .upload(filePath, file)
+          .upload(filePath, watermarkedFile)
 
         if (uploadError) {
           console.error('❌ Storage upload error:', uploadError)
@@ -100,7 +103,7 @@ export function ProjectImageUpload({
             bucketName: 'contractor_images'
           })
           console.error('❌ Full error object:', JSON.stringify(uploadError, null, 2))
-          toast.error(`Failed to upload ${file.name}: ${uploadError.message}`)
+          toast.error(`Failed to upload ${watermarkedFile.name}: ${uploadError.message}`)
           continue
         }
         
@@ -145,7 +148,7 @@ export function ProjectImageUpload({
             details: dbError.details,
             hint: dbError.hint
           })
-          toast.error(`Failed to save ${file.name} to portfolio: ${dbError.message}`)
+          toast.error(`Failed to save ${watermarkedFile.name} to portfolio: ${dbError.message}`)
           continue
         }
         
