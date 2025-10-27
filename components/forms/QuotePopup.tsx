@@ -61,7 +61,8 @@ const additionalServices = [
   { id: 'energy_audit', label: 'Energy Audit' },
   { id: 'ceiling_fan_installation', label: 'Ceiling Fan Installation' },
   { id: 'air_sealing', label: 'Air Sealing' },
-  { id: 'duct_sealing', label: 'Duct Sealing' }
+  { id: 'duct_sealing', label: 'Duct Sealing' },
+  { id: 'insulation_removal', label: 'Insulation Removal' }
 ]
 
 const atticInsulationDepths = [

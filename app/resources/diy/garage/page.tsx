@@ -164,13 +164,6 @@ export default function GarageDIYGuidePage() {
                       </div>
                       <p className="text-sm text-gray-600 mt-1">Expert guides and tips</p>
                     </Link>
-                    <Link href="/services/garage-insulation" className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                      <div className="flex items-center text-[#0a4768]">
-                        <Wrench className="h-4 w-4 mr-2" />
-                        <span className="font-medium">What is Garage Insulation?</span>
-                      </div>
-                      <p className="text-sm text-gray-600 mt-1">Learn about garage insulation</p>
-                    </Link>
                   </div>
                 </div>
               </div>
