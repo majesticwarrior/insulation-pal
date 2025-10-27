@@ -714,6 +714,20 @@ export default async function MaricopaInsulationContractors() {
                     </div>
                   </CardContent>
                 </Card>
+              ) : city.name === 'Casa Grande' ? (
+                <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-lg text-gray-700">{city.name}</h3>
+                        <p className="text-sm text-gray-500">Pop: {city.population}</p>
+                      </div>
+                      <Button size="sm" variant="outline" className="text-xs" disabled>
+                        Coming Soon
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               ) : (
                 <Link key={index} href={`/arizona/${city.slug}-insulation-contractors`} className="hover:no-underline">
                   <Card className="hover:shadow-lg transition-shadow cursor-pointer">
