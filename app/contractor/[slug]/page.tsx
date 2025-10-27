@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { QuoteButton } from '@/components/ui/quote-button'
-import { Breadcrumb } from '@/components/ui/breadcrumb'
+import { Breadcrumb, BreadcrumbItem } from '@/components/ui/breadcrumb'
 import { TruncatedText } from '@/components/ui/TruncatedText'
 import { 
   Star, 
@@ -390,7 +390,7 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
   }
 
   // Build breadcrumb items based on contractor location
-  const breadcrumbItems = [
+  const breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Home', href: '/' }
   ]
   
