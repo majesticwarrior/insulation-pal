@@ -92,7 +92,8 @@ export async function generateMetadata(): Promise<Metadata> {
 // Fetch Phoenix contractors from Supabase database
 async function getPhoenixContractors() {
   try {
-    // Get contractors who serve Phoenix (either based in Phoenix or have Phoenix as a service area)
+    // Get contractors based in Phoenix (business city from their profile)
+    // Service areas are only used for lead bidding, not for city page display
     // Only show contractors with available credits
     const { data: contractors, error } = await (supabase as any)
       .from('contractors')
@@ -168,13 +169,10 @@ async function getPhoenixContractors() {
         }
         
         // Process contractors without bbb_accredited
+        // Filter by business_city only - service areas are NOT used for city page display
         const phoenixContractors = contractorsRetry?.filter((contractor: any) => {
           const contractorCity = contractor.business_city?.toLowerCase()
-          const serviceAreas = contractor.contractor_service_areas || []
-          const servesPhoenix = serviceAreas.some((area: any) => 
-            area.city?.toLowerCase() === 'phoenix'
-          )
-          return contractorCity === 'phoenix' || servesPhoenix
+          return contractorCity === 'phoenix'
         }) || []
 
         // Remove duplicates and transform data to match component format
@@ -227,13 +225,11 @@ async function getPhoenixContractors() {
       return []
     }
 
-    // Filter contractors who serve Phoenix (either based in Phoenix or have Phoenix as a service area)
+    // Filter contractors who are based in Phoenix (business_city from their business address)
+    // Service areas are NOT used for city page display - they're only for lead bidding
     const phoenixContractors = contractors?.filter((contractor: any) => {
       const isBasedInPhoenix = contractor.business_city?.toLowerCase() === 'phoenix'
-      const hasPhoenixServiceArea = contractor.contractor_service_areas?.some((area: any) => 
-        area.city?.toLowerCase() === 'phoenix' || area.city?.toLowerCase().includes('phoenix')
-      )
-      return isBasedInPhoenix || hasPhoenixServiceArea
+      return isBasedInPhoenix
     }) || []
 
     // Remove duplicates and transform data to match component format
