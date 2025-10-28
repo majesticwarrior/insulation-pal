@@ -429,14 +429,25 @@ export default async function PhoenixInsulationContractors() {
   const schemas = createCitySchemas('Phoenix', 'Arizona', '/arizona/phoenix-insulation-contractors')
   const mapUrl = getCityMapUrl('phoenix', 'Phoenix, AZ')
   
-  const serviceSchema = {
+  const localBusinessSchema = {
     "@context": "https://schema.org",
-    "@type": "Service",
-    "serviceType": "Insulation Installation Services",
-    "provider": {
-      "@type": "Organization",
-      "name": "InsulationPal",
-      "url": "https://insulationpal.com"
+    "@type": "LocalBusiness",
+    "name": "InsulationPal - Phoenix Insulation Contractors",
+    "image": "https://insulationpal.com/home-outside-walls-insulation-installation.jpg",
+    "url": "https://insulationpal.com/arizona/phoenix-insulation-contractors",
+    "telephone": "+1-480-XXX-XXXX",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "14210 N 46th Dr",
+      "addressLocality": "Phoenix",
+      "addressRegion": "AZ",
+      "postalCode": "85306",
+      "addressCountry": "US"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 33.4484,
+      "longitude": -112.0740
     },
     "areaServed": {
       "@type": "City",
@@ -446,10 +457,13 @@ export default async function PhoenixInsulationContractors() {
         "name": "Arizona"
       }
     },
-    "description": "Professional insulation installation services in Phoenix, AZ including attic insulation, wall insulation, spray foam insulation, crawl space insulation, and insulation removal.",
-    "offers": {
-      "@type": "Offer",
-      "availability": "https://schema.org/InStock"
+    "description": "Find the best insulation contractors in Phoenix, AZ. Professional insulation installation services including attic insulation, wall insulation, spray foam insulation, crawl space insulation, and insulation removal.",
+    "priceRange": "$$",
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "opens": "00:00",
+      "closes": "23:59"
     }
   }
   
@@ -479,7 +493,7 @@ export default async function PhoenixInsulationContractors() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.organization) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.brand) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumb) }} />
