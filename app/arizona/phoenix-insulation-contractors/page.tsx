@@ -429,6 +429,30 @@ export default async function PhoenixInsulationContractors() {
   const schemas = createCitySchemas('Phoenix', 'Arizona', '/arizona/phoenix-insulation-contractors')
   const mapUrl = getCityMapUrl('phoenix', 'Phoenix, AZ')
   
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "Insulation Installation Services",
+    "provider": {
+      "@type": "Organization",
+      "name": "InsulationPal",
+      "url": "https://insulationpal.com"
+    },
+    "areaServed": {
+      "@type": "City",
+      "name": "Phoenix",
+      "containedIn": {
+        "@type": "State",
+        "name": "Arizona"
+      }
+    },
+    "description": "Professional insulation installation services in Phoenix, AZ including attic insulation, wall insulation, spray foam insulation, crawl space insulation, and insulation removal.",
+    "offers": {
+      "@type": "Offer",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+  
   const phoenixContractors = await getPhoenixContractors()
   const recentProjects = await getPhoenixRecentProjects()
   const phoenixReviews = await getPhoenixReviews()
@@ -455,6 +479,7 @@ export default async function PhoenixInsulationContractors() {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.organization) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.brand) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumb) }} />
