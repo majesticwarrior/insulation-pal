@@ -3,7 +3,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://insulationpal.com/</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -11,78 +11,92 @@
   <!-- Main Pages -->
   <url>
     <loc>https://insulationpal.com/about</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/how-it-works</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/contact</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/join-contractor</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/what-does-home-insulation-cost</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/cookies</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 
   <!-- Services Pages -->
   <url>
     <loc>https://insulationpal.com/services</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/services/attic-insulation</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/services/wall-insulation</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/services/basement-insulation</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/services/crawl-space-insulation</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://insulationpal.com/services/spray-foam</loc>
-    <lastmod>2024-01-15</lastmod>
+    <loc>https://insulationpal.com/services/spray-foam-insulation</loc>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/services/insulation-removal</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -90,28 +104,126 @@
   <!-- Arizona Pages -->
   <url>
     <loc>https://insulationpal.com/arizona</loc>
-    <lastmod>2024-01-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://insulationpal.com/arizona-insulation-contractors</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/arizona/phoenix-insulation-contractors</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://insulationpal.com/phoenix-insulation-contractors</loc>
-    <lastmod>2024-01-15</lastmod>
+    <loc>https://insulationpal.com/arizona/mesa-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/chandler-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/scottsdale-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/glendale-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/gilbert-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/tempe-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/peoria-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/surprise-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/tucson-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/avondale-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/goodyear-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/buckeye-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/maricopa-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/sun-city-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/flagstaff-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/arizona/prescott-insulation-contractors</loc>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -119,70 +231,77 @@
   <!-- Resources -->
   <url>
     <loc>https://insulationpal.com/resources</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/resources/articles</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://insulationpal.com/resources/articles/faq</loc>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/resources/articles/what-is-an-energy-audit</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/resources/articles/what-is-blown-in-insulation</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/resources/articles/what-is-cellulose-insulation</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/resources/articles/what-is-fibreglass-insulation</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/resources/articles/what-is-mineral-wool-insulation</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/resources/articles/what-is-rigid-foam-board-insulation</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/resources/articles/what-is-roll-and-batt-insulation</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/resources/articles/what-is-spray-foam-insulation</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -190,14 +309,14 @@
   <!-- Legal Pages -->
   <url>
     <loc>https://insulationpal.com/privacy</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
     <loc>https://insulationpal.com/terms</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2025-01-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
