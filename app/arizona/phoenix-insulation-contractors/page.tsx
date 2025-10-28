@@ -439,6 +439,7 @@ export default async function PhoenixInsulationContractors() {
     "name": "InsulationPal Phoenix",
     "image": "https://insulationpal.com/home-outside-walls-insulation-installation.jpg",
     "url": "https://insulationpal.com/arizona/phoenix-insulation-contractors",
+    "telephone": "+1-888-357-9555",
     "description": "Find trusted insulation contractors in Phoenix, AZ. Get free quotes for attic insulation, wall insulation, spray foam insulation, crawl space insulation, basement insulation, and insulation removal from licensed professionals.",
     "priceRange": "$$",
     "address": {
