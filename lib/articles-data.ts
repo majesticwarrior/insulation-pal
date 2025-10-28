@@ -63,6 +63,14 @@ export const articles = [
     image: '/energy-consumption-audit.jpg',
     readTime: '7 min read',
     category: 'Energy Efficiency'
+  },
+  {
+    title: 'Frequently Asked Questions',
+    slug: 'faq',
+    description: 'Get answers to commonly asked questions about InsulationPal, how it works, costs, energy savings, and insulation types.',
+    image: '/professional-insulation-contractor-working-on-home.jpg',
+    readTime: '8 min read',
+    category: 'FAQ'
   }
 ]
 
