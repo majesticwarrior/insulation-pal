@@ -1027,5 +1027,6 @@ export default async function GoodyearInsulationContractors() {
 
       <Footer />
     </main>
+    </>
   )
 }
