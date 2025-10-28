@@ -27,6 +27,8 @@ import { supabase } from '@/lib/supabase'
 import { generateUniqueSlug } from '@/lib/slug-utils'
 import { articles } from '@/lib/articles-data'
 import { getContractorLogo } from '@/lib/contractor-utils'
+import { createCitySchemas } from '@/lib/city-schema'
+import { getCityMapUrl } from '@/lib/city-maps'
 
 // Revalidate this page every 60 seconds to show updated contractor data
 export const revalidate = 60
@@ -424,6 +426,9 @@ const phoenixAreaCities = [
 
 
 export default async function PhoenixInsulationContractors() {
+  const schemas = createCitySchemas('Phoenix', 'Arizona', '/arizona/phoenix-insulation-contractors')
+  const mapUrl = getCityMapUrl('phoenix', 'Phoenix, AZ')
+  
   const phoenixContractors = await getPhoenixContractors()
   const recentProjects = await getPhoenixRecentProjects()
   const phoenixReviews = await getPhoenixReviews()
@@ -449,7 +454,11 @@ export default async function PhoenixInsulationContractors() {
   }
 
   return (
-    <main className="min-h-screen">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.organization) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.brand) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumb) }} />
+      <main className="min-h-screen">
       <Header />
       
       <Breadcrumb items={[
@@ -580,7 +589,7 @@ export default async function PhoenixInsulationContractors() {
       </section>
 
       {/* Mini Profiles */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-[#D6D6D6]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-[#0a4768] mb-12 text-center">
             Top Phoenix Insulation Contractors
@@ -733,14 +742,14 @@ export default async function PhoenixInsulationContractors() {
         <div className="container mx-auto px-4">
           <div className="rounded-lg overflow-hidden shadow-lg">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d422508.0351092426!2d-112.41914644999999!3d33.3586662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872b5d0c0572a2ff%3A0x4aec1cd17f2c4880!2sMaricopa%20County%2C%20AZ!5e0!3m2!1sen!2sus!4v1709562834567!5m2!1sen!2sus"
+              src={mapUrl}
               width="100%"
               height="450"
               style={{ border: 0 }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Maricopa County, Arizona - Service Area Map"
+              title="Phoenix, Arizona - Service Area Map"
             />
           </div>
           <div className="text-center mt-6">
@@ -1009,5 +1018,6 @@ export default async function PhoenixInsulationContractors() {
 
       <Footer />
     </main>
+    </>
   )
 }

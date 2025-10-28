@@ -27,6 +27,8 @@ import { supabase } from '@/lib/supabase'
 import { generateUniqueSlug } from '@/lib/slug-utils'
 import { articles } from '@/lib/articles-data'
 import { getContractorLogo } from '@/lib/contractor-utils'
+import { createCitySchemas } from '@/lib/city-schema'
+import { getCityMapUrl } from '@/lib/city-maps'
 
 // Revalidate this page every 60 seconds to show updated contractor data
 export const revalidate = 60
@@ -427,6 +429,9 @@ const glendaleAreaCities = [
 
 
 export default async function GlendaleInsulationContractors() {
+  const schemas = createCitySchemas('Glendale', 'Arizona', '/arizona/glendale-insulation-contractors')
+  const mapUrl = getCityMapUrl('glendale', 'Glendale, AZ')
+
   const glendaleContractors = await getGlendaleContractors()
   const recentProjects = await getPhoenixRecentProjects()
   const phoenixReviews = await getPhoenixReviews()
@@ -452,7 +457,11 @@ export default async function GlendaleInsulationContractors() {
   }
 
   return (
-    <main className="min-h-screen">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.organization) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.brand) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumb) }} />
+      <main className="min-h-screen">
       <Header />
       
       <Breadcrumb items={[
@@ -583,7 +592,7 @@ export default async function GlendaleInsulationContractors() {
       </section>
 
       {/* Mini Profiles */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-[#D6D6D6]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-[#0a4768] mb-12 text-center">
             Top Glendale Insulation Contractors
@@ -742,7 +751,7 @@ export default async function GlendaleInsulationContractors() {
         <div className="container mx-auto px-4">
           <div className="rounded-lg overflow-hidden shadow-lg">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d42420.685227453395!2d-112.19842482549628!3d33.583099608162466!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872b3f1a5b1c99d7%3A0xd79c1556a98a7a4f!2sGlendale%2C%20AZ!5e0!3m2!1sen!2sus!4v1709562834567"
+              src={mapUrl}
               width="100%"
               height="450"
               style={{ border: 0 }}
@@ -1018,5 +1027,6 @@ export default async function GlendaleInsulationContractors() {
 
       <Footer />
     </main>
+    </>
   )
 }

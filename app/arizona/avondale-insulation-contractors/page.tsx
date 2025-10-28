@@ -27,6 +27,8 @@ import { supabase } from '@/lib/supabase'
 import { generateUniqueSlug } from '@/lib/slug-utils'
 import { articles } from '@/lib/articles-data'
 import { getContractorLogo } from '@/lib/contractor-utils'
+import { createCitySchemas } from '@/lib/city-schema'
+import { getCityMapUrl } from '@/lib/city-maps'
 
 // Revalidate this page every 60 seconds to show updated contractor data
 export const revalidate = 60
@@ -427,6 +429,9 @@ const avondaleAreaCities = [
 
 
 export default async function AvondaleInsulationContractors() {
+  const schemas = createCitySchemas('Avondale', 'Arizona', '/arizona/avondale-insulation-contractors')
+  const mapUrl = getCityMapUrl('avondale', 'Avondale, AZ')
+
   const avondaleContractors = await getAvondaleContractors()
   const recentProjects = await getPhoenixRecentProjects()
   const phoenixReviews = await getPhoenixReviews()
@@ -452,7 +457,11 @@ export default async function AvondaleInsulationContractors() {
   }
 
   return (
-    <main className="min-h-screen">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.organization) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.brand) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumb) }} />
+      <main className="min-h-screen">
       <Header />
       
       <Breadcrumb items={[
@@ -583,7 +592,7 @@ export default async function AvondaleInsulationContractors() {
       </section>
 
       {/* Mini Profiles */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-[#D6D6D6]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-[#0a4768] mb-12 text-center">
             Top Avondale Insulation Contractors
@@ -742,7 +751,7 @@ export default async function AvondaleInsulationContractors() {
         <div className="container mx-auto px-4">
           <div className="rounded-lg overflow-hidden shadow-lg">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d52908.05726885446!2d-112.3824714!3d33.4355967!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872b3a1c7c8c8c8d%3A0x7e8f01e1da73e80!2sAvondale%2C%20AZ!5e0!3m2!1sen!2sus!4v1709562834567"
+              src={mapUrl}
               width="100%"
               height="450"
               style={{ border: 0 }}

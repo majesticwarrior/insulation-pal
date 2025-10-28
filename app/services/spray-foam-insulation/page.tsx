@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { CheckCircle, Star, Shield, MapPin, ThermometerSun, Wind, Droplet } from 'lucide-react'
 import type { Metadata } from 'next'
+import { createServiceSchemas } from '@/lib/service-schema'
 
 export const metadata: Metadata = {
   title: 'Premium Spray Foam Insulation Services - InsulationPal | Maximum Energy Efficiency',
@@ -22,6 +23,8 @@ export const metadata: Metadata = {
 }
 
 export default function SprayFoamPage() {
+  const schemas = createServiceSchemas('Spray Foam Insulation', '/services/spray-foam-insulation')
+
   const benefits = [
     {
       icon: ThermometerSun,
@@ -75,7 +78,12 @@ export default function SprayFoamPage() {
   ]
 
   return (
-    <main className="min-h-screen">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.service) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.organization) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.brand) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumb) }} />
+      <main className="min-h-screen">
       <Header />
       
       <Breadcrumb items={[
@@ -270,6 +278,7 @@ export default function SprayFoamPage() {
 
       <Footer />
     </main>
+    </>
   )
 }
 

@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { CheckCircle, Star, Shield, MapPin, AlertTriangle, Recycle, Heart } from 'lucide-react'
 import type { Metadata } from 'next'
+import { createServiceSchemas } from '@/lib/service-schema'
 
 export const metadata: Metadata = {
   title: 'Professional Insulation Removal Services - InsulationPal',
@@ -16,6 +17,8 @@ export const metadata: Metadata = {
 }
 
 export default function InsulationRemovalPage() {
+  const schemas = createServiceSchemas('Insulation Removal', '/services/insulation-removal')
+
   const benefits = [
     {
       icon: Heart,
@@ -69,7 +72,12 @@ export default function InsulationRemovalPage() {
   ]
 
   return (
-    <main className="min-h-screen">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.service) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.organization) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.brand) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumb) }} />
+      <main className="min-h-screen">
       <Header />
       
       <Breadcrumb items={[
@@ -264,5 +272,6 @@ export default function InsulationRemovalPage() {
 
       <Footer />
     </main>
+    </>
   )
 }

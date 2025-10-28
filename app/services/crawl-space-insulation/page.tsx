@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { CheckCircle, Star, Shield, MapPin, Home, Droplet, Wind } from 'lucide-react'
 import type { Metadata } from 'next'
+import { createServiceSchemas } from '@/lib/service-schema'
 
 export const metadata: Metadata = {
   title: 'Expert Crawl Space Insulation Services - InsulationPal',
@@ -16,6 +17,8 @@ export const metadata: Metadata = {
 }
 
 export default function CrawlSpacePage() {
+  const schemas = createServiceSchemas('Crawl Space Insulation', '/services/crawl-space-insulation')
+
   const benefits = [
     {
       icon: Droplet,
@@ -69,7 +72,12 @@ export default function CrawlSpacePage() {
   ]
 
   return (
-    <main className="min-h-screen">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.service) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.organization) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.brand) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumb) }} />
+      <main className="min-h-screen">
       <Header />
       
       <Breadcrumb items={[
@@ -264,6 +272,7 @@ export default function CrawlSpacePage() {
 
       <Footer />
     </main>
+    </>
   )
 }
 

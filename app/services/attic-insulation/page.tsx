@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { CheckCircle, Star, Shield, MapPin, ThermometerSun, Snowflake, Wrench } from 'lucide-react'
 import type { Metadata } from 'next'
+import { createServiceSchemas } from '@/lib/service-schema'
 
 export const metadata: Metadata = {
   title: 'Professional Attic Insulation Services - InsulationPal | Save 30% on Energy Bills',
@@ -22,6 +23,8 @@ export const metadata: Metadata = {
 }
 
 export default function AtticInsulationPage() {
+  const schemas = createServiceSchemas('Attic Insulation', '/services/attic-insulation')
+
   const benefits = [
     {
       icon: ThermometerSun,
@@ -75,7 +78,12 @@ export default function AtticInsulationPage() {
   ]
 
   return (
-    <main className="min-h-screen">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.service) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.organization) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.brand) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumb) }} />
+      <main className="min-h-screen">
       <Header />
       
       <Breadcrumb items={[
@@ -269,5 +277,6 @@ export default function AtticInsulationPage() {
 
       <Footer />
     </main>
+    </>
   )
 }
