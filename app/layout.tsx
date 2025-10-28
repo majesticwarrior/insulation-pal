@@ -26,6 +26,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <meta name="p:domain_verify" content="67825100c7433513ded794e8ee903197"/>
+      </head>
       <body className={inter.className} suppressHydrationWarning={true}>
         {children}
         <Toaster />
