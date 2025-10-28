@@ -235,6 +235,343 @@ const emailTemplates = {
     </body>
     </html>
     `
+  },
+
+  'contractor-registration-confirmation': (data: any) => {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
+    const logoUrl = 'https://insulationpal.com/insulation-pal-logo-footer.png'
+    
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Registration Received - InsulationPal</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a4768; font-family: Arial, sans-serif;">
+      
+      <!-- Header -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <img src="${logoUrl}" alt="InsulationPal" style="height: 120px; width: auto;">
+      </div>
+      
+      <!-- Main Content Card -->
+      <div style="background-color: white; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        
+        <!-- Success Header -->
+        <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 30px; text-align: center;">
+          <div style="color: white; font-size: 28px; font-weight: bold; margin-bottom: 10px;">
+            ✅ Registration Received!
+          </div>
+          <div style="color: white; font-size: 18px;">
+            Thank you for joining InsulationPal
+          </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div style="padding: 30px;">
+          <h2 style="color: #0a4768; margin: 0 0 20px 0; font-size: 22px;">
+            Hello ${data.name || 'Valued Contractor'},
+          </h2>
+          
+          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+            Your contractor registration has been successfully submitted! We're excited to have you join the InsulationPal network.
+          </p>
+          
+          <!-- What Happens Next -->
+          <div style="background-color: #f0fdf4; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #10b981;">
+            <h3 style="color: #166534; margin: 0 0 15px 0; font-size: 18px;">
+              📋 What Happens Next?
+            </h3>
+            <div style="color: #166534; font-size: 14px; line-height: 1.8;">
+              <div style="margin-bottom: 10px;">
+                <strong>1. Admin Notification Sent ✓</strong><br>
+                <span style="font-size: 13px;">We've notified our admin team about your registration.</span>
+              </div>
+              <div style="margin-bottom: 10px;">
+                <strong>2. Review Process</strong><br>
+                <span style="font-size: 13px;">Our team will review your application and business information.</span>
+              </div>
+              <div>
+                <strong>3. Approval Email</strong><br>
+                <span style="font-size: 13px;">Once approved, you'll receive an email with your login credentials and access to your dashboard.</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Your Registration Details -->
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+            <h3 style="color: #0a4768; margin: 0 0 15px 0; font-size: 18px;">Your Registration Details</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 14px;">
+              <div>
+                <strong style="color: #0a4768;">Business Name:</strong><br>
+                <span style="color: #333;">${data.businessName || 'Not provided'}</span>
+              </div>
+              <div>
+                <strong style="color: #0a4768;">Contact Email:</strong><br>
+                <span style="color: #333;">${data.email || 'Not provided'}</span>
+              </div>
+              <div>
+                <strong style="color: #0a4768;">License Number:</strong><br>
+                <span style="color: #333;">${data.licenseNumber || 'Not provided'}</span>
+              </div>
+              <div>
+                <strong style="color: #0a4768;">City:</strong><br>
+                <span style="color: #333;">${data.city || 'Not provided'}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Timeline Info -->
+          <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #f59e0b;">
+            <h4 style="color: #856404; margin-top: 0; font-size: 16px;">⏱️ Expected Review Time</h4>
+            <p style="color: #856404; margin: 0; font-size: 14px; line-height: 1.5;">
+              Our team typically reviews applications within 1-2 business days. You'll receive an email notification as soon as your application has been processed.
+            </p>
+          </div>
+          
+          <!-- Contact Information -->
+          <div style="text-align: center; margin-top: 30px;">
+            <p style="color: #6b7280; font-size: 14px; margin-bottom: 10px;">
+              Questions about your registration?
+            </p>
+            <p style="color: #0a4768; font-size: 14px; margin: 0;">
+              Contact us at <a href="mailto:info@majesticwarrior.com" style="color: #0a4768; text-decoration: none;">info@majesticwarrior.com</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <p style="color: white; font-size: 14px; margin: 0 0 10px 0;">Welcome to InsulationPal</p>
+        <p style="color: white; font-size: 12px; margin: 0;">Serving those that serve others</p>
+      </div>
+      
+    </body>
+    </html>
+    `
+  },
+
+  'contractor-approved': (data: any) => {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
+    const logoUrl = 'https://insulationpal.com/insulation-pal-logo-footer.png'
+    
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Congratulations! You're Approved - InsulationPal</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a4768; font-family: Arial, sans-serif;">
+      
+      <!-- Header -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <img src="${logoUrl}" alt="InsulationPal" style="height: 120px; width: auto;">
+      </div>
+      
+      <!-- Main Content Card -->
+      <div style="background-color: white; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        
+        <!-- Congratulations Header -->
+        <div style="background: linear-gradient(135deg, #28a745, #20c997); padding: 30px; text-align: center;">
+          <div style="color: white; font-size: 28px; font-weight: bold; margin-bottom: 10px;">
+            🎉 Congratulations!
+          </div>
+          <div style="color: white; font-size: 18px;">
+            Your application has been approved
+          </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div style="padding: 30px;">
+          <h2 style="color: #0a4768; margin: 0 0 20px 0; font-size: 22px;">
+            Hello ${data.name || 'Valued Contractor'},
+          </h2>
+          
+          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+            Great news! Your contractor application has been reviewed and approved. You're now ready to start receiving qualified insulation leads from homeowners in your area.
+          </p>
+          
+          <!-- Login Information -->
+          <div style="background-color: #eff6ff; padding: 25px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #3b82f6;">
+            <h3 style="color: #1e40af; margin: 0 0 15px 0; font-size: 18px;">
+              🔑 Your Login Credentials
+            </h3>
+            <div style="color: #1e40af; font-size: 14px; line-height: 1.8;">
+              <div style="margin-bottom: 12px;">
+                <strong>Email:</strong> ${data.email}<br>
+                <strong>Password:</strong> ${data.password}
+              </div>
+              <p style="margin: 15px 0 0 0; font-size: 13px;">
+                ⚠️ <strong>Important:</strong> Please change your password after your first login for security.
+              </p>
+            </div>
+          </div>
+          
+          <!-- Getting Started -->
+          <div style="background-color: #f0fdf4; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #10b981;">
+            <h3 style="color: #166534; margin: 0 0 15px 0; font-size: 18px;">
+              🚀 Getting Started
+            </h3>
+            <ul style="color: #166534; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0;">
+              <li style="margin-bottom: 8px;">Complete your contractor profile with business details</li>
+              <li style="margin-bottom: 8px;">Upload your portfolio images to showcase your work</li>
+              <li style="margin-bottom: 8px;">Set up your service areas to target local leads</li>
+              <li style="margin-bottom: 8px;">Purchase lead credits to start receiving projects</li>
+              <li>Start bidding on insulation projects!</li>
+            </ul>
+          </div>
+          
+          <!-- Action Button -->
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${data.loginUrl}" 
+               style="background-color: #0a4768; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 16px;">
+              LOG IN TO YOUR DASHBOARD
+            </a>
+          </div>
+          
+          <!-- Next Steps -->
+          <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #f59e0b;">
+            <h4 style="color: #856404; margin-top: 0; font-size: 16px;">💡 Tips for Success</h4>
+            <ul style="color: #856404; margin: 10px 0 0 0; padding-left: 20px; font-size: 14px;">
+              <li style="margin-bottom: 6px;">Respond to leads quickly - speed matters!</li>
+              <li style="margin-bottom: 6px;">Write detailed, personalized quotes</li>
+              <li style="margin-bottom: 6px;">Upload high-quality portfolio images</li>
+              <li>Keep your availability updated</li>
+            </ul>
+          </div>
+          
+          <!-- Contact Information -->
+          <div style="text-align: center; margin-top: 30px;">
+            <p style="color: #6b7280; font-size: 14px; margin-bottom: 10px;">
+              Need help getting started?
+            </p>
+            <p style="color: #0a4768; font-size: 14px; margin: 0;">
+              Contact us at <a href="mailto:info@majesticwarrior.com" style="color: #0a4768; text-decoration: none;">info@majesticwarrior.com</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <p style="color: white; font-size: 14px; margin: 0 0 10px 0;">Welcome to the InsulationPal network!</p>
+        <p style="color: white; font-size: 12px; margin: 0;">Serving those that serve others</p>
+      </div>
+      
+    </body>
+    </html>
+    `
+  },
+
+  'new-contractor-registration': (data: any) => {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
+    const logoUrl = 'https://insulationpal.com/insulation-pal-logo-footer.png'
+    
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>New Contractor Registration - InsulationPal</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a4768; font-family: Arial, sans-serif;">
+      
+      <!-- Header -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <img src="${logoUrl}" alt="InsulationPal" style="height: 120px; width: auto;">
+        <div style="color: white; font-size: 14px; margin-top: 10px; text-align: right;">
+          ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+        </div>
+      </div>
+      
+      <!-- Main Content Card -->
+      <div style="background-color: white; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        
+        <!-- Alert Header -->
+        <div style="background: linear-gradient(135deg, #f59e0b, #d97706); padding: 30px; text-align: center;">
+          <div style="color: white; font-size: 28px; font-weight: bold; margin-bottom: 10px;">
+            🆕 New Contractor Registration
+          </div>
+          <div style="color: white; font-size: 18px;">
+            A new contractor has signed up on InsulationPal
+          </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div style="padding: 30px;">
+          <h2 style="color: #0a4768; margin: 0 0 20px 0; font-size: 22px;">
+            Hi Admin,
+          </h2>
+          
+          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+            A new contractor has registered and is awaiting your approval. Please review their information below:
+          </p>
+          
+          <!-- Contractor Details -->
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+            <h3 style="color: #0a4768; margin: 0 0 15px 0; font-size: 18px;">Contractor Information</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 14px;">
+              <div>
+                <strong style="color: #0a4768;">Business Name:</strong><br>
+                <span style="color: #333;">${data.businessName || 'Not provided'}</span>
+              </div>
+              <div>
+                <strong style="color: #0a4768;">Contact Name:</strong><br>
+                <span style="color: #333;">${data.name || 'Not provided'}</span>
+              </div>
+              <div>
+                <strong style="color: #0a4768;">Email:</strong><br>
+                <a href="mailto:${data.email}" style="color: #0a4768; text-decoration: none;">${data.email || 'Not provided'}</a>
+              </div>
+              <div>
+                <strong style="color: #0a4768;">Phone:</strong><br>
+                <a href="tel:${data.phone}" style="color: #0a4768; text-decoration: none;">${data.phone || 'Not provided'}</a>
+              </div>
+              <div>
+                <strong style="color: #0a4768;">License Number:</strong><br>
+                <span style="color: #333;">${data.licenseNumber || 'Not provided'}</span>
+              </div>
+              <div>
+                <strong style="color: #0a4768;">City:</strong><br>
+                <span style="color: #333;">${data.city || 'Not provided'}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Status Alert -->
+          <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #f59e0b;">
+            <h4 style="color: #856404; margin-top: 0; font-size: 16px;">⏳ Action Required</h4>
+            <p style="color: #856404; margin: 0; font-size: 14px; line-height: 1.5;">
+              This contractor is currently in <strong>"pending"</strong> status and needs your review. 
+              Please log in to the admin dashboard to approve or reject their application.
+            </p>
+          </div>
+          
+          <!-- Call to Action -->
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${data.adminDashboardLink || '#'}" 
+               style="background-color: #0a4768; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 16px;">
+              REVIEW CONTRACTOR
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <p style="color: white; font-size: 14px; margin: 0 0 10px 0;">InsulationPal Admin Notification</p>
+        <p style="color: white; font-size: 12px; margin: 0;">Serving those that serve others</p>
+      </div>
+      
+    </body>
+    </html>
+    `
   }
 }
 

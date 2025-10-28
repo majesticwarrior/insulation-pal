@@ -459,6 +459,51 @@ export default function AdminDashboard() {
 
       if (error) throw error
 
+      // If contractor was approved, send approval email
+      if (newStatus === 'approved') {
+        try {
+          // Get contractor details
+          const { data: contractor, error: fetchError } = await (supabase as any)
+            .from('contractors')
+            .select('email, business_name, contact_email')
+            .eq('id', contractorId)
+            .single()
+
+          if (!fetchError && contractor) {
+            const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
+            const emailToSend = contractor.contact_email || contractor.email
+            
+            // Send approval email
+            const response = await fetch('/api/send-email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                to: emailToSend,
+                subject: 'Congratulations! You\'re Approved - InsulationPal',
+                template: 'contractor-approved',
+                data: {
+                  name: contractor.business_name,
+                  email: emailToSend,
+                  password: 'Use the password you created during registration',
+                  loginUrl: `${siteUrl}/contractor-login`
+                }
+              })
+            })
+            
+            if (response.ok) {
+              console.log('✅ Approval email sent successfully to contractor')
+            } else {
+              console.error('❌ Failed to send approval email')
+            }
+          }
+        } catch (emailError) {
+          console.error('Error sending approval email:', emailError)
+          // Don't fail the status update if email fails
+        }
+      }
+
       toast.success(`Contractor ${newStatus === 'approved' ? 'approved' : newStatus}`)
       loadContractors() // Reload data
     } catch (error) {

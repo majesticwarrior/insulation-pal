@@ -110,6 +110,69 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
         if (contractorError) throw contractorError
       }
 
+      // Send admin notification email
+      try {
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
+        const adminEmail = 'info@majesticwarrior.com'
+        
+        // Send admin notification
+        const adminResponse = await fetch('/api/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: adminEmail,
+            subject: 'New Contractor Registration - InsulationPal',
+            template: 'new-contractor-registration',
+            data: {
+              name: data.name,
+              email: data.email,
+              phone: data.phone,
+              businessName: data.businessName,
+              licenseNumber: data.licenseNumber,
+              city: data.city,
+              adminDashboardLink: `${siteUrl}/admin-dashboard`
+            }
+          })
+        })
+        
+        if (adminResponse.ok) {
+          console.log('✅ Admin notification email sent successfully')
+        } else {
+          console.error('❌ Failed to send admin notification email')
+        }
+        
+        // Send contractor confirmation email
+        const contractorResponse = await fetch('/api/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: data.email,
+            subject: 'Registration Received - InsulationPal',
+            template: 'contractor-registration-confirmation',
+            data: {
+              name: data.name,
+              email: data.email,
+              businessName: data.businessName,
+              licenseNumber: data.licenseNumber,
+              city: data.city
+            }
+          })
+        })
+        
+        if (contractorResponse.ok) {
+          console.log('✅ Contractor confirmation email sent successfully')
+        } else {
+          console.error('❌ Failed to send contractor confirmation email')
+        }
+      } catch (emailError) {
+        console.error('Error sending emails:', emailError)
+        // Don't throw - registration succeeded even if email failed
+      }
+
       toast.success('Registration submitted successfully! We will review your application and get back to you soon.')
       form.reset()
       onSuccess?.()
