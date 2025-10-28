@@ -429,36 +429,48 @@ export default async function PhoenixInsulationContractors() {
   const schemas = createCitySchemas('Phoenix', 'Arizona', '/arizona/phoenix-insulation-contractors')
   const mapUrl = getCityMapUrl('phoenix', 'Phoenix, AZ')
   
+  const phoenixContractors = await getPhoenixContractors()
+  const recentProjects = await getPhoenixRecentProjects()
+  const phoenixReviews = await getPhoenixReviews()
+  
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "name": "InsulationPal - Phoenix Insulation Contractors",
+    "name": "InsulationPal Phoenix",
     "image": "https://insulationpal.com/home-outside-walls-insulation-installation.jpg",
     "url": "https://insulationpal.com/arizona/phoenix-insulation-contractors",
-    "telephone": "+1-480-XXX-XXXX",
+    "description": "Find trusted insulation contractors in Phoenix, AZ. Get free quotes for attic insulation, wall insulation, spray foam insulation, crawl space insulation, basement insulation, and insulation removal from licensed professionals.",
+    "priceRange": "$$",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "14210 N 46th Dr",
       "addressLocality": "Phoenix",
       "addressRegion": "AZ",
-      "postalCode": "85306",
       "addressCountry": "US"
     },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 33.4484,
-      "longitude": -112.0740
-    },
-    "areaServed": {
-      "@type": "City",
-      "name": "Phoenix",
-      "containedIn": {
-        "@type": "State",
-        "name": "Arizona"
+    "areaServed": [
+      {
+        "@type": "City",
+        "name": "Phoenix",
+        "containedIn": {
+          "@type": "State",
+          "name": "Arizona"
+        }
+      },
+      {
+        "@type": "GeoCircle",
+        "geoMidpoint": {
+          "@type": "GeoCoordinates",
+          "latitude": 33.4484,
+          "longitude": -112.0740
+        },
+        "geoRadius": "50000"
       }
-    },
-    "description": "Find the best insulation contractors in Phoenix, AZ. Professional insulation installation services including attic insulation, wall insulation, spray foam insulation, crawl space insulation, and insulation removal.",
-    "priceRange": "$$",
+    ],
+    "aggregateRating": phoenixContractors.length > 0 ? {
+      "@type": "AggregateRating",
+      "ratingValue": (phoenixContractors.reduce((sum: number, contractor: any) => sum + contractor.rating, 0) / phoenixContractors.length).toFixed(1),
+      "reviewCount": phoenixContractors.reduce((sum: number, contractor: any) => sum + contractor.reviewCount, 0)
+    } : undefined,
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
@@ -466,10 +478,6 @@ export default async function PhoenixInsulationContractors() {
       "closes": "23:59"
     }
   }
-  
-  const phoenixContractors = await getPhoenixContractors()
-  const recentProjects = await getPhoenixRecentProjects()
-  const phoenixReviews = await getPhoenixReviews()
   
   const cityStats = {
     totalReviews: phoenixContractors.reduce((sum: number, contractor: any) => sum + contractor.reviewCount, 0),
