@@ -11,6 +11,17 @@ export interface QuoteData {
   quoteNotes?: string
 }
 
+function sanitizeNotes(notes?: string): string {
+  if (!notes) return ''
+  const urlPattern = /(https?:\/\/|www\.)\S+/gi
+  const emailPattern = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi
+  const phonePattern = /(?:(?:\+?\d{1,2}[\s.-]?)?(?:\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4})|(?:\d[\s.-]?){10,})/gi
+  return notes
+    .replace(urlPattern, '[redacted]')
+    .replace(emailPattern, '[redacted]')
+    .replace(phonePattern, '[redacted]')
+}
+
 export async function sendQuoteToCustomer(quoteData: QuoteData) {
   try {
     console.log('📧 Starting sendQuoteToCustomer with data:', quoteData)
@@ -73,7 +84,7 @@ export async function sendQuoteToCustomer(quoteData: QuoteData) {
         customerName: lead.customer_name,
         contractorName: contractor.business_name,
         quoteAmount: quoteData.quoteAmount,
-        quoteNotes: quoteData.quoteNotes || '',
+        quoteNotes: sanitizeNotes(quoteData.quoteNotes),
         projectDetails: {
           homeSize: lead.home_size_sqft,
           areasNeeded: lead.areas_needed.join(', '),
@@ -129,7 +140,7 @@ export async function submitAndSendQuote(quoteData: QuoteData) {
       .from('lead_assignments')
       .update({
         quote_amount: quoteData.quoteAmount,
-        quote_notes: quoteData.quoteNotes,
+        quote_notes: sanitizeNotes(quoteData.quoteNotes),
         responded_at: new Date().toISOString(),
         status: 'accepted'
       })

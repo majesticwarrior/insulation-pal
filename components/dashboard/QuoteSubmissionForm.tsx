@@ -25,12 +25,26 @@ export function QuoteSubmissionForm({
   const [quoteAmount, setQuoteAmount] = useState('')
   const [quoteNotes, setQuoteNotes] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [notesError, setNotesError] = useState<string | null>(null)
+
+  const containsDisallowedContactInfo = (text: string) => {
+    if (!text) return false
+    const urlPattern = /(https?:\/\/|www\.)\S+/i
+    const emailPattern = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i
+    const phonePattern = /(?:(?:\+?\d{1,2}[\s.-]?)?(?:\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4})|(?:\d[\s.-]?){10,})/i
+    return urlPattern.test(text) || emailPattern.test(text) || phonePattern.test(text)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!quoteAmount || parseFloat(quoteAmount) <= 0) {
       toast.error('Please enter a valid quote amount')
+      return
+    }
+
+    if (containsDisallowedContactInfo(quoteNotes)) {
+      setNotesError('Please remove URLs, email addresses, and phone numbers from Additional Notes.')
       return
     }
 
@@ -96,29 +110,39 @@ export function QuoteSubmissionForm({
 
           <div>
             <Label htmlFor="quoteNotes" className="text-sm font-medium">
-              Additional Notes (Optional)
+              Additional Notes (Optional) — website URLs, emails or phone numbers are not allowed in the Additional Notes section.
             </Label>
             <Textarea
               id="quoteNotes"
               placeholder="Include any additional details about your quote, timeline, materials, or special considerations..."
               value={quoteNotes}
-              onChange={(e) => setQuoteNotes(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value
+                setQuoteNotes(val)
+                setNotesError(
+                  containsDisallowedContactInfo(val)
+                    ? 'Please remove URLs, email addresses, and phone numbers.'
+                    : null
+                )
+              }}
               rows={4}
               className="mt-1"
             />
+            {notesError && (
+              <p className="text-sm text-red-600 mt-1">{notesError}</p>
+            )}
           </div>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-sm text-blue-800">
-              <strong>Note:</strong> Your quote will be sent to the customer via email. 
-              Once they review it, they may contact you directly for further discussion.
+              <strong>Note:</strong> Your quote will be sent to the customer via email. They will review all quotes sent to them and choose the contractor they want to use. If you are the chosen contractor, you will then be notified by email that you won the bid and will be provided the customer details to reach out to them.
             </p>
           </div>
 
           <Button 
             type="submit" 
             className="w-full bg-[#0a4768] hover:bg-[#0a4768]/90"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !!notesError}
           >
             {isSubmitting ? (
               <>

@@ -43,12 +43,26 @@ export function LeadResponseModal({
   const [quoteAmount, setQuoteAmount] = useState('')
   const [notes, setNotes] = useState('')
   const [estimatedTime, setEstimatedTime] = useState('')
+  const [notesError, setNotesError] = useState<string | null>(null)
+
+  const containsDisallowedContactInfo = (text: string) => {
+    if (!text) return false
+    const urlPattern = /(https?:\/\/|www\.)\S+/i
+    const emailPattern = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i
+    const phonePattern = /(?:(?:\+?\d{1,2}[\s.-]?)?(?:\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4})|(?:\d[\s.-]?){10,})/i
+    return urlPattern.test(text) || emailPattern.test(text) || phonePattern.test(text)
+  }
 
   if (!lead) return null
 
   const handleSubmit = async (type: 'accept' | 'decline') => {
     if (!lead) return
     
+    if (type === 'accept' && containsDisallowedContactInfo(notes)) {
+      setNotesError('Please remove URLs, email addresses, and phone numbers from Additional Notes.')
+      return
+    }
+
     setIsSubmitting(true)
     setResponseType(type)
 
@@ -172,9 +186,18 @@ export function LeadResponseModal({
                 id="notes"
                 placeholder="Add any additional information about your quote or approach..."
                 value={notes}
-                onChange={(e) => setNotes(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value
+                setNotes(val)
+                setNotesError(containsDisallowedContactInfo(val) 
+                  ? 'Please remove URLs, email addresses, and phone numbers.' 
+                  : null)
+              }}
                 rows={3}
               />
+            {notesError && (
+              <p className="text-sm text-red-600 mt-1">{notesError}</p>
+            )}
             </div>
           </div>
 
@@ -196,7 +219,7 @@ export function LeadResponseModal({
             </Button>
             <Button
               onClick={() => handleSubmit('accept')}
-              disabled={isSubmitting}
+            disabled={isSubmitting || !!notesError}
               className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]"
             >
               {isSubmitting && responseType === 'accept' ? 'Accepting...' : 'Accept & Contact Customer'}
