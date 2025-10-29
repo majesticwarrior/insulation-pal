@@ -783,10 +783,13 @@ function CustomerQuoteReviewContent() {
             <p className="text-lg text-gray-600 mb-4">
               Review quotes from qualified contractors{lead ? ` for your ${lead.home_size_sqft?.toLocaleString()} sq ft home in ${lead.city}, ${lead.state}` : ''}
             </p>
+            <p className="text-sm text-gray-600 max-w-3xl mx-auto">
+              Contractor bids may change if the required insulation project requires more or less insulation than requested. During the evaluation process, the contractor will let you know based on your current insulation.
+            </p>
             
             {/* Price Range Display */}
             {quotes.length > 0 && (
-              <div className="flex justify-center items-center space-x-4 mb-6">
+              <div className="flex justify-center items-center space-x-4 mt-6 mb-6">
                 <div className="flex space-x-2">
                   {quotes.slice(0, 3).map((quote, index) => (
                     <div key={quote.id} className="bg-white rounded-lg shadow-md p-3 border-2 border-blue-200">
