@@ -13,7 +13,7 @@ import DIYVideosGrid from '@/components/pages/DIYVideosGrid'
 import CostCalculatorDialog from '@/components/pages/CostCalculatorDialog'
 
 export const metadata: Metadata = {
-  title: 'DIY Insulation Guides - InsulationPal | How-To Videos & Tutorials',
+  title: 'DIY Insulation Guides, How-To Videos & Tutorials - InsulationPal',
   description: 'Learn how to install insulation yourself with our comprehensive DIY guides, video tutorials, and step-by-step instructions. Save money with professional tips.',
   keywords: 'DIY insulation, insulation installation, how to install insulation, insulation videos, home improvement, attic insulation DIY',
   openGraph: {
