@@ -12,7 +12,7 @@ import { articles } from '@/lib/articles-data'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 
 export const metadata: Metadata = {
-  title: 'Learning Center - InsulationPal | Insulation Guides & Resources',
+  title: 'Learning Center, Insulation Articles,Guides, News & Resources - InsulationPal',
   description: 'Comprehensive guides on insulation types, energy efficiency, and home improvement. Learn about spray foam, cellulose, fiberglass, and more with expert insights.',
   keywords: 'insulation guide, energy efficiency, home insulation types, spray foam guide, cellulose insulation, fiberglass insulation',
   openGraph: {
@@ -197,12 +197,12 @@ export default function ResourcesPage() {
                 <div className="bg-[#F5DD22] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Play className="h-8 w-8 text-[#0a4768]" />
                 </div>
-                <h3 className="text-xl font-bold text-[#0a4768] mb-4">Video Tutorials</h3>
+                <h3 className="text-xl font-bold text-[#0a4768] mb-4">Glossary of Insulation Terms</h3>
                 <p className="text-gray-600 mb-6">
-                  Step-by-step video guides for common insulation projects you can do yourself.
+                  Our glossary of terms that explains the different types of insulation and their applications.
                 </p>
                 <Button asChild variant="outline" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
-                  <Link href="/resources/diy">Learn More</Link>
+                  <Link href="/resources/glossary">Learn More</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -212,7 +212,7 @@ export default function ResourcesPage() {
                 <div className="bg-[#F5DD22] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                   <BookOpen className="h-8 w-8 text-[#0a4768]" />
                 </div>
-                <h3 className="text-xl font-bold text-[#0a4768] mb-4">DIY Guides</h3>
+                <h3 className="text-xl font-bold text-[#0a4768] mb-4">DIY & Video Guides</h3>
                 <p className="text-gray-600 mb-6">
                   Comprehensive written guides with tools lists, safety tips, and detailed instructions.
                 </p>

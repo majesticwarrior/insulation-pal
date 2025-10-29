@@ -12,7 +12,7 @@ import type { Metadata } from 'next'
 import { createServiceSchemas } from '@/lib/service-schema'
 
 export const metadata: Metadata = {
-  title: 'Professional Attic Insulation Services - InsulationPal | Save 30% on Energy Bills',
+  title: 'Professional Attic Insulation Services, Save up to 30% on Energy Bills - InsulationPal',
   description: 'Save up to 30% on energy bills with expert attic insulation installation. Connect with licensed contractors in your area for free quotes on blown-in, batt, and spray foam insulation.',
   keywords: 'attic insulation, blown-in insulation, attic insulation cost, energy savings, insulation contractors, attic insulation installation',
   openGraph: {

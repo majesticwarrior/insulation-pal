@@ -11,7 +11,7 @@ import type { Metadata } from 'next'
 import { articles } from '@/lib/articles-data'
 
 export const metadata: Metadata = {
-  title: 'Insulation Articles - InsulationPal | Comprehensive Guides & Resources',
+  title: 'Insulation Articles, Comprehensive Tips and Advice for Homeowners - InsulationPal',
   description: 'Comprehensive guides on insulation types, energy efficiency, and home improvement. Learn about spray foam, cellulose, fiberglass, and more with expert insights.',
   keywords: 'insulation guide, energy efficiency, home insulation types, spray foam guide, cellulose insulation, fiberglass insulation',
   openGraph: {
@@ -119,7 +119,7 @@ export default function ArticlesPage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0a4768] mb-6">
-              Comprehensive Insulation Guides
+              Comprehensive Articles and Guides
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Dive deep into insulation materials, techniques, and energy efficiency strategies with our expert-written articles.

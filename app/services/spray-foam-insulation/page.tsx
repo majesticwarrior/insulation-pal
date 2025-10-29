@@ -12,7 +12,7 @@ import type { Metadata } from 'next'
 import { createServiceSchemas } from '@/lib/service-schema'
 
 export const metadata: Metadata = {
-  title: 'Premium Spray Foam Insulation Services - InsulationPal | Maximum Energy Efficiency',
+  title: 'Premium Spray Foam Insulation Services Maximize Energy Efficiency - InsulationPal',
   description: 'Achieve maximum energy efficiency with professional spray foam insulation. Superior R-value and complete air sealing in one application. Connect with certified contractors for free quotes.',
   keywords: 'spray foam insulation, spray foam contractors, closed cell foam, open cell foam, air sealing, energy efficiency, R-value',
   openGraph: {

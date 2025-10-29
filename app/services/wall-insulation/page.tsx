@@ -12,7 +12,7 @@ import type { Metadata } from 'next'
 import { createServiceSchemas } from '@/lib/service-schema'
 
 export const metadata: Metadata = {
-  title: 'Expert Wall Insulation Services - InsulationPal | Energy Efficiency Solutions',
+  title: 'Expert Wall Insulation Services, Energy Efficiency Solutions - InsulationPal',
   description: 'Improve your home\'s energy efficiency with professional wall insulation. Get free quotes from certified contractors for injection foam, blown-in cellulose, and fiberglass installation.',
   keywords: 'wall insulation, injection foam, blown-in wall insulation, wall insulation contractors, energy efficiency, home insulation',
   openGraph: {

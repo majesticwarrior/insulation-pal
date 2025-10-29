@@ -9,7 +9,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Professional Insulation Services - InsulationPal | Comprehensive Solutions',
+  title: 'Professional Insulation Services, Comprehensive Solutions - InsulationPal',
   description: 'From attic insulation to spray foam applications, our network of certified contractors provides comprehensive insulation solutions for every need and budget. Get free quotes today.',
   keywords: 'insulation services, attic insulation, wall insulation, spray foam, basement insulation, crawl space insulation, insulation contractors',
   openGraph: {
