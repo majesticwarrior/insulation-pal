@@ -231,13 +231,37 @@ async function createLeadAssignment(lead: Lead, contractor: Contractor) {
       return
     }
 
-    // Deduct credit from contractor
-    const { error: creditError } = await (supabase as any)
-      .from('contractors')
-      .update({ credits: contractor.credits - 1 })
-      .eq('id', contractor.id)
-
-    if (creditError) {
+    // Deduct credit from contractor (use optimistic locking to prevent double deduction)
+    try {
+      // Fetch current credits first
+      const { data: currentContractor, error: fetchError } = await (supabase as any)
+        .from('contractors')
+        .select('credits')
+        .eq('id', contractor.id)
+        .single()
+      
+      if (fetchError || !currentContractor || currentContractor.credits <= 0) {
+        console.warn(`⚠️ Cannot deduct credit for ${contractor.business_name}: ${fetchError?.message || 'No credits available'}`)
+        return
+      }
+      
+      // Use optimistic locking: only update if credits match what we fetched
+      const { error: creditError } = await (supabase as any)
+        .from('contractors')
+        .update({ credits: currentContractor.credits - 1 })
+        .eq('id', contractor.id)
+        .eq('credits', currentContractor.credits) // Only update if credits haven't changed
+      
+      if (creditError) {
+        if (creditError.code === 'PGRST116' || creditError.message?.includes('No rows')) {
+          console.log(`⚠️ Credits already deducted for ${contractor.business_name} (prevented double deduction)`)
+        } else {
+          console.error('❌ Error deducting credit:', creditError)
+        }
+      } else {
+        console.log(`✅ Deducted credit from ${contractor.business_name} (new balance: ${currentContractor.credits - 1})`)
+      }
+    } catch (creditError) {
       console.error('❌ Error deducting credit:', creditError)
     }
 

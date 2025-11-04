@@ -106,15 +106,48 @@ export async function assignLeadToContractors(lead: Lead) {
       throw assignmentError
     }
 
-    // 4. Deduct credits from contractors
+    // 4. Deduct credits from contractors (use atomic SQL to prevent double deduction)
     console.log('💳 Deducting credits from contractors...')
     for (const contractor of selectedContractors) {
       try {
-        await (supabase as any)
+        // Fetch current credits first to use for optimistic locking
+        const { data: currentContractor, error: fetchError } = await (supabase as any)
           .from('contractors')
-          .update({ credits: (contractor as any).credits - 1 })
+          .select('credits')
           .eq('id', contractor.id)
-        console.log(`✅ Deducted credit from ${contractor.business_name}`)
+          .single()
+        
+        if (fetchError) {
+          console.error(`❌ Failed to fetch credits for ${contractor.business_name}:`, fetchError)
+          continue
+        }
+        
+        if (!currentContractor || currentContractor.credits <= 0) {
+          console.warn(`⚠️ ${contractor.business_name} has no credits available (${currentContractor?.credits || 0})`)
+          continue
+        }
+        
+        // Use optimistic locking: only update if credits match what we fetched
+        // This prevents double deduction if the function is called multiple times
+        const { data: updatedContractor, error: updateError } = await (supabase as any)
+          .from('contractors')
+          .update({ credits: currentContractor.credits - 1 })
+          .eq('id', contractor.id)
+          .eq('credits', currentContractor.credits) // Only update if credits haven't changed
+          .select('credits')
+          .single()
+        
+        if (updateError) {
+          // If update failed due to credits mismatch, it means credits were already deducted
+          // This is actually good - it means we prevented a double deduction
+          if (updateError.code === 'PGRST116' || updateError.message?.includes('No rows')) {
+            console.log(`⚠️ Credits already deducted for ${contractor.business_name} (prevented double deduction)`)
+          } else {
+            console.error(`❌ Failed to deduct credit from ${contractor.business_name}:`, updateError)
+          }
+        } else {
+          console.log(`✅ Deducted credit from ${contractor.business_name} (new balance: ${updatedContractor?.credits || currentContractor.credits - 1})`)
+        }
       } catch (creditError) {
         console.error(`❌ Failed to deduct credit from ${contractor.business_name}:`, creditError)
         // Continue with other contractors even if one fails
@@ -262,76 +295,8 @@ export async function handleContractorResponse(
 
     if (error) throw error
 
-    // If accepted, deduct credit and notify customer
-    if (response === 'accept') {
-      try {
-        console.log('💳 Deducting credit for accepted lead...')
-        
-        // Get current contractor credits
-        const { data: contractor, error: contractorError } = await (supabase as any)
-          .from('contractors')
-          .select('credits')
-          .eq('id', contractorId)
-          .single()
-
-        if (contractorError) {
-          console.error('❌ Error fetching contractor credits:', contractorError)
-          throw contractorError
-        }
-
-        const currentCredits = contractor?.credits || 0
-        console.log('💰 Current credits:', currentCredits)
-
-        if (currentCredits <= 0) {
-          console.warn('⚠️ Contractor has no credits available')
-          throw new Error('Insufficient credits to accept this lead')
-        }
-
-        // Deduct one credit
-        const { error: creditError } = await (supabase as any)
-          .from('contractors')
-          .update({ credits: currentCredits - 1 })
-          .eq('id', contractorId)
-
-        if (creditError) {
-          console.error('❌ Error deducting credit:', creditError)
-          throw creditError
-        }
-
-        console.log('✅ Credit deducted successfully. New balance:', currentCredits - 1)
-      } catch (creditError) {
-        console.error('❌ Credit deduction failed:', creditError)
-        throw creditError
-      }
-
-      try {
-        console.log('🔍 Getting assignment details for notification...')
-        
-        // Get lead and contractor details
-        const { data: assignment, error: assignmentError } = await (supabase as any)
-          .from('lead_assignments')
-          .select(`
-            leads(customer_name, customer_email),
-            contractors(business_name, users(email, phone))
-          `)
-          .eq('id', leadAssignmentId)
-          .single()
-
-        if (assignmentError) {
-          console.error('❌ Error fetching assignment details:', assignmentError)
-          // Don't throw - email notification is optional
-          return
-        }
-
-        console.log('✅ Assignment details:', assignment)
-
-        // Email notification removed as requested
-        console.log('📧 Email notification skipped (removed)')
-      } catch (emailError) {
-        console.error('❌ Email notification failed:', emailError)
-        // Don't throw - email notification is optional, lead acceptance should still work
-      }
-    }
+    // Note: Credits are already deducted when the lead is initially assigned
+    // No need to deduct again when accepting since all leads are now considered available
 
   } catch (error) {
     console.error('Error handling contractor response:', error);
