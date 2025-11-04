@@ -986,7 +986,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
           </TabsTrigger>
           <TabsTrigger value="didnt-win" className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4" />
-            Declined or Lost Leads ({didntWinLeads.length})
+            Lost Leads ({didntWinLeads.length})
           </TabsTrigger>
         </TabsList>
 
@@ -1025,8 +1025,8 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             <Card>
               <CardContent className="text-center py-8">
                 <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-600 mb-2">No Declined or Lost Leads</h3>
-                <p className="text-gray-500">You don't have any declined or lost leads yet.</p>
+                <h3 className="text-lg font-semibold text-gray-600 mb-2">No Lost Leads</h3>
+                <p className="text-gray-500">You don't have any lost leads yet.</p>
               </CardContent>
             </Card>
           )}
