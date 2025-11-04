@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { supabase } from '@/lib/supabase'
-import { handleContractorResponse } from '@/lib/lead-assignment'
 import { Phone, Mail, MapPin, Home, CheckCircle, X, Clock, AlertCircle, Trophy, ChevronDown, ChevronUp, FileText } from 'lucide-react'
 import { QuoteSubmissionForm } from '@/components/dashboard/QuoteSubmissionForm'
 import { ProjectImageUpload } from '@/components/dashboard/ProjectImageUpload'
@@ -42,7 +41,6 @@ interface Lead {
 export function LeadsList({ contractorId, contractorCredits }: { contractorId: string, contractorCredits?: number }) {
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
-  const [responding, setResponding] = useState<string | null>(null)
   const [expandedWonLeads, setExpandedWonLeads] = useState<Set<string>>(new Set())
   const [expandedAvailableLeads, setExpandedAvailableLeads] = useState<Set<string>>(new Set())
   const [expandedDidntWinLeads, setExpandedDidntWinLeads] = useState<Set<string>>(new Set())
@@ -267,36 +265,6 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
     }
   }
 
-  async function respondToLead(leadAssignmentId: string, response: 'accept' | 'decline') {
-    setResponding(leadAssignmentId)
-    try {
-      // Check if this is a demo lead
-      if (leadAssignmentId.startsWith('demo-')) {
-        console.log('🎭 Demo Mode: Simulating lead response')
-        setLeads(prevLeads => 
-          prevLeads.map(lead => 
-            lead.id === leadAssignmentId 
-              ? { 
-                  ...lead, 
-                  status: response === 'accept' ? 'pending' : 'declined',
-                  responded_at: new Date().toISOString()
-                }
-              : lead
-          )
-        )
-        return
-      }
-
-      await handleContractorResponse(leadAssignmentId, contractorId, response)
-      
-      // Refresh the leads list
-      await fetchLeads()
-    } catch (error) {
-      console.error('Error responding to lead:', error)
-    } finally {
-      setResponding(null)
-    }
-  }
 
   function getStatusColor(status: string) {
     if (!status || typeof status !== 'string') {
@@ -448,7 +416,8 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
   // Helper function to render condensed available lead cards (all leads are considered available)
   const renderCondensedAcceptedLeadCard = (leadAssignment: Lead) => {
     const isExpanded = expandedAvailableLeads.has(leadAssignment.id)
-    const needsQuoteSubmission = leadAssignment.status === 'pending' && leadAssignment.responded_at && !leadAssignment.quote_amount
+    // Allow quote submission for all leads that haven't submitted a quote yet
+    const needsQuoteSubmission = !leadAssignment.quote_amount && (leadAssignment.status === 'pending' || leadAssignment.status === 'sent' || leadAssignment.status === 'accepted')
     
     return (
       <Card key={leadAssignment.id} className="mb-3 hover:shadow-md transition-shadow">
@@ -599,13 +568,13 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             {/* Show quote submission form directly for leads that need it */}
           {needsQuoteSubmission && (
             <div className="mt-4 pt-4 border-t border-gray-200">
-              <div className="mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                <h3 className="font-semibold text-orange-800 mb-2 flex items-center">
+              <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h3 className="font-semibold text-blue-800 mb-2 flex items-center">
                   <FileText className="h-4 w-4 mr-2" />
-                  Quote Submission Required
+                  Submit Your Quote
                 </h3>
-                <p className="text-sm text-orange-700">
-                  You've accepted this lead. Submit your quote to compete for the project.
+                <p className="text-sm text-blue-700">
+                  Submit your quote to compete for this project. Customer contact information will be provided if you win the bid.
                 </p>
               </div>
               
@@ -890,36 +859,12 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
       {/* Show lead information for non-won leads */}
       <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <p className="text-sm text-blue-800 mb-2">
-          <span className="font-semibold">New Lead Available</span>
+          <span className="font-semibold">Lead Available</span>
         </p>
         <p className="text-sm text-blue-700">
-          Accept this lead to view complete project details. Customer contact information will be provided if you win the bid.
+          Submit your quote to compete for this project. Customer contact information will be provided if you win the bid.
         </p>
       </div>
-
-      {/* Accept/Decline buttons for available leads */}
-      {(leadAssignment.status === 'pending' || leadAssignment.status === 'sent') && !leadAssignment.responded_at && (
-        <div className="flex gap-3">
-          <Button
-            onClick={() => respondToLead(leadAssignment.id, 'accept')}
-            disabled={responding === leadAssignment.id || (contractorCredits !== undefined && contractorCredits <= 0)}
-            className="bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-400"
-          >
-            <CheckCircle className="h-4 w-4 mr-2" />
-            {responding === leadAssignment.id ? 'Responding...' : 
-             (contractorCredits !== undefined && contractorCredits <= 0) ? 'No Credits' : 'Accept Lead'}
-          </Button>
-          <Button
-            onClick={() => respondToLead(leadAssignment.id, 'decline')}
-            disabled={responding === leadAssignment.id}
-            variant="outline"
-            className="border-red-300 text-red-700 hover:bg-red-50"
-          >
-            <X className="h-4 w-4 mr-2" />
-            Decline
-          </Button>
-        </div>
-      )}
     </>
   )
 
@@ -985,58 +930,11 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
         {(leadAssignment.status !== 'won' && leadAssignment.status !== 'hired' && leadAssignment.status !== 'completed') && (
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-800 mb-2">
-              <span className="font-semibold">New Lead Available</span>
+              <span className="font-semibold">Lead Available</span>
             </p>
             <p className="text-sm text-blue-700">
-              Accept this lead to view complete project details. Customer contact information will be provided if you win the bid.
+              Submit your quote to compete for this project. Customer contact information will be provided if you win the bid.
             </p>
-          </div>
-        )}
-        
-        {/* Show quote submission form for pending leads (contractor accepted but hasn't submitted quote yet) */}
-        {leadAssignment.status === 'pending' && leadAssignment.responded_at && (
-          <>
-            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <h3 className="font-semibold text-blue-800 mb-3 flex items-center">
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Lead Accepted - Submit Your Quote
-              </h3>
-              <p className="text-sm text-blue-700">
-                You've accepted this lead. Submit your quote to compete for the project.
-              </p>
-            </div>
-            
-            {/* Quote Submission Form */}
-            <QuoteSubmissionForm
-              leadAssignmentId={leadAssignment.id}
-              contractorId={contractorId}
-              onQuoteSubmitted={() => {
-                fetchLeads()
-              }}
-            />
-          </>
-        )}
-        
-        {(leadAssignment.status === 'pending' || leadAssignment.status === 'sent') && !leadAssignment.responded_at && (
-          <div className="flex gap-3">
-            <Button
-              onClick={() => respondToLead(leadAssignment.id, 'accept')}
-              disabled={responding === leadAssignment.id || (contractorCredits !== undefined && contractorCredits <= 0)}
-              className="bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-400"
-            >
-              <CheckCircle className="h-4 w-4 mr-2" />
-              {responding === leadAssignment.id ? 'Responding...' : 
-               (contractorCredits !== undefined && contractorCredits <= 0) ? 'No Credits' : 'Accept Lead'}
-            </Button>
-            <Button
-              onClick={() => respondToLead(leadAssignment.id, 'decline')}
-              disabled={responding === leadAssignment.id}
-              variant="outline"
-              className="border-red-300 text-red-700 hover:bg-red-50"
-            >
-              <X className="h-4 w-4 mr-2" />
-              Decline
-            </Button>
           </div>
         )}
 

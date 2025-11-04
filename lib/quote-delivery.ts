@@ -171,7 +171,21 @@ export async function submitAndSendQuote(quoteData: QuoteData) {
     }
 
     // Then send the quote to the customer
-    await sendQuoteToCustomer(quoteData)
+    try {
+      await sendQuoteToCustomer(quoteData)
+      console.log('✅ Email notification sent successfully to customer')
+    } catch (emailError: any) {
+      console.error('❌ Error sending email notification to customer:', emailError)
+      // Don't fail the entire quote submission if email fails
+      // But log it so we know there's an issue
+      console.error('⚠️ Quote was saved to database but email notification failed:', {
+        error: emailError.message,
+        leadAssignmentId: quoteData.leadAssignmentId,
+        contractorId: quoteData.contractorId
+      })
+      // Still return success since the quote was saved
+      // The email failure is logged but doesn't prevent quote submission
+    }
 
     return { success: true }
   } catch (error: any) {
