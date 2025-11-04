@@ -45,7 +45,6 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
   const [responding, setResponding] = useState<string | null>(null)
   const [expandedWonLeads, setExpandedWonLeads] = useState<Set<string>>(new Set())
   const [expandedAvailableLeads, setExpandedAvailableLeads] = useState<Set<string>>(new Set())
-  const [expandedAcceptedLeads, setExpandedAcceptedLeads] = useState<Set<string>>(new Set())
   const [expandedDidntWinLeads, setExpandedDidntWinLeads] = useState<Set<string>>(new Set())
 
   useEffect(() => {
@@ -340,12 +339,9 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
   const isDemoMode = leads.length > 0 && leads[0]?.id?.startsWith('demo-')
 
   // Categorize leads into different tabs
+  // All leads that come in are considered available leads (except won, declined, expired)
   const availableLeads = leads.filter(lead => 
-    (lead.status === 'pending' || lead.status === 'sent') && !lead.responded_at
-  )
-  
-  const acceptedLeads = leads.filter(lead => 
-    lead.status === 'accepted' || (lead.status === 'pending' && lead.responded_at)
+    lead.status !== 'won' && lead.status !== 'declined' && lead.status !== 'expired' && lead.status !== 'hired' && lead.status !== 'completed'
   )
   
   const wonLeads = leads.filter(lead => 
@@ -382,18 +378,6 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
     })
   }
 
-  // Function to toggle expanded state for accepted leads
-  const toggleAcceptedLeadExpansion = (leadId: string) => {
-    setExpandedAcceptedLeads(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(leadId)) {
-        newSet.delete(leadId)
-      } else {
-        newSet.add(leadId)
-      }
-      return newSet
-    })
-  }
 
   // Function to toggle expanded state for didn't win leads
   const toggleDidntWinLeadExpansion = (leadId: string) => {
@@ -461,62 +445,9 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
     )
   }
 
-  // Helper function to render condensed available lead cards
-  const renderCondensedAvailableLeadCard = (leadAssignment: Lead) => {
-    const isExpanded = expandedAvailableLeads.has(leadAssignment.id)
-    
-    return (
-      <Card key={leadAssignment.id} className="mb-3 hover:shadow-md transition-shadow">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Clock className="h-5 w-5 text-blue-600" />
-              <div>
-                <h3 
-                  className="font-semibold text-[#0a4768] cursor-pointer hover:text-blue-600 transition-colors"
-                  onClick={() => toggleAvailableLeadExpansion(leadAssignment.id)}
-                >
-                  {leadAssignment.leads.customer_name}
-                </h3>
-                <p className="text-sm text-gray-600">
-                  {leadAssignment.leads.city}, {leadAssignment.leads.state}
-                </p>
-                <p className="text-xs text-gray-500">
-                  Received: {new Date(leadAssignment.created_at).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => toggleAvailableLeadExpansion(leadAssignment.id)}
-              className="flex items-center space-x-1 text-gray-600 hover:text-gray-800"
-            >
-              <span className="text-sm">
-                {isExpanded ? 'Hide Details' : 'Show Details'}
-              </span>
-              {isExpanded ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
-          
-          {isExpanded && (
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              {/* Show the full lead details when expanded */}
-              {renderFullLeadDetails(leadAssignment)}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    )
-  }
-
-  // Helper function to render condensed accepted lead cards
+  // Helper function to render condensed available lead cards (all leads are considered available)
   const renderCondensedAcceptedLeadCard = (leadAssignment: Lead) => {
-    const isExpanded = expandedAcceptedLeads.has(leadAssignment.id)
+    const isExpanded = expandedAvailableLeads.has(leadAssignment.id)
     const needsQuoteSubmission = leadAssignment.status === 'pending' && leadAssignment.responded_at && !leadAssignment.quote_amount
     
     return (
@@ -528,7 +459,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
               <div>
                 <h3 
                   className="font-semibold text-[#0a4768] cursor-pointer hover:text-blue-600 transition-colors"
-                  onClick={() => toggleAcceptedLeadExpansion(leadAssignment.id)}
+                  onClick={() => toggleAvailableLeadExpansion(leadAssignment.id)}
                 >
                   {leadAssignment.leads.customer_name}
                 </h3>
@@ -536,7 +467,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                   {leadAssignment.leads.city}, {leadAssignment.leads.state}
                 </p>
                 <p className="text-xs text-gray-500">
-                  Accepted: {new Date(leadAssignment.responded_at || leadAssignment.created_at).toLocaleDateString()}
+                  Received: {new Date(leadAssignment.responded_at || leadAssignment.created_at).toLocaleDateString()}
                 </p>
                 {needsQuoteSubmission && (
                   <Badge variant="outline" className="text-xs text-orange-600 border-orange-300 mt-1">
@@ -545,21 +476,29 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                 )}
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => toggleAcceptedLeadExpansion(leadAssignment.id)}
-              className="flex items-center space-x-1 text-gray-600 hover:text-gray-800"
-            >
-              <span className="text-sm">
-                {isExpanded ? 'Hide Details' : 'Show Details'}
-              </span>
-              {isExpanded ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
+            <div className="flex items-center gap-3">
+              {leadAssignment.quote_amount && (
+                <Badge className="bg-green-100 text-green-800 border-green-300">
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  Bid Submitted
+                </Badge>
               )}
-            </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => toggleAvailableLeadExpansion(leadAssignment.id)}
+                className="flex items-center space-x-1 text-gray-600 hover:text-gray-800"
+              >
+                <span className="text-sm">
+                  {isExpanded ? 'Hide Details' : 'Show Details'}
+                </span>
+                {isExpanded ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
           </div>
           
           {/* Show project details for leads that need quote submission OR when expanded */}
@@ -1138,14 +1077,10 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
       </div>
 
       <Tabs defaultValue="available" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="available" className="flex items-center gap-2">
-            <Clock className="h-4 w-4" />
-            Available Leads ({availableLeads.length})
-          </TabsTrigger>
-          <TabsTrigger value="accepted" className="flex items-center gap-2">
             <Trophy className="h-4 w-4" />
-            Accepted Leads ({acceptedLeads.length})
+            Available Leads ({availableLeads.length})
           </TabsTrigger>
           <TabsTrigger value="won" className="flex items-center gap-2">
             <CheckCircle className="h-4 w-4" />
@@ -1159,27 +1094,13 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
 
         <TabsContent value="available" className="space-y-4">
           {availableLeads.length > 0 ? (
-            availableLeads.map(renderCondensedAvailableLeadCard)
-          ) : (
-            <Card>
-              <CardContent className="text-center py-8">
-                <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-600 mb-2">No Available Leads</h3>
-                <p className="text-gray-500">You don't have any pending leads at the moment.</p>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        <TabsContent value="accepted" className="space-y-4">
-          {acceptedLeads.length > 0 ? (
-            acceptedLeads.map(renderCondensedAcceptedLeadCard)
+            availableLeads.map(renderCondensedAcceptedLeadCard)
           ) : (
             <Card>
               <CardContent className="text-center py-8">
                 <Trophy className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-600 mb-2">No Accepted Leads</h3>
-                <p className="text-gray-500">You haven't accepted any leads yet.</p>
+                <h3 className="text-lg font-semibold text-gray-600 mb-2">No Available Leads</h3>
+                <p className="text-gray-500">You don't have any available leads at the moment.</p>
               </CardContent>
             </Card>
           )}

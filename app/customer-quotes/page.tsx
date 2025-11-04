@@ -7,8 +7,6 @@ import Footer from '@/components/layout/Footer'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Label } from '@/components/ui/label'
 import { supabase } from '@/lib/supabase'
 import { 
   Star, 
@@ -894,33 +892,6 @@ function CustomerQuoteReviewContent() {
                 </Card>
               ) : (
                 <div className="space-y-6">
-                  {/* Notify All Contractors Checkbox */}
-                  {quotes.length >= 2 && (
-                    <Card className="bg-blue-50 border-blue-200">
-                      <CardContent className="p-4">
-                        <div className="flex items-start space-x-3">
-                          <Checkbox
-                            id="notify-all-contractors"
-                            checked={notifyAllContractors}
-                            onCheckedChange={(checked) => setNotifyAllContractors(checked === true)}
-                            className="mt-1"
-                          />
-                          <div className="flex-1">
-                            <Label 
-                              htmlFor="notify-all-contractors" 
-                              className="text-sm font-medium text-gray-900 cursor-pointer"
-                            >
-                              I want to be contacted by all of these contractors
-                            </Label>
-                            <p className="text-xs text-gray-600 mt-1">
-                              If checked, all {quotes.length} contractor{quotes.length !== 1 ? 's' : ''} will be notified that they won the bid and will receive your contact details to reach out to you.
-                            </p>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-                  
                   {quotes.map((quote, index) => (
                     <Card key={quote.id} className="hover:shadow-lg transition-shadow">
                       <CardContent className="p-6">
@@ -1046,6 +1017,35 @@ function CustomerQuoteReviewContent() {
                       </CardContent>
                     </Card>
                   ))}
+                  
+                  {/* Notify All Contractors Button */}
+                  {quotes.length >= 2 && (
+                    <Card className="bg-blue-50 border-blue-200 mt-6">
+                      <CardContent className="p-6">
+                        <div className="text-center">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            Want to be contacted by all of these contractors?
+                          </h3>
+                          <p className="text-sm text-gray-600 mb-4">
+                            All {quotes.length} contractor{quotes.length !== 1 ? 's' : ''} will be notified that they won the bid and will receive your contact details to reach out to you.
+                          </p>
+                          <Button
+                            onClick={() => {
+                              setNotifyAllContractors(true)
+                              if (quotes.length > 0) {
+                                acceptQuote(quotes[0].id)
+                              }
+                            }}
+                            disabled={acceptingQuote !== null || allContractorsNotified}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
+                          >
+                            <Users className="h-5 w-5 mr-2" />
+                            Accept All Contractors
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
                 </div>
               )}
             </div>
