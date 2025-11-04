@@ -613,7 +613,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
                   {leadAssignment.leads.city}, {leadAssignment.leads.state}
                 </p>
                 <p className="text-xs text-gray-500">
-                  {leadAssignment.status === 'declined' ? 'Declined or Lost' : 'Expired'}: {new Date(leadAssignment.created_at).toLocaleDateString()}
+                  {leadAssignment.status === 'declined' ? 'Lost' : 'Expired'}: {new Date(leadAssignment.created_at).toLocaleDateString()}
                 </p>
               </div>
             </div>
