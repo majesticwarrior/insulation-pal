@@ -7,6 +7,8 @@ import Footer from '@/components/layout/Footer'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
 import { supabase } from '@/lib/supabase'
 import { 
   Star, 
@@ -82,6 +84,8 @@ function CustomerQuoteReviewContent() {
   const [generatingInvite, setGeneratingInvite] = useState(false)
   const [isInvitationModalOpen, setIsInvitationModalOpen] = useState(false)
   const [acceptedQuoteId, setAcceptedQuoteId] = useState<string | null>(null)
+  const [notifyAllContractors, setNotifyAllContractors] = useState(false)
+  const [allContractorsNotified, setAllContractorsNotified] = useState(false)
 
   useEffect(() => {
     if (leadId) {
@@ -624,7 +628,10 @@ function CustomerQuoteReviewContent() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ quoteId })
+        body: JSON.stringify({ 
+          quoteId,
+          notifyAllContractors: notifyAllContractors && quotes.length >= 2
+        })
       })
 
       const data = await response.json()
@@ -640,10 +647,17 @@ function CustomerQuoteReviewContent() {
       // Set the accepted quote ID to show success message
       setAcceptedQuoteId(quoteId)
       
-      toast.success('Quote accepted! The contractor will contact you soon.')
-      
-      // Remove accepted quote from list
-      setQuotes(prev => prev.filter(q => q.id !== quoteId))
+      if (notifyAllContractors && quotes.length >= 2) {
+        toast.success(`All ${quotes.length} contractor${quotes.length !== 1 ? 's' : ''} have been notified! They will contact you soon.`)
+        // Remove all quotes from list since all were accepted
+        setQuotes([])
+        setAllContractorsNotified(true)
+      } else {
+        toast.success('Quote accepted! The contractor will contact you soon.')
+        // Remove accepted quote from list
+        setQuotes(prev => prev.filter(q => q.id !== quoteId))
+        setAllContractorsNotified(false)
+      }
     } catch (error: any) {
       console.error('❌ Error accepting quote:', error)
       
@@ -880,6 +894,33 @@ function CustomerQuoteReviewContent() {
                 </Card>
               ) : (
                 <div className="space-y-6">
+                  {/* Notify All Contractors Checkbox */}
+                  {quotes.length >= 2 && (
+                    <Card className="bg-blue-50 border-blue-200">
+                      <CardContent className="p-4">
+                        <div className="flex items-start space-x-3">
+                          <Checkbox
+                            id="notify-all-contractors"
+                            checked={notifyAllContractors}
+                            onCheckedChange={(checked) => setNotifyAllContractors(checked === true)}
+                            className="mt-1"
+                          />
+                          <div className="flex-1">
+                            <Label 
+                              htmlFor="notify-all-contractors" 
+                              className="text-sm font-medium text-gray-900 cursor-pointer"
+                            >
+                              I want to be contacted by all of these contractors
+                            </Label>
+                            <p className="text-xs text-gray-600 mt-1">
+                              If checked, all {quotes.length} contractor{quotes.length !== 1 ? 's' : ''} will be notified that they won the bid and will receive your contact details to reach out to you.
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                  
                   {quotes.map((quote, index) => (
                     <Card key={quote.id} className="hover:shadow-lg transition-shadow">
                       <CardContent className="p-6">
@@ -1018,13 +1059,16 @@ function CustomerQuoteReviewContent() {
                   <CheckCircle className="h-8 w-8 text-green-600" />
                   <div>
                     <h3 className="text-lg font-semibold text-green-800 mb-2">
-                      Quote Accepted! 🎉
+                      {allContractorsNotified ? 'All Contractors Notified! 🎉' : 'Quote Accepted! 🎉'}
                     </h3>
                     <p className="text-green-700">
-                      The contractor has been notified and will be contacting you shortly to discuss your project details and schedule.
+                      {allContractorsNotified 
+                        ? 'All contractors have been notified that they won the bid and will be contacting you shortly to discuss your project details and schedule.'
+                        : 'The contractor has been notified and will be contacting you shortly to discuss your project details and schedule.'
+                      }
                     </p>
                     <p className="text-sm text-green-600 mt-2">
-                      You can expect to hear from them within the next few hours.
+                      You can expect to hear from {allContractorsNotified ? 'them' : 'them'} within the next few hours.
                     </p>
                   </div>
                 </div>

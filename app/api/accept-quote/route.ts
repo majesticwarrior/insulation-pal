@@ -28,7 +28,7 @@ function getSupabaseAdmin() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { quoteId } = await request.json()
+    const { quoteId, notifyAllContractors } = await request.json()
     const supabaseAdmin = getSupabaseAdmin()
 
     if (!quoteId) {
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log('📋 Accepting quote:', quoteId)
+    console.log('📋 Accepting quote:', quoteId, 'notifyAllContractors:', notifyAllContractors)
 
     // Get the quote details first
     const { data: quoteData, error: quoteError } = await supabaseAdmin
@@ -85,6 +85,78 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    if (notifyAllContractors) {
+      // If notifyAllContractors is true, mark all quotes as won and notify all contractors
+      console.log('📝 Notifying all contractors - marking all quotes as won')
+      
+      // Get all submitted quotes for this lead (quotes that have been submitted by contractors)
+      const { data: allQuotes, error: allQuotesError } = await supabaseAdmin
+        .from('lead_assignments')
+        .select(`
+          id,
+          contractor_id,
+          quote_amount,
+          quote_notes,
+          leads(
+            customer_name,
+            customer_email,
+            customer_phone,
+            home_size_sqft,
+            areas_needed,
+            insulation_types,
+            city,
+            state,
+            property_address
+          ),
+          contractors(
+            business_name,
+            contact_email,
+            contact_phone,
+            lead_delivery_preference
+          )
+        `)
+        .eq('lead_id', quoteData.lead_id)
+        .not('quote_amount', 'is', null) // Only get quotes that have been submitted (have a quote_amount)
+
+      if (allQuotesError) {
+        console.error('❌ Error fetching all quotes:', allQuotesError)
+        return NextResponse.json(
+          { success: false, error: 'Failed to fetch all quotes' },
+          { status: 500 }
+        )
+      }
+
+      // Update all submitted quotes to 'won' status
+      const { error: updateAllError } = await supabaseAdmin
+        .from('lead_assignments')
+        .update({ status: 'won' })
+        .eq('lead_id', quoteData.lead_id)
+        .not('quote_amount', 'is', null) // Only update quotes that have been submitted
+
+      if (updateAllError) {
+        console.error('❌ Error updating all quotes to won:', updateAllError)
+        return NextResponse.json(
+          { success: false, error: 'Failed to update quotes' },
+          { status: 500 }
+        )
+      }
+
+      console.log('✅ All quotes marked as won')
+
+      // Notify all contractors
+      if (allQuotes && allQuotes.length > 0) {
+        for (const quote of allQuotes) {
+          try {
+            await notifyWinningContractor(quote)
+            console.log(`✅ Notified contractor: ${quote.contractors?.business_name}`)
+          } catch (notifyError) {
+            console.error(`⚠️ Error notifying contractor ${quote.contractors?.business_name} (non-fatal):`, notifyError)
+            // Continue notifying other contractors even if one fails
+          }
+        }
+      }
+    } else {
+      // Original behavior: mark one quote as won, others as declined
       // Update winning assignment status to 'won' (customer selected this contractor)
       console.log('📝 Attempting to update quote status to "won" for quote:', quoteId)
       
@@ -132,13 +204,14 @@ export async function POST(request: NextRequest) {
         console.log('✅ All other quotes marked as declined')
       }
 
-    // Notify the winning contractor
-    try {
-      await notifyWinningContractor(quoteData)
-      console.log('✅ Winning contractor notified')
-    } catch (notifyError) {
-      console.error('⚠️ Error notifying contractor (non-fatal):', notifyError)
-      // Don't fail the request if notification fails
+      // Notify the winning contractor
+      try {
+        await notifyWinningContractor(quoteData)
+        console.log('✅ Winning contractor notified')
+      } catch (notifyError) {
+        console.error('⚠️ Error notifying contractor (non-fatal):', notifyError)
+        // Don't fail the request if notification fails
+      }
     }
 
     return NextResponse.json({

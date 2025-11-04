@@ -27,6 +27,7 @@ import { notFound } from 'next/navigation'
 import { extractIdFromSlug } from '@/lib/slug-utils'
 import Link from 'next/link'
 import { getContractorLogo } from '@/lib/contractor-utils'
+import { ContractorReviewsSection } from '@/components/pages/ContractorReviewsSection'
 
 // Dynamic route - will be rendered on demand
 import type { Metadata } from 'next'
@@ -181,7 +182,6 @@ async function getContractorReviews(contractorId: string) {
       `)
       .eq('contractor_id', contractorId)
       .order('created_at', { ascending: false })
-      .limit(10) // Show up to 10 recent reviews
 
     if (error) {
       console.error('Database error fetching contractor reviews:', error)
@@ -195,6 +195,10 @@ async function getContractorReviews(contractorId: string) {
     return []
   }
 }
+
+// Force dynamic rendering to ensure fresh metadata
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 // Generate dynamic metadata based on contractor data
 export async function generateMetadata({ params }: ContractorPageProps): Promise<Metadata> {
@@ -215,7 +219,7 @@ export async function generateMetadata({ params }: ContractorPageProps): Promise
   const services = "Attic, Wall, Spray Foam, Basement, and Crawl Space Insulation"
   
   return {
-    title: `${contractorName} - ${rating}★ Insulation Contractor in ${location} | InsulationPal`,
+    title: `${contractorName}, ${rating}★ Company Reviews - InsulationPal`,
     description: `Get quotes from ${contractorName}, a ${rating}★ rated insulation contractor in ${location}. ${reviewCount} reviews. Services: ${services}. Licensed & insured.`,
     keywords: [
       `${contractorName}`,
@@ -350,6 +354,7 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
 
   // Transform real contractor reviews for display
   const recentReviews = contractorReviews.map((review: any) => ({
+    id: review.id,
     name: review.customer_name,
     location: review.location || `${contractorData.business_city}, ${contractorData.business_state}`,
     rating: review.rating,
@@ -649,54 +654,7 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
       <section className="py-12 bg-[#D6D6D6]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-[#0a4768] mb-8">Customer Reviews</h2>
-          
-          {recentReviews.length === 0 ? (
-            <Card>
-              <CardContent className="text-center py-12">
-                <div className="text-gray-500 mb-4">
-                  <Star className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">No Reviews Yet</h4>
-                  <p className="text-gray-600">
-                    This contractor hasn't received any reviews yet. Be the first to share your experience!
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid md:grid-cols-2 gap-6">
-              {recentReviews.map((review: any, index: number) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <div className="flex items-center mb-2">
-                        {renderStars(review.rating)}
-                        {review.verified && (
-                          <Badge variant="secondary" className="ml-2 text-xs">
-                            Verified
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="font-semibold text-[#0a4768]">{review.name}</div>
-                      <div className="text-sm text-gray-600">{review.location}</div>
-                    </div>
-                    <div className="text-sm text-gray-500">{review.date}</div>
-                  </div>
-                  
-                  <Badge className="mb-3 bg-[#F5DD22] text-[#0a4768]">
-                    {review.service}
-                  </Badge>
-                  
-                  <TruncatedText 
-                    text={review.comment || ''} 
-                    maxLength={350}
-                    className="text-gray-700"
-                  />
-                </CardContent>
-              </Card>
-            ))}
-            </div>
-          )}
+          <ContractorReviewsSection reviews={recentReviews} />
         </div>
       </section>
 
