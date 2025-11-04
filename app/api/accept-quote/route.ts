@@ -148,9 +148,11 @@ export async function POST(request: NextRequest) {
         for (const quote of allQuotes) {
           try {
             await notifyWinningContractor(quote)
-            console.log(`✅ Notified contractor: ${quote.contractors?.business_name}`)
+            const contractor = Array.isArray(quote.contractors) ? quote.contractors[0] : quote.contractors
+            console.log(`✅ Notified contractor: ${contractor?.business_name}`)
           } catch (notifyError) {
-            console.error(`⚠️ Error notifying contractor ${quote.contractors?.business_name} (non-fatal):`, notifyError)
+            const contractor = Array.isArray(quote.contractors) ? quote.contractors[0] : quote.contractors
+            console.error(`⚠️ Error notifying contractor ${contractor?.business_name} (non-fatal):`, notifyError)
             // Continue notifying other contractors even if one fails
           }
         }
@@ -232,8 +234,8 @@ export async function POST(request: NextRequest) {
 
 async function notifyWinningContractor(quoteData: any) {
   try {
-    const lead = quoteData.leads
-    const contractor = quoteData.contractors
+    const lead = Array.isArray(quoteData.leads) ? quoteData.leads[0] : quoteData.leads
+    const contractor = Array.isArray(quoteData.contractors) ? quoteData.contractors[0] : quoteData.contractors
 
     if (!lead || !contractor) {
       console.error('Missing lead or contractor data')
