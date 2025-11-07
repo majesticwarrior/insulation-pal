@@ -331,7 +331,7 @@ async function getTucsonContractors() {
     }, [])
     
     // Sort: City-based contractors first, then by rating (descending)
-    uniqueContractors.sort((a, b) => {
+    uniqueContractors.sort((a: any, b: any) => {
       // First, sort by isBasedInCity (true comes first)
       if (a.isBasedInCity && !b.isBasedInCity) return -1
       if (!a.isBasedInCity && b.isBasedInCity) return 1
