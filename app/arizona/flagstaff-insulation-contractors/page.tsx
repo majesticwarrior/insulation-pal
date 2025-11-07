@@ -691,7 +691,11 @@ export default async function FlagstaffInsulationContractors() {
                   {/* Services & About */}
                   <div className="lg:col-span-2">
                     <h4 className="font-semibold text-[#0a4768] mb-2">About</h4>
-                    <p className="text-gray-700 mb-4 text-sm leading-[24px]">{contractor.about}</p>
+                    <p className="text-gray-700 mb-4 text-sm leading-[24px]">
+                      {contractor.about && contractor.about.length > 250 
+                        ? `${contractor.about.substring(0, 250)}...` 
+                        : contractor.about}
+                    </p>
                     
                     <h4 className="font-semibold text-[#0a4768] mb-2">Services Offered</h4>
                     <div className="text-gray-700 mb-4 text-sm">
