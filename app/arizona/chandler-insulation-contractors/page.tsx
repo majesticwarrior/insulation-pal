@@ -500,7 +500,7 @@ async function getPhoenixReviews() {
     }
 
     // Sort by created_at descending and limit to 15
-    allReviews.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    allReviews.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     const finalReviews = allReviews.slice(0, 15)
 
     return finalReviews
