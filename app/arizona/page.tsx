@@ -287,14 +287,6 @@ export default async function ArizonaInsulationContractors() {
     totalJobsCompleted: allContractors.reduce((sum: number, contractor: any) => sum + contractor.jobsCompleted, 0)
   }
 
-  const getServiceBadges = (services: string[]) => {
-    return services.map((service, index) => (
-      <Badge key={index} variant="secondary" className="text-xs">
-        {service}
-      </Badge>
-    ))
-  }
-
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -432,15 +424,15 @@ export default async function ArizonaInsulationContractors() {
 
                   <div className="mb-4">
                     <div className="text-sm text-gray-600 mb-2">Services Offered:</div>
-                    <div className="flex flex-wrap gap-1">
-                      {getServiceBadges(contractor.services)}
+                    <div className="text-sm text-gray-700">
+                      {contractor.services.join(', ')}
                     </div>
                   </div>
 
                   <div className="mb-4">
                     <div className="text-sm text-gray-600 mb-2">Types of Insulation Offered:</div>
-                    <div className="flex flex-wrap gap-1">
-                      {getServiceBadges(contractor.insulationTypes)}
+                    <div className="text-sm text-gray-700">
+                      {contractor.insulationTypes.join(', ')}
                     </div>
                   </div>
 

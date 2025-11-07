@@ -33,7 +33,25 @@ export interface Contractor {
 export async function assignLeadToContractors(lead: Lead) {
   try {
     console.log('🎯 Assigning lead to contractors in:', lead.city, lead.state)
-    console.log('🔍 Lead details:', { id: lead.id, city: lead.city, state: lead.state })
+    console.log('🔍 Lead details:', { 
+      id: lead.id, 
+      city: lead.city, 
+      state: lead.state,
+      areas_needed: lead.areas_needed,
+      insulation_types: lead.insulation_types
+    })
+    
+    // Normalize area names: 'walls' -> 'wall' to match database schema
+    const normalizedAreas = lead.areas_needed.map(area => {
+      if (area === 'walls') return 'wall'
+      return area
+    }).filter(Boolean)
+    
+    // Filter out 'other' from insulation types as it doesn't map to a specific type
+    const validInsulationTypes = lead.insulation_types.filter(type => type !== 'other')
+    
+    console.log('🔍 Normalized areas:', normalizedAreas)
+    console.log('🔍 Valid insulation types:', validInsulationTypes)
     
     // 1. Find contractors in the customer's city with available credits
     console.log('🔍 Searching for contractors...')
@@ -48,7 +66,9 @@ export async function assignLeadToContractors(lead: Lead) {
         contact_phone,
         lead_delivery_preference,
         users(email, phone),
-        contractor_service_areas!inner(city, state)
+        contractor_service_areas!inner(city, state),
+        contractor_services(service_type),
+        contractor_insulation_types(insulation_type)
       `)
       .eq('status', 'approved')
       .eq('contractor_service_areas.city', lead.city)
@@ -72,17 +92,68 @@ export async function assignLeadToContractors(lead: Lead) {
       return
     }
 
-    console.log(`✅ Found ${contractors.length} contractors in ${lead.city}`)
+    console.log(`✅ Found ${contractors.length} contractors in ${lead.city} before filtering`)
 
-    // 2. Automatically select up to 3 contractors randomly
-    const selectedContractors = contractors
+    // 2. Filter contractors by services offered and insulation types
+    const matchingContractors = contractors.filter((contractor: any) => {
+      // Extract service types from contractor_services array
+      // Handle both array of objects and array of strings
+      const contractorServiceTypes = (contractor.contractor_services || []).map((s: any) => {
+        if (typeof s === 'string') return s
+        return s?.service_type
+      }).filter(Boolean)
+      
+      // Extract insulation types from contractor_insulation_types array
+      // Handle both array of objects and array of strings
+      const contractorInsulationTypes = (contractor.contractor_insulation_types || []).map((it: any) => {
+        if (typeof it === 'string') return it
+        return it?.insulation_type
+      }).filter(Boolean)
+      
+      // Check if contractor offers at least one matching service
+      // If no areas specified in lead, match all contractors (shouldn't happen due to form validation)
+      const hasMatchingService = normalizedAreas.length === 0 || 
+        normalizedAreas.some(area => contractorServiceTypes.includes(area))
+      
+      // Check if contractor offers at least one matching insulation type
+      // If no valid insulation types specified (customer selected 'other'), skip this filter
+      const hasMatchingInsulationType = validInsulationTypes.length === 0 || 
+        validInsulationTypes.some(type => contractorInsulationTypes.includes(type))
+      
+      const matches = hasMatchingService && hasMatchingInsulationType
+      
+      if (!matches) {
+        console.log(`⚠️ Contractor ${contractor.business_name} filtered out:`, {
+          hasMatchingService,
+          hasMatchingInsulationType,
+          contractorServices: contractorServiceTypes,
+          contractorInsulationTypes,
+          requiredAreas: normalizedAreas,
+          requiredInsulationTypes: validInsulationTypes
+        })
+      }
+      
+      return matches
+    })
+
+    console.log(`✅ Found ${matchingContractors.length} matching contractors after filtering by services and insulation types`)
+
+    if (matchingContractors.length === 0) {
+      console.log(`❌ No contractors match the lead requirements:`)
+      console.log(`   - Required areas: ${normalizedAreas.join(', ') || 'any'}`)
+      console.log(`   - Required insulation types: ${validInsulationTypes.join(', ') || 'any'}`)
+      return
+    }
+
+    // 3. Automatically select up to 3 contractors randomly from matching contractors
+    const selectedContractors = matchingContractors
       .sort(() => 0.5 - Math.random())
       .slice(0, 3)
     
     console.log(`📋 Auto-assigning lead to ${selectedContractors.length} contractors:`, 
       selectedContractors.map((c: any) => c.business_name))
 
-    // 3. Create lead assignments
+    // 4. Create lead assignments
     console.log('📋 Creating lead assignments...')
     const assignments = selectedContractors.map((contractor: any) => ({
       lead_id: (lead as any).id,
@@ -106,7 +177,7 @@ export async function assignLeadToContractors(lead: Lead) {
       throw assignmentError
     }
 
-    // 4. Deduct credits from contractors (use atomic SQL to prevent double deduction)
+    // 5. Deduct credits from contractors (use atomic SQL to prevent double deduction)
     console.log('💳 Deducting credits from contractors...')
     for (const contractor of selectedContractors) {
       try {
@@ -154,7 +225,7 @@ export async function assignLeadToContractors(lead: Lead) {
       }
     }
 
-    // 5. Notify contractors
+    // 6. Notify contractors
     console.log('📧 Starting contractor notifications...')
     try {
       await notifyContractors(selectedContractors, lead)

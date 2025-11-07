@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Phone, Mail, MapPin, Clock, MessageCircle, HelpCircle } from 'lucide-react'
+import { saveCustomerData, getCustomerData } from '@/lib/customer-data-storage'
 
 export function ContactForm() {
   const [formData, setFormData] = useState({
@@ -16,12 +17,28 @@ export function ContactForm() {
     message: ''
   })
 
+  useEffect(() => {
+    // Load stored email if available
+    const storedData = getCustomerData()
+    if (storedData.email) {
+      setFormData(prev => ({
+        ...prev,
+        email: storedData.email || ''
+      }))
+    }
+  }, [])
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
       [name]: value
     }))
+    
+    // Save email to localStorage when user types
+    if (name === 'email' && value.trim()) {
+      saveCustomerData({ email: value.trim() })
+    }
   }
 
   const handleSubmit = (e: React.FormEvent) => {

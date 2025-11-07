@@ -43,6 +43,10 @@ interface Contractor {
   insurance_verified?: boolean
   bbb_accredited?: boolean
   certifications?: string[]
+  users?: {
+    name?: string
+    email?: string
+  }
 }
 
 interface Review {
@@ -129,7 +133,7 @@ export default function AdminDashboard() {
     try {
       setIsLoading(true)
       
-      // Fetch all contractors with complete profile data
+      // Fetch all contractors with complete profile data and user information
       const { data: contractorsData, error } = await (supabase as any)
         .from('contractors')
         .select(`
@@ -155,7 +159,11 @@ export default function AdminDashboard() {
           employee_count,
           license_verified,
           insurance_verified,
-          certifications
+          certifications,
+          users(
+            name,
+            email
+          )
         `)
         .order('created_at', { ascending: false })
 
@@ -1370,6 +1378,8 @@ export default function AdminDashboard() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Business Name</TableHead>
+                        <TableHead>Customer Name</TableHead>
+                        <TableHead>Customer Email</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>License #</TableHead>
                         <TableHead>Location</TableHead>
@@ -1384,6 +1394,12 @@ export default function AdminDashboard() {
                         <TableRow key={contractor.id}>
                           <TableCell className="font-medium">
                             {contractor.business_name}
+                          </TableCell>
+                          <TableCell>
+                            {contractor.users?.name || 'N/A'}
+                          </TableCell>
+                          <TableCell>
+                            {contractor.users?.email || 'N/A'}
                           </TableCell>
                           <TableCell>{contractor.email}</TableCell>
                           <TableCell>{contractor.license_number || 'N/A'}</TableCell>

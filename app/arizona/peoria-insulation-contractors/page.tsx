@@ -224,17 +224,33 @@ async function getPeoriaContractors() {
       return []
     }
 
-    // Filter contractors who are based in Peoria (business_city from their business address)
-    // Service areas are NOT used for city page display - they're only for lead bidding
+    // Filter contractors who serve Peoria:
+    // 1. Contractors based in Peoria (business_city matches)
+    // 2. Contractors who have Peoria in their service areas
+    const targetCity = 'peoria'
+    const targetCityNormalized = targetCity.toLowerCase().trim()
+    
     const peoriaContractors = contractors?.filter((contractor: any) => {
-      const isBasedInPeoria = contractor.business_city?.toLowerCase() === 'peoria'
-      return isBasedInPeoria
+      // Check if contractor is based in Peoria
+      const isBasedInPeoria = contractor.business_city?.toLowerCase().trim() === targetCityNormalized
+      
+      // Check if contractor serves Peoria via service areas
+      const serviceAreas = contractor.contractor_service_areas || []
+      const servesPeoria = serviceAreas.some((area: any) => {
+        const areaCity = area.city?.toLowerCase().trim()
+        return areaCity === targetCityNormalized
+      })
+      
+      return isBasedInPeoria || servesPeoria
     }) || []
 
     // Remove duplicates and transform data to match component format
+    // Also mark which contractors are based in the city vs serve via service areas
     const uniqueContractors = peoriaContractors.reduce((acc: any[], contractor: any) => {
       const existingContractor = acc.find(c => c.id === contractor.id)
       if (!existingContractor) {
+        // Check if contractor is based in Peoria
+        const isBasedInPeoria = contractor.business_city?.toLowerCase().trim() === targetCityNormalized
         // Extract services offered from contractor_services and capitalize them
         const servicesOffered = contractor.contractor_services?.map((service: any) => {
           const serviceType = service.service_type || ''
@@ -269,12 +285,22 @@ async function getPeoriaContractors() {
           licensedBondedInsured: Boolean(contractor.license_verified && contractor.insurance_verified),
           licenseNumber: contractor.license_number || '',
           yearEstablished: contractor.founded_year || 2020,
-          about: contractor.bio || 'Professional insulation contractor serving the Phoenix area.'
+          about: contractor.bio || 'Professional insulation contractor serving the Phoenix area.',
+          isBasedInCity: isBasedInPeoria // Flag to sort city-based contractors first
           // Removed recentProjects as requested
         })
       }
       return acc
     }, [])
+    
+    // Sort: City-based contractors first, then by rating (descending)
+    uniqueContractors.sort((a, b) => {
+      // First, sort by isBasedInCity (true comes first)
+      if (a.isBasedInCity && !b.isBasedInCity) return -1
+      if (!a.isBasedInCity && b.isBasedInCity) return 1
+      // If both are in the same group, sort by rating (descending)
+      return (b.rating || 0) - (a.rating || 0)
+    })
     
     return uniqueContractors
   } catch (error) {
@@ -720,21 +746,13 @@ export default async function PeoriaInsulationContractors() {
                     <p className="text-gray-700 mb-4 text-sm leading-[24px]">{contractor.about}</p>
                     
                     <h4 className="font-semibold text-[#0a4768] mb-2">Services Offered</h4>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {contractor.services.map((service: any, index: number) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {service}
-                        </Badge>
-                      ))}
+                    <div className="text-gray-700 mb-4 text-sm">
+                      {contractor.services.join(', ')}
                     </div>
 
                     <h4 className="font-semibold text-[#0a4768] mb-2">Types of Insulation Offered</h4>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {contractor.insulationTypes.map((type: any, index: number) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {type}
-                        </Badge>
-                      ))}
+                    <div className="text-gray-700 mb-4 text-sm">
+                      {contractor.insulationTypes.join(', ')}
                     </div>
 
                   </div>

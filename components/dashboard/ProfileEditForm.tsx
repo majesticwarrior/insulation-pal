@@ -10,8 +10,9 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
-import { getCountyNames, getCitiesForCounty, getCountyForCity } from '@/lib/arizona-locations'
+import { getCountyNames, getCitiesForCounty, getCountyForCity, arizonaCounties } from '@/lib/arizona-locations'
 import { ReviewsBadge } from '@/components/dashboard/ReviewsBadge'
+import { searchCities, USCity } from '@/lib/us-cities'
 
 interface Contractor {
   id: string
@@ -69,6 +70,10 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
   const [logoUrl, setLogoUrl] = useState<string>('')
   const [logoMethod, setLogoMethod] = useState<'upload' | 'url'>('upload')
+  
+  // City autocomplete state
+  const [citySuggestions, setCitySuggestions] = useState<USCity[]>([])
+  const [showCitySuggestions, setShowCitySuggestions] = useState(false)
 
   const availableServiceTypes = [
     'attic',
@@ -261,8 +266,38 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
   }
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    // Handle city autocomplete
+    if (field === 'business_city') {
+      setFormData(prev => ({ ...prev, [field]: value }))
+      
+      if (value.length > 0) {
+        // Search US cities with population 50,000+
+        const suggestions = searchCities(value, 10)
+        setCitySuggestions(suggestions)
+        setShowCitySuggestions(true)
+      } else {
+        setCitySuggestions([])
+        setShowCitySuggestions(false)
+      }
+    } else if (field === 'business_state') {
+      // Handle state autocomplete - auto-capitalize state abbreviation
+      const upperValue = value.toUpperCase().slice(0, 2) // Limit to 2 characters
+      setFormData(prev => ({ ...prev, [field]: upperValue }))
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }))
+    }
   }
+  
+  const handleCitySelect = (city: USCity) => {
+    setFormData(prev => ({
+      ...prev,
+      business_city: city.name,
+      business_state: city.stateAbbr // Auto-populate state abbreviation from city data
+    }))
+    setShowCitySuggestions(false)
+    setCitySuggestions([])
+  }
+  
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -765,14 +800,40 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
               />
             </div>
             <div className="grid grid-cols-3 gap-4">
-              <div>
+              <div className="relative">
                 <Label htmlFor="business_city">City</Label>
                 <Input
                   id="business_city"
                   value={formData.business_city}
                   onChange={(e) => handleInputChange('business_city', e.target.value)}
+                  onFocus={() => {
+                    if (formData.business_city && formData.business_city.length > 0) {
+                      const suggestions = searchCities(formData.business_city, 10)
+                      setCitySuggestions(suggestions)
+                      setShowCitySuggestions(true)
+                    }
+                  }}
+                  onBlur={() => {
+                    // Delay hiding suggestions to allow click events
+                    setTimeout(() => setShowCitySuggestions(false), 200)
+                  }}
                   disabled={!isEditing}
+                  placeholder="Start typing city name..."
                 />
+                {showCitySuggestions && citySuggestions.length > 0 && isEditing && (
+                  <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                    {citySuggestions.map((city) => (
+                      <div
+                        key={`${city.name}-${city.stateAbbr}`}
+                        onClick={() => handleCitySelect(city)}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                      >
+                        <div className="font-medium">{city.name}</div>
+                        <div className="text-xs text-gray-500">{city.state}, {city.stateAbbr}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <div>
                 <Label htmlFor="business_state">State</Label>
@@ -781,7 +842,12 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
                   value={formData.business_state}
                   onChange={(e) => handleInputChange('business_state', e.target.value)}
                   disabled={!isEditing}
+                  placeholder="AZ"
+                  maxLength={2}
                 />
+                {isEditing && !formData.business_state && (
+                  <p className="text-xs text-gray-500 mt-1">Auto-filled when city selected</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="business_zip">ZIP Code</Label>

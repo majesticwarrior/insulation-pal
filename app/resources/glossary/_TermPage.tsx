@@ -90,6 +90,9 @@ export default function TermPage({ term }: Props) {
       ],
       'radiant-barrier': [
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Attic radiant barrier and insulation' }
+      ],
+      garage: [
+        { href: '/services/garage-insulation', label: 'Garage Insulation', description: 'Professional garage wall, ceiling, and door insulation' }
       ]
     }
 

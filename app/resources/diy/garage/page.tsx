@@ -157,6 +157,20 @@ export default function GarageDIYGuidePage() {
                 <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
                   <h3 className="text-lg font-semibold text-[#0a4768] mb-4">Learn More</h3>
                   <div className="space-y-3">
+                    <Link href="/services/garage-insulation" className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center text-[#0a4768]">
+                        <Wrench className="h-4 w-4 mr-2" />
+                        <span className="font-medium">Professional Garage Insulation</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1">Get quotes from licensed contractors</p>
+                    </Link>
+                    <Link href="/resources/glossary/garage" className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center text-[#0a4768]">
+                        <FileText className="h-4 w-4 mr-2" />
+                        <span className="font-medium">Garage Insulation Glossary</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1">Learn about garage insulation</p>
+                    </Link>
                     <Link href="/resources/articles" className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="flex items-center text-[#0a4768]">
                         <FileText className="h-4 w-4 mr-2" />

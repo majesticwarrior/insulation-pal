@@ -1,16 +1,30 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { QuoteButton } from '@/components/ui/quote-button'
 import { MapPin, Shield, Star, Users } from 'lucide-react'
+import { saveCustomerData, getCustomerData } from '@/lib/customer-data-storage'
 
 const Hero = () => {
   const [zipCode, setZipCode] = useState('')
 
+  useEffect(() => {
+    // Load stored address if available
+    const storedData = getCustomerData()
+    if (storedData.address) {
+      setZipCode(storedData.address)
+    }
+  }, [])
+
   const handleZipCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setZipCode(e.target.value)
+    const value = e.target.value
+    setZipCode(value)
+    // Save address to localStorage as user types
+    if (value.trim()) {
+      saveCustomerData({ address: value.trim() })
+    }
   }
 
   return (

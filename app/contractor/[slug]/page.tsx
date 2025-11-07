@@ -28,6 +28,7 @@ import { extractIdFromSlug } from '@/lib/slug-utils'
 import Link from 'next/link'
 import { getContractorLogo } from '@/lib/contractor-utils'
 import { ContractorReviewsSection } from '@/components/pages/ContractorReviewsSection'
+import { DirectQuoteButton } from '@/components/contractor/DirectQuoteButton'
 
 // Dynamic route - will be rendered on demand
 import type { Metadata } from 'next'
@@ -281,6 +282,7 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
   const licenseNumber = contractorData.license_number || "N/A"
   
   const contractor = {
+    id: contractorData.id,
     name: contractorData.business_name,
     owner: "Business Owner", // Could be added to database schema
     rating: contractorData.average_rating || 4.5,
@@ -519,12 +521,12 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                   </p>
                   
                   <div className="border-t pt-4">
-                    <Button 
-                      variant="outline" 
+                    <DirectQuoteButton
+                      contractorId={contractor.id}
+                      contractorName={contractor.name}
                       className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white font-semibold py-4"
-                    >
-                      Direct Contractor Quote
-                    </Button>
+                      variant="outline"
+                    />
                     <p className="text-sm text-gray-600 text-center mt-2">
                       Get a quote directly from {contractor.name}
                     </p>

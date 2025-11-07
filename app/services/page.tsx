@@ -4,17 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { QuoteButton } from '@/components/ui/quote-button'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
-import { Home, Building, Wind, Snowflake, Flame, Wrench, CheckCircle, Star, MapPin } from 'lucide-react'
+import { Home, Building, Wind, Snowflake, Flame, Wrench, CheckCircle, Star, MapPin, Car } from 'lucide-react'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Professional Insulation Services, Comprehensive Solutions - InsulationPal',
   description: 'From attic insulation to spray foam applications, our network of certified contractors provides comprehensive insulation solutions for every need and budget. Get free quotes today.',
-  keywords: 'insulation services, attic insulation, wall insulation, spray foam, basement insulation, crawl space insulation, insulation contractors',
+  keywords: 'insulation services, attic insulation, wall insulation, spray foam, basement insulation, crawl space insulation, garage insulation, insulation contractors',
   openGraph: {
     title: 'Professional Insulation Services - Comprehensive Solutions',
-    description: 'Comprehensive insulation solutions from certified contractors. Attic, wall, spray foam, basement, and crawl space insulation services.',
+    description: 'Comprehensive insulation solutions from certified contractors. Attic, wall, spray foam, basement, crawl space, and garage insulation services.',
     type: 'website',
   },
 }
@@ -80,6 +80,16 @@ export default function ServicesPage() {
       benefits: ['Clean slate for new insulation', 'Remove health hazards', 'Pest remediation'],
       image: '/insulation-removal.jpg',
       url: '/services/insulation-removal'
+    },
+    {
+      icon: Car,
+      title: 'Garage Insulation',
+      description: 'Transform your garage into a comfortable, energy-efficient space that protects your home and belongings.',
+      features: ['Wall insulation', 'Ceiling insulation', 'Garage door insulation', 'Air sealing'],
+      price: 'Starting at $1.50/sq ft',
+      benefits: ['Protect living spaces', 'Prevent freezing', 'Comfortable workspace'],
+      image: '/garage-wall-ceiling-attic-door-panel-insulation.jpg',
+      url: '/services/garage-insulation'
     }
   ]
 

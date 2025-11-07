@@ -20,7 +20,14 @@ import {
   Award,
   Quote,
   Play,
-  ExternalLink
+  ExternalLink,
+  Home,
+  Building,
+  Wind,
+  Snowflake,
+  Flame,
+  Wrench,
+  Car
 } from 'lucide-react'
 import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
@@ -29,6 +36,7 @@ import { articles } from '@/lib/articles-data'
 import { getContractorLogo } from '@/lib/contractor-utils'
 import { createCitySchemas } from '@/lib/city-schema'
 import { getCityMapUrl } from '@/lib/city-maps'
+import { getCityServiceDescriptions } from '@/lib/city-service-descriptions'
 
 // Revalidate this page every 60 seconds to show updated contractor data
 export const revalidate = 60
@@ -224,17 +232,33 @@ async function getFlagstaffContractors() {
       return []
     }
 
-    // Filter contractors who are based in Flagstaff (business_city from their business address)
-    // Service areas are NOT used for city page display - they're only for lead bidding
+    // Filter contractors who serve Flagstaff:
+    // 1. Contractors based in Flagstaff (business_city matches)
+    // 2. Contractors who have Flagstaff in their service areas
+    const targetCity = 'flagstaff'
+    const targetCityNormalized = targetCity.toLowerCase().trim()
+    
     const flagstaffContractors = contractors?.filter((contractor: any) => {
-      const isBasedInFlagstaff = contractor.business_city?.toLowerCase() === 'flagstaff'
-      return isBasedInFlagstaff
+      // Check if contractor is based in Flagstaff
+      const isBasedInFlagstaff = contractor.business_city?.toLowerCase().trim() === targetCityNormalized
+      
+      // Check if contractor serves Flagstaff via service areas
+      const serviceAreas = contractor.contractor_service_areas || []
+      const servesFlagstaff = serviceAreas.some((area: any) => {
+        const areaCity = area.city?.toLowerCase().trim()
+        return areaCity === targetCityNormalized
+      })
+      
+      return isBasedInFlagstaff || servesFlagstaff
     }) || []
 
     // Remove duplicates and transform data to match component format
+    // Also mark which contractors are based in the city vs serve via service areas
     const uniqueContractors = flagstaffContractors.reduce((acc: any[], contractor: any) => {
       const existingContractor = acc.find(c => c.id === contractor.id)
       if (!existingContractor) {
+        // Check if contractor is based in Flagstaff
+        const isBasedInFlagstaff = contractor.business_city?.toLowerCase().trim() === targetCityNormalized
         // Extract services offered from contractor_services and capitalize them
         const servicesOffered = contractor.contractor_services?.map((service: any) => {
           const serviceType = service.service_type || ''
@@ -269,12 +293,22 @@ async function getFlagstaffContractors() {
           licensedBondedInsured: Boolean(contractor.license_verified && contractor.insurance_verified),
           licenseNumber: contractor.license_number || '',
           yearEstablished: contractor.founded_year || 2020,
-          about: contractor.bio || 'Professional insulation contractor serving the Phoenix area.'
+          about: contractor.bio || 'Professional insulation contractor serving the Phoenix area.',
+          isBasedInCity: isBasedInFlagstaff // Flag to sort city-based contractors first
           // Removed recentProjects as requested
         })
       }
       return acc
     }, [])
+    
+    // Sort: City-based contractors first, then by rating (descending)
+    uniqueContractors.sort((a, b) => {
+      // First, sort by isBasedInCity (true comes first)
+      if (a.isBasedInCity && !b.isBasedInCity) return -1
+      if (!a.isBasedInCity && b.isBasedInCity) return 1
+      // If both are in the same group, sort by rating (descending)
+      return (b.rating || 0) - (a.rating || 0)
+    })
     
     return uniqueContractors
   } catch (error) {
@@ -429,6 +463,7 @@ const flagstaffAreaCities = [
 export default async function FlagstaffInsulationContractors() {
   const schemas = createCitySchemas('Flagstaff', 'Arizona', '/arizona/flagstaff-insulation-contractors')
   const mapUrl = getCityMapUrl('flagstaff', 'Flagstaff, AZ')
+  const serviceDescriptions = getCityServiceDescriptions('Flagstaff')
 
   const flagstaffContractors = await getFlagstaffContractors()
   const recentProjects = await getPhoenixRecentProjects()
@@ -659,21 +694,13 @@ export default async function FlagstaffInsulationContractors() {
                     <p className="text-gray-700 mb-4 text-sm leading-[24px]">{contractor.about}</p>
                     
                     <h4 className="font-semibold text-[#0a4768] mb-2">Services Offered</h4>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {contractor.services.map((service: any, index: number) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {service}
-                        </Badge>
-                      ))}
+                    <div className="text-gray-700 mb-4 text-sm">
+                      {contractor.services.join(', ')}
                     </div>
 
                     <h4 className="font-semibold text-[#0a4768] mb-2">Types of Insulation Offered</h4>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {contractor.insulationTypes.map((type: any, index: number) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {type}
-                        </Badge>
-                      ))}
+                    <div className="text-gray-700 mb-4 text-sm">
+                      {contractor.insulationTypes.join(', ')}
                     </div>
 
                   </div>
@@ -885,15 +912,15 @@ export default async function FlagstaffInsulationContractors() {
         </div>
       </section>
 
-      {/* Recent Phoenix Completed Insulation Projects */}
-      <section className="py-12 bg-white">
+      {/* Recent Flagstaff Completed Insulation Projects */}
+      <section className="py-12 bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6]">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Recent Phoenix Completed Insulation Projects
+              Recent Flagstaff Completed Insulation Projects
             </h2>
             <p className="text-lg text-gray-600 mb-8">
-              See the quality work performed by our verified contractors in the Phoenix metro area
+              See the quality work performed by our verified contractors in the Flagstaff area
             </p>
           </div>
 
@@ -938,6 +965,122 @@ export default async function FlagstaffInsulationContractors() {
               </p>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Services Carousel */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
+              Our Contractor Insulation Services
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Comprehensive insulation solutions for every part of your Flagstaff home
+            </p>
+          </div>
+          
+          <div className="max-w-6xl mx-auto">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {[
+                  {
+                    icon: Home,
+                    title: 'Attic Insulation',
+                    description: serviceDescriptions.attic,
+                    image: '/attic-insulation-blown-in.jpg',
+                    url: '/services/attic-insulation'
+                  },
+                  {
+                    icon: Building,
+                    title: 'Wall Insulation',
+                    description: serviceDescriptions.wall,
+                    image: '/contractor-installing-wall-insulation.jpg',
+                    url: '/services/wall-insulation'
+                  },
+                  {
+                    icon: Wind,
+                    title: 'Spray Foam Insulation',
+                    description: serviceDescriptions.sprayFoam,
+                    image: '/spray-foam-insulation-installed.jpg',
+                    url: '/services/spray-foam-insulation'
+                  },
+                  {
+                    icon: Snowflake,
+                    title: 'Crawl Space Insulation',
+                    description: serviceDescriptions.crawlSpace,
+                    image: '/crawl-space-insulation-installed.jpg',
+                    url: '/services/crawl-space-insulation'
+                  },
+                  {
+                    icon: Flame,
+                    title: 'Basement Insulation',
+                    description: serviceDescriptions.basement,
+                    image: '/basement-insulation-installed.jpg',
+                    url: '/services/basement-insulation'
+                  },
+                  {
+                    icon: Car,
+                    title: 'Garage Insulation',
+                    description: serviceDescriptions.garage,
+                    image: '/garage-wall-ceiling-attic-door-panel-insulation.jpg',
+                    url: '/services/garage-insulation'
+                  },
+                  {
+                    icon: Wrench,
+                    title: 'Insulation Removal',
+                    description: serviceDescriptions.removal,
+                    image: '/insulation-removal.jpg',
+                    url: '/services/insulation-removal'
+                  }
+                ].map((service, index) => {
+                  const Icon = service.icon
+                  return (
+                    <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                      <Card className="hover:shadow-xl transition-shadow overflow-hidden h-full flex flex-col">
+                        <div className="relative h-48">
+                          <Image
+                            src={service.image}
+                            alt={service.title}
+                            fill
+                            className="object-cover"
+                            loading="lazy"
+                          />
+                          <div className="absolute top-4 left-4 bg-[#F5DD22] rounded-full p-3">
+                            <Icon className="h-6 w-6 text-[#0a4768]" />
+                          </div>
+                        </div>
+                        <CardContent className="p-6 flex flex-col flex-grow">
+                          <h3 className="text-xl font-bold text-[#0a4768] mb-3">
+                            {service.title}
+                          </h3>
+                          <p className="text-gray-600 text-sm mb-4 flex-grow">
+                            {service.description}
+                          </p>
+                          <Button 
+                            asChild 
+                            className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold"
+                          >
+                            <Link href={service.url}>
+                              Learn More
+                            </Link>
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </CarouselItem>
+                  )
+                })}
+              </CarouselContent>
+              <CarouselPrevious className="hidden md:flex" />
+              <CarouselNext className="hidden md:flex" />
+            </Carousel>
+          </div>
         </div>
       </section>
 

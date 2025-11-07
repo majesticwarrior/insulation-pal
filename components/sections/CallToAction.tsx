@@ -1,20 +1,42 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import { QuoteButton } from '@/components/ui/quote-button'
 import { MapPin, Phone, Mail, Clock } from 'lucide-react'
+import { saveCustomerData, getCustomerData } from '@/lib/customer-data-storage'
 
 const CallToAction = () => {
+  // Load stored data if available
   const [zipCode, setZipCode] = useState('')
   const [email, setEmail] = useState('')
 
+  useEffect(() => {
+    const storedData = getCustomerData()
+    if (storedData.address) {
+      setZipCode(storedData.address)
+    }
+    if (storedData.email) {
+      setEmail(storedData.email)
+    }
+  }, [])
+
   const handleZipCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setZipCode(e.target.value)
+    const value = e.target.value
+    setZipCode(value)
+    // Save address to localStorage as user types
+    if (value.trim()) {
+      saveCustomerData({ address: value.trim() })
+    }
   }
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value)
+    const value = e.target.value
+    setEmail(value)
+    // Save email to localStorage as user types
+    if (value.trim()) {
+      saveCustomerData({ email: value.trim() })
+    }
   }
 
   return (
