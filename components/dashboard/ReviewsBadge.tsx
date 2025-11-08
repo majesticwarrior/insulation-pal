@@ -20,18 +20,24 @@ export function ReviewsBadge({ contractorId, businessName }: ReviewsBadgeProps) 
   const profileUrl = `https://insulationpal.com/contractor/${profileSlug}`
   
   // Stacked variation (text on top, logo on bottom)
-  const badgeHtmlStacked = `<a href="${profileUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 20px; color: #0a4768; text-decoration: none; font-weight: 600; font-size: 14px;">
-  <span style="text-align: center; line-height: 1.1;">
-    Check out<br>our reviews
+  const badgeHtmlStacked = `<div style="display: inline-flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 20px; color: #0a4768; font-weight: 600; font-size: 14px;">
+  <span style="text-align: center; line-height: 1.3;">
+    Check out our reviews on <a href="https://insulationpal.com" target="_blank" rel="noopener noreferrer" style="color: #0a4768; text-decoration: underline;">InsulationPal</a>
   </span>
-  <img src="https://insulationpal.com/insulation-pal-logo.png" alt="InsulationPal" style="height: 52px; width: auto;" />
-</a>`
+  <a href="${profileUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-flex;">
+    <img src="https://insulationpal.com/insulation-pal-logo.png" alt="InsulationPal" style="height: 52px; width: auto;" />
+  </a>
+</div>`
 
   // Horizontal variation (logo and text on same line)
-  const badgeHtmlHorizontal = `<a href="${profileUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; color: #0a4768; text-decoration: none; font-weight: 600; font-size: 14px;">
-  <img src="https://insulationpal.com/insulation-pal-logo.png" alt="InsulationPal" style="height: 52px; width: auto;" />
-  <span style="line-height: 1.1;">Check out<br>our reviews</span>
-</a>`
+  const badgeHtmlHorizontal = `<div style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; color: #0a4768; font-weight: 600; font-size: 14px;">
+  <a href="${profileUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-flex;">
+    <img src="https://insulationpal.com/insulation-pal-logo.png" alt="InsulationPal" style="height: 52px; width: auto;" />
+  </a>
+  <span style="line-height: 1.3;">
+    Check out our reviews on <a href="https://insulationpal.com" target="_blank" rel="noopener noreferrer" style="color: #0a4768; text-decoration: underline;">InsulationPal</a>
+  </span>
+</div>`
 
   const handleCopyStacked = async () => {
     try {
@@ -71,23 +77,33 @@ export function ReviewsBadge({ contractorId, businessName }: ReviewsBadgeProps) 
             <div className="space-y-3">
               <h4 className="font-semibold text-sm text-gray-700">Badge Preview:</h4>
               <div className="flex items-center justify-center p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 h-full min-h-[200px]">
-                <a
-                  href={profileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex flex-col items-center gap-2 px-5 py-3 text-[#0a4768] font-semibold text-sm"
-                >
-                <span className="text-center leading-none">
-                  Check out<br />our reviews
-                </span>
-                  <Image
-                    src="/insulation-pal-logo.png"
-                    alt="InsulationPal"
-                    width={52}
-                    height={52}
-                    className="h-[52px] w-auto"
-                  />
-                </a>
+                <div className="inline-flex flex-col items-center gap-2 px-5 py-3 text-[#0a4768] font-semibold text-sm">
+                  <span className="text-center leading-tight">
+                    Check out our reviews on{' '}
+                    <a
+                      href="https://insulationpal.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline text-[#0a4768]"
+                    >
+                      InsulationPal
+                    </a>
+                  </span>
+                  <a
+                    href={profileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex"
+                  >
+                    <Image
+                      src="/insulation-pal-logo.png"
+                      alt="InsulationPal"
+                      width={52}
+                      height={52}
+                      className="h-[52px] w-auto"
+                    />
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -130,23 +146,33 @@ export function ReviewsBadge({ contractorId, businessName }: ReviewsBadgeProps) 
             <div className="space-y-3">
               <h4 className="font-semibold text-sm text-gray-700">Badge Preview:</h4>
               <div className="flex items-center justify-center p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 h-full min-h-[200px]">
-                <a
-                  href={profileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-3 text-[#0a4768] font-semibold text-sm"
-                >
-                  <Image
-                    src="/insulation-pal-logo.png"
-                    alt="InsulationPal"
-                    width={52}
-                    height={52}
-                    className="h-[52px] w-auto"
-                  />
-                <span className="leading-none">
-                  Check out<br />our reviews
-                </span>
-                </a>
+                <div className="inline-flex items-center gap-2 px-5 py-3 text-[#0a4768] font-semibold text-sm">
+                  <a
+                    href={profileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex"
+                  >
+                    <Image
+                      src="/insulation-pal-logo.png"
+                      alt="InsulationPal"
+                      width={52}
+                      height={52}
+                      className="h-[52px] w-auto"
+                    />
+                  </a>
+                  <span className="leading-tight">
+                    Check out our reviews on{' '}
+                    <a
+                      href="https://insulationpal.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline text-[#0a4768]"
+                    >
+                      InsulationPal
+                    </a>
+                  </span>
+                </div>
               </div>
             </div>
 
