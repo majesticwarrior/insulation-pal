@@ -20,10 +20,12 @@ export function ReviewsBadge({ contractorId, businessName }: ReviewsBadgeProps) 
   const profileUrl = `https://insulationpal.com/contractor/${profileSlug}`
   
   // Stacked variation (text on top, logo on bottom)
-  const badgeHtmlStacked = `<div style="display: inline-flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 20px; color: #0a4768; font-weight: 600; font-size: 14px;">
-  <span style="text-align: center; line-height: 1.3;">
-    Check out our reviews on <a href="https://insulationpal.com" target="_blank" rel="noopener noreferrer" style="color: #0a4768; text-decoration: underline;">InsulationPal</a>
-  </span>
+  const badgeHtmlStacked = `<div style="display: inline-flex; flex-direction: column; align-items: center; gap: 10px; padding: 12px 20px; color: #0a4768; font-weight: 600; font-size: 14px;">
+  <div style="display: flex; flex-direction: column; align-items: center; text-align: center; line-height: 1.4;">
+    <span>Check out</span>
+    <span>our reviews on</span>
+    <a href="https://insulationpal.com" target="_blank" rel="noopener noreferrer" style="color: #0a4768; text-decoration: underline;">InsulationPal</a>
+  </div>
   <a href="${profileUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-flex;">
     <img src="https://insulationpal.com/insulation-pal-logo.png" alt="InsulationPal" style="height: 52px; width: auto;" />
   </a>
@@ -78,8 +80,9 @@ export function ReviewsBadge({ contractorId, businessName }: ReviewsBadgeProps) 
               <h4 className="font-semibold text-sm text-gray-700">Badge Preview:</h4>
               <div className="flex items-center justify-center p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 h-full min-h-[200px]">
                 <div className="inline-flex flex-col items-center gap-2 px-5 py-3 text-[#0a4768] font-semibold text-sm">
-                  <span className="text-center leading-tight">
-                    Check out our reviews on{' '}
+                  <div className="flex flex-col items-center text-center leading-tight">
+                    <span>Check out</span>
+                    <span>our reviews on</span>
                     <a
                       href="https://insulationpal.com"
                       target="_blank"
@@ -88,7 +91,7 @@ export function ReviewsBadge({ contractorId, businessName }: ReviewsBadgeProps) 
                     >
                       InsulationPal
                     </a>
-                  </span>
+                  </div>
                   <a
                     href={profileUrl}
                     target="_blank"
