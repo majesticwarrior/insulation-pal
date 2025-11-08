@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Shield, Users, Clock, CheckCircle, XCircle, Eye, DollarSign, LogOut, Edit, Plus, Star, UserCog, Key } from 'lucide-react'
+import { Shield, Users, Clock, CheckCircle, XCircle, Eye, DollarSign, LogOut, Edit, Plus, Star, UserCog, Key, Copy } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 
@@ -715,6 +715,17 @@ export default function AdminDashboard() {
     router.push('/admin-login')
   }
 
+  const copyToClipboard = async (text?: string, label?: string) => {
+    if (!text) return
+    try {
+      await navigator.clipboard.writeText(text)
+      toast.success(`${label ?? 'Email'} copied to clipboard`)
+    } catch (error) {
+      console.error('Error copying to clipboard:', error)
+      toast.error('Failed to copy to clipboard')
+    }
+  }
+
   // Profile editing functions
   const openEditDialog = (contractor: Contractor) => {
     setSelectedContractor(contractor)
@@ -1379,8 +1390,8 @@ export default function AdminDashboard() {
                       <TableRow>
                         <TableHead>Business Name</TableHead>
                         <TableHead>Customer Name</TableHead>
-                        <TableHead>Customer Email</TableHead>
-                        <TableHead>Email</TableHead>
+                        <TableHead className="w-[180px]">Customer Email</TableHead>
+                        <TableHead className="w-[180px]">Email</TableHead>
                         <TableHead>License #</TableHead>
                         <TableHead>Location</TableHead>
                         <TableHead>Status</TableHead>
@@ -1398,10 +1409,48 @@ export default function AdminDashboard() {
                           <TableCell>
                             {contractor.users?.name || 'N/A'}
                           </TableCell>
-                          <TableCell>
-                            {contractor.users?.email || 'N/A'}
+                          <TableCell className="max-w-[180px]">
+                            <div className="flex items-center gap-1">
+                              <span
+                                className="truncate whitespace-nowrap"
+                                title={contractor.users?.email || undefined}
+                              >
+                                {contractor.users?.email || 'N/A'}
+                              </span>
+                              {contractor.users?.email && (
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  className="h-6 w-6"
+                                  onClick={() => copyToClipboard(contractor.users?.email, 'Customer email')}
+                                >
+                                  <Copy className="h-3 w-3" />
+                                  <span className="sr-only">Copy customer email</span>
+                                </Button>
+                              )}
+                            </div>
                           </TableCell>
-                          <TableCell>{contractor.email}</TableCell>
+                          <TableCell className="max-w-[180px]">
+                            <div className="flex items-center gap-1">
+                              <span
+                                className="truncate whitespace-nowrap"
+                                title={contractor.email || undefined}
+                              >
+                                {contractor.email}
+                              </span>
+                              {contractor.email && (
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  className="h-6 w-6"
+                                  onClick={() => copyToClipboard(contractor.email, 'Contractor email')}
+                                >
+                                  <Copy className="h-3 w-3" />
+                                  <span className="sr-only">Copy contractor email</span>
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
                           <TableCell>{contractor.license_number || 'N/A'}</TableCell>
                           <TableCell>
                             {contractor.business_city && contractor.business_state
