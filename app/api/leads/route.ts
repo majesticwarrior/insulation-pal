@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { quoteSchema } from '@/lib/schemas/quote'
 import { assignLeadToContractors } from '@/lib/lead-assignment'
 import { createServerClient } from '@/lib/supabase'
+import type { Database } from '@/lib/database.types'
 
 export const POST = async (request: NextRequest) => {
   let requestBody: unknown
@@ -57,7 +58,9 @@ export const POST = async (request: NextRequest) => {
 
   const supabaseClient = createServerClient()
 
-  const leadPayload = {
+  type LeadInsert = Database['public']['Tables']['leads']['Insert']
+
+  const leadPayload: LeadInsert = {
     home_size_sqft: parseInt(formData.homeSize, 10),
     areas_needed: formData.areas,
     insulation_types: formData.insulationTypes,
@@ -78,7 +81,7 @@ export const POST = async (request: NextRequest) => {
   try {
     const { data: lead, error: insertError } = await supabaseClient
       .from('leads')
-      .insert(leadPayload)
+      .insert<LeadInsert>(leadPayload)
       .select()
       .single()
 
