@@ -66,7 +66,9 @@ export const calculateContractorRating = async (
     }
 
     const validReviewRatings =
-      reviewRows?.map((row: { rating: number | null }) => Number(row.rating)).filter((rating) => !Number.isNaN(rating)) ?? []
+      reviewRows
+        ?.map((row: { rating: number | null }) => Number(row.rating))
+        .filter((ratingValue: number) => !Number.isNaN(ratingValue)) ?? []
 
     const reviewScore =
       validReviewRatings.length > 0
