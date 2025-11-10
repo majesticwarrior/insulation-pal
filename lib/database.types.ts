@@ -158,12 +158,17 @@ export interface Database {
           areas_needed: string[] // JSON array of area types
           insulation_types: string[] // JSON array of insulation types
           quote_preference: 'random_three' | 'choose_three'
+          additional_services: string[] | null
+          ceiling_fan_count: number | null
+          project_type: 'residential' | 'commercial'
+          attic_insulation_depth: string | null
           customer_name: string | null
           customer_email: string | null
           customer_phone: string | null
           city: string
           state: string
           zip_code: string | null
+          property_address: string | null
           status: 'pending' | 'assigned' | 'completed'
           created_at: string
           updated_at: string
@@ -174,12 +179,17 @@ export interface Database {
           areas_needed: string[]
           insulation_types: string[]
           quote_preference: 'random_three' | 'choose_three'
+          additional_services?: string[] | null
+          ceiling_fan_count?: number | null
+          project_type?: 'residential' | 'commercial'
+          attic_insulation_depth?: string | null
           customer_name?: string | null
           customer_email?: string | null
           customer_phone?: string | null
           city: string
           state: string
           zip_code?: string | null
+          property_address?: string | null
           status?: 'pending' | 'assigned' | 'completed'
           created_at?: string
           updated_at?: string
@@ -190,12 +200,17 @@ export interface Database {
           areas_needed?: string[]
           insulation_types?: string[]
           quote_preference?: 'random_three' | 'choose_three'
+          additional_services?: string[] | null
+          ceiling_fan_count?: number | null
+          project_type?: 'residential' | 'commercial'
+          attic_insulation_depth?: string | null
           customer_name?: string | null
           customer_email?: string | null
           customer_phone?: string | null
           city?: string
           state?: string
           zip_code?: string | null
+          property_address?: string | null
           status?: 'pending' | 'assigned' | 'completed'
           created_at?: string
           updated_at?: string
