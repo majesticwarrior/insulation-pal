@@ -205,7 +205,8 @@ export default function ContractorDashboard() {
       
       // First, fetch fresh contractor data to get updated credits
       console.log('📡 Fetching contractor data from Supabase...')
-      let contractorData, contractorError
+      let contractorData: any
+      let contractorError: any
       try {
         const result = await (supabase as any)
           .from('contractors')
