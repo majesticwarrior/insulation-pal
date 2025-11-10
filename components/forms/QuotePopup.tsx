@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -12,31 +11,10 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { ChevronLeft, ChevronRight, Home, Wrench, Phone } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
-import { assignLeadToContractors } from '@/lib/lead-assignment'
 import { getCustomerData, parseAddress } from '@/lib/customer-data-storage'
-
-const quoteSchema = z.object({
-  homeSize: z.string().min(1, 'Home size is required'),
-  areas: z.array(z.string()).min(1, 'Please select at least one area'),
-  insulationTypes: z.array(z.string()).min(1, 'Please select at least one insulation type'),
-  additionalServices: z.array(z.string()).optional(),
-  ceilingFanCount: z.string().optional(),
-  projectType: z.enum(['residential', 'commercial']).optional(),
-  atticInsulationDepth: z.string().optional(),
-  quotePreference: z.enum(['random_three', 'choose_three']),
-  customerName: z.string().min(2, 'Name must be at least 2 characters'),
-  customerEmail: z.string().email('Email address is required'),
-  customerPhone: z.string().min(10, 'Phone number is required and must be at least 10 digits'),
-  address: z.string().min(1, 'Address is required'),
-  city: z.string().min(1, 'City is required'),
-  state: z.string().min(1, 'State is required'),
-  zipCode: z.string().min(5, 'Zip code is required and must be at least 5 digits')
-})
-
-type QuoteFormData = z.infer<typeof quoteSchema>
+import { quoteSchema, QuoteFormData } from '@/lib/schemas/quote'
 
 interface QuotePopupProps {
   isOpen: boolean
@@ -173,14 +151,6 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
         return
       }
       
-      // Enhanced debugging for Supabase configuration
-      console.log('🔍 Supabase Configuration Check:', {
-        url: process.env.NEXT_PUBLIC_SUPABASE_URL,
-        hasKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-        keyLength: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.length || 0,
-        supabaseInstance: !!supabase
-      })
-      
       // Check if we're in demo mode (no real Supabase connection)
       const isDemoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL || 
                         process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder') ||
@@ -200,106 +170,49 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
         return
       }
       
-      // Insert lead into database
-      const leadData = {
-        home_size_sqft: parseInt(formData.homeSize),
-        areas_needed: formData.areas,
-        insulation_types: formData.insulationTypes,
-        additional_services: formData.additionalServices || [],
-        ceiling_fan_count: formData.ceilingFanCount ? parseInt(formData.ceilingFanCount) : null,
-        project_type: formData.projectType || 'residential',
-        attic_insulation_depth: formData.atticInsulationDepth || null,
-        quote_preference: formData.quotePreference,
-        customer_name: formData.customerName,
-        customer_email: formData.customerEmail,
-        customer_phone: formData.customerPhone,
-        city: formData.city,
-        state: formData.state,
-        zip_code: formData.zipCode
-      }
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
 
-      // Add property_address if form includes address (defensive coding)
-      if (formData.address) {
-        ;(leadData as any).property_address = formData.address
-      }
+      const responseBody = await response.json().catch(async () => {
+        const fallbackText = await response.text().catch(() => '')
+        return fallbackText ? { raw: fallbackText } : null
+      })
 
-      console.log('📋 Submitting lead data:', leadData)
-
-      // Test Supabase connection before attempting insert
-      try {
-        console.log('🔍 Testing connection to leads table...')
-        const { data: testData, error: testError } = await (supabase as any)
-          .from('leads')
-          .select('id')
-          .limit(1)
-        
-        console.log('🔍 Connection test result:', {
-          data: testData,
-          error: testError,
-          errorKeys: testError ? Object.keys(testError) : [],
-          errorStringified: JSON.stringify(testError, null, 2)
+      if (!response.ok || !responseBody || (responseBody as any).success === false) {
+        console.error('🚨 Quote submission failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: responseBody
         })
-        
-        if (testError) {
-          console.error('🚨 Supabase connection test failed:', testError)
-          console.error('🚨 Error details:', {
-            message: testError.message || 'No message',
-            code: testError.code || 'No code',
-            details: testError.details || 'No details',
-            hint: testError.hint || 'No hint',
-            status: testError.status || 'No status'
-          })
-          
-          // Check if it's a "table doesn't exist" error
-          if (testError.message?.includes('relation') && testError.message?.includes('does not exist')) {
-            throw new Error(`Database table 'leads' does not exist. Please run the database migration script.`)
-          }
-          
-          throw new Error(`Database connection failed: ${testError.message || 'Unknown error'}`)
-        }
-        
-        console.log('✅ Supabase connection test passed, found', testData?.length || 0, 'records')
-      } catch (connectionError: any) {
-        console.error('🚨 Critical Supabase connection error:', connectionError)
-        console.error('🚨 Error type:', typeof connectionError)
-        console.error('🚨 Error constructor:', connectionError.constructor.name)
-        
-        // If it's our custom error, re-throw it
-        if (connectionError.message?.includes('Database')) {
-          throw connectionError
-        }
-        
-        throw new Error(`Cannot connect to database. Please check your environment variables and database setup.`)
+
+        const errorMessage =
+          (responseBody as any)?.error ||
+          (responseBody as any)?.message ||
+          (responseBody as any)?.raw ||
+          'Quote submission failed'
+
+        throw new Error(errorMessage)
       }
 
-      const { data: lead, error } = await (supabase as any)
-        .from('leads')
-        .insert(leadData)
-        .select()
-        .single()
-
-      if (error) {
-        console.error('🚨 Lead insertion error:', error)
-        console.error('Error details:', {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code
-        })
-        throw error
-      }
-
-      // Auto-assign lead to 3 contractors in the customer's city
-      console.log('🎯 Auto-assigning lead to 3 contractors in:', formData.city, formData.state)
-      await assignLeadToContractors(lead)
-      
       toast.success('Quote request submitted successfully! Your request has been sent to contractors in your area.')
       onClose()
       form.reset()
       setCurrentStep(1)
     } catch (error) {
-      console.error('Error submitting quote:', error)
-      toast.error('Failed to submit quote request. Please try again.')
+      const submissionError = error as Error
+      console.error('Error submitting quote:', submissionError)
+      
+      const friendlyMessage =
+        submissionError?.message && submissionError.message.trim().length > 0
+          ? submissionError.message
+          : 'Failed to submit quote request. Please try again.'
+      
+      toast.error(friendlyMessage)
     } finally {
       setIsSubmitting(false)
     }

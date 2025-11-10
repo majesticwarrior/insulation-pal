@@ -1,6 +1,8 @@
 'use server'
 
-import { supabase } from './supabase'
+import { SupabaseClient } from '@supabase/supabase-js'
+import { supabase, createServerClient } from './supabase'
+import { Database } from './database.types'
 import { sendServerEmailDirect } from './server-email-direct'
 import { sendSMS } from './sms-service'
 
@@ -30,7 +32,12 @@ export interface Contractor {
   credits: number
 }
 
-export async function assignLeadToContractors(lead: Lead) {
+export const assignLeadToContractors = async (
+  lead: Lead,
+  client?: SupabaseClient<Database>
+) => {
+  const supabaseClient =
+    client ?? (typeof window === 'undefined' ? createServerClient() : supabase)
   try {
     console.log('🎯 Assigning lead to contractors in:', lead.city, lead.state)
     console.log('🔍 Lead details:', { 
@@ -55,7 +62,7 @@ export async function assignLeadToContractors(lead: Lead) {
     
     // 1. Find contractors in the customer's city with available credits
     console.log('🔍 Searching for contractors...')
-    const { data: contractors, error: contractorError } = await (supabase as any)
+    const { data: contractors, error: contractorError } = await (supabaseClient as any)
       .from('contractors')
       .select(`
         id,
@@ -67,8 +74,7 @@ export async function assignLeadToContractors(lead: Lead) {
         lead_delivery_preference,
         users(email, phone),
         contractor_service_areas!inner(city, state),
-        contractor_services(service_type),
-        contractor_insulation_types(insulation_type)
+        contractor_services(service_type, insulation_types)
       `)
       .eq('status', 'approved')
       .eq('contractor_service_areas.city', lead.city)
@@ -98,17 +104,38 @@ export async function assignLeadToContractors(lead: Lead) {
     const matchingContractors = contractors.filter((contractor: any) => {
       // Extract service types from contractor_services array
       // Handle both array of objects and array of strings
-      const contractorServiceTypes = (contractor.contractor_services || []).map((s: any) => {
-        if (typeof s === 'string') return s
-        return s?.service_type
-      }).filter(Boolean)
-      
-      // Extract insulation types from contractor_insulation_types array
-      // Handle both array of objects and array of strings
-      const contractorInsulationTypes = (contractor.contractor_insulation_types || []).map((it: any) => {
-        if (typeof it === 'string') return it
-        return it?.insulation_type
-      }).filter(Boolean)
+      const contractorServiceTypes = (contractor.contractor_services || [])
+        .map((service: any) => {
+          if (typeof service === 'string') {
+            return service
+          }
+          return service?.service_type
+        })
+        .filter(Boolean)
+
+      const contractorInsulationTypes = (contractor.contractor_services || [])
+        .flatMap((service: any) => {
+          if (!service) {
+            return []
+          }
+          if (Array.isArray(service)) {
+            return service
+          }
+          if (Array.isArray(service?.insulation_types)) {
+            return service.insulation_types
+          }
+          if (typeof service === 'string') {
+            return [service]
+          }
+          return []
+        })
+        .map((type: any) => {
+          if (typeof type === 'string') {
+            return type
+          }
+          return typeof type?.insulation_type === 'string' ? type.insulation_type : null
+        })
+        .filter(Boolean)
       
       // Check if contractor offers at least one matching service
       // If no areas specified in lead, match all contractors (shouldn't happen due to form validation)
@@ -166,7 +193,7 @@ export async function assignLeadToContractors(lead: Lead) {
 
     console.log('📋 Assignment data:', assignments)
 
-    const { error: assignmentError } = await (supabase as any)
+    const { error: assignmentError } = await (supabaseClient as any)
       .from('lead_assignments')
       .insert(assignments)
 
@@ -182,7 +209,7 @@ export async function assignLeadToContractors(lead: Lead) {
     for (const contractor of selectedContractors) {
       try {
         // Fetch current credits first to use for optimistic locking
-        const { data: currentContractor, error: fetchError } = await (supabase as any)
+        const { data: currentContractor, error: fetchError } = await (supabaseClient as any)
           .from('contractors')
           .select('credits')
           .eq('id', contractor.id)
@@ -200,7 +227,7 @@ export async function assignLeadToContractors(lead: Lead) {
         
         // Use optimistic locking: only update if credits match what we fetched
         // This prevents double deduction if the function is called multiple times
-        const { data: updatedContractor, error: updateError } = await (supabase as any)
+        const { data: updatedContractor, error: updateError } = await (supabaseClient as any)
           .from('contractors')
           .update({ credits: currentContractor.credits - 1 })
           .eq('id', contractor.id)
