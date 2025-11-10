@@ -32,6 +32,13 @@ export interface Contractor {
   credits: number
 }
 
+export interface LeadAssignmentResult {
+  assignedContractors: string[]
+  matchingContractors: string[]
+  totalMatchingContractors: number
+  notes?: string
+}
+
 export const assignLeadToContractors = async (
   lead: Lead,
   client?: SupabaseClient<Database>
@@ -95,7 +102,12 @@ export const assignLeadToContractors = async (
       console.log(`   - No contractors with available credits`)
       console.log(`   - No contractors with approved status`)
       console.log(`   - No contractors with service areas in this city`)
-      return
+      return {
+        assignedContractors: [],
+        matchingContractors: [],
+        totalMatchingContractors: 0,
+        notes: 'No contractors matched city/state/credit filters'
+      }
     }
 
     console.log(`✅ Found ${contractors.length} contractors in ${lead.city} before filtering`)
@@ -169,7 +181,12 @@ export const assignLeadToContractors = async (
       console.log(`❌ No contractors match the lead requirements:`)
       console.log(`   - Required areas: ${normalizedAreas.join(', ') || 'any'}`)
       console.log(`   - Required insulation types: ${validInsulationTypes.join(', ') || 'any'}`)
-      return
+      return {
+        assignedContractors: [],
+        matchingContractors: [],
+        totalMatchingContractors: contractors.length,
+        notes: 'Contractors found in city/state, but none matched service/insulation filters'
+      }
     }
 
     // 3. Automatically select up to 3 contractors randomly from matching contractors
@@ -193,9 +210,10 @@ export const assignLeadToContractors = async (
 
     console.log('📋 Assignment data:', assignments)
 
-    const { error: assignmentError } = await (supabaseClient as any)
+    const { data: insertedAssignments, error: assignmentError } = await (supabaseClient as any)
       .from('lead_assignments')
       .insert(assignments)
+      .select('id, contractor_id')
 
     console.log('📋 Assignment creation result:', { assignmentError })
 
@@ -270,6 +288,12 @@ export const assignLeadToContractors = async (
 
     console.log(`Lead ${lead.id} assigned to ${selectedContractors.length} contractors`)
     
+    return {
+      assignedContractors: selectedContractors.map((c: any) => c.id),
+      matchingContractors: matchingContractors.map((c: any) => c.id),
+      totalMatchingContractors: matchingContractors.length,
+      notes: `Lead assigned to ${selectedContractors.length} contractor${selectedContractors.length === 1 ? '' : 's'}.`
+    }
   } catch (error: any) {
     console.error('❌ Error assigning lead:', error)
     console.error('❌ Error details:', {

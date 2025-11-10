@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { quoteSchema } from '@/lib/schemas/quote'
-import { assignLeadToContractors } from '@/lib/lead-assignment'
+import { assignLeadToContractors, LeadAssignmentResult } from '@/lib/lead-assignment'
 import { createServerClient } from '@/lib/supabase'
 import type { Database } from '@/lib/database.types'
 
@@ -78,6 +78,8 @@ export const POST = async (request: NextRequest) => {
 
   const supabaseClient = createServerClient()
 
+  let assignmentResult: LeadAssignmentResult | null = null
+
   try {
     const { data: lead, error: insertError } = await (supabaseClient as any)
       .from('leads')
@@ -97,7 +99,21 @@ export const POST = async (request: NextRequest) => {
     }
 
     try {
-      await assignLeadToContractors(lead, supabaseClient)
+      assignmentResult = await assignLeadToContractors(lead, supabaseClient)
+
+      if (!assignmentResult || assignmentResult.assignedContractors.length === 0) {
+        console.log('⚠️ Lead created but no contractors were assigned:', assignmentResult)
+        return NextResponse.json(
+          {
+            success: true,
+            leadId: lead.id,
+            assignedContractors: assignmentResult?.assignedContractors ?? [],
+            matchingContractors: assignmentResult?.matchingContractors ?? [],
+            notes: assignmentResult?.notes ?? 'No contractors matched lead criteria.'
+          },
+          { status: 200 }
+        )
+      }
     } catch (assignmentError) {
       console.error('🚨 Failed to assign lead to contractors:', assignmentError)
       return NextResponse.json(
@@ -114,7 +130,10 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json(
       {
         success: true,
-        leadId: lead.id
+        leadId: lead.id,
+        assignedContractors: assignmentResult?.assignedContractors ?? [],
+        matchingContractors: assignmentResult?.matchingContractors ?? [],
+        notes: assignmentResult?.notes
       },
       { status: 200 }
     )

@@ -199,7 +199,11 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
         throw new Error(errorMessage)
       }
 
-      toast.success('Quote request submitted successfully! Your request has been sent to contractors in your area.')
+      if ((responseBody as any)?.assignedContractors?.length === 0) {
+        toast.info('Quote received! We will match you with contractors shortly.')
+      } else {
+        toast.success('Quote request submitted successfully! Your request has been sent to contractors in your area.')
+      }
       onClose()
       form.reset()
       setCurrentStep(1)
