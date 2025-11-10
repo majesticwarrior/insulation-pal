@@ -97,7 +97,7 @@ export const calculateContractorRating = async (
 
           return differenceMs / (1000 * 60)
         })
-        .filter((minutes): minutes is number => minutes !== null && Number.isFinite(minutes)) ?? []
+        .filter((minutes: number | null): minutes is number => minutes !== null && Number.isFinite(minutes)) ?? []
 
     const averageResponseMinutes =
       responseMinutes.length > 0
