@@ -81,7 +81,7 @@ export const POST = async (request: NextRequest) => {
   try {
     const { data: lead, error: insertError } = await supabaseClient
       .from('leads')
-      .insert<LeadInsert>(leadPayload)
+      .insert<LeadInsert[]>([leadPayload])
       .select()
       .single()
 
