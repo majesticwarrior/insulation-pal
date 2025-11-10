@@ -57,12 +57,71 @@ export const assignLeadToContractors = async (
     
     // Normalize area names: 'walls' -> 'wall' to match database schema
     const normalizedAreas = lead.areas_needed.map(area => {
-      if (area === 'walls') return 'wall'
-      return area
+      if (!area) {
+        return area
+      }
+
+      const normalizedArea = area.toLowerCase()
+        .replace(/\s+/g, '_')
+        .replace(/-+/g, '_')
+
+      if (normalizedArea === 'walls' || normalizedArea === 'wall') {
+        return 'wall'
+      }
+
+      if (normalizedArea === 'crawl_space' || normalizedArea === 'crawlspace') {
+        return 'crawl_space'
+      }
+
+      if (normalizedArea === 'basement') {
+        return 'basement'
+      }
+
+      if (normalizedArea === 'garage') {
+        return 'garage'
+      }
+
+      if (normalizedArea === 'attic') {
+        return 'attic'
+      }
+
+      return normalizedArea
     }).filter(Boolean)
     
     // Filter out 'other' from insulation types as it doesn't map to a specific type
-    const validInsulationTypes = lead.insulation_types.filter(type => type !== 'other')
+    const validInsulationTypes = lead.insulation_types
+      .map(type => {
+        if (!type) {
+          return type
+        }
+
+        const normalizedType = type.toLowerCase()
+          .replace(/\s+/g, '_')
+          .replace(/-+/g, '_')
+
+        if (normalizedType === 'roll_batt' || normalizedType === 'batt') {
+          return 'fiberglass'
+        }
+
+        if (normalizedType === 'blown_in' || normalizedType === 'blownin' || normalizedType === 'loose_fill') {
+          return 'fiberglass'
+        }
+
+        if (normalizedType === 'spray_foam' || normalizedType === 'sprayfoam') {
+          return 'spray_foam'
+        }
+
+        if (normalizedType === 'foam_board' || normalizedType === 'foamboard' || normalizedType === 'rigid_foam') {
+          return 'rigid_foam'
+        }
+
+        if (normalizedType === 'other' || normalizedType === 'unsure') {
+          return null
+        }
+
+        return normalizedType
+      })
+      .filter((type): type is string => Boolean(type))
     
     console.log('🔍 Normalized areas:', normalizedAreas)
     console.log('🔍 Valid insulation types:', validInsulationTypes)
@@ -143,7 +202,7 @@ export const assignLeadToContractors = async (
         })
         .map((type: any) => {
           if (typeof type === 'string') {
-            return type
+            return type.toLowerCase()
           }
           return typeof type?.insulation_type === 'string' ? type.insulation_type : null
         })
@@ -151,12 +210,14 @@ export const assignLeadToContractors = async (
       
       // Check if contractor offers at least one matching service
       // If no areas specified in lead, match all contractors (shouldn't happen due to form validation)
-      const hasMatchingService = normalizedAreas.length === 0 || 
+      const hasMatchingService =
+        normalizedAreas.length === 0 ||
         normalizedAreas.some(area => contractorServiceTypes.includes(area))
       
       // Check if contractor offers at least one matching insulation type
       // If no valid insulation types specified (customer selected 'other'), skip this filter
-      const hasMatchingInsulationType = validInsulationTypes.length === 0 || 
+      const hasMatchingInsulationType =
+        validInsulationTypes.length === 0 ||
         validInsulationTypes.some(type => contractorInsulationTypes.includes(type))
       
       const matches = hasMatchingService && hasMatchingInsulationType
