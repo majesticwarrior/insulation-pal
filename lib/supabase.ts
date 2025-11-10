@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import { Database } from './database.types'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder-project.supabase.co'
@@ -42,7 +42,7 @@ export const createClientComponentClient = () =>
   createClient<Database>(supabaseUrl, supabaseAnonKey)
 
 // Server-side supabase instance
-export const createServerClient = () => {
+export const createServerClient = (): SupabaseClient<Database> => {
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder_service_role_key'
   return createClient<Database>(supabaseUrl, supabaseServiceKey)
 }

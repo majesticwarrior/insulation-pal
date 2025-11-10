@@ -56,8 +56,6 @@ export const POST = async (request: NextRequest) => {
     )
   }
 
-  const supabaseClient = createServerClient()
-
   type LeadInsert = Database['public']['Tables']['leads']['Insert']
 
   const leadPayload: LeadInsert = {
@@ -78,10 +76,12 @@ export const POST = async (request: NextRequest) => {
     property_address: formData.address
   }
 
+  const supabaseClient = createServerClient()
+
   try {
-    const { data: lead, error: insertError } = await supabaseClient
+    const { data: lead, error: insertError } = await (supabaseClient as any)
       .from('leads')
-      .insert<LeadInsert[]>([leadPayload])
+      .insert(leadPayload)
       .select()
       .single()
 
