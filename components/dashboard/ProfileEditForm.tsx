@@ -20,8 +20,8 @@ import {
   getStatesWithCountyData
 } from '@/lib/us-counties'
 import { ReviewsBadge } from '@/components/dashboard/ReviewsBadge'
+import { X } from 'lucide-react'
 import { searchCities, USCity } from '@/lib/us-cities'
-
 const STATE_OPTIONS = getStatesWithCountyData()
 
 interface Contractor {
@@ -129,6 +129,21 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
     'Roll & Batt'
   ]
 
+  const PRIORITY_CITY_WHITELIST = new Set([
+    'Tolleson',
+    'Fountain Hills',
+    'Carefree',
+    'Ahwatukee',
+    'Litchfield Park',
+    'Sun City',
+    'Sun City West',
+    'Paradise Valley',
+    'Laveen',
+    'El Mirage',
+    'Youngtown',
+    'Cave Creek'
+  ])
+
   // County and city handling functions
   const handleCountyToggle = (countyId: string) => {
     setSelectedCounties(prev => {
@@ -158,17 +173,27 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         ? prev.filter(area => area !== cityWithState)
         : [...prev, cityWithState]
     )
+    setSelectedCounties(prev => {
+      if (prev.includes(city.countyId)) {
+        return prev
+      }
+      return [...prev, city.countyId]
+    })
+    const normalizedState = city.stateAbbr.toUpperCase()
+    setServiceAreaState(normalizedState)
   }
 
   const availableCityOptions: CityOption[] = (() => {
     const cityMap = new Map<string, CityOption>()
+
+    // Cities from selected counties
     selectedCounties.forEach(countyId => {
       const county = getCountyById(countyId)
       if (!county || county.stateAbbr !== serviceAreaState) {
         return
       }
       county.cities.forEach(city => {
-        if (city.population < 40000) {
+        if (city.population < 40000 && !PRIORITY_CITY_WHITELIST.has(city.name)) {
           return
         }
         const key = `${city.name}|${county.stateAbbr}`
@@ -184,6 +209,35 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         }
       })
     })
+
+    // Cities already selected (in case their counties aren't currently selected)
+    serviceAreas.forEach(area => {
+      const [cityName, stateAbbr = ''] = area.split(',').map(part => part.trim())
+      const countyRecord = getCountyForCity(cityName, stateAbbr.toUpperCase())
+      if (!countyRecord) {
+        return
+      }
+      const countyId = makeCountyId(countyRecord.stateAbbr, countyRecord.county)
+      const cityRecord = countyRecord.cities.find(city => city.name === cityName)
+      if (!cityRecord) {
+        return
+      }
+      if (cityRecord.population < 40000 && !PRIORITY_CITY_WHITELIST.has(cityName)) {
+        return
+      }
+      const key = `${cityName}|${countyRecord.stateAbbr}`
+      if (!cityMap.has(key)) {
+        cityMap.set(key, {
+          id: key,
+          name: cityName,
+          stateAbbr: countyRecord.stateAbbr,
+          countyId,
+          countyName: countyRecord.county,
+          population: cityRecord.population
+        })
+      }
+    })
+
     return Array.from(cityMap.values()).sort((a, b) => a.name.localeCompare(b.name))
   })()
 
@@ -1095,55 +1149,114 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
           {/* Cities Selection */}
           {selectedCountyIdsForState.length > 0 && (
             <div className="space-y-3">
-              <Label>Cities in Selected Counties (Population ≥ 40,000)</Label>
+              <Label>Cities in Selected Counties</Label>
               {selectedCountyNamesForState.length > 1 && (
                 <p className="text-sm text-gray-600">
                   Cities from: {selectedCountyNamesForState.join(', ')}
                 </p>
               )}
-              {availableCityOptions.length === 0 ? (
-                <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-600">
-                  No cities found for the selected counties.
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={!isEditing || availableCityOptions.length === 0}
+                onClick={() => {
+                  if (!isEditing) return
+                  const newAreas = new Set(serviceAreas)
+                  availableCityOptions.forEach(city => {
+                    newAreas.add(`${city.name}, ${city.stateAbbr}`)
+                  })
+                  setServiceAreas(Array.from(newAreas))
+                  setSelectedCounties(prev => {
+                    const newSet = new Set(prev)
+                    availableCityOptions.forEach(city => {
+                      newSet.add(city.countyId)
+                    })
+                    return Array.from(newSet)
+                  })
+                }}
+              >
+                Select All
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={!isEditing || availableCityOptions.length === 0}
+                onClick={() => {
+                  if (!isEditing) return
+                  const availableKeys = new Set(
+                    availableCityOptions.map(city => `${city.name}, ${city.stateAbbr}`)
+                  )
+                  setServiceAreas(prev =>
+                    prev.filter(area => !availableKeys.has(area))
+                  )
+                }}
+              >
+                Deselect All
+              </Button>
+            </div>
+
+            <p className="text-sm text-gray-500">
+              Selected: <span className="font-medium text-[#0a4768]">{serviceAreas.length}</span>
+            </p>
+          </div>
+
+          {availableCityOptions.length === 0 ? (
+            <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-600">
+              No cities found for the selected counties. Try searching by city below.
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-60 overflow-y-auto border rounded-lg p-4">
+              {availableCityOptions.map((city) => (
+                <div key={city.id} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`city-${city.id}`}
+                    checked={serviceAreas.includes(`${city.name}, ${city.stateAbbr}`)}
+                    onCheckedChange={() => {
+                      if (isEditing) {
+                        handleCityToggle(city)
+                      }
+                    }}
+                    disabled={!isEditing}
+                  />
+                  <Label htmlFor={`city-${city.id}`} className="text-sm">
+                    {city.name}
+                  </Label>
                 </div>
-              ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-60 overflow-y-auto border rounded-lg p-4">
-                  {availableCityOptions.map((city) => (
-                    <div key={city.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`city-${city.id}`}
-                        checked={serviceAreas.includes(`${city.name}, ${city.stateAbbr}`)}
-                        onCheckedChange={() => {
-                          if (isEditing) {
-                            handleCityToggle(city)
-                          }
-                        }}
-                        disabled={!isEditing}
-                      />
-                      <Label htmlFor={`city-${city.id}`} className="text-sm">
-                        {city.name}
-                        {selectedCountyNamesForState.length > 1 && (
-                          <span className="text-xs text-gray-500 ml-1">({city.countyName})</span>
-                        )}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              )}
+              ))}
+            </div>
+          )}
             </div>
           )}
 
           {/* Selected Service Areas Display */}
           {serviceAreas.length > 0 && (
             <div className="space-y-2">
-              <Label>Selected Service Areas (Population ≥ 40,000) ({serviceAreas.length})</Label>
+              <Label>Selected Service Areas ({serviceAreas.length})</Label>
               <div className="flex flex-wrap gap-2">
                 {serviceAreas.map((area) => (
-                  <span 
-                    key={area} 
-                    className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm"
+                  <div
+                    key={area}
+                    className="flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm"
                   >
-                    {area}
-                  </span>
+                    <span>{area}</span>
+                    {isEditing && (
+                      <button
+                        type="button"
+                        className="text-blue-700 hover:text-blue-900"
+                        onClick={() => {
+                          setServiceAreas(prev => prev.filter(item => item !== area))
+                        }}
+                        aria-label={`Remove ${area} from service areas`}
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>

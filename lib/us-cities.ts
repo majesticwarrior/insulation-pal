@@ -42,6 +42,10 @@ export const usCitiesByState: Record<string, USCity[]> = {
     { name: 'Casa Grande', state: 'Arizona', stateAbbr: 'AZ', population: 57536 },
     { name: 'Maricopa', state: 'Arizona', stateAbbr: 'AZ', population: 62720 },
     { name: 'Sierra Vista', state: 'Arizona', stateAbbr: 'AZ', population: 44820 },
+    { name: 'Queen Creek', state: 'Arizona', stateAbbr: 'AZ', population: 66282 },
+    { name: 'Prescott', state: 'Arizona', stateAbbr: 'AZ', population: 45331 },
+    { name: 'Prescott Valley', state: 'Arizona', stateAbbr: 'AZ', population: 48126 },
+    { name: 'Bullhead City', state: 'Arizona', stateAbbr: 'AZ', population: 44530 },
   ],
   'CA': [
     { name: 'Los Angeles', state: 'California', stateAbbr: 'CA', population: 3898747 },
