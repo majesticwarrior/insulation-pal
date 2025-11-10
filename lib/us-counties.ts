@@ -459,6 +459,10 @@ export function getCitiesForCountyId(countyId: string): CountyCity[] {
   return getCountyById(countyId)?.cities ?? []
 }
 
+export function getCitiesForCounty(stateAbbr: string, countyName: string): CountyCity[] {
+  return getCitiesForCountyId(makeCountyId(stateAbbr, countyName))
+}
+
 export function getCountyForCity(cityName: string, stateAbbr?: string): CountyRecord | null {
   const normalizedCity = cityName.trim().toLowerCase()
   const normalizedState = stateAbbr?.toUpperCase()

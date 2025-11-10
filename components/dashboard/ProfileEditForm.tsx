@@ -168,6 +168,9 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         return
       }
       county.cities.forEach(city => {
+        if (city.population < 40000) {
+          return
+        }
         const key = `${city.name}|${county.stateAbbr}`
         if (!cityMap.has(key)) {
           cityMap.set(key, {
@@ -1092,7 +1095,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
           {/* Cities Selection */}
           {selectedCountyIdsForState.length > 0 && (
             <div className="space-y-3">
-              <Label>Cities in Selected Counties</Label>
+              <Label>Cities in Selected Counties (Population ≥ 40,000)</Label>
               {selectedCountyNamesForState.length > 1 && (
                 <p className="text-sm text-gray-600">
                   Cities from: {selectedCountyNamesForState.join(', ')}
@@ -1132,7 +1135,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
           {/* Selected Service Areas Display */}
           {serviceAreas.length > 0 && (
             <div className="space-y-2">
-              <Label>Selected Service Areas ({serviceAreas.length})</Label>
+              <Label>Selected Service Areas (Population ≥ 40,000) ({serviceAreas.length})</Label>
               <div className="flex flex-wrap gap-2">
                 {serviceAreas.map((area) => (
                   <span 

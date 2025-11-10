@@ -27,6 +27,7 @@ import { notFound } from 'next/navigation'
 import { extractIdFromSlug } from '@/lib/slug-utils'
 import Link from 'next/link'
 import { getContractorLogo } from '@/lib/contractor-utils'
+import { calculateContractorRating } from '@/lib/contractor-rating'
 import { ContractorReviewsSection } from '@/components/pages/ContractorReviewsSection'
 import { DirectQuoteButton } from '@/components/contractor/DirectQuoteButton'
 
@@ -277,6 +278,39 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
   // Fetch real contractor projects and reviews
   const contractorProjects = await getContractorProjects(contractorData.id)
   const contractorReviews = await getContractorReviews(contractorData.id)
+  const ratingSummary = await calculateContractorRating(contractorData.id)
+
+  const formatResponseTime = (minutes: number | null) => {
+    if (minutes === null) {
+      return 'No responses yet'
+    }
+
+    if (minutes < 60) {
+      return `${Math.max(1, Math.round(minutes))} min`
+    }
+
+    if (minutes < 1440) {
+      const hours = Math.round(minutes / 60)
+      return `${hours} hr${hours === 1 ? '' : 's'}`
+    }
+
+    const days = Math.round(minutes / 1440)
+    return `${days} day${days === 1 ? '' : 's'}`
+  }
+
+  const compositeRating = ratingSummary.compositeScore > 0
+    ? ratingSummary.compositeScore
+    : contractorData.average_rating || 0
+
+  const displayedReviewCount = ratingSummary.reviewCount > 0
+    ? ratingSummary.reviewCount
+    : contractorData.total_reviews || 0
+
+  const responseTimeLabel = formatResponseTime(ratingSummary.averageResponseMinutes)
+
+  const reliabilityRating = ratingSummary.responseScore > 0
+    ? Math.max(60, Math.round((ratingSummary.responseScore / 5) * 100))
+    : 75
 
   // Transform database data to component format
   const licenseNumber = contractorData.license_number || "N/A"
@@ -285,11 +319,11 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
     id: contractorData.id,
     name: contractorData.business_name,
     owner: "Business Owner", // Could be added to database schema
-    rating: contractorData.average_rating || 4.5,
-    reviewCount: contractorData.total_reviews || 0,
+    rating: compositeRating || 0,
+    reviewCount: displayedReviewCount,
     yearsInBusiness: contractorData.founded_year ? new Date().getFullYear() - contractorData.founded_year : 5,
-    reliabilityRating: 95, // Could be calculated
-    responseTime: "2 hours", // Could be tracked in database
+    reliabilityRating,
+    responseTime: responseTimeLabel,
     completedProjects: contractorData.total_completed_projects || 0,
     address: `${contractorData.business_address || ''}, ${contractorData.business_city || ''}, ${contractorData.business_state || ''} ${contractorData.business_zip || ''}`.trim(),
     phone: contractorData.contact_phone || "(555) 123-4567",

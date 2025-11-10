@@ -73,7 +73,15 @@ export default function ContractorDashboard() {
     completedJobs: 0,
     revenue: 0,
     credits: 0,
-    rating: 4.8
+    rating: 0
+  })
+  const [ratingSummary, setRatingSummary] = useState({
+    compositeScore: 0,
+    reviewScore: 0,
+    reviewCount: 0,
+    responseScore: 0,
+    responseSampleSize: 0,
+    averageResponseMinutes: null as number | null
   })
   const [loading, setLoading] = useState(true)
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
@@ -142,6 +150,50 @@ export default function ContractorDashboard() {
     }
   }, [router])
 
+  const fetchContractorRating = async (contractorIdValue: string) => {
+    try {
+      const response = await fetch(`/api/contractors/${contractorIdValue}/rating`)
+
+      if (!response.ok) {
+        console.error('❌ Failed to fetch contractor rating:', response.status)
+        return
+      }
+
+      const payload = await response.json()
+
+      if (!payload?.success || !payload.data) {
+        console.error('❌ Invalid rating payload:', payload)
+        return
+      }
+
+      setRatingSummary(payload.data)
+      setStats((previous) => ({
+        ...previous,
+        rating: payload.data.compositeScore || previous.rating
+      }))
+    } catch (error) {
+      console.error('❌ Error fetching contractor rating:', error)
+    }
+  }
+
+  const formatResponseTime = (minutes: number | null) => {
+    if (minutes === null) {
+      return 'No data yet'
+    }
+
+    if (minutes < 60) {
+      return `${Math.max(1, Math.round(minutes))} min`
+    }
+
+    if (minutes < 1440) {
+      const hours = Math.round(minutes / 60)
+      return `${hours} hr${hours === 1 ? '' : 's'}`
+    }
+
+    const days = Math.round(minutes / 1440)
+    return `${days} day${days === 1 ? '' : 's'}`
+  }
+
   const loadDashboardData = async (contractorIdParam?: string) => {
     try {
       console.log('🔄 loadDashboardData called with contractorId:', contractorIdParam)
@@ -180,6 +232,7 @@ export default function ContractorDashboard() {
         // Update localStorage with fresh data
         localStorage.setItem('contractor', JSON.stringify(contractorData))
         console.log('📱 Updated localStorage with fresh contractor data')
+        await fetchContractorRating(contractorData.id)
       } else {
         console.log('⚠️ No contractor data returned from database')
       }
@@ -201,14 +254,18 @@ export default function ContractorDashboard() {
       console.log('💳 Credits from contractor state:', contractor?.credits)
       console.log('💳 Final credits value:', finalCredits)
 
-      setStats({
+      setStats((previous) => ({
         totalLeads: 0, // Will be updated by LeadsList component
         activeLeads,
         completedJobs,
         revenue,
         credits: finalCredits,
-        rating: 4.8 // This would come from reviews
-      })
+        rating:
+          previous.rating ||
+          ratingSummary.compositeScore ||
+          contractorData?.average_rating ||
+          0
+      }))
 
       console.log('📈 Stats updated:', {
         totalLeads: 0,
@@ -216,7 +273,10 @@ export default function ContractorDashboard() {
         completedJobs,
         revenue,
         credits: finalCredits,
-        rating: 4.8
+        rating:
+          ratingSummary.compositeScore ||
+          contractorData?.average_rating ||
+          0
       })
 
     } catch (error) {
@@ -418,7 +478,12 @@ export default function ContractorDashboard() {
                 <Star className="h-8 w-8 text-yellow-500" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Rating</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.rating}</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {stats.rating ? stats.rating.toFixed(1) : '—'}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {ratingSummary.reviewCount} reviews · Avg response {formatResponseTime(ratingSummary.averageResponseMinutes)}
+                  </p>
                 </div>
               </div>
             </CardContent>

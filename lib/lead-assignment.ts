@@ -3,6 +3,7 @@
 import { SupabaseClient } from '@supabase/supabase-js'
 import { supabase, createServerClient } from './supabase'
 import { Database } from './database.types'
+import { getCountyForCity, getCitiesForCounty } from './us-counties'
 import { sendServerEmailDirect } from './server-email-direct'
 import { sendSMS } from './sms-service'
 
@@ -45,6 +46,39 @@ export const assignLeadToContractors = async (
 ) => {
   const supabaseClient =
     client ?? (typeof window === 'undefined' ? createServerClient() : supabase)
+
+  const normalizedState = (lead.state || 'AZ').toUpperCase()
+  const rawLeadCity = (lead.city || '').trim()
+  const formattedLeadCity = rawLeadCity
+    .split(/\s+/)
+    .map(part => (part.length > 0 ? part[0].toUpperCase() + part.slice(1).toLowerCase() : ''))
+    .join(' ')
+
+  const matchingCityNamesSet = new Set<string>()
+
+  if (rawLeadCity.length > 0) {
+    matchingCityNamesSet.add(rawLeadCity)
+  }
+
+  if (formattedLeadCity.length > 0) {
+    matchingCityNamesSet.add(formattedLeadCity)
+  }
+
+  const countyRecord = formattedLeadCity.length > 0
+    ? getCountyForCity(formattedLeadCity, normalizedState)
+    : null
+
+  if (countyRecord) {
+    const countyCities = getCitiesForCounty(countyRecord.stateAbbr, countyRecord.county)
+    countyCities
+      .filter(city => city.population >= 40000)
+      .forEach(city => matchingCityNamesSet.add(city.name))
+  }
+
+  const matchingCityNames = Array.from(matchingCityNamesSet)
+  if (matchingCityNames.length === 0 && lead.city) {
+    matchingCityNames.push(lead.city)
+  }
   try {
     console.log('🎯 Assigning lead to contractors in:', lead.city, lead.state)
     console.log('🔍 Lead details:', { 
@@ -128,6 +162,12 @@ export const assignLeadToContractors = async (
     
     // 1. Find contractors in the customer's city with available credits
     console.log('🔍 Searching for contractors...')
+    console.log('🔍 Matching cities for lead assignment:', {
+      leadCity: lead.city,
+      leadState: normalizedState,
+      cityCandidates: matchingCityNames
+    })
+
     const { data: contractors, error: contractorError } = await (supabaseClient as any)
       .from('contractors')
       .select(`
@@ -143,8 +183,8 @@ export const assignLeadToContractors = async (
         contractor_services(service_type, insulation_types)
       `)
       .eq('status', 'approved')
-      .eq('contractor_service_areas.city', lead.city)
-      .eq('contractor_service_areas.state', lead.state || 'AZ')
+      .eq('contractor_service_areas.state', normalizedState)
+      .in('contractor_service_areas.city', matchingCityNames)
       .gt('credits', 0) // Only contractors with available credits
 
     console.log('🔍 Contractor query result:', { contractors, contractorError })
