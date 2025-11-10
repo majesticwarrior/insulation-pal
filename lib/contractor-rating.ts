@@ -101,7 +101,10 @@ export const calculateContractorRating = async (
 
     const averageResponseMinutes =
       responseMinutes.length > 0
-        ? roundToSingleDecimal(responseMinutes.reduce((total, minutes) => total + minutes, 0) / responseMinutes.length)
+        ? roundToSingleDecimal(
+            responseMinutes.reduce((total: number, minutes: number) => total + minutes, 0) /
+              responseMinutes.length
+          )
         : null
 
     const responseScore =
