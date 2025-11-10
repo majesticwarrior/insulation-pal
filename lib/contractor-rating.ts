@@ -73,7 +73,7 @@ export const calculateContractorRating = async (
     const reviewScore =
       validReviewRatings.length > 0
         ? roundToSingleDecimal(
-            validReviewRatings.reduce((total, rating) => total + rating, 0) / validReviewRatings.length
+            validReviewRatings.reduce((total: number, rating: number) => total + rating, 0) / validReviewRatings.length
           )
         : 0
 
