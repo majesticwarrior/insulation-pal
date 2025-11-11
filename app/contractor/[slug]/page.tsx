@@ -574,7 +574,6 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
           </div>
         </div>
       </section>
-      </div>
 
       {/* Services & Areas */}
       <section className="py-12 bg-white">
