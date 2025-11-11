@@ -495,7 +495,6 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                       )}
                     </div>
                   </div>
-                  </div>
                   <div className="flex-1">
                     <h1 className="text-3xl font-bold text-[#0a4768] mb-2">{contractor.name}</h1>
                     <p className="text-lg text-gray-600 mb-4">Owned by {contractor.owner}</p>
