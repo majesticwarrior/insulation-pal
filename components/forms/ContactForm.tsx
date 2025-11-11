@@ -88,11 +88,11 @@ export function ContactForm() {
       {/* Contact Methods */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <div className="grid md:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto justify-items-center">
             {contactMethods.map((method, index) => {
               const Icon = method.icon
               return (
-                <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                <Card key={index} className="text-center hover:shadow-lg transition-shadow w-full">
                   <CardContent className="p-8">
                     <div className="w-16 h-16 bg-[#D8E1FF] rounded-full flex items-center justify-center mx-auto mb-4">
                       <Icon className="h-8 w-8 text-[#0a4768]" />
