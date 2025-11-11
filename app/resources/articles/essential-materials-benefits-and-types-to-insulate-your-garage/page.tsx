@@ -419,7 +419,7 @@ export default function GarageInsulationArticlePage() {
               </article>
 
               <aside className="lg:col-span-1">
-                <div className="sticky top-8 space-y-6">
+                <div className="sticky top-24 lg:top-32 space-y-6">
                   <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
                     <h3 className="text-lg font-semibold text-[#0a4768] mb-4">Get Started</h3>
                     <div className="space-y-3">
