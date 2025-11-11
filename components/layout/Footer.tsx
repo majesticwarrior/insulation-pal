@@ -20,7 +20,7 @@ const Footer = () => {
             </div>
             <p className="text-gray-300 mb-6">
               Connecting homeowners with trusted insulation contractors nationwide. 
-              Save money, improve comfort, and reduce energy costs.
+              Save money, improve comfort, and reduce energy costs all on InsulationPal.
             </p>
             <div className="flex space-x-4">
               <a href="https://www.facebook.com/insulationpal/" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-[#F5DD22] transition-colors" aria-label="Facebook">
