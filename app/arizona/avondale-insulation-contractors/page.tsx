@@ -630,17 +630,18 @@ export default async function AvondaleInsulationContractors() {
                   {/* Company Info */}
                   <div className="lg:col-span-1">
                     <div className="flex items-center space-x-4 mb-4">
-                      <div className="relative">
+                      <div className="relative w-32 h-32 rounded-full bg-white border border-gray-200 overflow-hidden flex items-center justify-center">
                         <Image
                           src={contractor.image}
                           alt={contractor.name}
-                          width={100}
-                          height={100}
-                          className="w-25 h-25 rounded-full object-cover"
+                          fill
+                          className="object-contain scale-115"
                         />
                       </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-[#0a4768]">{contractor.name}</h3>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-[#0a4768] leading-[26px]">
+                          {contractor.name}
+                        </h3>
                         <p className="text-gray-600">Est. {contractor.yearEstablished}</p>
                       </div>
                     </div>
@@ -919,7 +920,7 @@ export default async function AvondaleInsulationContractors() {
                       className="object-cover"
                       loading="lazy"
                       placeholder="blur"
-                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxAAPwCdABmX/9k="
                     />
                   </div>
                   <CardContent className="p-4">

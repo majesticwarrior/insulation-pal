@@ -478,20 +478,23 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-xl p-8">
                 <div className="flex items-start gap-6 mb-6">
-                  <div className="w-40 h-40 rounded-lg bg-gray-100 flex items-center justify-center border-2 border-gray-200 overflow-hidden p-2">
-                    {contractor.logo ? (
-                      <Image
-                        src={contractor.logo}
-                        alt={`${contractor.name} logo`}
-                        width={160}
-                        height={160}
-                        className="w-full h-full object-contain"
-                      />
-                    ) : (
-                      <div className="text-xl text-gray-500 text-center font-bold">
-                        {contractor.name.charAt(0)}
-                      </div>
-                    )}
+                  <div className="flex-shrink-0">
+                    <div className="relative w-96 h-96 rounded-2xl bg-white border-2 border-gray-200 overflow-hidden">
+                      {contractor.logo ? (
+                        <Image
+                          src={contractor.logo}
+                          alt={`${contractor.name} logo`}
+                          fill
+                          className="object-contain scale-115"
+                          sizes="384px"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-3xl text-gray-500 font-bold">
+                          {contractor.name.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   </div>
                   <div className="flex-1">
                     <h1 className="text-3xl font-bold text-[#0a4768] mb-2">{contractor.name}</h1>
@@ -570,7 +573,6 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
             </div>
           </div>
         </div>
-      </section>
 
       {/* Services & Areas */}
       <section className="py-12 bg-white">

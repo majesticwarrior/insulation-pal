@@ -361,19 +361,14 @@ export default async function ArizonaInsulationContractors() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">
-                      <div className="relative">
-                        <div className="w-20 h-20 rounded-lg bg-gray-100 flex items-center justify-center border border-gray-200 overflow-hidden p-1">
-                          <Image
-                            src={contractor.image || '/alex.jpg'}
-                            alt={contractor.name}
-                            width={80}
-                            height={80}
-                            className="w-full h-full object-contain"
-                            loading="lazy"
-                            placeholder="blur"
-                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                          />
-                        </div>
+                      <div className="relative w-32 h-32 rounded-full bg-white border border-gray-200 overflow-hidden flex items-center justify-center">
+                        <Image
+                          src={contractor.image || '/alex.jpg'}
+                          alt={contractor.name}
+                          fill
+                          className="object-contain scale-115"
+                          loading="lazy"
+                        />
                         {contractor.verified && (
                           <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1">
                             <CheckCircle className="w-4 h-4 text-white" />
@@ -381,7 +376,7 @@ export default async function ArizonaInsulationContractors() {
                         )}
                       </div>
                       <div>
-                        <h3 className="font-semibold text-[#0a4768]">{contractor.name}</h3>
+                        <h3 className="font-semibold text-[#0a4768] leading-[26px]">{contractor.name}</h3>
                         <div className="flex items-center space-x-1">
                           <MapPin className="w-3 h-3 text-gray-500" />
                           <span className="text-sm text-gray-600">{contractor.city}</span>
