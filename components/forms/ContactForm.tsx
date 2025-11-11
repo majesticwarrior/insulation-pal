@@ -59,15 +59,8 @@ export function ContactForm() {
       icon: Mail,
       title: 'Email Us',
       description: 'Send us a message and we\'ll respond instantly',
-      value: 'help@insulationpal.com',
+      value: 'support@insulationpal.com',
       action: 'Send Email'
-    },
-    {
-      icon: MessageCircle,
-      title: 'Live Chat',
-      description: 'Chat with our support team in real-time',
-      value: 'Available 24/7',
-      action: 'Start Chat'
     }
   ]
 
@@ -180,8 +173,12 @@ export function ContactForm() {
                     />
                   </div>
                   
-                  <Button 
-                    type="submit"
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      const mailtoLink = `mailto:support@insulationpal.com?subject=${encodeURIComponent(formData.subject || 'InsulationPal Support')}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`)}`
+                      window.location.href = mailtoLink
+                    }}
                     className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold py-3"
                   >
                     Send Message
@@ -203,11 +200,11 @@ export function ContactForm() {
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Monday - Friday</span>
-                      <span className="font-semibold text-[#0a4768]">8:00 AM - 6:00 PM</span>
+                      <span className="font-semibold text-[#0a4768]">8:00 AM - 5:00 PM</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Saturday</span>
-                      <span className="font-semibold text-[#0a4768]">9:00 AM - 5:00 PM</span>
+                      <span className="font-semibold text-[#0a4768]">10:00 AM - 4:00 PM</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Sunday</span>

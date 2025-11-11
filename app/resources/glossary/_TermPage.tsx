@@ -33,6 +33,12 @@ export default function TermPage({ term }: Props) {
       if (!links.find(l => l.href === href)) links.push({ href, label, description })
     }
 
+    const garageArticleLink = {
+      href: '/resources/articles/essential-materials-benefits-and-types-to-insulate-your-garage',
+      label: 'Garage Insulation Materials Guide',
+      description: 'Essential materials, benefits, and insulation types for garages'
+    }
+
     // Map common glossary slugs to relevant services
     const map: Record<string, Array<{ href: string, label: string, description: string }>> = {
       attic: [
@@ -66,9 +72,11 @@ export default function TermPage({ term }: Props) {
         { href: '/services', label: 'Duct Sealing', description: 'Seal leaky ducts to improve HVAC efficiency' }
       ],
       'foam-board': [
+        garageArticleLink,
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Continuous insulation with foam board options' }
       ],
       'fiberglass': [
+        garageArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Blown fiberglass and batt upgrades' },
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Batt and dense-pack options' }
       ],
@@ -89,9 +97,11 @@ export default function TermPage({ term }: Props) {
         { href: '/services/crawl-space-insulation', label: 'Crawl Space Insulation', description: 'Vapor control and encapsulation systems' }
       ],
       'radiant-barrier': [
+        garageArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Attic radiant barrier and insulation' }
       ],
       garage: [
+        garageArticleLink,
         { href: '/services/garage-insulation', label: 'Garage Insulation', description: 'Professional garage wall, ceiling, and door insulation' }
       ]
     }

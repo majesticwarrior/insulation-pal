@@ -125,9 +125,12 @@ const Coverage = () => {
                 We're constantly expanding our network. Contact us to see if we can 
                 connect you with contractors in your area.
               </p>
-              <button className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-6 py-3 rounded-lg transition-colors">
+              <Link
+                href="/contact"
+                className="inline-block bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-6 py-3 rounded-lg transition-colors"
+              >
                 Contact Us
-              </button>
+              </Link>
             </div>
           </div>
         </div>

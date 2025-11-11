@@ -18,7 +18,7 @@ export function ContactPageClient() {
       metaDescription.setAttribute('name', 'description')
       document.head.appendChild(metaDescription)
     }
-    metaDescription.setAttribute('content', 'Get in touch with InsulationPal\'s customer support team. Call (888) 357-9555, email help@insulationpal.com, or use our contact form for assistance with insulation services.')
+    metaDescription.setAttribute('content', 'Get in touch with InsulationPal\'s customer support team. Call (888) 357-9555, email support@insulationpal.com, or use our contact form for assistance with insulation services.')
     
     // Update meta keywords
     let metaKeywords = document.querySelector('meta[name="keywords"]')

@@ -96,6 +96,17 @@
     @apply bg-background text-foreground;
     font-size: calc(1rem + 2px); /* Increase base font size by 2px */
   }
+
+  .article-content a {
+    color: #0a3fd6;
+    font-weight: 600;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+  }
+
+  .article-content a:hover {
+    color: #062aa8;
+  }
 }
 
 /* Custom scrollbar */

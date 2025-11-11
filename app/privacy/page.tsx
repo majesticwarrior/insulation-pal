@@ -130,7 +130,7 @@ export default function PrivacyPage() {
                 <p className="text-gray-700 leading-relaxed mt-3">
                   Message and data rates may apply. You can opt out of text messages at any time by replying "STOP" to any message 
                   or by updating your notification preferences in your account settings. For help, reply "HELP" or contact us at 
-                  help@insulationpal.com.
+                  support@insulationpal.com.
                 </p>
               </section>
 
