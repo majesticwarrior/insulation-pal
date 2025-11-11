@@ -323,14 +323,14 @@ export default function GarageInsulationArticlePage() {
 
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <h3 className="text-[12px] font-bold text-[#0a4768]">Garage Door Insulation Kits</h3>
+                      <h3 className="text-[12px] font-bold text-[#0a4768]">Insulation Kits</h3>
                       <p className="text-base text-gray-700">
                         Kits include pre-cut panels, adhesives, and simple instructions. Radiant barrier kits provide R-3 to R-5 performance, while foam-core kits can reach R-8 and deliver noticeable temperature improvements. Measure panels before purchasing to ensure complete coverage.
                       </p>
                     </div>
 
                     <div className="space-y-2">
-                      <h3 className="text-[12px] font-bold text-[#0a4768]">Insulating Garage Door Panels</h3>
+                      <h3 className="text-[12px] font-bold text-[#0a4768]">Insulating Panels</h3>
                       <p className="text-base text-gray-700">
                         Steel and aluminum doors accept adhesive-backed insulation, sectional doors accommodate cut-to-fit foam panels, and wood doors require vapor control to prevent moisture damage. Always verify the door’s weight limits before adding materials.
                       </p>
