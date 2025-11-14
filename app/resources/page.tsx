@@ -299,8 +299,35 @@ export default function ResourcesPage() {
             </p>
           </div>
 
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
             <Card className="hover:shadow-xl transition-shadow border-2 border-[#F5DD22]">
+              <CardContent className="p-8">
+                <div className="flex items-center mb-6">
+                  <div className="bg-[#F5DD22] w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                    <Newspaper className="h-6 w-6 text-[#0a4768]" />
+                  </div>
+                  <div>
+                    <span className="bg-[#F5DD22] text-[#0a4768] px-3 py-1 rounded-full text-sm font-medium">
+                      Company Expansion
+                    </span>
+                    <p className="text-sm text-gray-500 mt-2">November 7, 2025</p>
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold text-[#0a4768] mb-4 leading-tight">
+                  InsulationPal Platform Launches in Arizona to Connect Homeowners with Verified Insulation Contractors
+                </h3>
+                <p className="text-gray-600 mb-6 leading-relaxed text-sm">
+                  InsulationPal has officially launched in Arizona, offering homeowners a streamlined approach to finding and hiring licensed insulation contractors through its online platform.
+                </p>
+                <Button asChild className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold w-full">
+                  <Link href="/resources/press/insulationpal-platform-launches-in-arizona-to-connect-homeowners-with-verified-insulation-contractors">
+                    Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-xl transition-shadow">
               <CardContent className="p-8">
                 <div className="flex items-center mb-6">
                   <div className="bg-[#F5DD22] w-12 h-12 rounded-full flex items-center justify-center mr-4">
@@ -313,13 +340,13 @@ export default function ResourcesPage() {
                     <p className="text-sm text-gray-500 mt-2">October 24, 2025</p>
                   </div>
                 </div>
-                <h3 className="text-2xl font-bold text-[#0a4768] mb-4 leading-tight">
+                <h3 className="text-xl font-bold text-[#0a4768] mb-4 leading-tight">
                   InsulationPal Launches New Platform to Connect Homeowners with Trusted Local Insulation Contractors
                 </h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
+                <p className="text-gray-600 mb-6 leading-relaxed text-sm">
                   InsulationPal launches a new online platform connecting homeowners with licensed local insulation contractors, helping users compare bids, access trusted professionals, and find affordable, high-quality home and commercial insulation solutions.
                 </p>
-                <Button asChild className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold">
+                <Button asChild variant="outline" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white w-full">
                   <Link href="/resources/press/insulationpal-launches-new-platform-to-connect-homeowners-with-trusted-local-insulation-contractors">
                     Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>

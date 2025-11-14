@@ -22,13 +22,23 @@ export const metadata: Metadata = {
 
 const pressReleases = [
   {
+    title: 'InsulationPal Platform Launches in Arizona to Connect Homeowners with Verified Insulation Contractors',
+    date: 'November 7, 2025',
+    summary: 'InsulationPal has officially launched in Arizona, offering homeowners a streamlined approach to finding and hiring licensed insulation contractors through its online platform. The service provides Arizona residents with access to verified local professionals for various insulation projects.',
+    content: 'InsulationPal has officially launched in Arizona, offering homeowners a streamlined approach to finding and hiring licensed insulation contractors through its online platform. The service provides Arizona residents with access to verified local professionals for various insulation projects, including attics, crawl spaces, commercial properties, and industrial facilities.',
+    category: 'Company Expansion',
+    readTime: '3 min read',
+    featured: true,
+    pressReleaseUrl: 'https://www.citybuzz.co/2025/11/07/insulationpal-platform-launches-in-arizona-to-connect-homeowners-with-verified-insulation-contractors/'
+  },
+  {
     title: 'InsulationPal Launches New Platform to Connect Homeowners with Trusted Local Insulation Contractors',
     date: 'October 24, 2025',
     summary: 'InsulationPal launches a new online platform connecting homeowners with licensed local insulation contractors, helping users compare bids, access trusted professionals, and find affordable, high-quality home and commercial insulation solutions.',
     content: 'Glendale, Arizona – InsulationPal, a newly launched consumer-focused digital platform, is set to transform how homeowners and businesses find and hire licensed insulation contractors across the United States. Designed to make insulation projects easier, faster, and more transparent, the platform allows users to connect with local insulation professionals, compare multiple bids, and confidently choose the right expert for their project – whether for residential, commercial, or industrial spaces.',
     category: 'Company Launch',
     readTime: '3 min read',
-    featured: true,
+    featured: false,
     pressReleaseUrl: 'https://www.abnewswire.com/pressreleases/insulationpal-launches-new-platform-to-connect-homeowners-with-trusted-local-insulation-contractors_770586.html'
   }
 ]

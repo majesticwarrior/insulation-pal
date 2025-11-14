@@ -39,12 +39,28 @@ export default function TermPage({ term }: Props) {
       description: 'Essential materials, benefits, and insulation types for garages'
     }
 
+    const comparisonArticleLink = {
+      href: '/resources/articles/cellulose-versus-fiberglass-insulation',
+      label: 'Cellulose vs Fiberglass Comparison',
+      description: 'Compare performance, cost, and best applications for cellulose and fiberglass insulation'
+    }
+
+    const battVsBlownInArticleLink = {
+      href: '/resources/articles/batt-insulation-vs-blown-in-insulation',
+      label: 'Batt vs Blown-In Insulation Comparison',
+      description: 'Compare batt and blown-in insulation installation methods, R-values, costs, and best applications'
+    }
+
     // Map common glossary slugs to relevant services
     const map: Record<string, Array<{ href: string, label: string, description: string }>> = {
       attic: [
+        battVsBlownInArticleLink,
+        comparisonArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Professional attic insulation and air sealing' }
       ],
       wall: [
+        battVsBlownInArticleLink,
+        comparisonArticleLink,
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Upgrade wall cavities for better comfort' }
       ],
       'spray-foam': [
@@ -57,9 +73,11 @@ export default function TermPage({ term }: Props) {
         { href: '/services/spray-foam-insulation', label: 'Spray Foam Insulation', description: 'Closed-cell spray foam for high performance' }
       ],
       'crawl-space': [
+        comparisonArticleLink,
         { href: '/services/crawl-space-insulation', label: 'Crawl Space Insulation', description: 'Encapsulation, insulation, and moisture control' }
       ],
       basement: [
+        comparisonArticleLink,
         { href: '/services/basement-insulation', label: 'Basement Insulation', description: 'Insulate foundation walls and rim joists' }
       ],
       'insulation-removal': [
@@ -76,18 +94,26 @@ export default function TermPage({ term }: Props) {
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Continuous insulation with foam board options' }
       ],
       'fiberglass': [
+        battVsBlownInArticleLink,
+        comparisonArticleLink,
         garageArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Blown fiberglass and batt upgrades' },
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Batt and dense-pack options' }
       ],
       'cellulose': [
+        battVsBlownInArticleLink,
+        comparisonArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Blown-in cellulose for complete coverage' },
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Dense-pack cellulose for walls' }
       ],
       'blown-in': [
+        battVsBlownInArticleLink,
+        comparisonArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Blown-in upgrades for attics and more' }
       ],
       'batt-roll': [
+        battVsBlownInArticleLink,
+        comparisonArticleLink,
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Batt and roll installation for walls' }
       ],
       'sound-proofing': [
@@ -102,7 +128,16 @@ export default function TermPage({ term }: Props) {
       ],
       garage: [
         garageArticleLink,
+        comparisonArticleLink,
         { href: '/services/garage-insulation', label: 'Garage Insulation', description: 'Professional garage wall, ceiling, and door insulation' }
+      ],
+      'r-value': [
+        battVsBlownInArticleLink,
+        comparisonArticleLink
+      ],
+      'loose-fill': [
+        battVsBlownInArticleLink,
+        { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Loose-fill insulation for attics' }
       ]
     }
 

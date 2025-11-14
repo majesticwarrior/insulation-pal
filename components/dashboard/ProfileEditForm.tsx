@@ -102,6 +102,7 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
 
   const [servicesOffered, setServicesOffered] = useState<string[]>([])
   const [serviceTypes, setServiceTypes] = useState<string[]>([])
+  const [projectTypes, setProjectTypes] = useState<string[]>([])
   const [certifications, setCertifications] = useState<string[]>([])
   const [logoFile, setLogoFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
@@ -380,6 +381,26 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         setServiceTypes([])
       }
 
+      // Load project types from contractor data
+      try {
+        const { data: contractorData, error: contractorError } = await (supabase as any)
+          .from('contractors')
+          .select('project_types')
+          .eq('id', contractor.id)
+          .single()
+
+        if (!contractorError && contractorData?.project_types) {
+          console.log('✅ Loaded project types:', contractorData.project_types)
+          setProjectTypes(Array.isArray(contractorData.project_types) ? contractorData.project_types : [])
+        } else {
+          console.log('📝 No existing project types found')
+          setProjectTypes([])
+        }
+      } catch (error) {
+        console.warn('⚠️ Error loading project types:', error)
+        setProjectTypes([])
+      }
+
       // Load certifications from contractor data
       if (contractor.certifications && Array.isArray(contractor.certifications)) {
         console.log('📜 Loading existing certifications:', contractor.certifications)
@@ -588,6 +609,23 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
         }
       } catch (error) {
         console.warn('⚠️ Services update failed, continuing with other updates:', error)
+      }
+
+      // Update project types
+      try {
+        console.log('🏗️ Updating project types...')
+        const { error: projectTypesError } = await (supabase as any)
+          .from('contractors')
+          .update({ project_types: projectTypes })
+          .eq('id', contractor.id)
+
+        if (projectTypesError) {
+          console.warn('⚠️ Project types update failed (field may not exist):', projectTypesError)
+        } else {
+          console.log('✅ Project types updated successfully')
+        }
+      } catch (error) {
+        console.warn('⚠️ Project types update failed, continuing with other updates:', error)
       }
 
       // Update local contractor data
@@ -1261,6 +1299,54 @@ export function ProfileEditForm({ contractor, onUpdate }: ProfileEditFormProps) 
               </div>
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Project Types */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Project Types</CardTitle>
+          <CardDescription>
+            Select the types of projects you work on
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="project-residential"
+                checked={projectTypes.includes('residential')}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setProjectTypes(prev => [...prev, 'residential'])
+                  } else {
+                    setProjectTypes(prev => prev.filter(type => type !== 'residential'))
+                  }
+                }}
+                disabled={!isEditing}
+              />
+              <Label htmlFor="project-residential" className="text-sm font-normal">
+                Residential
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="project-commercial"
+                checked={projectTypes.includes('commercial')}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setProjectTypes(prev => [...prev, 'commercial'])
+                  } else {
+                    setProjectTypes(prev => prev.filter(type => type !== 'commercial'))
+                  }
+                }}
+                disabled={!isEditing}
+              />
+              <Label htmlFor="project-commercial" className="text-sm font-normal">
+                Commercial
+              </Label>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
