@@ -316,8 +316,8 @@ async function getGilbertContractors() {
   }
 }
 
-// Fetch recent insulation projects completed in Phoenix
-async function getPhoenixRecentProjects() {
+// Fetch recent insulation projects completed in Gilbert
+async function getGilbertRecentProjects() {
   try {
     const { data: projects, error } = await (supabase as any)
       .from('contractor_portfolio')
@@ -336,7 +336,7 @@ async function getPhoenixRecentProjects() {
         )
       `)
       .eq('project_state', 'AZ')
-      .ilike('project_city', '%phoenix%')
+      .ilike('project_city', 'gilbert')
       .neq('after_image_url', null)
       .eq('contractors.status', 'approved')
       .order('completion_date', { ascending: false })
@@ -468,7 +468,7 @@ export default async function GilbertInsulationContractors() {
   const serviceDescriptions = getCityServiceDescriptions('Gilbert')
 
   const gilbertContractors = await getGilbertContractors()
-  const recentProjects = await getPhoenixRecentProjects()
+  const recentProjects = await getGilbertRecentProjects()
   const phoenixReviews = await getPhoenixReviews()
   
   const cityStats = {
@@ -1093,7 +1093,7 @@ export default async function GilbertInsulationContractors() {
               Understanding Home Insulation
             </h2>
             <p className="text-lg text-gray-600 mb-8">
-              Learn the basics of home insulation and why it's crucial for Phoenix homes
+              Learn the basics of home insulation and why it's crucial for Gilbert homes
             </p>
           </div>
           

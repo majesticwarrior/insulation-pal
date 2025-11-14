@@ -345,8 +345,8 @@ async function getTucsonContractors() {
   }
 }
 
-// Fetch recent insulation projects completed in Phoenix
-async function getPhoenixRecentProjects() {
+// Fetch recent insulation projects completed in Tucson
+async function getTucsonRecentProjects() {
   try {
     const { data: projects, error } = await (supabase as any)
       .from('contractor_portfolio')
@@ -365,7 +365,7 @@ async function getPhoenixRecentProjects() {
         )
       `)
       .eq('project_state', 'AZ')
-      .ilike('project_city', '%phoenix%')
+      .ilike('project_city', 'tucson')
       .neq('after_image_url', null)
       .eq('contractors.status', 'approved')
       .order('completion_date', { ascending: false })
@@ -556,7 +556,7 @@ export default async function TucsonInsulationContractors() {
   const serviceDescriptions = getCityServiceDescriptions('Tucson')
 
   const tucsonContractors = await getTucsonContractors()
-  const recentProjects = await getPhoenixRecentProjects()
+  const recentProjects = await getTucsonRecentProjects()
   const phoenixReviews = await getPhoenixReviews()
   
   const cityStats = {
@@ -1187,7 +1187,7 @@ export default async function TucsonInsulationContractors() {
               Understanding Home Insulation
             </h2>
             <p className="text-lg text-gray-600 mb-8">
-              Learn the basics of home insulation and why it's crucial for Phoenix homes
+              Learn the basics of home insulation and why it's crucial for Tucson homes
             </p>
           </div>
           

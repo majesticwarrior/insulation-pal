@@ -317,8 +317,8 @@ async function getChandlerContractors() {
   }
 }
 
-// Fetch recent insulation projects completed in Phoenix
-async function getPhoenixRecentProjects() {
+// Fetch recent insulation projects completed in Chandler
+async function getChandlerRecentProjects() {
   try {
     const { data: projects, error } = await (supabase as any)
       .from('contractor_portfolio')
@@ -337,7 +337,7 @@ async function getPhoenixRecentProjects() {
         )
       `)
       .eq('project_state', 'AZ')
-      .ilike('project_city', '%phoenix%')
+      .ilike('project_city', 'chandler')
       .neq('after_image_url', null)
       .eq('contractors.status', 'approved')
       .order('completion_date', { ascending: false })
@@ -528,7 +528,7 @@ export default async function ChandlerInsulationContractors() {
   const serviceDescriptions = getCityServiceDescriptions('Chandler')
 
   const chandlerContractors = await getChandlerContractors()
-  const recentProjects = await getPhoenixRecentProjects()
+  const recentProjects = await getChandlerRecentProjects()
   const phoenixReviews = await getPhoenixReviews()
   
   const cityStats = {
@@ -1153,7 +1153,7 @@ export default async function ChandlerInsulationContractors() {
               Understanding Home Insulation
             </h2>
             <p className="text-lg text-gray-600 mb-8">
-              Learn the basics of home insulation and why it's crucial for Phoenix homes
+              Learn the basics of home insulation and why it's crucial for Chandler homes
             </p>
           </div>
           

@@ -20,7 +20,14 @@ import {
   Award,
   Quote,
   Play,
-  ExternalLink
+  ExternalLink,
+  Home,
+  Building,
+  Wind,
+  Snowflake,
+  Flame,
+  Wrench,
+  Car
 } from 'lucide-react'
 import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
@@ -29,6 +36,7 @@ import { articles } from '@/lib/articles-data'
 import { getContractorLogo } from '@/lib/contractor-utils'
 import { createCitySchemas } from '@/lib/city-schema'
 import { getCityMapUrl } from '@/lib/city-maps'
+import { getCityServiceDescriptions } from '@/lib/city-service-descriptions'
 
 // Revalidate this page every 60 seconds to show updated contractor data
 export const revalidate = 60
@@ -217,6 +225,129 @@ async function getMesaContractors() {
   }
 }
 
+// Fetch recent insulation projects completed in Mesa
+async function getMesaRecentProjects() {
+  try {
+    const { data: projects, error } = await (supabase as any)
+      .from('contractor_portfolio')
+      .select(`
+        id,
+        title,
+        service_type,
+        after_image_url,
+        project_city,
+        project_state,
+        completion_date,
+        contractor_id,
+        contractors!inner(
+          business_name,
+          status
+        )
+      `)
+      .eq('project_state', 'AZ')
+      .ilike('project_city', 'mesa')
+      .neq('after_image_url', null)
+      .eq('contractors.status', 'approved')
+      .order('completion_date', { ascending: false })
+      .limit(12)
+
+    if (error) {
+      return []
+    }
+
+    return projects || []
+  } catch (error) {
+    return []
+  }
+}
+
+// Fetch Mesa contractor reviews
+async function getMesaReviews() {
+  try {
+    // Try to fetch reviews with location containing Mesa
+    const { data: locationReviews, error: locationError } = await (supabase as any)
+      .from('reviews')
+      .select(`
+        id,
+        customer_name,
+        rating,
+        title,
+        comment,
+        service_type,
+        location,
+        verified,
+        created_at,
+        contractors!inner(
+          business_name,
+          business_city,
+          business_state,
+          status
+        )
+      `)
+      .eq('contractors.status', 'approved')
+      .ilike('location', '%Mesa%')
+      .order('created_at', { ascending: false })
+      .limit(10)
+
+    // Try to fetch reviews from contractors based in Mesa
+    const { data: contractorReviews, error: contractorError } = await (supabase as any)
+      .from('reviews')
+      .select(`
+        id,
+        customer_name,
+        rating,
+        title,
+        comment,
+        service_type,
+        location,
+        verified,
+        created_at,
+        contractors!inner(
+          business_name,
+          business_city,
+          business_state,
+          status
+        )
+      `)
+      .eq('contractors.status', 'approved')
+      .ilike('contractors.business_city', '%Mesa%')
+      .order('created_at', { ascending: false })
+      .limit(10)
+
+    // Combine and deduplicate results
+    const allReviews = []
+    const seenIds = new Set()
+
+    // Add location-based reviews
+    if (locationReviews) {
+      for (const review of locationReviews) {
+        if (!seenIds.has(review.id)) {
+          allReviews.push(review)
+          seenIds.add(review.id)
+        }
+      }
+    }
+
+    // Add contractor-based reviews
+    if (contractorReviews) {
+      for (const review of contractorReviews) {
+        if (!seenIds.has(review.id)) {
+          allReviews.push(review)
+          seenIds.add(review.id)
+        }
+      }
+    }
+
+    // Sort by created_at descending and limit to 15
+    allReviews.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    const finalReviews = allReviews.slice(0, 15)
+
+    return finalReviews
+  } catch (error) {
+    return []
+  }
+}
+
 // Add Mesa area cities with 50k+ population
 const mesaAreaCities = [
   { name: 'Mesa', population: '504,258', slug: 'mesa' },
@@ -231,8 +362,11 @@ const mesaAreaCities = [
 export default async function MesaInsulationContractors() {
   const schemas = createCitySchemas('Mesa', 'Arizona', '/arizona/mesa-insulation-contractors')
   const mapUrl = getCityMapUrl('mesa', 'Mesa, AZ')
+  const serviceDescriptions = getCityServiceDescriptions('Mesa')
   
   const mesaContractors = await getMesaContractors()
+  const recentProjects = await getMesaRecentProjects()
+  const mesaReviews = await getMesaReviews()
   
   const cityStats = {
     totalReviews: mesaContractors.reduce((sum: number, contractor: any) => sum + contractor.reviewCount, 0),
@@ -573,6 +707,345 @@ export default async function MesaInsulationContractors() {
                 <ExternalLink className="w-4 h-4 ml-2" />
               </Link>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Mesa Reviews Carousel */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
+              Latest Mesa Reviews
+            </h2>
+            <p className="text-lg text-gray-600">
+              See what customers are saying about our Mesa insulation contractors
+            </p>
+          </div>
+          
+          {mesaReviews.length > 0 ? (
+            <div className="max-w-6xl mx-auto">
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-2 md:-ml-4">
+                  {mesaReviews.map((review: any) => (
+                    <CarouselItem key={review.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                      <Card className="border-l-4 border-l-[#F5DD22] h-full">
+                        <CardContent className="p-6 flex flex-col h-full">
+                          <div className="flex items-center mb-4">
+                            <div className="flex">
+                              {renderStars(review.rating)}
+                            </div>
+                            <span className="ml-2 font-semibold">{review.rating}.0</span>
+                            {review.verified && (
+                              <Badge variant="secondary" className="ml-2 text-xs">
+                                Verified
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          {review.title && (
+                            <h4 className="font-semibold text-[#0a4768] mb-2 text-sm">
+                              {review.title}
+                            </h4>
+                          )}
+                          
+                          <TruncatedText 
+                            text={review.comment || ''} 
+                            maxLength={350}
+                            className="mb-4 flex-grow"
+                          />
+                          
+                          <div className="text-xs text-gray-600 mt-auto">
+                            <div className="font-medium">{review.customer_name}</div>
+                            <div className="text-[#0a4768]">{review.contractors.business_name}</div>
+                            <div>{new Date(review.created_at).toLocaleDateString()}</div>
+                            {review.service_type && (
+                              <div className="text-[#0a4768] mt-1 font-medium">
+                                {review.service_type}
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="hidden md:flex" />
+                <CarouselNext className="hidden md:flex" />
+              </Carousel>
+              
+              <div className="text-center mt-8">
+                <p className="text-gray-600 text-sm">
+                  Showing {mesaReviews.length} of the latest reviews from Mesa customers
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <Star className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h4 className="text-lg font-semibold text-gray-900 mb-2">No Reviews Yet</h4>
+              <p className="text-gray-600">
+                Mesa contractor reviews will appear here as customers share their experiences.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Recent Mesa Completed Insulation Projects */}
+      <section className="py-12 bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6]">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
+              Recent Mesa Completed Insulation Projects
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              See the quality work performed by our verified contractors in the Mesa metro area
+            </p>
+          </div>
+
+          {recentProjects.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {recentProjects.map((project: any) => (
+                <Card key={project.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="relative h-48">
+                    <Image
+                      src={project.after_image_url || '/placeholder-project.jpg'}
+                      alt={project.title || 'Insulation Project'}
+                      fill
+                      className="object-cover"
+                      loading="lazy"
+                      placeholder="blur"
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-[#0a4768] mb-2 text-sm">
+                      {project.title || 'Insulation Project'}
+                    </h3>
+                    <div className="space-y-1 text-xs text-gray-600">
+                      <div>
+                        <span className="font-medium">Service:</span> {project.service_type || 'Insulation'}
+                      </div>
+                      <div>
+                        <span className="font-medium">Location:</span> {project.project_city}, AZ
+                      </div>
+                      <div>
+                        <span className="font-medium">Contractor:</span> {project.contractors.business_name}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-600">
+                Project portfolio coming soon. Contractors are adding their recent work to showcase quality installations.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Services Carousel */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
+              Our Contractor Insulation Services
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Comprehensive insulation solutions for every part of your Mesa home
+            </p>
+          </div>
+          
+          <div className="max-w-6xl mx-auto">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {[
+                  {
+                    icon: Home,
+                    title: 'Attic Insulation',
+                    description: serviceDescriptions.attic,
+                    image: '/attic-insulation-blown-in.jpg',
+                    url: '/services/attic-insulation'
+                  },
+                  {
+                    icon: Building,
+                    title: 'Wall Insulation',
+                    description: serviceDescriptions.wall,
+                    image: '/contractor-installing-wall-insulation.jpg',
+                    url: '/services/wall-insulation'
+                  },
+                  {
+                    icon: Wind,
+                    title: 'Spray Foam Insulation',
+                    description: serviceDescriptions.sprayFoam,
+                    image: '/spray-foam-insulation-installed.jpg',
+                    url: '/services/spray-foam-insulation'
+                  },
+                  {
+                    icon: Snowflake,
+                    title: 'Crawl Space Insulation',
+                    description: serviceDescriptions.crawlSpace,
+                    image: '/crawl-space-insulation-installed.jpg',
+                    url: '/services/crawl-space-insulation'
+                  },
+                  {
+                    icon: Flame,
+                    title: 'Basement Insulation',
+                    description: serviceDescriptions.basement,
+                    image: '/basement-insulation-installed.jpg',
+                    url: '/services/basement-insulation'
+                  },
+                  {
+                    icon: Car,
+                    title: 'Garage Insulation',
+                    description: serviceDescriptions.garage,
+                    image: '/garage-wall-ceiling-attic-door-panel-insulation.jpg',
+                    url: '/services/garage-insulation'
+                  },
+                  {
+                    icon: Wrench,
+                    title: 'Insulation Removal',
+                    description: serviceDescriptions.removal,
+                    image: '/insulation-removal.jpg',
+                    url: '/services/insulation-removal'
+                  }
+                ].map((service, index) => {
+                  const Icon = service.icon
+                  return (
+                    <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                      <Card className="hover:shadow-xl transition-shadow overflow-hidden h-full flex flex-col">
+                        <div className="relative h-48">
+                          <Image
+                            src={service.image}
+                            alt={service.title}
+                            fill
+                            className="object-cover"
+                            loading="lazy"
+                          />
+                          <div className="absolute top-4 left-4 bg-[#F5DD22] rounded-full p-3">
+                            <Icon className="h-6 w-6 text-[#0a4768]" />
+                          </div>
+                        </div>
+                        <CardContent className="p-6 flex flex-col flex-grow">
+                          <h3 className="text-xl font-bold text-[#0a4768] mb-3">
+                            {service.title}
+                          </h3>
+                          <p className="text-gray-600 text-sm mb-4 flex-grow">
+                            {service.description}
+                          </p>
+                          <Button 
+                            asChild 
+                            className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold"
+                          >
+                            <Link href={service.url}>
+                              Learn More
+                            </Link>
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </CarouselItem>
+                  )
+                })}
+              </CarouselContent>
+              <CarouselPrevious className="hidden md:flex" />
+              <CarouselNext className="hidden md:flex" />
+            </Carousel>
+          </div>
+        </div>
+      </section>
+
+      {/* Understanding Home Insulation - Educational Articles Carousel */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
+              Understanding Home Insulation
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Learn the basics of home insulation and why it's crucial for Mesa homes
+            </p>
+          </div>
+          
+          <div className="max-w-6xl mx-auto">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {articles.map((article, index) => (
+                  <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                    <Card className="hover:shadow-xl transition-shadow overflow-hidden h-full">
+                      <div className="aspect-video relative">
+                        <Image
+                          src={article.image}
+                          alt={article.title}
+                          fill
+                          className="object-cover"
+                        />
+                        <div className="absolute top-4 left-4">
+                          <span className="bg-[#F5DD22] text-[#0a4768] px-3 py-1 rounded-full text-sm font-medium">
+                            {article.category}
+                          </span>
+                        </div>
+                      </div>
+                      <CardContent className="p-6 flex flex-col justify-between h-48">
+                        <div>
+                          <h3 className="text-lg font-bold text-[#0a4768] mb-3 line-clamp-2">
+                            {article.title}
+                          </h3>
+                          <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                            {article.description}
+                          </p>
+                        </div>
+                        <Button 
+                          asChild 
+                          variant="outline" 
+                          size="sm"
+                          className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
+                        >
+                          <Link href={`/resources/articles/${article.slug}`} className="flex items-center">
+                            Read Article
+                            <ExternalLink className="w-3 h-3 ml-1" />
+                          </Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="hidden md:flex" />
+              <CarouselNext className="hidden md:flex" />
+            </Carousel>
+            
+            <div className="text-center mt-8">
+              <Button 
+                asChild 
+                className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold"
+              >
+                <Link href="/resources/articles">
+                  View All Articles
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>

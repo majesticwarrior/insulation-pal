@@ -365,7 +365,7 @@ async function getPhoenixRecentProjects() {
         )
       `)
       .eq('project_state', 'AZ')
-      .ilike('project_city', '%phoenix%')
+      .ilike('project_city', 'phoenix')
       .neq('after_image_url', null)
       .eq('contractors.status', 'approved')
       .order('completion_date', { ascending: false })

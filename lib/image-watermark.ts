@@ -36,17 +36,20 @@ export const addWatermarkToImage = async (file: File): Promise<File> => {
           // Load and draw logo if available
           let logoImg: HTMLImageElement | null = null
           
-          // Try to load the logo image
+          // Try to load the logo image with timeout
           try {
             logoImg = new Image()
             logoImg.crossOrigin = 'anonymous'
-            logoImg.src = '/insulation-pal-logo.png' // Path to logo in public folder
             
-            await new Promise<void>((resolve) => {
+            // Set up load handlers before setting src
+            const logoLoadPromise = new Promise<void>((resolve) => {
               if (logoImg) {
-                logoImg.onload = () => resolve()
+                logoImg.onload = () => {
+                  console.log('✅ InsulationPal logo loaded successfully')
+                  resolve()
+                }
                 logoImg.onerror = () => {
-                  // If logo fails to load, continue without logo
+                  console.warn('⚠️ InsulationPal logo failed to load, using text watermark')
                   logoImg = null
                   resolve()
                 }
@@ -54,23 +57,59 @@ export const addWatermarkToImage = async (file: File): Promise<File> => {
                 resolve()
               }
             })
+            
+            // Set src after handlers are set up
+            logoImg.src = '/insulation-pal-logo.png' // Path to logo in public folder
+            
+            // Wait for logo to load with 3 second timeout
+            await Promise.race([
+              logoLoadPromise,
+              new Promise<void>((resolve) => {
+                setTimeout(() => {
+                  if (logoImg && !logoImg.complete) {
+                    console.warn('⚠️ Logo load timeout, using text watermark')
+                    logoImg = null
+                  }
+                  resolve()
+                }, 3000)
+              })
+            ])
           } catch (error) {
-            // If logo can't be loaded, continue without logo
+            console.error('Error loading logo:', error)
             logoImg = null
           }
 
-          // Add watermark - either logo or text
-          if (logoImg) {
-            // Add logo watermark in bottom right
-            const logoSize = Math.min(img.width, img.height) * 0.15 // 15% of smaller dimension
-            const padding = Math.min(img.width, img.height) * 0.02 // 2% padding
-            const x = canvas.width - logoSize - padding
-            const y = canvas.height - logoSize - padding
+          // Add watermark - either logo or text (always add a watermark)
+          if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
+            // Add logo watermark in bottom right corner
+            const logoSize = Math.min(img.width, img.height) * 0.15 // 15% of smaller dimension, max 200px
+            const maxLogoSize = 200
+            const finalLogoSize = Math.min(logoSize, maxLogoSize)
+            const padding = Math.min(img.width, img.height) * 0.02 // 2% padding, min 10px
+            const minPadding = 10
+            const finalPadding = Math.max(padding, minPadding)
+            const x = canvas.width - finalLogoSize - finalPadding
+            const y = canvas.height - finalLogoSize - finalPadding
+            
+            // Draw logo with semi-transparent background for better visibility
+            ctx.save()
+            
+            // Draw semi-transparent white background behind logo
+            ctx.globalAlpha = 0.3
+            ctx.fillStyle = 'white'
+            ctx.fillRect(
+              x - finalPadding * 0.5,
+              y - finalPadding * 0.5,
+              finalLogoSize + finalPadding,
+              finalLogoSize + finalPadding
+            )
             
             // Draw logo with opacity
-            ctx.globalAlpha = 0.6
-            ctx.drawImage(logoImg, x, y, logoSize, logoSize)
-            ctx.globalAlpha = 1.0
+            ctx.globalAlpha = 0.8
+            ctx.drawImage(logoImg, x, y, finalLogoSize, finalLogoSize)
+            
+            ctx.restore()
+            console.log('✅ Logo watermark applied to image')
           } else {
             // Fallback: text watermark if logo not available
             const fontSize = Math.max(img.width, img.height) / 25
@@ -104,6 +143,7 @@ export const addWatermarkToImage = async (file: File): Promise<File> => {
               canvas.height - padding - fontSize * 0.5
             )
             ctx.globalAlpha = 1.0
+            console.log('✅ Text watermark applied to image')
           }
 
           // Convert canvas to blob

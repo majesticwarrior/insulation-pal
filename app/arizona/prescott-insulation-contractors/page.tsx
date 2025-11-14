@@ -316,8 +316,8 @@ async function getPrescottContractors() {
   }
 }
 
-// Fetch recent insulation projects completed in Phoenix
-async function getPhoenixRecentProjects() {
+// Fetch recent insulation projects completed in Prescott
+async function getPrescottRecentProjects() {
   try {
     const { data: projects, error } = await (supabase as any)
       .from('contractor_portfolio')
@@ -336,7 +336,7 @@ async function getPhoenixRecentProjects() {
         )
       `)
       .eq('project_state', 'AZ')
-      .ilike('project_city', '%phoenix%')
+      .ilike('project_city', 'prescott')
       .neq('after_image_url', null)
       .eq('contractors.status', 'approved')
       .order('completion_date', { ascending: false })
@@ -466,7 +466,7 @@ export default async function PrescottInsulationContractors() {
   const serviceDescriptions = getCityServiceDescriptions('Prescott')
 
   const prescottContractors = await getPrescottContractors()
-  const recentProjects = await getPhoenixRecentProjects()
+  const recentProjects = await getPrescottRecentProjects()
   const phoenixReviews = await getPhoenixReviews()
   
   const cityStats = {
@@ -1111,7 +1111,7 @@ export default async function PrescottInsulationContractors() {
               Understanding Home Insulation
             </h2>
             <p className="text-lg text-gray-600 mb-8">
-              Learn the basics of home insulation and why it's crucial for Phoenix homes
+              Learn the basics of home insulation and why it's crucial for Prescott homes
             </p>
           </div>
           
