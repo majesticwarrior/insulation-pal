@@ -40,7 +40,7 @@ export default function TermPage({ term }: Props) {
     }
 
     const comparisonArticleLink = {
-      href: '/resources/articles/cellulose-versus-fiberglass-insulation',
+      href: '/resources/articles/cellulose-vs-fiberglass-insulation',
       label: 'Cellulose vs Fiberglass Comparison',
       description: 'Compare performance, cost, and best applications for cellulose and fiberglass insulation'
     }

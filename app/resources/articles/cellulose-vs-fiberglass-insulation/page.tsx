@@ -10,13 +10,13 @@ import CostCalculatorDialog from '@/components/pages/CostCalculatorDialog'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Cellulose Versus Fiberglass Insulation: Performance, Cost & Comfort - InsulationPal',
+  title: 'Cellulose vs Fiberglass Insulation: Performance, Cost & Comfort - InsulationPal',
   description:
     'Compare cellulose and fiberglass insulation to make the best choice for your home. Learn about R-values, installation methods, costs, safety, and which material works best in different areas.',
   keywords:
     'cellulose vs fiberglass insulation, cellulose insulation, fiberglass insulation, insulation comparison, R-value comparison, blown-in insulation, batt insulation',
   openGraph: {
-    title: 'Cellulose Versus Fiberglass Insulation: Performance, Cost & Comfort',
+    title: 'Cellulose vs Fiberglass Insulation: Performance, Cost & Comfort',
     description:
       'Comprehensive comparison of cellulose and fiberglass insulation covering performance, cost, installation, and best applications for different areas of your home.',
     type: 'article',
@@ -34,12 +34,12 @@ export const metadata: Metadata = {
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Cellulose Versus Fiberglass Insulation: Performance, Cost & Comfort',
+  headline: 'Cellulose vs Fiberglass Insulation: Performance, Cost & Comfort',
   description:
     'Detailed comparison of cellulose and fiberglass insulation covering thermal performance, installation methods, costs, safety considerations, and best applications for attics, walls, basements, crawl spaces, and garages.',
   mainEntityOfPage: {
     '@type': 'WebPage',
-    '@id': 'https://insulationpal.com/resources/articles/cellulose-versus-fiberglass-insulation'
+    '@id': 'https://insulationpal.com/resources/articles/cellulose-vs-fiberglass-insulation'
   },
   image: ['https://insulationpal.com/blown-in-fiberglass-insulation.jpg'],
   author: {
@@ -129,7 +129,7 @@ const faqSchema = {
   ]
 }
 
-export default function CelluloseVersusFiberglassArticlePage() {
+export default function CelluloseVsFiberglassArticlePage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
@@ -155,7 +155,7 @@ export default function CelluloseVersusFiberglassArticlePage() {
               <ArrowLeft className="h-4 w-4 mr-2" /> Back to Articles
             </Link>
             <h1 className="text-[18px] font-bold text-[#0a4768] leading-[40px] mb-4">
-              Cellulose Versus Fiberglass Insulation: Performance, Cost & Comfort
+              Cellulose vs Fiberglass Insulation: Performance, Cost & Comfort
             </h1>
             <p className="text-base text-gray-700">
               When deciding between cellulose and fiberglass insulation, it's important to focus on performance, durability, and ease of installation. <strong>Fiberglass tends to outperform cellulose in thermal resistance, moisture resistance, and fire safety, making it the more reliable choice for long-term efficiency and home protection.</strong> Both options have environmental benefits, but fiberglass offers greater consistency in maintaining its insulating properties over time.

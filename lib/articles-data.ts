@@ -11,7 +11,7 @@ export const articles = [
   },
   {
     title: 'Cellulose vs Fiberglass Insulation',
-    slug: 'cellulose-versus-fiberglass-insulation',
+    slug: 'cellulose-vs-fiberglass-insulation',
     description:
       'Compare cellulose and fiberglass insulation to make the best choice for your home. Learn about R-values, installation methods, costs, safety, and which material works best in different areas.',
     image: '/blown-in-fiberglass-insulation.jpg',
