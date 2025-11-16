@@ -31,7 +31,7 @@ export default function GlossaryPage() {
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0a4768] mb-6 leading-tight">
               Insulation Glossary
@@ -45,7 +45,7 @@ export default function GlossaryPage() {
 
       {/* A-Z Navigation */}
       <section className="py-8 bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="flex flex-wrap justify-center gap-2 md:gap-3">
             {alphabet.map((letter) => {
               const hasTerms = availableLetters.includes(letter)
@@ -75,7 +75,7 @@ export default function GlossaryPage() {
 
       {/* Terms by Letter */}
       <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="max-w-4xl mx-auto">
             {availableLetters.map((letter) => {
               const terms = glossaryByLetter[letter]

@@ -141,13 +141,50 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
-/* Increase all font sizes by 2px */
-h1 { font-size: calc(2.25rem + 2px) !important; } /* text-4xl */
-h2 { font-size: calc(1.875rem + 2px) !important; } /* text-3xl */
-h3 { font-size: calc(1.5rem + 2px) !important; } /* text-2xl */
-h4 { font-size: calc(1.25rem + 2px) !important; } /* text-xl */
-h5 { font-size: calc(1.125rem + 2px) !important; } /* text-lg */
-h6 { font-size: calc(1rem + 2px) !important; } /* text-base */
+/* Set exact font sizes for ALL headings regardless of classes */
+/* Force standard sizes: h1=38px, h2=32px, h3=26px, h4=20px */
+/* Line-height is always font-size + 4px */
+h1,
+h1.font-bold,
+h1[class*="text-"],
+h1[class*="text-"].font-bold {
+  font-size: 38px !important;
+  line-height: 42px !important; /* 38px + 4px */
+}
+
+h2,
+h2.font-bold,
+h2[class*="text-"],
+h2[class*="text-"].font-bold {
+  font-size: 32px !important;
+  line-height: 36px !important; /* 32px + 4px */
+}
+
+h3,
+h3.font-bold,
+h3[class*="text-"],
+h3[class*="text-"].font-bold {
+  font-size: 26px !important;
+  line-height: 30px !important; /* 26px + 4px */
+}
+
+h4,
+h4.font-bold,
+h4[class*="text-"],
+h4[class*="text-"].font-bold {
+  font-size: 20px !important;
+  line-height: 24px !important; /* 20px + 4px */
+}
+h5:not([class*="text-["]) { 
+  font-size: calc(1.125rem + 2px) !important; /* text-lg = 20px */
+  line-height: calc(1.125rem + 2px + 4px) !important; /* 24px */
+}
+h6:not([class*="text-["]) { 
+  font-size: calc(1rem + 2px) !important; /* text-base = 18px */
+  line-height: calc(1rem + 2px + 4px) !important; /* 22px */
+}
+
+/* All h1-h4 already set above, these rules ensure consistency */
 
 /* Increase button text */
 button { font-size: calc(1rem + 2px) !important; }
@@ -172,5 +209,6 @@ div { font-size: calc(1rem + 2px) !important; }
 
 /* Custom font size for Made Simple text */
 .made-simple-text { 
-  font-size: 46px !important; 
+  font-size: 46px !important;
+  line-height: 50px !important; /* 46px + 4px */
 }

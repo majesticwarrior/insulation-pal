@@ -89,7 +89,7 @@ export default function AboutPage() {
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-[#0a4768] mb-6">
               About InsulationPal
@@ -104,7 +104,7 @@ export default function AboutPage() {
 
       {/* Story Section */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-4xl font-bold text-[#0a4768] mb-6">Our Story</h2>
@@ -146,7 +146,7 @@ export default function AboutPage() {
 
       {/* Values Section */}
       <section className="py-20 bg-[#D6D6D6]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[#0a4768] mb-6">Our Values</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -176,7 +176,7 @@ export default function AboutPage() {
 
       {/* Team Section */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[#0a4768] mb-6">Meet Our Team</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -206,7 +206,7 @@ export default function AboutPage() {
 
       {/* Mission Section */}
       <section className="py-20 bg-[#0a4768] text-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-8">Our Mission</h2>
             <p className="text-2xl font-light mb-8">

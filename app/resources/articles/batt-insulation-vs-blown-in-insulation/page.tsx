@@ -131,14 +131,14 @@ export default function BattInsulationVsBlownInArticlePage() {
         />
 
         <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-14">
-          <div className="container mx-auto px-4 max-w-7xl">
+          <div className="container mx-auto px-4 max-w-[1400px]">
             <Link
               href="/resources/articles"
               className="inline-flex items-center text-[#0a4768] hover:text-[#0a4768]/80 mb-6"
             >
               <ArrowLeft className="h-4 w-4 mr-2" /> Back to Articles
             </Link>
-            <h1 className="text-[18px] font-bold text-[#0a4768] leading-[40px] mb-4">
+            <h1 className="text-[18px] font-bold text-[#0a4768] mb-4">
               Batt Insulation vs Blown-In Insulation: Key Differences
             </h1>
             <p className="text-base text-gray-700">
@@ -148,7 +148,7 @@ export default function BattInsulationVsBlownInArticlePage() {
         </section>
 
         <section className="py-12">
-          <div className="container mx-auto px-4 max-w-7xl">
+          <div className="container mx-auto px-4 max-w-[1400px]">
             <div className="grid lg:grid-cols-4 gap-8">
               <article className="lg:col-span-3 space-y-10 article-content">
                 <div className="relative w-full h-72 rounded-lg overflow-hidden">
@@ -604,7 +604,7 @@ export default function BattInsulationVsBlownInArticlePage() {
                     <div className="space-y-2">
                       <h3 className="text-[12px] font-bold text-[#0a4768]">Which is more suitable for attic insulation, batts or blown-in?</h3>
                       <p className="text-base text-gray-700">
-                        We recommend <strong>blown-in insulation</strong> for attics, especially those with wiring, joists, or irregular surfaces. It fills gaps and maintains consistent coverage. Batt insulation can work in open, easily accessible attics but may leave spaces that reduce efficiency.
+                        We recommend <strong>blown-in insulation</strong> for attics, especially those with wiring, joists, or irregular surfaces. It fills gaps and maintains consistent coverage. Batt insulation can work in open, easily accessible attics but may leave spaces that reduce efficiency. For comprehensive guidance on selecting attic insulation based on your climate zone, see our article on <Link href="/resources/articles/best-attic-insulation-for-dry-cold-and-humid-climates" className="text-[#0a3fd6] font-semibold underline hover:text-[#062aa8]">best attic insulation for different climates</Link>.
                       </p>
                     </div>
 

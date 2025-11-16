@@ -5,7 +5,7 @@ import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'luc
 const Footer = () => {
   return (
     <footer className="bg-[#0a4768] text-white">
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-16 max-w-[1400px]">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
@@ -144,7 +144,7 @@ const Footer = () => {
 
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-gray-300 mb-4 md:mb-0">
-            © 2024 InsulationPal. All rights reserved.
+            © 2025 InsulationPal. All rights reserved.
           </div>
           <div className="flex flex-wrap justify-center gap-4 md:gap-6">
             <Link href="/privacy" className="text-gray-300 hover:text-[#F5DD22] transition-colors text-sm">

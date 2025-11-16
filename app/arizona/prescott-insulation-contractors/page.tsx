@@ -505,7 +505,7 @@ export default async function PrescottInsulationContractors() {
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
               Prescott Insulation Contractors
@@ -541,7 +541,7 @@ export default async function PrescottInsulationContractors() {
 
       {/* Insulation Information */}
       <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="grid lg:grid-cols-3 gap-8">
             <Card>
               <CardHeader>
@@ -626,7 +626,7 @@ export default async function PrescottInsulationContractors() {
 
       {/* Mini Profiles */}
       <section className="py-16 bg-[#D6D6D6]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <h2 className="text-3xl font-bold text-[#0a4768] mb-12 text-center">
             Top Prescott Insulation Contractors
           </h2>
@@ -732,7 +732,7 @@ export default async function PrescottInsulationContractors() {
 
       {/* Phoenix Area Cities */}
       <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
             Additional Nearby Cities We Serve
           </h2>
@@ -790,7 +790,7 @@ export default async function PrescottInsulationContractors() {
 
       {/* Service Areas Map */}
       <section className="py-8 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="rounded-lg overflow-hidden shadow-lg">
             <iframe
               src={mapUrl}
@@ -830,7 +830,7 @@ export default async function PrescottInsulationContractors() {
 
       {/* Phoenix Reviews Carousel */}
       <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
               Latest Prescott Reviews
@@ -841,7 +841,7 @@ export default async function PrescottInsulationContractors() {
           </div>
           
           {phoenixReviews.length > 0 ? (
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-[1400px] mx-auto">
               <Carousel
                 opts={{
                   align: "start",
@@ -917,7 +917,7 @@ export default async function PrescottInsulationContractors() {
 
       {/* Recent Prescott Completed Insulation Projects */}
       <section className="py-12 bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
               Recent Prescott Completed Insulation Projects
@@ -973,7 +973,7 @@ export default async function PrescottInsulationContractors() {
 
       {/* Services Carousel */}
       <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
               Our Contractor Insulation Services
@@ -1105,7 +1105,7 @@ export default async function PrescottInsulationContractors() {
 
       {/* Understanding Home Insulation - Educational Articles Carousel */}
       <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
               Understanding Home Insulation

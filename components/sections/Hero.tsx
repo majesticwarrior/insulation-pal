@@ -29,10 +29,10 @@ const Hero = () => {
 
   return (
     <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 max-w-[1400px]">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0a4768] mb-6 leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0a4768] mb-6">
               Professional Insulation Services{' '}
               <span className="text-[#6B7280] made-simple-text">Made Simple</span>
             </h1>

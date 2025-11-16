@@ -309,7 +309,7 @@ export default async function ArizonaInsulationContractors() {
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
               Arizona Insulation Contractors
@@ -345,7 +345,7 @@ export default async function ArizonaInsulationContractors() {
 
       {/* Top 6 Contractors */}
       <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
               Top 6 Insulation Contractors in Arizona
@@ -459,7 +459,7 @@ export default async function ArizonaInsulationContractors() {
 
       {/* Recent Projects Section */}
       <section className="py-16 bg-[#D6D6D6]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
               Recent Insulation Projects Completed in Arizona
@@ -515,7 +515,7 @@ export default async function ArizonaInsulationContractors() {
 
       {/* Arizona Cities Section */}
       <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
               Arizona Cities We Serve
@@ -553,7 +553,7 @@ export default async function ArizonaInsulationContractors() {
 
       {/* All Contractors */}
       <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
               All Arizona Insulation Contractors

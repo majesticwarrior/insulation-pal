@@ -129,14 +129,14 @@ export default function GarageInsulationArticlePage() {
         />
 
         <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-14">
-          <div className="container mx-auto px-4 max-w-7xl">
+          <div className="container mx-auto px-4 max-w-[1400px]">
             <Link
               href="/resources/articles"
               className="inline-flex items-center text-[#0a4768] hover:text-[#0a4768]/80 mb-6"
             >
               <ArrowLeft className="h-4 w-4 mr-2" /> Back to Articles
             </Link>
-            <h1 className="text-[18px] font-bold text-[#0a4768] leading-[40px] mb-4">
+            <h1 className="text-[18px] font-bold text-[#0a4768] mb-4">
               Essential Materials, Benefits, and Types to Insulate Your Garage
             </h1>
             <p className="text-base text-gray-700">
@@ -146,7 +146,7 @@ export default function GarageInsulationArticlePage() {
         </section>
 
         <section className="py-12">
-          <div className="container mx-auto px-4 max-w-7xl">
+          <div className="container mx-auto px-4 max-w-[1400px]">
             <div className="grid lg:grid-cols-4 gap-8">
               <article className="lg:col-span-3 space-y-10 article-content">
                 <div className="relative w-full h-72 rounded-lg overflow-hidden">

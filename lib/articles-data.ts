@@ -1,5 +1,15 @@
 // Shared articles data for resources page and carousels
+// Articles are ordered with newest first
 export const articles = [
+  {
+    title: 'Best Attic Insulation for Dry, Cold and Humid Climates',
+    slug: 'best-attic-insulation-for-dry-cold-and-humid-climates',
+    description:
+      'Choose the best attic insulation for your climate. Learn about R-values, moisture control, ventilation, and which materials work best in dry, cold, and humid climates.',
+    image: '/energy-consumption-and-r-value-insulation.jpg',
+    readTime: '14 min read',
+    category: 'Attic Insulation'
+  },
   {
     title: 'Batt Insulation vs Blown-In Insulation',
     slug: 'batt-insulation-vs-blown-in-insulation',

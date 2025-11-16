@@ -131,7 +131,7 @@ export default function DIYPage() {
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="max-w-4xl mx-auto text-center">
             <div className="mb-6">
               <Link 
@@ -176,7 +176,7 @@ export default function DIYPage() {
 
       {/* Safety First Section */}
       <section className="py-20 bg-red-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <div className="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
               <Shield className="h-10 w-10 text-red-600" />
@@ -208,7 +208,7 @@ export default function DIYPage() {
 
       {/* DIY Projects Section */}
       <section id="videos" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0a4768] mb-6">
               DIY Insulation Projects
@@ -224,7 +224,7 @@ export default function DIYPage() {
 
       {/* Tools & Equipment Section */}
       <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0a4768] mb-6">
               Essential Tools & Equipment

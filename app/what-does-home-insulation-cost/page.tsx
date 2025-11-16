@@ -116,7 +116,7 @@ export default function CostPage() {
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20 overflow-hidden">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="max-w-4xl mx-auto text-center overflow-hidden">
             <div className="bg-[#F5DD22] w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8">
               <DollarSign className="h-12 w-12 text-[#0a4768]" />

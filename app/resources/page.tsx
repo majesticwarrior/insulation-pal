@@ -58,7 +58,7 @@ export default function ResourcesPage() {
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0a4768] mb-6 leading-tight">
               Insulation Learning Center
@@ -79,7 +79,7 @@ export default function ResourcesPage() {
 
       {/* Features Section */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0a4768] mb-6">
               Why Use Our Learning Center?
@@ -108,7 +108,7 @@ export default function ResourcesPage() {
 
       {/* Articles Section */}
       <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0a4768] mb-6">
               Recent Articles
@@ -181,7 +181,7 @@ export default function ResourcesPage() {
 
       {/* DIY Section */}
       <section className="py-20 bg-[#D6D6D6]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0a4768] mb-6">
               Do It Yourself
@@ -242,7 +242,7 @@ export default function ResourcesPage() {
 
       {/* Where to Buy Section */}
       <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0a4768] mb-6">
               Where to Buy
@@ -289,7 +289,7 @@ export default function ResourcesPage() {
 
       {/* Press Section */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0a4768] mb-6">
               Recent Press & News

@@ -51,9 +51,16 @@ export default function TermPage({ term }: Props) {
       description: 'Compare batt and blown-in insulation installation methods, R-values, costs, and best applications'
     }
 
+    const atticClimateArticleLink = {
+      href: '/resources/articles/best-attic-insulation-for-dry-cold-and-humid-climates',
+      label: 'Best Attic Insulation for Different Climates',
+      description: 'Choose the best attic insulation based on your climate zone, covering R-values, moisture control, and material selection'
+    }
+
     // Map common glossary slugs to relevant services
     const map: Record<string, Array<{ href: string, label: string, description: string }>> = {
       attic: [
+        atticClimateArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Professional attic insulation and air sealing' }
@@ -64,12 +71,15 @@ export default function TermPage({ term }: Props) {
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Upgrade wall cavities for better comfort' }
       ],
       'spray-foam': [
+        atticClimateArticleLink,
         { href: '/services/spray-foam-insulation', label: 'Spray Foam Insulation', description: 'Closed-cell and open-cell spray foam installation' }
       ],
       'open-cell': [
+        atticClimateArticleLink,
         { href: '/services/spray-foam-insulation', label: 'Spray Foam Insulation', description: 'Open-cell spray foam for interior applications' }
       ],
       'closed-cell': [
+        atticClimateArticleLink,
         { href: '/services/spray-foam-insulation', label: 'Spray Foam Insulation', description: 'Closed-cell spray foam for high performance' }
       ],
       'crawl-space': [
@@ -94,6 +104,7 @@ export default function TermPage({ term }: Props) {
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Continuous insulation with foam board options' }
       ],
       'fiberglass': [
+        atticClimateArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink,
         garageArticleLink,
@@ -101,28 +112,27 @@ export default function TermPage({ term }: Props) {
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Batt and dense-pack options' }
       ],
       'cellulose': [
+        atticClimateArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Blown-in cellulose for complete coverage' },
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Dense-pack cellulose for walls' }
       ],
       'blown-in': [
+        atticClimateArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Blown-in upgrades for attics and more' }
-      ],
-      'batt-roll': [
-        battVsBlownInArticleLink,
-        comparisonArticleLink,
-        { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Batt and roll installation for walls' }
       ],
       'sound-proofing': [
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Acoustic wall upgrades with mineral wool' }
       ],
       'vapor-barrier': [
+        atticClimateArticleLink,
         { href: '/services/crawl-space-insulation', label: 'Crawl Space Insulation', description: 'Vapor control and encapsulation systems' }
       ],
       'radiant-barrier': [
+        atticClimateArticleLink,
         garageArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Attic radiant barrier and insulation' }
       ],
@@ -132,12 +142,24 @@ export default function TermPage({ term }: Props) {
         { href: '/services/garage-insulation', label: 'Garage Insulation', description: 'Professional garage wall, ceiling, and door insulation' }
       ],
       'r-value': [
+        atticClimateArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink
       ],
       'loose-fill': [
+        atticClimateArticleLink,
         battVsBlownInArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Loose-fill insulation for attics' }
+      ],
+      'rockwool': [
+        atticClimateArticleLink,
+        { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Mineral wool insulation for attics' }
+      ],
+      'batt-roll': [
+        atticClimateArticleLink,
+        battVsBlownInArticleLink,
+        comparisonArticleLink,
+        { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Batt and roll installation for walls' }
       ]
     }
 
@@ -299,7 +321,7 @@ export default function TermPage({ term }: Props) {
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="max-w-4xl mx-auto">
             <Link 
               href="/resources/glossary" 
@@ -319,7 +341,7 @@ export default function TermPage({ term }: Props) {
 
       {/* Main Content */}
       <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="max-w-4xl mx-auto prose prose-lg max-w-none">
             {/* Definition */}
             <div className="mb-12">

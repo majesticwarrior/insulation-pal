@@ -13,7 +13,7 @@ interface BreadcrumbProps {
 export const Breadcrumb = ({ items }: BreadcrumbProps) => {
   return (
     <section className="bg-gray-50 py-4">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 max-w-[1400px]">
         <nav className="flex items-center space-x-2 text-sm" aria-label="Breadcrumb">
           {items.map((item, index) => {
             const isLast = index === items.length - 1

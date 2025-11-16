@@ -41,7 +41,7 @@ const CallToAction = () => {
 
   return (
     <section className="py-20 bg-white">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 max-w-[1400px]">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-[#0a4768]">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">

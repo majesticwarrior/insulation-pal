@@ -137,7 +137,7 @@ export default function HowItWorksPage() {
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-bold text-[#0a4768] mb-6">
               How InsulationPal Works
@@ -172,7 +172,7 @@ export default function HowItWorksPage() {
 
       {/* Steps Section */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[#0a4768] mb-6">
               Simple 4-Step Process
@@ -228,7 +228,7 @@ export default function HowItWorksPage() {
 
       {/* Why Choose Us Section */}
       <section className="py-20 bg-[#D8E1FF]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[#0a4768] mb-6">
               Why Choose InsulationPal?
@@ -260,7 +260,7 @@ export default function HowItWorksPage() {
 
       {/* FAQ Section */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[#0a4768] mb-6">
               Frequently Asked Questions

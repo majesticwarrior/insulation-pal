@@ -19,7 +19,7 @@ const Coverage = () => {
 
   return (
     <section className="py-20 bg-[#D6D6D6]">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 max-w-[1400px]">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
             Nationwide Coverage

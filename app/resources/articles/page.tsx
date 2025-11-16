@@ -57,7 +57,7 @@ export default function ArticlesPage() {
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="max-w-4xl mx-auto text-center">
             <div className="mb-6">
               <Link 
@@ -87,7 +87,7 @@ export default function ArticlesPage() {
 
       {/* Features Section */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0a4768] mb-6">
               Why Use Our Learning Center?
@@ -116,7 +116,7 @@ export default function ArticlesPage() {
 
       {/* Articles Section */}
       <section id="articles" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0a4768] mb-6">
               Comprehensive Articles and Guides

@@ -94,7 +94,7 @@ export default function GarageInsulationPage() {
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0a4768] mb-6 leading-tight">
@@ -167,7 +167,7 @@ export default function GarageInsulationPage() {
 
       {/* Benefits Section */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[#0a4768] mb-6">
               Why Insulate Your Garage?
@@ -199,7 +199,7 @@ export default function GarageInsulationPage() {
 
       {/* Process Section */}
       <section className="py-20 bg-[#D8E1FF]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[#0a4768] mb-6">
               Our Installation Process
@@ -226,7 +226,7 @@ export default function GarageInsulationPage() {
 
       {/* Features Section */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div>
               <h2 className="text-4xl font-bold text-[#0a4768] mb-6">

@@ -404,7 +404,7 @@ export default async function MesaInsulationContractors() {
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
               Mesa Insulation Contractors
@@ -440,7 +440,7 @@ export default async function MesaInsulationContractors() {
 
       {/* Insulation Information */}
       <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="grid lg:grid-cols-3 gap-8">
             <Card>
               <CardHeader>
@@ -525,7 +525,7 @@ export default async function MesaInsulationContractors() {
 
       {/* Mini Profiles */}
       <section className="py-16 bg-[#D6D6D6]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <h2 className="text-3xl font-bold text-[#0a4768] mb-12 text-center">
             Top Mesa Insulation Contractors
           </h2>
@@ -631,7 +631,7 @@ export default async function MesaInsulationContractors() {
 
       {/* Mesa Area Cities */}
       <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
             Additional Nearby Cities We Serve
           </h2>
@@ -675,7 +675,7 @@ export default async function MesaInsulationContractors() {
 
       {/* Service Areas Map */}
       <section className="py-8 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="rounded-lg overflow-hidden shadow-lg">
             <iframe
               src={mapUrl}
@@ -713,7 +713,7 @@ export default async function MesaInsulationContractors() {
 
       {/* Mesa Reviews Carousel */}
       <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
               Latest Mesa Reviews
@@ -724,7 +724,7 @@ export default async function MesaInsulationContractors() {
           </div>
           
           {mesaReviews.length > 0 ? (
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-[1400px] mx-auto">
               <Carousel
                 opts={{
                   align: "start",
@@ -800,7 +800,7 @@ export default async function MesaInsulationContractors() {
 
       {/* Recent Mesa Completed Insulation Projects */}
       <section className="py-12 bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
               Recent Mesa Completed Insulation Projects
@@ -856,7 +856,7 @@ export default async function MesaInsulationContractors() {
 
       {/* Services Carousel */}
       <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
               Our Contractor Insulation Services
@@ -972,7 +972,7 @@ export default async function MesaInsulationContractors() {
 
       {/* Understanding Home Insulation - Educational Articles Carousel */}
       <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
               Understanding Home Insulation

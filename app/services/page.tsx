@@ -104,7 +104,7 @@ export default function ServicesPage() {
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-bold text-[#0a4768] mb-6">
               Professional Insulation Services
@@ -133,7 +133,7 @@ export default function ServicesPage() {
 
       {/* Services Grid */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="grid lg:grid-cols-2 gap-12">
             {services.map((service, index) => {
               const Icon = service.icon
@@ -201,7 +201,7 @@ export default function ServicesPage() {
 
       {/* Coverage Section */}
       <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[#0a4768] mb-6">
               Nationwide Coverage
@@ -278,7 +278,7 @@ export default function ServicesPage() {
 
       {/* CTA Section */}
       <section className="py-20 bg-[#D6D6D6] text-[#0a4768]">
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto px-4 text-center max-w-[1400px]">
           <h2 className="text-4xl font-bold mb-6">
             Ready to Start Your Insulation Project?
           </h2>
