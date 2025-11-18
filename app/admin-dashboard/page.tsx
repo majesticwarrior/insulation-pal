@@ -13,7 +13,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Shield, Users, Clock, CheckCircle, XCircle, Eye, DollarSign, LogOut, Edit, Plus, Star, UserCog, Key, Copy } from 'lucide-react'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Shield, Users, Clock, CheckCircle, XCircle, Eye, DollarSign, LogOut, Edit, Plus, Star, UserCog, Key, Copy, MoreVertical } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 
@@ -1475,95 +1476,97 @@ export default function AdminDashboard() {
                             )}
                           </TableCell>
                           <TableCell>
-                            <div className="flex flex-wrap gap-1">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => openEditDialog(contractor)}
-                                className="text-blue-600 hover:bg-blue-50"
-                              >
-                                <Edit className="h-3 w-3 mr-1" />
-                                Edit Profile
-                              </Button>
-                              
-                              {contractor.status === 'pending' && (
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateContractorStatus(contractor.id, 'approved')}
-                                  className="bg-green-600 hover:bg-green-700 text-white"
-                                >
-                                  <CheckCircle className="h-3 w-3 mr-1" />
-                                  Activate
-                                </Button>
-                              )}
-                              
-                              {contractor.status === 'suspended' && (
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateContractorStatus(contractor.id, 'approved')}
-                                  className="bg-green-600 hover:bg-green-700 text-white"
-                                >
-                                  <CheckCircle className="h-3 w-3 mr-1" />
-                                  Re-activate
-                                </Button>
-                              )}
-                              
-                              {contractor.status === 'approved' && (
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  onClick={() => updateContractorStatus(contractor.id, 'suspended')}
-                                  className="text-orange-600 hover:bg-orange-50"
+                                  className="h-8 w-8 p-0"
                                 >
-                                  <XCircle className="h-3 w-3 mr-1" />
-                                  Suspend
+                                  <MoreVertical className="h-4 w-4" />
+                                  <span className="sr-only">Open actions menu</span>
                                 </Button>
-                              )}
-                              
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => updateCredits(contractor.id, contractor.business_name, contractor.credits || 0)}
-                                className="text-blue-600 hover:bg-blue-50"
-                              >
-                                <DollarSign className="h-3 w-3 mr-1" />
-                                Edit Credits
-                              </Button>
-                              
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => openPasswordResetDialog(contractor)}
-                                className="text-orange-600 hover:bg-orange-50"
-                              >
-                                <Key className="h-3 w-3 mr-1" />
-                                Reset Password
-                              </Button>
-                              
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => {
-                                  setSelectedContractorForReviews(contractor.id)
-                                  loadReviews(contractor.id)
-                                  setIsManageReviewsDialogOpen(true)
-                                }}
-                                className="text-purple-600 hover:bg-purple-50"
-                              >
-                                <Eye className="h-3 w-3 mr-1" />
-                                Manage Reviews
-                              </Button>
-                              
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => deleteContractor(contractor.id, contractor.business_name)}
-                                className="text-red-600 hover:bg-red-50"
-                              >
-                                <XCircle className="h-3 w-3 mr-1" />
-                                Delete
-                              </Button>
-                            </div>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-48">
+                                <DropdownMenuItem
+                                  onClick={() => openEditDialog(contractor)}
+                                  className="cursor-pointer"
+                                >
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Edit Profile
+                                </DropdownMenuItem>
+                                
+                                {contractor.status === 'pending' && (
+                                  <DropdownMenuItem
+                                    onClick={() => updateContractorStatus(contractor.id, 'approved')}
+                                    className="cursor-pointer text-green-600"
+                                  >
+                                    <CheckCircle className="h-4 w-4 mr-2" />
+                                    Activate
+                                  </DropdownMenuItem>
+                                )}
+                                
+                                {contractor.status === 'suspended' && (
+                                  <DropdownMenuItem
+                                    onClick={() => updateContractorStatus(contractor.id, 'approved')}
+                                    className="cursor-pointer text-green-600"
+                                  >
+                                    <CheckCircle className="h-4 w-4 mr-2" />
+                                    Re-activate
+                                  </DropdownMenuItem>
+                                )}
+                                
+                                {contractor.status === 'approved' && (
+                                  <DropdownMenuItem
+                                    onClick={() => updateContractorStatus(contractor.id, 'suspended')}
+                                    className="cursor-pointer text-orange-600"
+                                  >
+                                    <XCircle className="h-4 w-4 mr-2" />
+                                    Suspend
+                                  </DropdownMenuItem>
+                                )}
+                                
+                                <DropdownMenuSeparator />
+                                
+                                <DropdownMenuItem
+                                  onClick={() => updateCredits(contractor.id, contractor.business_name, contractor.credits || 0)}
+                                  className="cursor-pointer"
+                                >
+                                  <DollarSign className="h-4 w-4 mr-2" />
+                                  Edit Credits
+                                </DropdownMenuItem>
+                                
+                                <DropdownMenuItem
+                                  onClick={() => openPasswordResetDialog(contractor)}
+                                  className="cursor-pointer"
+                                >
+                                  <Key className="h-4 w-4 mr-2" />
+                                  Reset Password
+                                </DropdownMenuItem>
+                                
+                                <DropdownMenuItem
+                                  onClick={() => {
+                                    setSelectedContractorForReviews(contractor.id)
+                                    loadReviews(contractor.id)
+                                    setIsManageReviewsDialogOpen(true)
+                                  }}
+                                  className="cursor-pointer"
+                                >
+                                  <Eye className="h-4 w-4 mr-2" />
+                                  Manage Reviews
+                                </DropdownMenuItem>
+                                
+                                <DropdownMenuSeparator />
+                                
+                                <DropdownMenuItem
+                                  onClick={() => deleteContractor(contractor.id, contractor.business_name)}
+                                  className="cursor-pointer text-red-600 focus:text-red-600"
+                                >
+                                  <XCircle className="h-4 w-4 mr-2" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </TableCell>
                         </TableRow>
                       ))}

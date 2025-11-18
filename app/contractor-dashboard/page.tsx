@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -65,6 +65,7 @@ interface Contractor {
 
 export default function ContractorDashboard() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [contractor, setContractor] = useState<Contractor | null>(null)
   const [leads, setLeads] = useState<Lead[]>([])
   const [stats, setStats] = useState({
@@ -86,6 +87,15 @@ export default function ContractorDashboard() {
   const [loading, setLoading] = useState(true)
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const [isResponseModalOpen, setIsResponseModalOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState<string>('leads')
+
+  // Handle URL parameters to switch to leads tab if needed
+  useEffect(() => {
+    const leadAssignmentId = searchParams?.get('leadAssignmentId')
+    if (leadAssignmentId) {
+      setActiveTab('leads')
+    }
+  }, [searchParams])
 
   useEffect(() => {
     console.log('🔍 Dashboard useEffect triggered')
@@ -492,7 +502,7 @@ export default function ContractorDashboard() {
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="leads" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="leads">Leads</TabsTrigger>
             <TabsTrigger value="profile">Profile</TabsTrigger>

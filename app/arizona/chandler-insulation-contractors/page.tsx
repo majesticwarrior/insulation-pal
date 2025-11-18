@@ -52,7 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseDescription = 'Find the best insulation contractors in Chandler, AZ'
     
     return {
-      title: `Chandler Insulation Contractors, Find Top Rated Local Companies Near You`,
+      title: `Insulation Contractors in Chandler, AZ, Find Top Rated Local Companies Near You`,
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
         'Chandler insulation contractors',

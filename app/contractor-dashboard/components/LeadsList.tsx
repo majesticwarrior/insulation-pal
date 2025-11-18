@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -9,6 +10,7 @@ import { supabase } from '@/lib/supabase'
 import { Phone, Mail, MapPin, Home, CheckCircle, X, Clock, AlertCircle, Trophy, ChevronDown, ChevronUp, FileText } from 'lucide-react'
 import { QuoteSubmissionForm } from '@/components/dashboard/QuoteSubmissionForm'
 import { ProjectImageUpload } from '@/components/dashboard/ProjectImageUpload'
+import { toast } from 'sonner'
 import '@/lib/error-handler'
 
 interface Lead {
@@ -20,6 +22,7 @@ interface Lead {
   responded_at?: string
   quote_amount?: number
   quote_notes?: string
+  project_completed_at?: string
   leads: {
     customer_name: string
     customer_email?: string
@@ -39,17 +42,44 @@ interface Lead {
 }
 
 export function LeadsList({ contractorId, contractorCredits }: { contractorId: string, contractorCredits?: number }) {
+  const searchParams = useSearchParams()
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
   const [expandedWonLeads, setExpandedWonLeads] = useState<Set<string>>(new Set())
   const [expandedAvailableLeads, setExpandedAvailableLeads] = useState<Set<string>>(new Set())
   const [expandedDidntWinLeads, setExpandedDidntWinLeads] = useState<Set<string>>(new Set())
+  const [markingComplete, setMarkingComplete] = useState<Set<string>>(new Set())
+  const [activeTab, setActiveTab] = useState<string>('available')
 
   useEffect(() => {
     if (contractorId) {
       fetchLeads()
     }
   }, [contractorId])
+
+  // Handle URL parameters to auto-expand specific lead and switch to won tab
+  useEffect(() => {
+    const leadAssignmentId = searchParams?.get('leadAssignmentId')
+    const tab = searchParams?.get('tab')
+    
+    if (tab === 'won' && leadAssignmentId) {
+      setActiveTab('won')
+      // Wait for leads to load, then expand the specific lead
+      if (leads.length > 0) {
+        const lead = leads.find(l => l.id === leadAssignmentId)
+        if (lead && (lead.status === 'won' || lead.status === 'hired' || lead.status === 'completed')) {
+          setExpandedWonLeads(prev => new Set(prev).add(leadAssignmentId))
+          // Scroll to the lead after a short delay
+          setTimeout(() => {
+            const element = document.getElementById(`lead-${leadAssignmentId}`)
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            }
+          }, 500)
+        }
+      }
+    }
+  }, [searchParams, leads])
 
   async function fetchLeads() {
     try {
@@ -223,6 +253,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
             responded_at,
             quote_amount,
             quote_notes,
+            project_completed_at,
             leads(
               customer_name,
               customer_email,
@@ -333,6 +364,61 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
     })
   }
 
+  // Handle job completion
+  const handleJobCompletion = async (leadAssignmentId: string, completed: boolean, leadAssignment: Lead) => {
+    try {
+      setMarkingComplete(prev => new Set(prev).add(leadAssignmentId))
+
+      const response = await fetch('/api/job-completion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          leadAssignmentId,
+          completed,
+          contractorId,
+          customerName: leadAssignment.leads.customer_name,
+          customerEmail: leadAssignment.leads.customer_email,
+          customerPhone: leadAssignment.leads.customer_phone,
+          leadId: leadAssignment.lead_id,
+          projectDetails: {
+            homeSize: leadAssignment.leads.home_size_sqft,
+            areasNeeded: leadAssignment.leads.areas_needed,
+            insulationTypes: leadAssignment.leads.insulation_types,
+            city: leadAssignment.leads.city,
+            state: leadAssignment.leads.state
+          }
+        })
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to update job completion status')
+      }
+
+      if (completed) {
+        // Show success message
+        toast.success('Job marked as completed! Review request email has been sent to the customer.')
+      } else {
+        toast.info('Job marked as not completed.')
+      }
+
+      // Refresh leads to show updated status
+      await fetchLeads()
+    } catch (error: any) {
+      console.error('Error updating job completion:', error)
+      toast.error(`Error: ${error.message || 'Failed to update job completion status'}`)
+    } finally {
+      setMarkingComplete(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(leadAssignmentId)
+        return newSet
+      })
+    }
+  }
+
   // Function to toggle expanded state for available leads
   const toggleAvailableLeadExpansion = (leadId: string) => {
     setExpandedAvailableLeads(prev => {
@@ -365,7 +451,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
     const isExpanded = expandedWonLeads.has(leadAssignment.id)
     
     return (
-      <Card key={leadAssignment.id} className="mb-3 hover:shadow-md transition-shadow">
+      <Card key={leadAssignment.id} id={`lead-${leadAssignment.id}`} className="mb-3 hover:shadow-md transition-shadow">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -725,6 +811,51 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
         </div>
       </div>
 
+      {/* Job Completion Section */}
+      <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+        <h4 className="font-semibold text-[#0a4768] mb-3 flex items-center">
+          <CheckCircle className="h-5 w-5 mr-2 text-blue-600" />
+          Job Completion Status
+        </h4>
+        <p className="text-sm text-gray-700 mb-4">
+          Did you complete the job for this customer?
+        </p>
+        <div className="flex gap-3">
+          <Button
+            onClick={() => handleJobCompletion(leadAssignment.id, true, leadAssignment)}
+            disabled={markingComplete.has(leadAssignment.id)}
+            className="bg-green-600 hover:bg-green-700 text-white"
+          >
+            {markingComplete.has(leadAssignment.id) ? (
+              <>
+                <Clock className="h-4 w-4 mr-2 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              <>
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Yes, Job Completed
+              </>
+            )}
+          </Button>
+          <Button
+            onClick={() => handleJobCompletion(leadAssignment.id, false, leadAssignment)}
+            disabled={markingComplete.has(leadAssignment.id)}
+            variant="outline"
+            className="border-gray-300 text-gray-700 hover:bg-gray-50"
+          >
+            <X className="h-4 w-4 mr-2" />
+            No, Not Completed
+          </Button>
+        </div>
+        {leadAssignment.project_completed_at && (
+          <p className="text-sm text-green-700 mt-3 flex items-center">
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Job marked as completed on {new Date(leadAssignment.project_completed_at).toLocaleDateString()}
+          </p>
+        )}
+      </div>
+
       {/* Project Image Upload */}
       <ProjectImageUpload
         leadAssignmentId={leadAssignment.id}
@@ -974,7 +1105,7 @@ export function LeadsList({ contractorId, contractorCredits }: { contractorId: s
         </div>
       </div>
 
-      <Tabs defaultValue="available" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="available" className="flex items-center gap-2">
             <Trophy className="h-4 w-4" />

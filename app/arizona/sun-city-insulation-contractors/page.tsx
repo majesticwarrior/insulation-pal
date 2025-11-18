@@ -44,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseDescription = 'Find the best insulation contractors in Sun City, AZ'
     
     return {
-      title: `Sun City Insulation Contractors, Find Top Rated Local Companies Near You`,
+      title: `Insulation Contractors in Sun City, AZ, Find Top Rated Local Companies Near You`,
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
         'Sun City insulation contractors',

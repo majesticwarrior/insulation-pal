@@ -991,6 +991,430 @@ const emailTemplates = {
     </body>
     </html>
     `
+  },
+
+  'contractor-reminder-2h': (data: any) => {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
+    const logoUrl = `${siteUrl}/insulation-pal-logo-footer.png`
+    
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Reminder: Submit Your Quote - InsulationPal</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a4768; font-family: Arial, sans-serif;">
+      
+      <!-- Header -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <img src="${logoUrl}" alt="InsulationPal" style="height: 120px; width: auto;">
+      </div>
+      
+      <!-- Main Content Card -->
+      <div style="background-color: white; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        
+        <!-- Reminder Header -->
+        <div style="background-color: #fff3cd; padding: 30px; text-align: center; border-bottom: 3px solid #f59e0b;">
+          <h1 style="color: #856404; font-size: 28px; margin: 0; font-weight: bold;">
+            ⏰ Friendly Reminder: Submit Your Quote
+          </h1>
+          <p style="color: #856404; font-size: 16px; margin: 10px 0 0 0;">
+            It's been 2 hours since you received this lead
+          </p>
+        </div>
+        
+        <!-- Lead Details -->
+        <div style="padding: 30px;">
+          <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+            Hi <strong>${data.contractorName}</strong>,
+          </p>
+          
+          <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+            We noticed you haven't submitted a quote yet for the project in <strong>${data.city}, ${data.state}</strong>. 
+            Don't miss out on this opportunity!
+          </p>
+          
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h3 style="color: #0a4768; margin: 0 0 15px 0; font-size: 18px;">📋 Project Details:</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">📍 ${data.propertyAddress || `${data.city}, ${data.state}`}</li>
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">🏠 ${data.homeSize?.toLocaleString()} sq ft home</li>
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">📅 Timeline: ${data.projectTimeline || 'ASAP'}</li>
+              ${data.budgetRange ? `<li style="margin-bottom: 8px; color: #333; font-size: 16px;">💰 Budget: ${data.budgetRange}</li>` : ''}
+            </ul>
+          </div>
+          
+          <!-- Urgency Message -->
+          <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #f59e0b;">
+            <h4 style="color: #856404; margin-top: 0; font-size: 16px;">💡 Quick Tip:</h4>
+            <p style="color: #856404; margin: 0; font-size: 14px; line-height: 1.5;">
+              <strong>Speed matters!</strong> Contractors who submit quotes quickly have a higher chance of winning the project. 
+              Take a few minutes now to submit your competitive quote.
+            </p>
+          </div>
+          
+          <!-- Call to Action -->
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="${data.dashboardLink}" 
+               style="background-color: #F5DD22; color: #0a4768; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">
+              SUBMIT MY QUOTE NOW
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <p style="color: white; font-size: 14px; margin: 0 0 10px 0;">The remote control for your insulation business</p>
+        <p style="color: white; font-size: 12px; margin: 0;">Serving those that serve others</p>
+      </div>
+      
+    </body>
+    </html>
+    `
+  },
+
+  'contractor-reminder-4h': (data: any) => {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
+    const logoUrl = `${siteUrl}/insulation-pal-logo-footer.png`
+    
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Reminder: Submit Your Quote - InsulationPal</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a4768; font-family: Arial, sans-serif;">
+      
+      <!-- Header -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <img src="${logoUrl}" alt="InsulationPal" style="height: 120px; width: auto;">
+      </div>
+      
+      <!-- Main Content Card -->
+      <div style="background-color: white; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        
+        <!-- Reminder Header -->
+        <div style="background-color: #ffeaa7; padding: 30px; text-align: center; border-bottom: 3px solid #f39c12;">
+          <h1 style="color: #856404; font-size: 28px; margin: 0; font-weight: bold;">
+            ⚠️ Second Reminder: Don't Miss This Opportunity
+          </h1>
+          <p style="color: #856404; font-size: 16px; margin: 10px 0 0 0;">
+            It's been 4 hours since you received this lead
+          </p>
+        </div>
+        
+        <!-- Lead Details -->
+        <div style="padding: 30px;">
+          <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+            Hi <strong>${data.contractorName}</strong>,
+          </p>
+          
+          <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+            This is your second reminder about the project in <strong>${data.city}, ${data.state}</strong>. 
+            Other contractors may already be submitting quotes - make sure you don't get left behind!
+          </p>
+          
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h3 style="color: #0a4768; margin: 0 0 15px 0; font-size: 18px;">📋 Project Details:</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">📍 ${data.propertyAddress || `${data.city}, ${data.state}`}</li>
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">🏠 ${data.homeSize?.toLocaleString()} sq ft home</li>
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">📅 Timeline: ${data.projectTimeline || 'ASAP'}</li>
+              ${data.budgetRange ? `<li style="margin-bottom: 8px; color: #333; font-size: 16px;">💰 Budget: ${data.budgetRange}</li>` : ''}
+            </ul>
+          </div>
+          
+          <!-- Urgency Message -->
+          <div style="background-color: #ffeaa7; border: 1px solid #f39c12; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #f39c12;">
+            <h4 style="color: #856404; margin-top: 0; font-size: 16px;">⏰ Time is Running Out:</h4>
+            <p style="color: #856404; margin: 0; font-size: 14px; line-height: 1.5;">
+              Customers typically review quotes within the first 24 hours. The sooner you submit, the better your chances. 
+              Don't let this opportunity slip away!
+            </p>
+          </div>
+          
+          <!-- Call to Action -->
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="${data.dashboardLink}" 
+               style="background-color: #F5DD22; color: #0a4768; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">
+              SUBMIT MY QUOTE NOW
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <p style="color: white; font-size: 14px; margin: 0 0 10px 0;">The remote control for your insulation business</p>
+        <p style="color: white; font-size: 12px; margin: 0;">Serving those that serve others</p>
+      </div>
+      
+    </body>
+    </html>
+    `
+  },
+
+  'contractor-reminder-24h': (data: any) => {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
+    const logoUrl = `${siteUrl}/insulation-pal-logo-footer.png`
+    
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Final Reminder: Submit Your Quote - InsulationPal</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a4768; font-family: Arial, sans-serif;">
+      
+      <!-- Header -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <img src="${logoUrl}" alt="InsulationPal" style="height: 120px; width: auto;">
+      </div>
+      
+      <!-- Main Content Card -->
+      <div style="background-color: white; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        
+        <!-- Reminder Header -->
+        <div style="background-color: #fee2e2; padding: 30px; text-align: center; border-bottom: 3px solid #ef4444;">
+          <h1 style="color: #991b1b; font-size: 28px; margin: 0; font-weight: bold;">
+            🚨 Final Reminder: Last Chance to Submit Your Quote
+          </h1>
+          <p style="color: #991b1b; font-size: 16px; margin: 10px 0 0 0;">
+            It's been 24 hours since you received this lead
+          </p>
+        </div>
+        
+        <!-- Lead Details -->
+        <div style="padding: 30px;">
+          <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+            Hi <strong>${data.contractorName}</strong>,
+          </p>
+          
+          <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+            This is your <strong>final reminder</strong> about the project in <strong>${data.city}, ${data.state}</strong>. 
+            The customer is likely reviewing quotes from other contractors right now. This is your last opportunity to submit a quote!
+          </p>
+          
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h3 style="color: #0a4768; margin: 0 0 15px 0; font-size: 18px;">📋 Project Details:</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">📍 ${data.propertyAddress || `${data.city}, ${data.state}`}</li>
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">🏠 ${data.homeSize?.toLocaleString()} sq ft home</li>
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">📅 Timeline: ${data.projectTimeline || 'ASAP'}</li>
+              ${data.budgetRange ? `<li style="margin-bottom: 8px; color: #333; font-size: 16px;">💰 Budget: ${data.budgetRange}</li>` : ''}
+            </ul>
+          </div>
+          
+          <!-- Urgency Message -->
+          <div style="background-color: #fee2e2; border: 1px solid #ef4444; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #ef4444;">
+            <h4 style="color: #991b1b; margin-top: 0; font-size: 16px;">⏰ This is Your Last Chance:</h4>
+            <p style="color: #991b1b; margin: 0; font-size: 14px; line-height: 1.5;">
+              After 24 hours, customers typically make their decision. If you want to compete for this project, 
+              you need to submit your quote <strong>right now</strong>. Don't let this opportunity pass you by!
+            </p>
+          </div>
+          
+          <!-- Call to Action -->
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="${data.dashboardLink}" 
+               style="background-color: #F5DD22; color: #0a4768; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">
+              SUBMIT MY QUOTE NOW
+            </a>
+            <p style="color: #666; font-size: 14px; margin-top: 15px;">
+              This may be your last opportunity to win this project
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <p style="color: white; font-size: 14px; margin: 0 0 10px 0;">The remote control for your insulation business</p>
+        <p style="color: white; font-size: 12px; margin: 0;">Serving those that serve others</p>
+      </div>
+      
+    </body>
+    </html>
+    `
+  },
+
+  'won-bid-followup-3d': (data: any) => {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
+    const logoUrl = `${siteUrl}/insulation-pal-logo-footer.png`
+    
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Follow-up: Job Completion Status - InsulationPal</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a4768; font-family: Arial, sans-serif;">
+      
+      <!-- Header -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <img src="${logoUrl}" alt="InsulationPal" style="height: 120px; width: auto;">
+      </div>
+      
+      <!-- Main Content Card -->
+      <div style="background-color: white; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        
+        <!-- Follow-up Header -->
+        <div style="background-color: #eff6ff; padding: 30px; text-align: center; border-bottom: 3px solid #3b82f6;">
+          <h1 style="color: #1e40af; font-size: 28px; margin: 0; font-weight: bold;">
+            📋 Quick Follow-up: Job Completion Status
+          </h1>
+          <p style="color: #1e40af; font-size: 16px; margin: 10px 0 0 0;">
+            It's been 3 days since you won this bid
+          </p>
+        </div>
+        
+        <!-- Main Content -->
+        <div style="padding: 30px;">
+          <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+            Hi <strong>${data.contractorName}</strong>,
+          </p>
+          
+          <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+            We're following up on the project you won for <strong>${data.customerName}</strong> in <strong>${data.city}, ${data.state}</strong>. 
+            Have you completed the job for this customer?
+          </p>
+          
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h3 style="color: #0a4768; margin: 0 0 15px 0; font-size: 18px;">📋 Project Details:</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">📍 ${data.propertyAddress || `${data.city}, ${data.state}`}</li>
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">🏠 ${data.homeSize?.toLocaleString()} sq ft home</li>
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">👤 Customer: ${data.customerName}</li>
+              ${data.projectTimeline ? `<li style="margin-bottom: 8px; color: #333; font-size: 16px;">📅 Timeline: ${data.projectTimeline}</li>` : ''}
+            </ul>
+          </div>
+          
+          <!-- Action Message -->
+          <div style="background-color: #eff6ff; border: 1px solid #3b82f6; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #3b82f6;">
+            <h4 style="color: #1e40af; margin-top: 0; font-size: 16px;">💡 Why This Matters:</h4>
+            <p style="color: #1e40af; margin: 0; font-size: 14px; line-height: 1.5;">
+              Once you confirm the job is completed, we'll automatically send a review request to your customer. 
+              Customer reviews help build your reputation and attract more business!
+            </p>
+          </div>
+          
+          <!-- Call to Action -->
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="${data.dashboardLink}" 
+               style="background-color: #F5DD22; color: #0a4768; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">
+              UPDATE JOB STATUS
+            </a>
+            <p style="color: #666; font-size: 14px; margin-top: 15px;">
+              Click to go to your dashboard and mark the job as completed
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <p style="color: white; font-size: 14px; margin: 0 0 10px 0;">The remote control for your insulation business</p>
+        <p style="color: white; font-size: 12px; margin: 0;">Serving those that serve others</p>
+      </div>
+      
+    </body>
+    </html>
+    `
+  },
+
+  'won-bid-followup-5d': (data: any) => {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
+    const logoUrl = `${siteUrl}/insulation-pal-logo-footer.png`
+    
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Final Follow-up: Job Completion Status - InsulationPal</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a4768; font-family: Arial, sans-serif;">
+      
+      <!-- Header -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <img src="${logoUrl}" alt="InsulationPal" style="height: 120px; width: auto;">
+      </div>
+      
+      <!-- Main Content Card -->
+      <div style="background-color: white; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        
+        <!-- Follow-up Header -->
+        <div style="background-color: #fff3cd; padding: 30px; text-align: center; border-bottom: 3px solid #f59e0b;">
+          <h1 style="color: #856404; font-size: 28px; margin: 0; font-weight: bold;">
+            ⏰ Final Follow-up: Job Completion Status
+          </h1>
+          <p style="color: #856404; font-size: 16px; margin: 10px 0 0 0;">
+            It's been 5 days since you won this bid
+          </p>
+        </div>
+        
+        <!-- Main Content -->
+        <div style="padding: 30px;">
+          <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+            Hi <strong>${data.contractorName}</strong>,
+          </p>
+          
+          <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+            This is our final follow-up regarding the project you won for <strong>${data.customerName}</strong> in <strong>${data.city}, ${data.state}</strong>. 
+            Have you completed the job for this customer?
+          </p>
+          
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h3 style="color: #0a4768; margin: 0 0 15px 0; font-size: 18px;">📋 Project Details:</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">📍 ${data.propertyAddress || `${data.city}, ${data.state}`}</li>
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">🏠 ${data.homeSize?.toLocaleString()} sq ft home</li>
+              <li style="margin-bottom: 8px; color: #333; font-size: 16px;">👤 Customer: ${data.customerName}</li>
+              ${data.projectTimeline ? `<li style="margin-bottom: 8px; color: #333; font-size: 16px;">📅 Timeline: ${data.projectTimeline}</li>` : ''}
+            </ul>
+          </div>
+          
+          <!-- Urgency Message -->
+          <div style="background-color: #fff3cd; border: 1px solid #f59e0b; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #f59e0b;">
+            <h4 style="color: #856404; margin-top: 0; font-size: 16px;">💡 Don't Miss Out on Reviews:</h4>
+            <p style="color: #856404; margin: 0; font-size: 14px; line-height: 1.5;">
+              Customer reviews are crucial for your business reputation. Once you confirm the job is completed, 
+              we'll send a review request to your customer. This helps you build trust and attract more customers!
+            </p>
+          </div>
+          
+          <!-- Call to Action -->
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="${data.dashboardLink}" 
+               style="background-color: #F5DD22; color: #0a4768; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">
+              UPDATE JOB STATUS NOW
+            </a>
+            <p style="color: #666; font-size: 14px; margin-top: 15px;">
+              Click to go to your dashboard and mark the job as completed
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <p style="color: white; font-size: 14px; margin: 0 0 10px 0;">The remote control for your insulation business</p>
+        <p style="color: white; font-size: 12px; margin: 0;">Serving those that serve others</p>
+      </div>
+      
+    </body>
+    </html>
+    `
   }
 }
 

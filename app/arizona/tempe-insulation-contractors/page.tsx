@@ -44,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseDescription = 'Find the best insulation contractors in Tempe, AZ'
     
     return {
-      title: `Tempe Insulation Contractors, Find Top Rated Local Companies Near You`,
+      title: `Insulation Contractors in Tempe, AZ, Find Top Rated Local Companies Near You`,
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
         'Tempe insulation contractors',

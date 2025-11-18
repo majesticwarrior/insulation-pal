@@ -129,7 +129,10 @@ export async function POST(request: NextRequest) {
       // Update all submitted quotes to 'won' status
       const { error: updateAllError } = await supabaseAdmin
         .from('lead_assignments')
-        .update({ status: 'won' })
+        .update({ 
+          status: 'won',
+          updated_at: new Date().toISOString()
+        })
         .eq('lead_id', quoteData.lead_id)
         .not('quote_amount', 'is', null) // Only update quotes that have been submitted
 
@@ -164,7 +167,10 @@ export async function POST(request: NextRequest) {
       
       const { data: updateData, error: updateError } = await supabaseAdmin
         .from('lead_assignments')
-        .update({ status: 'won' })
+        .update({ 
+          status: 'won',
+          updated_at: new Date().toISOString()
+        })
         .eq('id', quoteId)
         .select()
 

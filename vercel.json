@@ -17,5 +17,15 @@
         }
       ]
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/contractor-reminders",
+      "schedule": "0 */1 * * *"
+    },
+    {
+      "path": "/api/won-bid-followups",
+      "schedule": "0 */1 * * *"
+    }
   ]
 }
