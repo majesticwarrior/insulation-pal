@@ -26,14 +26,14 @@ interface LeadAssignment {
     property_address?: string
     project_timeline?: string
     budget_range?: string
-  }
+  } | null
   contractors: {
     id: string
     business_name: string
     contact_email: string
     contact_phone?: string
     lead_delivery_preference?: string
-  }
+  } | null
 }
 
 /**
@@ -104,18 +104,27 @@ export async function checkAndSendReminders() {
     let skippedCount = 0
 
     // Process each assignment
-    for (const assignment of assignments as LeadAssignment[]) {
-      const assignedAt = new Date(assignment.assigned_at)
+    for (const assignment of assignments) {
+      // Type assertion with proper handling of Supabase response
+      const typedAssignment = assignment as unknown as LeadAssignment
+      
+      // Ensure we have the required data
+      if (!typedAssignment.leads || !typedAssignment.contractors) {
+        console.warn(`⚠️ Skipping assignment ${typedAssignment.id} - missing lead or contractor data`)
+        continue
+      }
+      
+      const assignedAt = new Date(typedAssignment.assigned_at)
       const hoursSinceAssignment = (now.getTime() - assignedAt.getTime()) / (1000 * 60 * 60)
       
       // Check which reminders have already been sent
       const { data: sentReminders, error: remindersError } = await supabaseAdmin
         .from('reminder_emails')
         .select('reminder_type')
-        .eq('lead_assignment_id', assignment.id)
+        .eq('lead_assignment_id', typedAssignment.id)
 
       if (remindersError) {
-        console.error(`❌ Error checking sent reminders for assignment ${assignment.id}:`, remindersError)
+        console.error(`❌ Error checking sent reminders for assignment ${typedAssignment.id}:`, remindersError)
         continue
       }
 
@@ -133,7 +142,7 @@ export async function checkAndSendReminders() {
         // 1. Enough time has passed (hoursSinceAssignment >= threshold)
         // 2. This reminder hasn't been sent yet
         if (hoursSinceAssignment >= hours && !sentReminderTypes.has(type)) {
-          const sent = await sendReminderEmail(assignment, type)
+          const sent = await sendReminderEmail(typedAssignment, type)
           if (sent) {
             sentCount++
           } else {

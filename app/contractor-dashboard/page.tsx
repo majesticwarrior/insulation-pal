@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
@@ -63,7 +63,7 @@ interface Contractor {
   [key: string]: any // For any additional properties
 }
 
-export default function ContractorDashboard() {
+function ContractorDashboardContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [contractor, setContractor] = useState<Contractor | null>(null)
@@ -566,5 +566,25 @@ export default function ContractorDashboard() {
       />
       </main>
     </ErrorBoundary>
+  )
+}
+
+export default function ContractorDashboard() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto px-4 py-20">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0a4768] mx-auto mb-4"></div>
+            <h2 className="text-xl font-semibold text-[#0a4768] mb-2">Loading Dashboard...</h2>
+            <p className="text-gray-600">Please wait while we load your contractor information.</p>
+          </div>
+        </div>
+        <Footer />
+      </main>
+    }>
+      <ContractorDashboardContent />
+    </Suspense>
   )
 }

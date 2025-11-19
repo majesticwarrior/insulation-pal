@@ -25,14 +25,14 @@ interface WonBidAssignment {
     property_address?: string
     project_timeline?: string
     budget_range?: string
-  }
+  } | null
   contractors: {
     id: string
     business_name: string
     contact_email: string
     contact_phone?: string
     lead_delivery_preference?: string
-  }
+  } | null
 }
 
 /**
@@ -98,18 +98,27 @@ export async function checkAndSendWonBidFollowups() {
     let skippedCount = 0
 
     // Process each assignment
-    for (const assignment of assignments as WonBidAssignment[]) {
-      const wonAt = new Date(assignment.updated_at)
+    for (const assignment of assignments) {
+      // Type assertion with proper handling of Supabase response
+      const typedAssignment = assignment as unknown as WonBidAssignment
+      
+      // Ensure we have the required data
+      if (!typedAssignment.leads || !typedAssignment.contractors) {
+        console.warn(`⚠️ Skipping assignment ${typedAssignment.id} - missing lead or contractor data`)
+        continue
+      }
+      
+      const wonAt = new Date(typedAssignment.updated_at)
       const daysSinceWon = (now.getTime() - wonAt.getTime()) / (1000 * 60 * 60 * 24)
       
       // Check which follow-ups have already been sent
       const { data: sentFollowups, error: followupsError } = await supabaseAdmin
         .from('won_bid_followup_emails')
         .select('followup_type')
-        .eq('lead_assignment_id', assignment.id)
+        .eq('lead_assignment_id', typedAssignment.id)
 
       if (followupsError) {
-        console.error(`❌ Error checking sent follow-ups for assignment ${assignment.id}:`, followupsError)
+        console.error(`❌ Error checking sent follow-ups for assignment ${typedAssignment.id}:`, followupsError)
         continue
       }
 
@@ -126,7 +135,7 @@ export async function checkAndSendWonBidFollowups() {
         // 1. Enough days have passed (daysSinceWon >= threshold)
         // 2. This follow-up hasn't been sent yet
         if (daysSinceWon >= days && !sentFollowupTypes.has(type)) {
-          const sent = await sendWonBidFollowupEmail(assignment, type)
+          const sent = await sendWonBidFollowupEmail(typedAssignment, type)
           if (sent) {
             sentCount++
           } else {
