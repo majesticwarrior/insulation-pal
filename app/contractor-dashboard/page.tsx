@@ -411,60 +411,61 @@ function ContractorDashboardContent() {
       <main className="min-h-screen bg-gray-50">
         <Header />
         
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-4 md:py-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-[#0a4768]">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 md:mb-8 gap-4">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#0a4768] truncate">
               Welcome back, {contractor.business_name}
             </h1>
-            <p className="text-gray-600">Manage your leads and grow your business</p>
+            <p className="text-sm sm:text-base text-gray-600">Manage your leads and grow your business</p>
           </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="outline" size="sm">
-              <Bell className="w-4 h-4 mr-2" />
-              Notifications
+          <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+            <Button variant="outline" size="sm" className="flex-1 sm:flex-none text-xs sm:text-sm">
+              <Bell className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Notifications</span>
+              <span className="sm:hidden">Notify</span>
             </Button>
-            <Button variant="outline" size="sm" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-2" />
+            <Button variant="outline" size="sm" onClick={handleLogout} className="flex-1 sm:flex-none text-xs sm:text-sm">
+              <LogOut className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               Logout
             </Button>
           </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6 mb-6 md:mb-8">
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 md:p-6">
               <div className="flex items-center">
-                <FileText className="h-8 w-8 text-blue-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Leads</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.totalLeads}</p>
+                <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 flex-shrink-0" />
+                <div className="ml-2 sm:ml-4 min-w-0">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Total Leads</p>
+                  <p className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">{stats.totalLeads}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 md:p-6">
               <div className="flex items-center">
-                <Users className="h-8 w-8 text-yellow-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Active Leads</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.activeLeads}</p>
+                <Users className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-600 flex-shrink-0" />
+                <div className="ml-2 sm:ml-4 min-w-0">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Active Leads</p>
+                  <p className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">{stats.activeLeads}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 md:p-6">
               <div className="flex items-center">
-                <TrendingUp className="h-8 w-8 text-green-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Completed Jobs</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.completedJobs}</p>
+                <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 flex-shrink-0" />
+                <div className="ml-2 sm:ml-4 min-w-0">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Completed Jobs</p>
+                  <p className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">{stats.completedJobs}</p>
                 </div>
               </div>
             </CardContent>
@@ -472,27 +473,27 @@ function ContractorDashboardContent() {
 
 
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 md:p-6">
               <div className="flex items-center">
-                <CreditCard className="h-8 w-8 text-purple-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Credits</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.credits}</p>
+                <CreditCard className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 flex-shrink-0" />
+                <div className="ml-2 sm:ml-4 min-w-0">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Credits</p>
+                  <p className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">{stats.credits}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-6">
+          <Card className="sm:col-span-2 lg:col-span-2">
+            <CardContent className="p-3 sm:p-4 md:p-6">
               <div className="flex items-center">
-                <Star className="h-8 w-8 text-yellow-500" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Rating</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                <Star className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-500 flex-shrink-0" />
+                <div className="ml-2 sm:ml-4 min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Rating</p>
+                  <p className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
                     {stats.rating ? stats.rating.toFixed(1) : '—'}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-[10px] sm:text-xs text-gray-500 truncate">
                     {ratingSummary.reviewCount} reviews · Avg response {formatResponseTime(ratingSummary.averageResponseMinutes)}
                   </p>
                 </div>
@@ -502,12 +503,15 @@ function ContractorDashboardContent() {
         </div>
 
         {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="leads">Leads</TabsTrigger>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="images">Images</TabsTrigger>
-            <TabsTrigger value="packages">Lead Packages</TabsTrigger>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-0">
+            <TabsTrigger value="leads" className="text-xs sm:text-sm">Leads</TabsTrigger>
+            <TabsTrigger value="profile" className="text-xs sm:text-sm">Profile</TabsTrigger>
+            <TabsTrigger value="images" className="text-xs sm:text-sm">Images</TabsTrigger>
+            <TabsTrigger value="packages" className="text-xs sm:text-sm">
+              <span className="hidden sm:inline">Lead Packages</span>
+              <span className="sm:hidden">Packages</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="leads" className="space-y-6">

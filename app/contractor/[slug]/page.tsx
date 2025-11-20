@@ -471,22 +471,22 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
       <Breadcrumb items={breadcrumbItems} />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-12">
+      <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-6 md:py-12">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
             {/* Contractor Info */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-xl p-8">
-                <div className="flex items-start gap-6 mb-6">
-                  <div className="flex-shrink-0">
-                    <div className="relative w-96 h-96 rounded-2xl bg-white border-2 border-gray-200 overflow-hidden">
+              <div className="bg-white rounded-lg shadow-xl p-4 md:p-8">
+                <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6 mb-6">
+                  <div className="flex-shrink-0 w-full md:w-auto flex justify-center md:justify-start">
+                    <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-2xl bg-white border-2 border-gray-200 overflow-hidden">
                       {contractor.logo ? (
                         <Image
                           src={contractor.logo}
                           alt={`${contractor.name} logo`}
                           fill
                           className="object-contain scale-115"
-                          sizes="384px"
+                          sizes="(max-width: 640px) 192px, (max-width: 768px) 224px, (max-width: 1024px) 256px, 288px"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-3xl text-gray-500 font-bold">
@@ -495,15 +495,15 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                       )}
                     </div>
                   </div>
-                  <div className="flex-1">
-                    <h1 className="text-3xl font-bold text-[#0a4768] mb-2">{contractor.name}</h1>
-                    <p className="text-lg text-gray-600 mb-4">Owned by {contractor.owner}</p>
+                  <div className="flex-1 w-full">
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0a4768] mb-2 text-center md:text-left">{contractor.name}</h1>
+                    <p className="text-base sm:text-lg text-gray-600 mb-4 text-center md:text-left">Owned by {contractor.owner}</p>
                     
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="flex items-center">
+                    <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 sm:gap-4 mb-4">
+                      <div className="flex items-center flex-wrap justify-center">
                         {renderStars(contractor.rating)}
                         <span className="ml-2 font-semibold text-[#0a4768]">{contractor.rating}</span>
-                        <span className="ml-1 text-gray-600">({contractor.reviewCount} reviews)</span>
+                        <span className="ml-1 text-gray-600 text-sm sm:text-base">({contractor.reviewCount} reviews)</span>
                       </div>
                       {contractor.insuranceVerified && (
                         <Badge className="bg-green-100 text-green-800">
@@ -513,46 +513,46 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                       )}
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                      <div>
-                        <div className="text-2xl font-bold text-[#0a4768]">{contractor.yearsInBusiness}</div>
-                        <div className="text-sm text-gray-600">Years in Business</div>
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 text-center">
+                      <div className="bg-gray-50 p-3 rounded-lg">
+                        <div className="text-xl sm:text-2xl font-bold text-[#0a4768]">{contractor.yearsInBusiness}</div>
+                        <div className="text-xs sm:text-sm text-gray-600">Years in Business</div>
                       </div>
-                      <div>
-                        <div className="text-2xl font-bold text-[#0a4768]">{contractor.reliabilityRating}%</div>
-                        <div className="text-sm text-gray-600">Reliability Rating</div>
+                      <div className="bg-gray-50 p-3 rounded-lg">
+                        <div className="text-xl sm:text-2xl font-bold text-[#0a4768]">{contractor.reliabilityRating}%</div>
+                        <div className="text-xs sm:text-sm text-gray-600">Reliability Rating</div>
                       </div>
-                      <div>
-                        <div className="text-2xl font-bold text-[#0a4768]">{contractor.completedProjects}</div>
-                        <div className="text-sm text-gray-600">Projects Completed</div>
+                      <div className="bg-gray-50 p-3 rounded-lg">
+                        <div className="text-xl sm:text-2xl font-bold text-[#0a4768]">{contractor.completedProjects}</div>
+                        <div className="text-xs sm:text-sm text-gray-600">Projects Completed</div>
                       </div>
-                      <div>
-                        <div className="text-2xl font-bold text-[#0a4768]">{contractor.responseTime}</div>
-                        <div className="text-sm text-gray-600">Avg Response Time</div>
+                      <div className="bg-gray-50 p-3 rounded-lg">
+                        <div className="text-xl sm:text-2xl font-bold text-[#0a4768]">{contractor.responseTime}</div>
+                        <div className="text-xs sm:text-sm text-gray-600">Avg Response Time</div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="border-t pt-6">
-                  <h3 className="text-xl font-bold text-[#0a4768] mb-4">About Our Company</h3>
-                  <p className="text-gray-700 leading-relaxed">{contractor.bio}</p>
+                <div className="border-t pt-4 md:pt-6">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#0a4768] mb-3 md:mb-4">About Our Company</h3>
+                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{contractor.bio}</p>
                 </div>
               </div>
             </div>
 
             {/* Quote Options */}
             <div>
-              <Card className="shadow-xl">
-                <CardHeader>
-                  <CardTitle className="text-xl text-[#0a4768]">Get Free Quote</CardTitle>
-                  <p className="text-gray-600">Choose how you'd like to get your estimate</p>
+              <Card className="shadow-xl sticky top-4">
+                <CardHeader className="p-4 md:p-6">
+                  <CardTitle className="text-lg sm:text-xl text-[#0a4768]">Get Free Quote</CardTitle>
+                  <p className="text-sm sm:text-base text-gray-600">Choose how you'd like to get your estimate</p>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <QuoteButton className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold py-4 text-center">
+                <CardContent className="space-y-4 p-4 md:p-6 pt-0 md:pt-0">
+                  <QuoteButton className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold py-3 md:py-4 text-sm sm:text-base text-center">
                     Get 3 Free Quotes
                   </QuoteButton>
-                  <p className="text-sm text-gray-600 text-center">
+                  <p className="text-xs sm:text-sm text-gray-600 text-center">
                     Compare quotes from multiple contractors
                   </p>
                   
@@ -560,10 +560,10 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                     <DirectQuoteButton
                       contractorId={contractor.id}
                       contractorName={contractor.name}
-                      className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white font-semibold py-4"
+                      className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white font-semibold py-3 md:py-4 text-sm sm:text-base"
                       variant="outline"
                     />
-                    <p className="text-sm text-gray-600 text-center mt-2">
+                    <p className="text-xs sm:text-sm text-gray-600 text-center mt-2">
                       Get a quote directly from {contractor.name}
                     </p>
                   </div>
@@ -575,19 +575,19 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
       </section>
 
       {/* Services & Areas */}
-      <section className="py-12 bg-white">
+      <section className="py-6 md:py-12 bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {/* Services */}
             <div>
               <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl text-[#0a4768] flex items-center">
-                    <Wrench className="h-5 w-5 mr-2" />
+                <CardHeader className="p-4 md:p-6">
+                  <CardTitle className="text-lg sm:text-xl text-[#0a4768] flex items-center">
+                    <Wrench className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                     Services Offered
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-4 md:p-6 pt-0 md:pt-0">
                   <div className="space-y-2">
                     {contractor.services.map((service, index) => (
                       <Button
@@ -595,10 +595,10 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                         asChild
                         variant="ghost"
                         size="sm"
-                        className="w-full justify-start text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
+                        className="w-full justify-start text-[#0a4768] hover:bg-[#0a4768] hover:text-white text-sm sm:text-base"
                       >
                         <Link href={`/services/${service.toLowerCase().replace(/\s+/g, '-')}`}>
-                          <CheckCircle className="h-4 w-4 mr-2" />
+                          <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                           {service}
                           <ExternalLink className="w-3 h-3 ml-auto" />
                         </Link>
@@ -612,13 +612,13 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
             {/* Service Areas */}
             <div>
               <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl text-[#0a4768] flex items-center">
-                    <MapPin className="h-5 w-5 mr-2" />
+                <CardHeader className="p-4 md:p-6">
+                  <CardTitle className="text-lg sm:text-xl text-[#0a4768] flex items-center">
+                    <MapPin className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                     Service Areas
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-4 md:p-6 pt-0 md:pt-0">
                   <div className="flex flex-wrap gap-2">
                     {contractor.serviceAreas.map((area, index) => (
                       <Button
@@ -626,7 +626,7 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                         asChild
                         variant="outline"
                         size="sm"
-                        className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
+                        className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white text-xs sm:text-sm"
                       >
                         <Link href={`/arizona/${area.toLowerCase().replace(/\s+/g, '-')}-insulation-contractors`}>
                           {area}
@@ -640,23 +640,23 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
             </div>
 
             {/* Certifications & License */}
-            <div>
+            <div className="md:col-span-2 lg:col-span-1">
               <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl text-[#0a4768] flex items-center">
-                    <Award className="h-5 w-5 mr-2" />
+                <CardHeader className="p-4 md:p-6">
+                  <CardTitle className="text-lg sm:text-xl text-[#0a4768] flex items-center">
+                    <Award className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                     Certifications & License
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-4 md:p-6 pt-0 md:pt-0">
                   <div className="space-y-3">
                     {/* License Number */}
                     {contractor.licenseNumber && (
                       <div className="flex items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-                        <Shield className="h-5 w-5 text-blue-600 mr-3" />
-                        <div>
-                          <div className="font-semibold text-blue-900">License Number</div>
-                          <div className="text-blue-700 font-mono">{contractor.licenseNumber}</div>
+                        <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 mr-3 flex-shrink-0" />
+                        <div className="min-w-0">
+                          <div className="font-semibold text-blue-900 text-sm sm:text-base">License Number</div>
+                          <div className="text-blue-700 font-mono text-xs sm:text-sm break-all">{contractor.licenseNumber}</div>
                         </div>
                       </div>
                     )}
@@ -664,11 +664,11 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                     {/* Certifications */}
                     {contractor.certifications && contractor.certifications.length > 0 && (
                       <div className="space-y-2">
-                        <div className="font-semibold text-gray-800 mb-2">Certifications:</div>
+                        <div className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">Certifications:</div>
                         {contractor.certifications.map((cert: any, index: number) => (
                           <div key={index} className="flex items-center p-2 bg-green-50 rounded border border-green-200">
-                            <CheckCircle className="h-4 w-4 text-green-600 mr-2 flex-shrink-0" />
-                            <span className="text-gray-700">{cert}</span>
+                            <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-600 mr-2 flex-shrink-0" />
+                            <span className="text-gray-700 text-xs sm:text-sm">{cert}</span>
                           </div>
                         ))}
                       </div>
@@ -676,7 +676,7 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                     
                     {/* No certifications message */}
                     {(!contractor.certifications || contractor.certifications.length === 0) && (
-                      <div className="text-gray-500 text-sm italic">
+                      <div className="text-gray-500 text-xs sm:text-sm italic">
                         No certifications listed
                       </div>
                     )}
@@ -689,32 +689,32 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
       </section>
 
       {/* Reviews */}
-      <section className="py-12 bg-[#D6D6D6]">
+      <section className="py-6 md:py-12 bg-[#D6D6D6]">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#0a4768] mb-8">Customer Reviews</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#0a4768] mb-6 md:mb-8">Customer Reviews</h2>
           <ContractorReviewsSection reviews={recentReviews} />
         </div>
       </section>
 
       {/* Recent Projects */}
-      <section className="py-12 bg-white">
+      <section className="py-6 md:py-12 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#0a4768] mb-8">Recent Projects</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#0a4768] mb-6 md:mb-8">Recent Projects</h2>
           
           {recentProjects.length === 0 ? (
             <Card>
-              <CardContent className="text-center py-12">
+              <CardContent className="text-center py-8 md:py-12">
                 <div className="text-gray-500 mb-4">
-                  <Wrench className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">No Projects Yet</h4>
-                  <p className="text-gray-600">
+                  <Wrench className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-4 text-gray-400" />
+                  <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">No Projects Yet</h4>
+                  <p className="text-sm sm:text-base text-gray-600">
                     This contractor hasn't uploaded any project photos yet.
                   </p>
                 </div>
               </CardContent>
             </Card>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
               {recentProjects.map((project: any, index: number) => (
                 <Card key={project.id || index} className="hover:shadow-lg transition-shadow overflow-hidden">
                   <div className="aspect-video relative">
@@ -723,21 +723,22 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
                       alt={`${project.service} project in ${project.location}`}
                       fill
                       className="object-cover"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                     />
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-[#F5DD22] text-[#0a4768]">
+                    <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
+                      <Badge className="bg-[#F5DD22] text-[#0a4768] text-xs sm:text-sm">
                         {project.service}
                       </Badge>
                     </div>
                   </div>
-                  <CardContent className="p-6">
-                    <div className="mb-4">
-                      <div className="font-semibold text-[#0a4768] mb-2">{project.title}</div>
-                      <div className="text-sm text-gray-600 mb-2">{project.location}</div>
-                      <p className="text-gray-700 text-sm mb-4">{project.description}</p>
+                  <CardContent className="p-4 md:p-6">
+                    <div className="mb-3 md:mb-4">
+                      <div className="font-semibold text-[#0a4768] mb-2 text-sm sm:text-base">{project.title}</div>
+                      <div className="text-xs sm:text-sm text-gray-600 mb-2">{project.location}</div>
+                      <p className="text-gray-700 text-xs sm:text-sm mb-3 md:mb-4 line-clamp-3">{project.description}</p>
                     </div>
                     
-                    <div className="space-y-2 text-sm">
+                    <div className="space-y-2 text-xs sm:text-sm">
                       {project.size && (
                         <div className="flex justify-between">
                           <span className="text-gray-600">Size:</span>
@@ -758,16 +759,16 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
       </section>
 
       {/* Ready to Get Started Section */}
-      <section className="py-16 bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6]">
+      <section className="py-8 md:py-12 lg:py-16 bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6]">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#0a4768] mb-4 md:mb-6">
               Ready to Get Started?
             </h2>
-            <p className="text-xl text-gray-700 mb-8">
+            <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-6 md:mb-8 px-4">
               Join thousands of homeowners who have found their perfect insulation contractor through InsulationPal.
             </p>
-            <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-4 text-lg">
+            <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg">
               Find My Contractor
             </QuoteButton>
           </div>

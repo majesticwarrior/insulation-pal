@@ -267,24 +267,24 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <div className="text-center">
-              <Home className="mx-auto h-12 w-12 text-blue-600 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">How big is your home?</h3>
-              <p className="text-gray-600">Enter your home's square footage</p>
+              <Home className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-blue-600 mb-3 sm:mb-4" />
+              <h3 className="text-base sm:text-lg font-semibold mb-2">How big is your home?</h3>
+              <p className="text-sm sm:text-base text-gray-600">Enter your home's square footage</p>
             </div>
             <FormField
               control={form.control}
               name="homeSize"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Square Footage</FormLabel>
+                  <FormLabel className="text-sm sm:text-base">Square Footage</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="e.g., 2500"
                       type="number"
                       {...field}
-                      className="text-center text-lg"
+                      className="text-center text-base sm:text-lg"
                     />
                   </FormControl>
                   <FormMessage />
@@ -296,16 +296,16 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
 
       case 2:
         return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <div className="text-center">
-              <Wrench className="mx-auto h-12 w-12 text-blue-600 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">What do you need?</h3>
-              <p className="text-gray-600">Select the areas and insulation types</p>
+              <Wrench className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-blue-600 mb-3 sm:mb-4" />
+              <h3 className="text-base sm:text-lg font-semibold mb-2">What do you need?</h3>
+              <p className="text-sm sm:text-base text-gray-600">Select the areas and insulation types</p>
             </div>
 
             <div>
-              <Label className="text-base font-medium">Areas needing insulation:</Label>
-              <div className="grid grid-cols-2 gap-3 mt-3">
+              <Label className="text-sm sm:text-base font-medium">Areas needing insulation:</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mt-2 sm:mt-3">
                 {areas.map((area) => (
                   <div key={area.id} className="flex items-center space-x-2">
                     <Checkbox
@@ -313,18 +313,18 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
                       checked={form.watch('areas')?.includes(area.id)}
                       onCheckedChange={(checked) => handleAreaChange(area.id, checked as boolean)}
                     />
-                    <Label htmlFor={area.id} className="text-sm font-normal">{area.label}</Label>
+                    <Label htmlFor={area.id} className="text-xs sm:text-sm font-normal">{area.label}</Label>
                   </div>
                 ))}
               </div>
               {form.formState.errors.areas && (
-                <p className="text-sm text-red-600 mt-1">{form.formState.errors.areas.message}</p>
+                <p className="text-xs sm:text-sm text-red-600 mt-1">{form.formState.errors.areas.message}</p>
               )}
             </div>
 
             <div>
-              <Label className="text-base font-medium">Type of insulation:</Label>
-              <div className="grid grid-cols-2 gap-3 mt-3">
+              <Label className="text-sm sm:text-base font-medium">Type of insulation:</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mt-2 sm:mt-3">
                 {insulationTypes.map((type) => (
                   <div key={type.id} className="flex items-center space-x-2">
                     <Checkbox
@@ -332,20 +332,20 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
                       checked={form.watch('insulationTypes')?.includes(type.id)}
                       onCheckedChange={(checked) => handleInsulationTypeChange(type.id, checked as boolean)}
                     />
-                    <Label htmlFor={type.id} className="text-sm font-normal">{type.label}</Label>
+                    <Label htmlFor={type.id} className="text-xs sm:text-sm font-normal">{type.label}</Label>
                   </div>
                 ))}
               </div>
               {form.formState.errors.insulationTypes && (
-                <p className="text-sm text-red-600 mt-1">{form.formState.errors.insulationTypes.message}</p>
+                <p className="text-xs sm:text-sm text-red-600 mt-1">{form.formState.errors.insulationTypes.message}</p>
               )}
             </div>
 
             {/* Attic Insulation Depth */}
             {form.watch('areas')?.includes('attic') && (
               <div>
-                <Label className="text-base font-medium">Attic Insulation Depth:</Label>
-                <div className="grid grid-cols-3 gap-3 mt-3">
+                <Label className="text-sm sm:text-base font-medium">Attic Insulation Depth:</Label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 mt-2 sm:mt-3">
                   {atticInsulationDepths.map((depth) => (
                     <div key={depth.id} className="flex items-center space-x-2">
                       <Checkbox
@@ -359,7 +359,7 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
                           }
                         }}
                       />
-                      <Label htmlFor={depth.id} className="text-sm font-normal">{depth.label}</Label>
+                      <Label htmlFor={depth.id} className="text-xs sm:text-sm font-normal">{depth.label}</Label>
                     </div>
                   ))}
                 </div>
@@ -372,22 +372,22 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
               name="projectType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-medium">Project Type:</FormLabel>
+                  <FormLabel className="text-sm sm:text-base font-medium">Project Type:</FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
                       defaultValue={field.value}
-                      className="mt-3"
+                      className="mt-2 sm:mt-3"
                     >
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="residential" id="residential" />
-                        <Label htmlFor="residential" className="text-sm font-normal">
+                        <Label htmlFor="residential" className="text-xs sm:text-sm font-normal">
                           Residential
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="commercial" id="commercial" />
-                        <Label htmlFor="commercial" className="text-sm font-normal">
+                        <Label htmlFor="commercial" className="text-xs sm:text-sm font-normal">
                           Commercial
                         </Label>
                       </div>
@@ -400,8 +400,8 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
 
             {/* Additional Services */}
             <div>
-              <Label className="text-base font-medium">Additional Services:</Label>
-              <div className="grid grid-cols-2 gap-3 mt-3">
+              <Label className="text-sm sm:text-base font-medium">Additional Services:</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mt-2 sm:mt-3">
                 {additionalServices.map((service) => (
                   <div key={service.id} className="flex items-center space-x-2">
                     <Checkbox
@@ -409,7 +409,7 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
                       checked={form.watch('additionalServices')?.includes(service.id)}
                       onCheckedChange={(checked) => handleAdditionalServiceChange(service.id, checked as boolean)}
                     />
-                    <Label htmlFor={service.id} className="text-sm font-normal">{service.label}</Label>
+                    <Label htmlFor={service.id} className="text-xs sm:text-sm font-normal">{service.label}</Label>
                   </div>
                 ))}
               </div>
@@ -422,13 +422,13 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
                 name="ceilingFanCount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>How many ceiling fans?</FormLabel>
+                    <FormLabel className="text-sm sm:text-base">How many ceiling fans?</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="e.g., 3"
                         type="number"
                         {...field}
-                        className="text-center"
+                        className="text-center text-sm sm:text-base"
                       />
                     </FormControl>
                     <FormMessage />
@@ -441,22 +441,22 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
 
       case 3:
         return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <div className="text-center">
-              <Phone className="mx-auto h-12 w-12 text-blue-600 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Contact Information</h3>
-              <p className="text-gray-600">How can {contractorName} reach you?</p>
+              <Phone className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-blue-600 mb-3 sm:mb-4" />
+              <h3 className="text-base sm:text-lg font-semibold mb-2">Contact Information</h3>
+              <p className="text-sm sm:text-base text-gray-600">How can {contractorName} reach you?</p>
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-3 sm:gap-4">
               <FormField
                 control={form.control}
                 name="customerName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+                    <FormLabel className="text-sm sm:text-base">Full Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} />
+                      <Input placeholder="John Doe" {...field} className="text-sm sm:text-base" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -468,9 +468,9 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
                 name="customerEmail"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email Address</FormLabel>
+                    <FormLabel className="text-sm sm:text-base">Email Address</FormLabel>
                     <FormControl>
-                      <Input placeholder="john@example.com" type="email" {...field} />
+                      <Input placeholder="john@example.com" type="email" {...field} className="text-sm sm:text-base" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -482,9 +482,9 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
                 name="customerPhone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
+                    <FormLabel className="text-sm sm:text-base">Phone Number</FormLabel>
                     <FormControl>
-                      <Input placeholder="(555) 123-4567" type="tel" {...field} />
+                      <Input placeholder="(555) 123-4567" type="tel" {...field} className="text-sm sm:text-base" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -496,24 +496,24 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Property Address</FormLabel>
+                    <FormLabel className="text-sm sm:text-base">Property Address</FormLabel>
                     <FormControl>
-                      <Input placeholder="123 Main St" {...field} />
+                      <Input placeholder="123 Main St" {...field} className="text-sm sm:text-base" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <FormField
                   control={form.control}
                   name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>City</FormLabel>
+                      <FormLabel className="text-sm sm:text-base">City</FormLabel>
                       <FormControl>
-                        <Input placeholder="Phoenix" {...field} />
+                        <Input placeholder="Phoenix" {...field} className="text-sm sm:text-base" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -525,9 +525,9 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
                   name="state"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>State</FormLabel>
+                      <FormLabel className="text-sm sm:text-base">State</FormLabel>
                       <FormControl>
-                        <Input placeholder="AZ" {...field} />
+                        <Input placeholder="AZ" {...field} className="text-sm sm:text-base" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -540,9 +540,9 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
                 name="zipCode"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Zip Code</FormLabel>
+                    <FormLabel className="text-sm sm:text-base">Zip Code</FormLabel>
                     <FormControl>
-                      <Input placeholder="85001" {...field} />
+                      <Input placeholder="85001" {...field} className="text-sm sm:text-base" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -559,15 +559,15 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="text-center">Get Quote from {contractorName}</DialogTitle>
+          <DialogTitle className="text-center text-base sm:text-lg">Get Quote from {contractorName}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
           <form onSubmit={(e) => e.preventDefault()}>
             {/* Progress Steps */}
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
               <div className="flex items-center justify-between mb-4">
                 {steps.map((step, index) => {
                   const StepIcon = step.icon
@@ -577,7 +577,7 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
                     <div key={step.id} className="flex items-center flex-1">
                       <div className="flex flex-col items-center flex-1">
                         <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                          className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
                             isActive
                               ? 'bg-blue-600 text-white'
                               : isCompleted
@@ -586,13 +586,13 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
                           }`}
                         >
                           {isCompleted ? (
-                            <CheckCircle className="h-5 w-5" />
+                            <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                           ) : (
-                            <StepIcon className="h-5 w-5" />
+                            <StepIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                           )}
                         </div>
                         <span
-                          className={`text-xs mt-1 ${
+                          className={`text-[10px] sm:text-xs mt-1 text-center ${
                             isActive ? 'text-blue-600 font-semibold' : 'text-gray-500'
                           }`}
                         >
@@ -601,7 +601,7 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
                       </div>
                       {index < steps.length - 1 && (
                         <div
-                          className={`h-1 flex-1 mx-2 ${
+                          className={`h-0.5 sm:h-1 flex-1 mx-1 sm:mx-2 ${
                             isCompleted ? 'bg-green-500' : 'bg-gray-200'
                           }`}
                         />
@@ -613,33 +613,39 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
             </div>
 
             {/* Form Content */}
-            <div className="mb-6">{renderStep()}</div>
+            <div className="mb-4 sm:mb-6">{renderStep()}</div>
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-2 sm:gap-4">
               <Button
                 type="button"
                 variant="outline"
                 onClick={prevStep}
                 disabled={currentStep === 1 || isSubmitting}
+                className="text-sm sm:text-base px-3 sm:px-4"
               >
-                <ChevronLeft className="h-4 w-4 mr-2" />
-                Previous
+                <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Previous</span>
+                <span className="sm:hidden">Prev</span>
               </Button>
               <Button
                 type="button"
                 onClick={nextStep}
                 disabled={isSubmitting}
-                className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768]"
+                className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] text-sm sm:text-base px-3 sm:px-4"
               >
                 {isSubmitting ? (
                   'Submitting...'
                 ) : currentStep === 3 ? (
-                  'Submit Quote Request'
-                ) : (
+                  <span className="hidden sm:inline">Submit Quote Request</span>
+                ) : null}
+                {!isSubmitting && currentStep === 3 && (
+                  <span className="sm:hidden">Submit</span>
+                )}
+                {!isSubmitting && currentStep < 3 && (
                   <>
                     Next
-                    <ChevronRight className="h-4 w-4 ml-2" />
+                    <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1 sm:ml-2" />
                   </>
                 )}
               </Button>
