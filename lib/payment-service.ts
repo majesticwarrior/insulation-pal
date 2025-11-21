@@ -17,25 +17,32 @@ export interface CreditPackage {
 
 export const creditPackages: CreditPackage[] = [
   {
-    id: 'basic',
-    name: 'Basic Package',
-    credits: 10,
-    price: 200,
-    description: '10 lead credits - perfect for getting started'
+    id: 'starter',
+    name: 'Starter Package',
+    credits: 5,
+    price: 125,
+    description: '5 lead credits - perfect for getting started'
   },
   {
     id: 'professional',
     name: 'Professional Package', 
-    credits: 25,
-    price: 450,
-    description: '25 lead credits - great for growing businesses'
+    credits: 10,
+    price: 240,
+    description: '10 lead credits - great for growing businesses'
   },
   {
-    id: 'premium',
-    name: 'Premium Package',
+    id: 'business',
+    name: 'Business Package',
+    credits: 25,
+    price: 575,
+    description: '25 lead credits - best value for contractors'
+  },
+  {
+    id: 'enterprise',
+    name: 'Enterprise Package',
     credits: 50,
-    price: 800,
-    description: '50 lead credits - best value for busy contractors'
+    price: 1100,
+    description: '50 lead credits - maximum value for busy contractors'
   }
 ]
 
