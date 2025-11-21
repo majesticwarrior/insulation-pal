@@ -14,8 +14,8 @@ export const leadPackages = [
     id: 'starter',
     name: 'Starter Package',
     credits: 5,
-    price: 125, // $125
-    pricePerCredit: 25,
+    price: 150, // $150
+    pricePerCredit: 30,
     description: 'Perfect for new contractors',
     popular: false
   },
@@ -23,8 +23,8 @@ export const leadPackages = [
     id: 'professional',
     name: 'Professional Package', 
     credits: 10,
-    price: 240, // $240
-    pricePerCredit: 24,
+    price: 290, // $290
+    pricePerCredit: 29,
     description: 'Most popular choice',
     popular: true
   },
@@ -32,8 +32,8 @@ export const leadPackages = [
     id: 'business',
     name: 'Business Package',
     credits: 25,
-    price: 575, // $575
-    pricePerCredit: 23,
+    price: 675, // $675
+    pricePerCredit: 27,
     description: 'Best value for contractors',
     popular: false
   },
@@ -41,8 +41,8 @@ export const leadPackages = [
     id: 'enterprise',
     name: 'Enterprise Package',
     credits: 50,
-    price: 1000, // $1,000
-    pricePerCredit: 20,
+    price: 1250, // $1,250
+    pricePerCredit: 25,
     description: 'Maximum value for contractors',
     popular: false
   }

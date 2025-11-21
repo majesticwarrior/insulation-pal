@@ -20,28 +20,28 @@ export const creditPackages: CreditPackage[] = [
     id: 'starter',
     name: 'Starter Package',
     credits: 5,
-    price: 125,
+    price: 150,
     description: '5 lead credits - perfect for getting started'
   },
   {
     id: 'professional',
     name: 'Professional Package', 
     credits: 10,
-    price: 240,
+    price: 290,
     description: '10 lead credits - great for growing businesses'
   },
   {
     id: 'business',
     name: 'Business Package',
     credits: 25,
-    price: 575,
+    price: 675,
     description: '25 lead credits - best value for contractors'
   },
   {
     id: 'enterprise',
     name: 'Enterprise Package',
     credits: 50,
-    price: 1000,
+    price: 1250,
     description: '50 lead credits - maximum value for busy contractors'
   }
 ]

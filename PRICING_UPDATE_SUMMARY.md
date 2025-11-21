@@ -2,16 +2,16 @@
 
 ## ✅ Changes Made
 
-The lead package pricing has been updated from $20/lead to $25/lead with volume discounts.
+The lead package pricing has been updated to $30/lead base price with volume discounts.
 
 ### New Pricing Structure
 
 | Package | Credits | Total Price | Price Per Credit | Savings |
 |---------|---------|-------------|------------------|---------|
-| **Starter** | 5 | $125 | $25/credit | - |
-| **Professional** | 10 | $240 | $24/credit | $10 off ($1/credit discount) |
-| **Business** | 25 | $575 | $23/credit | $50 off ($2/credit discount) |
-| **Enterprise** | 50 | $1,000 | $20/credit | $250 off ($5/credit discount) |
+| **Starter** | 5 | $150 | $30/credit | - |
+| **Professional** | 10 | $290 | $29/credit | $10 off ($1/credit discount) |
+| **Business** | 25 | $675 | $27/credit | $75 off ($3/credit discount) |
+| **Enterprise** | 50 | $1,250 | $25/credit | $250 off ($5/credit discount) |
 
 ### Previous Pricing (For Reference)
 
@@ -21,6 +21,13 @@ The lead package pricing has been updated from $20/lead to $25/lead with volume 
 | Professional | 10 | $190 | $19/credit |
 | Business | 25 | $450 | $18/credit |
 | Enterprise | 50 | $850 | $17/credit |
+
+### Latest Updates
+
+**Updated pricing to $30/credit base with better volume discounts:**
+- Base rate increased from $25 to $30 per credit
+- Bulk discounts provide better value: save up to $5/credit on 50-credit package
+- Enterprise package offers best value at $25/credit (17% discount)
 
 ## 📁 Files Updated
 
@@ -95,10 +102,10 @@ npm run dev
 1. Login as a contractor
 2. Go to "Lead Packages" tab
 3. Verify new pricing shows:
-   - 5 Credits: $125 ($25/credit)
-   - 10 Credits: $240 ($24/credit)
-   - 25 Credits: $575 ($23/credit)
-   - 50 Credits: $1,000 ($20/credit)
+   - 5 Credits: $150 ($30/credit)
+   - 10 Credits: $290 ($29/credit)
+   - 25 Credits: $675 ($27/credit)
+   - 50 Credits: $1,250 ($25/credit)
 
 ### 2. Test Purchase Flow (Demo Mode)
 
@@ -147,7 +154,7 @@ Any future expiry date, any CVC, any ZIP code.
 In your Stripe Dashboard under **Payments**:
 - Each successful payment appears as a separate transaction
 - Product name shows as "Starter Package", "Professional Package", etc.
-- Amount shows the new pricing ($125, $240, $575, $1,000)
+- Amount shows the new pricing ($150, $290, $675, $1,250)
 - Description shows number of credits included
 
 ### No Setup Required:
@@ -192,8 +199,8 @@ If you encounter any issues:
 
 ## Summary
 
-✅ Pricing updated from $20/lead to $25/lead base price
-✅ Volume discounts maintained ($24, $23, $22 per credit)
+✅ Pricing updated to $30/lead base price
+✅ Volume discounts: $29, $27, $25 per credit (save up to $5/credit)
 ✅ All files updated and consistent
 ✅ Stripe integration works automatically with dynamic pricing
 ✅ No manual Stripe dashboard configuration needed
