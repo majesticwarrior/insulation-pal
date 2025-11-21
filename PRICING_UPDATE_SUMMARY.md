@@ -11,7 +11,7 @@ The lead package pricing has been updated from $20/lead to $25/lead with volume 
 | **Starter** | 5 | $125 | $25/credit | - |
 | **Professional** | 10 | $240 | $24/credit | $10 off ($1/credit discount) |
 | **Business** | 25 | $575 | $23/credit | $50 off ($2/credit discount) |
-| **Enterprise** | 50 | $1,100 | $22/credit | $150 off ($3/credit discount) |
+| **Enterprise** | 50 | $1,000 | $20/credit | $250 off ($5/credit discount) |
 
 ### Previous Pricing (For Reference)
 
@@ -98,7 +98,7 @@ npm run dev
    - 5 Credits: $125 ($25/credit)
    - 10 Credits: $240 ($24/credit)
    - 25 Credits: $575 ($23/credit)
-   - 50 Credits: $1,100 ($22/credit)
+   - 50 Credits: $1,000 ($20/credit)
 
 ### 2. Test Purchase Flow (Demo Mode)
 
@@ -147,7 +147,7 @@ Any future expiry date, any CVC, any ZIP code.
 In your Stripe Dashboard under **Payments**:
 - Each successful payment appears as a separate transaction
 - Product name shows as "Starter Package", "Professional Package", etc.
-- Amount shows the new pricing ($125, $240, $575, $1,100)
+- Amount shows the new pricing ($125, $240, $575, $1,000)
 - Description shows number of credits included
 
 ### No Setup Required:

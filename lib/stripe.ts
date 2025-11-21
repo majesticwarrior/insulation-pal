@@ -41,8 +41,8 @@ export const leadPackages = [
     id: 'enterprise',
     name: 'Enterprise Package',
     credits: 50,
-    price: 1100, // $1,100
-    pricePerCredit: 22,
+    price: 1000, // $1,000
+    pricePerCredit: 20,
     description: 'Maximum value for contractors',
     popular: false
   }

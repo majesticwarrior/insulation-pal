@@ -41,7 +41,7 @@ export const creditPackages: CreditPackage[] = [
     id: 'enterprise',
     name: 'Enterprise Package',
     credits: 50,
-    price: 1100,
+    price: 1000,
     description: '50 lead credits - maximum value for busy contractors'
   }
 ]
