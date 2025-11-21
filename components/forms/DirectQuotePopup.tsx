@@ -17,6 +17,7 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { assignLeadToSingleContractor } from '@/lib/direct-lead-assignment'
 import { getCustomerData, parseAddress } from '@/lib/customer-data-storage'
+import { trackQuoteSubmissionConversion } from '@/lib/google-ads-conversion'
 
 const directQuoteSchema = z.object({
   homeSize: z.string().min(1, 'Home size is required'),
@@ -175,6 +176,10 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
         console.log('Demo Mode: Direct quote request submitted:', formData)
         await new Promise(resolve => setTimeout(resolve, 1000))
         toast.success(`Quote request sent to ${contractorName}! (Demo Mode)`)
+        
+        // Track Google Ads conversion (works even in demo mode)
+        trackQuoteSubmissionConversion('direct')
+        
         onClose()
         form.reset()
         setCurrentStep(1)
@@ -221,6 +226,10 @@ export function DirectQuotePopup({ isOpen, onClose, contractorId, contractorName
       await assignLeadToSingleContractor(lead, contractorId)
 
       toast.success(`Quote request sent to ${contractorName}! They will contact you soon.`)
+      
+      // Track Google Ads conversion
+      trackQuoteSubmissionConversion('direct')
+      
       onClose()
       form.reset()
       setCurrentStep(1)

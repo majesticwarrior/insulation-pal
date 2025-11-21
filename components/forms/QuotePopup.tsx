@@ -15,6 +15,7 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { getCustomerData, parseAddress } from '@/lib/customer-data-storage'
 import { quoteSchema, QuoteFormData } from '@/lib/schemas/quote'
+import { trackQuoteSubmissionConversion } from '@/lib/google-ads-conversion'
 
 interface QuotePopupProps {
   isOpen: boolean
@@ -146,6 +147,10 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
       // All leads now use random assignment - redirect to success page
       if (formData.quotePreference === 'choose_three') {
         // Redirect to success page since random assignment is now automatic
+        
+        // Track Google Ads conversion
+        trackQuoteSubmissionConversion('standard')
+        
         onClose()
         router.push('/quote-success')
         return
@@ -164,6 +169,10 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
         await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate delay
         
         toast.success('Quote request submitted successfully! (Demo Mode - Please set up Supabase environment variables)')
+        
+        // Track Google Ads conversion (works even in demo mode)
+        trackQuoteSubmissionConversion('standard')
+        
         onClose()
         form.reset()
         setCurrentStep(1)
@@ -204,6 +213,10 @@ export function QuotePopup({ isOpen, onClose }: QuotePopupProps) {
       } else {
         toast.success('Quote request submitted successfully! Your request has been sent to contractors in your area.')
       }
+      
+      // Track Google Ads conversion
+      trackQuoteSubmissionConversion('standard')
+      
       onClose()
       form.reset()
       setCurrentStep(1)
