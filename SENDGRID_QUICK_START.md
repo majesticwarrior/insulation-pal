@@ -30,7 +30,7 @@ Copy `.env.local.example` to `.env.local` and update with your values:
 
 ```env
 # SendGrid (already configured)
-SENDGRID_API_KEY=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
+SENDGRID_API_KEY=your_sendgrid_api_key
 SENDGRID_FROM_EMAIL=team@quote.insulationpal.com
 SENDGRID_FROM_NAME=Insulation Pal
 

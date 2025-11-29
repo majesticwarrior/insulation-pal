@@ -4,8 +4,13 @@ import sgMail from '@sendgrid/mail'
 import { getPropertyImages, getPlaceholderImage, extractStreetName } from '@/lib/google-maps'
 
 // Initialize SendGrid with API key
-const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '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'
-sgMail.setApiKey(SENDGRID_API_KEY)
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY
+if (!SENDGRID_API_KEY) {
+  console.error('SENDGRID_API_KEY is not configured')
+}
+if (SENDGRID_API_KEY) {
+  sgMail.setApiKey(SENDGRID_API_KEY)
+}
 
 const emailTemplates = {
   'new-lead': (data: any) => {

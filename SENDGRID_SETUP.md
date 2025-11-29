@@ -40,7 +40,7 @@ Create a `.env.local` file in your project root with these variables:
 
 ```env
 # SendGrid Configuration
-SENDGRID_API_KEY=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
+SENDGRID_API_KEY=your_sendgrid_api_key
 SENDGRID_FROM_EMAIL=team@quote.insulationpal.com
 SENDGRID_FROM_NAME=Insulation Pal
 SENDGRID_REPLY_TO=team@quote.insulationpal.com
@@ -48,13 +48,13 @@ SENDGRID_REPLY_TO=team@quote.insulationpal.com
 # Your existing Supabase variables
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
 # Site Configuration
 NEXT_PUBLIC_SITE_URL=https://insulationpal.com
 
 # Google Maps (if used)
-GOOGLE_MAPS_API_KEY=your_google_maps_key
+GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 ```
 
 ---
@@ -177,7 +177,7 @@ fetch('/api/send-email', {
 3. Add these variables for **all environments** (Production, Preview, Development):
 
 ```
-SENDGRID_API_KEY = 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
+SENDGRID_API_KEY = your_sendgrid_api_key
 SENDGRID_FROM_EMAIL = team@quote.insulationpal.com
 SENDGRID_FROM_NAME = Insulation Pal
 SENDGRID_REPLY_TO = team@quote.insulationpal.com

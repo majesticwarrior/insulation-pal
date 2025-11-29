@@ -10,7 +10,7 @@ To enable Stripe payment functionality, add these variables to your `.env.local`
 ```bash
 # Stripe Configuration
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_51RyIQCF0b1GldMN9OGyAUgzHV3WBcGqIXMhhe5OAPE0s5zZqdxrjBo773jsN6D6nyBv1XKsHLTfc5X66RqbV8AW400Hxc6NtSK
-STRIPE_SECRET_KEY=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
+STRIPE_SECRET_KEY=sk_live_your_actual_stripe_secret_key
 
 # Business Information
 STRIPE_COMPANY_NAME=InsulationPal
