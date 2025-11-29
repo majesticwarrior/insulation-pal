@@ -56,8 +56,7 @@ export async function generateMetadata(): Promise<Metadata> {
         'Buckeye energy efficiency',
         'Arizona insulation services',
         'Buckeye insulation quotes',
-        'licensed insulation contractors Buckeye',
-        'verified insulation professionals Buckeye'
+        'licensed insulation contractors Buckeye'
       ],
       openGraph: {
         title: `${baseTitle} - ${contractorCount} Top-Rated Professionals`,
