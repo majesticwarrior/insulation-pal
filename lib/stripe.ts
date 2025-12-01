@@ -23,8 +23,8 @@ export const leadPackages = [
     id: 'professional',
     name: 'Professional Package', 
     credits: 10,
-    price: 290, // $290
-    pricePerCredit: 29,
+    price: 285, // $285
+    pricePerCredit: 28.5,
     description: 'Most popular choice',
     popular: true
   },
