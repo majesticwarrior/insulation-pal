@@ -110,7 +110,7 @@ export default function AboutPage() {
               <h2 className="text-4xl font-bold text-[#0a4768] mb-6">Our Story</h2>
               <p className="text-lg text-gray-600 mb-6">
                 InsulationPal is a new company founded in 2025 when our founder, Shannon Adams, experienced firsthand 
-                the frustration of finding reliable insulation contractors. After calling dozens of companies 
+                the frustration of finding reliable insulation contractors. After calling several companies 
                 and receiving wildly different quotes, he realized there had to be a better way.
               </p>
               <p className="text-lg text-gray-600 mb-6">
