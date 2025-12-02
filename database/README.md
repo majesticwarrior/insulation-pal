@@ -52,8 +52,8 @@ Update your `.env.local` file:
 
 ```env
 # Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=https://nacaxeklijillnrvdeah.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hY2F4ZWtsaWppbGxucnZkZWFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NTE0NjksImV4cCI6MjA3NDIyNzQ2OX0.3VO5kLxzbUCZUoo234LebpxJXB8i3gWgJK9R3GccxIk
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
 # Site Configuration  

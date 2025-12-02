@@ -26,7 +26,7 @@ npm install @sendgrid/mail
 
 ### 3. Your SendGrid Configuration
 
-- **API Key**: `SG.0ZpXEHylTgOmQJ5ZWFLvag...` (configured)
+- **API Key**: `SG.your_sendgrid_api_key...` (configured)
 - **From Email**: `team@quote.insulationpal.com`
 - **From Name**: `Insulation Pal`
 
