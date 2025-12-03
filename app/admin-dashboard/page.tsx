@@ -1385,35 +1385,39 @@ export default function AdminDashboard() {
                   )}
                 </div>
                 
-                <div className="rounded-md border">
-                  <Table>
+                <div className="rounded-md border overflow-x-auto">
+                  <Table className="w-full table-auto">
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Business Name</TableHead>
-                        <TableHead>Customer Name</TableHead>
-                        <TableHead className="w-[180px]">Customer Email</TableHead>
-                        <TableHead className="w-[180px]">Email</TableHead>
-                        <TableHead>License #</TableHead>
-                        <TableHead>Location</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Credits</TableHead>
-                        <TableHead>Reviews</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead className="w-[12%]">Business</TableHead>
+                        <TableHead className="w-[10%]">Customer</TableHead>
+                        <TableHead className="w-[12%]">Cust Email</TableHead>
+                        <TableHead className="w-[12%]">Email</TableHead>
+                        <TableHead className="w-[8%]">License</TableHead>
+                        <TableHead className="w-[12%]">Location</TableHead>
+                        <TableHead className="w-[7%]">Status</TableHead>
+                        <TableHead className="w-[7%]">Credits</TableHead>
+                        <TableHead className="w-[8%]">Reviews</TableHead>
+                        <TableHead className="w-[6%]">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filteredContractors.map((contractor) => (
                         <TableRow key={contractor.id}>
                           <TableCell className="font-medium">
-                            {contractor.business_name}
+                            <div className="truncate max-w-[120px]" title={contractor.business_name}>
+                              {contractor.business_name}
+                            </div>
                           </TableCell>
                           <TableCell>
-                            {contractor.users?.name || 'N/A'}
+                            <div className="truncate max-w-[100px] text-xs" title={contractor.users?.name || undefined}>
+                              {contractor.users?.name || 'N/A'}
+                            </div>
                           </TableCell>
-                          <TableCell className="max-w-[180px]">
-                            <div className="flex items-center gap-1">
+                          <TableCell>
+                            <div className="flex items-center gap-1 max-w-[130px]">
                               <span
-                                className="truncate whitespace-nowrap"
+                                className="truncate text-xs"
                                 title={contractor.users?.email || undefined}
                               >
                                 {contractor.users?.email || 'N/A'}
@@ -1422,7 +1426,7 @@ export default function AdminDashboard() {
                                 <Button
                                   size="icon"
                                   variant="ghost"
-                                  className="h-6 w-6"
+                                  className="h-5 w-5 flex-shrink-0"
                                   onClick={() => copyToClipboard(contractor.users?.email, 'Customer email')}
                                 >
                                   <Copy className="h-3 w-3" />
@@ -1431,10 +1435,10 @@ export default function AdminDashboard() {
                               )}
                             </div>
                           </TableCell>
-                          <TableCell className="max-w-[180px]">
-                            <div className="flex items-center gap-1">
+                          <TableCell>
+                            <div className="flex items-center gap-1 max-w-[130px]">
                               <span
-                                className="truncate whitespace-nowrap"
+                                className="truncate text-xs"
                                 title={contractor.email || undefined}
                               >
                                 {contractor.email}
@@ -1443,7 +1447,7 @@ export default function AdminDashboard() {
                                 <Button
                                   size="icon"
                                   variant="ghost"
-                                  className="h-6 w-6"
+                                  className="h-5 w-5 flex-shrink-0"
                                   onClick={() => copyToClipboard(contractor.email, 'Contractor email')}
                                 >
                                   <Copy className="h-3 w-3" />
@@ -1452,28 +1456,38 @@ export default function AdminDashboard() {
                               )}
                             </div>
                           </TableCell>
-                          <TableCell>{contractor.license_number || 'N/A'}</TableCell>
                           <TableCell>
-                            {contractor.business_city && contractor.business_state
-                              ? `${contractor.business_city}, ${contractor.business_state}`
-                              : 'Not specified'
-                            }
-                          </TableCell>
-                          <TableCell>{getStatusBadge(contractor.status)}</TableCell>
-                          <TableCell>
-                            <div className="flex items-center">
-                              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium">
-                                {contractor.credits || 0} credits
-                              </span>
+                            <div className="truncate max-w-[80px] text-xs" title={contractor.license_number || undefined}>
+                              {contractor.license_number || 'N/A'}
                             </div>
                           </TableCell>
                           <TableCell>
-                            {contractor.total_reviews || 0} 
-                            {contractor.average_rating && (
-                              <span className="text-sm text-gray-500 ml-1">
-                                ({contractor.average_rating.toFixed(1)} ⭐)
-                              </span>
-                            )}
+                            <div className="truncate max-w-[130px] text-xs" title={
+                              contractor.business_city && contractor.business_state
+                                ? `${contractor.business_city}, ${contractor.business_state}`
+                                : undefined
+                            }>
+                              {contractor.business_city && contractor.business_state
+                                ? `${contractor.business_city}, ${contractor.business_state}`
+                                : 'Not specified'
+                              }
+                            </div>
+                          </TableCell>
+                          <TableCell>{getStatusBadge(contractor.status)}</TableCell>
+                          <TableCell>
+                            <span className="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded text-xs font-medium whitespace-nowrap">
+                              {contractor.credits || 0}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-xs whitespace-nowrap">
+                              {contractor.total_reviews || 0} 
+                              {contractor.average_rating && (
+                                <span className="text-gray-500 ml-1">
+                                  ({contractor.average_rating.toFixed(1)}⭐)
+                                </span>
+                              )}
+                            </div>
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
