@@ -16,7 +16,14 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   
-  // Webpack optimizations
+  // Turbopack configuration (Next.js 16 uses Turbopack by default)
+  turbopack: {
+    // Turbopack handles fonts automatically, no custom config needed
+    // If you need custom font handling, you can add rules here
+  },
+  
+  // Webpack optimizations (kept for backward compatibility if needed)
+  // Note: Turbopack is the default in Next.js 16, webpack config is only used with --webpack flag
   webpack: (config, { dev, isServer }) => {
     // Optimize for development
     if (dev) {
