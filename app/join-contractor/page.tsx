@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { ContractorRegistration } from '@/components/forms/ContractorRegistration'
@@ -9,6 +10,55 @@ import { CheckCircle, Star, DollarSign, Users, TrendingUp, Shield } from 'lucide
 import Link from 'next/link'
 
 export default function JoinContractorPage() {
+  // Ensure the title stays correct on client-side and prevent it from being changed
+  useEffect(() => {
+    const correctTitle = 'Become a Trusted InsulationPal Pro Today'
+    
+    // Set the title immediately and multiple times to ensure it sticks
+    const setTitle = () => {
+      if (document.title !== correctTitle) {
+        document.title = correctTitle
+      }
+    }
+    
+    // Set immediately
+    setTitle()
+    
+    // Set after a short delay to override any scripts
+    setTimeout(setTitle, 0)
+    setTimeout(setTitle, 100)
+    setTimeout(setTitle, 500)
+    setTimeout(setTitle, 1000)
+    
+    // Watch for title changes and revert them
+    const observer = new MutationObserver(() => {
+      setTitle()
+    })
+    
+    // Observe changes to the title element
+    const titleElement = document.querySelector('title')
+    if (titleElement) {
+      observer.observe(titleElement, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      })
+    }
+    
+    // Also set it periodically as a fallback
+    const interval = setInterval(setTitle, 200)
+    
+    // Use requestAnimationFrame for additional protection
+    const rafInterval = setInterval(() => {
+      requestAnimationFrame(setTitle)
+    }, 100)
+    
+    return () => {
+      observer.disconnect()
+      clearInterval(interval)
+      clearInterval(rafInterval)
+    }
+  }, [])
 
   const benefits = [
     {
@@ -75,8 +125,46 @@ export default function JoinContractorPage() {
     <main className="min-h-screen">
       <Header />
       
+      {/* Process Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-[#0a4768] mb-6">
+              How to Get Started
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Join our network in just 4 simple steps and start receiving leads within days.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {process.map((step, index) => (
+              <div key={index} className="text-center">
+                <div className="bg-[#F5DD22] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold text-[#0a4768]">{step.step}</span>
+                </div>
+                <h3 className="text-xl font-bold text-[#0a4768] mb-4">{step.title}</h3>
+                <p className="text-gray-600">{step.description}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Button
+              onClick={() => {
+                const nextSection = document.getElementById('registration-section')
+                nextSection?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }}
+              className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-6 text-lg"
+            >
+              JOIN INSULATIONPAL FOR FREE
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
+      <section id="registration-section" className="bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6] py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0a4768] mb-6 leading-tight">
@@ -125,34 +213,8 @@ export default function JoinContractorPage() {
         </div>
       </section>
 
-      {/* Process Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-[#0a4768] mb-6">
-              How to Get Started
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Join our network in just 4 simple steps and start receiving leads within days.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {process.map((step, index) => (
-              <div key={index} className="text-center">
-                <div className="bg-[#F5DD22] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-[#0a4768]">{step.step}</span>
-                </div>
-                <h3 className="text-xl font-bold text-[#0a4768] mb-4">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Features Section */}
-      <section className="py-20 bg-white">
+      <section className="pt-6 pb-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>

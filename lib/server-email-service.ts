@@ -577,6 +577,228 @@ const emailTemplates = {
     </body>
     </html>
     `
+  },
+
+  'contractor-email-verification': (data: any) => {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
+    const logoUrl = `${siteUrl}/insulation-pal-logo-footer.png`
+    
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Verify Your Email - InsulationPal</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a4768; font-family: Arial, sans-serif;">
+      
+      <!-- Header -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <img src="${logoUrl}" alt="InsulationPal" style="height: 120px; width: auto;">
+      </div>
+      
+      <!-- Main Content Card -->
+      <div style="background-color: white; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        
+        <!-- Verification Header -->
+        <div style="background: linear-gradient(135deg, #0a4768, #0d5a7f); padding: 30px; text-align: center;">
+          <div style="color: white; font-size: 28px; font-weight: bold; margin-bottom: 10px;">
+            ✉️ Verify Your Email Address
+          </div>
+          <div style="color: white; font-size: 18px;">
+            Complete your InsulationPal registration
+          </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div style="padding: 30px;">
+          <h2 style="color: #0a4768; margin: 0 0 20px 0; font-size: 22px;">
+            Hello ${data.name || 'Valued Contractor'},
+          </h2>
+          
+          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+            Thank you for registering with InsulationPal! To complete your registration and start receiving qualified leads, please verify your email address by clicking the button below.
+          </p>
+          
+          <!-- Verification Info -->
+          <div style="background-color: #eff6ff; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #0a4768;">
+            <h3 style="color: #0a4768; margin: 0 0 15px 0; font-size: 18px;">
+              📧 Why Verify Your Email?
+            </h3>
+            <div style="color: #1e40af; font-size: 14px; line-height: 1.8;">
+              <div style="margin-bottom: 10px;">
+                <strong>✓ Secure Your Account</strong><br>
+                <span style="font-size: 13px;">Email verification helps protect your account and ensures you receive important notifications.</span>
+              </div>
+              <div style="margin-bottom: 10px;">
+                <strong>✓ Start Receiving Leads</strong><br>
+                <span style="font-size: 13px;">Once verified, your application will be reviewed and you'll be able to receive qualified leads.</span>
+              </div>
+              <div>
+                <strong>✓ Access Your Dashboard</strong><br>
+                <span style="font-size: 13px;">Verified accounts get full access to the contractor dashboard and all features.</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Call to Action -->
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${data.verificationLink || '#'}" 
+               style="background-color: #F5DD22; color: #0a4768; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 18px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              VERIFY EMAIL ADDRESS
+            </a>
+          </div>
+          
+          <!-- Alternative Link -->
+          <div style="text-align: center; margin-top: 20px;">
+            <p style="color: #6b7280; font-size: 14px; margin-bottom: 10px;">
+              Button not working? Copy and paste this link into your browser:
+            </p>
+            <p style="color: #0a4768; font-size: 12px; word-break: break-all; margin: 0;">
+              ${data.verificationLink || '#'}
+            </p>
+          </div>
+          
+          <!-- Expiration Notice -->
+          <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 25px; border-left: 4px solid #f59e0b;">
+            <p style="color: #856404; margin: 0; font-size: 14px; line-height: 1.5;">
+              ⏰ <strong>Important:</strong> This verification link will expire in 24 hours. If you didn't register for InsulationPal, please ignore this email.
+            </p>
+          </div>
+          
+          <!-- Contact Information -->
+          <div style="text-align: center; margin-top: 30px;">
+            <p style="color: #6b7280; font-size: 14px; margin-bottom: 10px;">
+              Need help or have questions?
+            </p>
+            <p style="color: #0a4768; font-size: 14px; margin: 0;">
+              Contact us at <a href="mailto:info@majesticwarrior.com" style="color: #0a4768; text-decoration: none;">info@majesticwarrior.com</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <p style="color: white; font-size: 14px; margin: 0 0 10px 0;">InsulationPal - Professional Insulation Services</p>
+        <p style="color: white; font-size: 12px; margin: 0;">Serving those that serve others</p>
+      </div>
+      
+    </body>
+    </html>
+    `
+  },
+
+  'contractor-email-verification': (data: any) => {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://insulationpal.com'
+    const logoUrl = `${siteUrl}/insulation-pal-logo-footer.png`
+    
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Verify Your Email - InsulationPal</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0a4768; font-family: Arial, sans-serif;">
+      
+      <!-- Header -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <img src="${logoUrl}" alt="InsulationPal" style="height: 120px; width: auto;">
+      </div>
+      
+      <!-- Main Content Card -->
+      <div style="background-color: white; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        
+        <!-- Verification Header -->
+        <div style="background: linear-gradient(135deg, #0a4768, #0d5a7f); padding: 30px; text-align: center;">
+          <div style="color: white; font-size: 28px; font-weight: bold; margin-bottom: 10px;">
+            ✉️ Verify Your Email Address
+          </div>
+          <div style="color: white; font-size: 18px;">
+            Complete your InsulationPal registration
+          </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div style="padding: 30px;">
+          <h2 style="color: #0a4768; margin: 0 0 20px 0; font-size: 22px;">
+            Hello ${data.name || 'Valued Contractor'},
+          </h2>
+          
+          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+            Thank you for registering with InsulationPal! To complete your registration and start receiving qualified leads, please verify your email address by clicking the button below.
+          </p>
+          
+          <!-- Verification Info -->
+          <div style="background-color: #eff6ff; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #0a4768;">
+            <h3 style="color: #0a4768; margin: 0 0 15px 0; font-size: 18px;">
+              📧 Why Verify Your Email?
+            </h3>
+            <div style="color: #1e40af; font-size: 14px; line-height: 1.8;">
+              <div style="margin-bottom: 10px;">
+                <strong>✓ Secure Your Account</strong><br>
+                <span style="font-size: 13px;">Email verification helps protect your account and ensures you receive important notifications.</span>
+              </div>
+              <div style="margin-bottom: 10px;">
+                <strong>✓ Start Receiving Leads</strong><br>
+                <span style="font-size: 13px;">Once verified, your application will be reviewed and you'll be able to receive qualified leads.</span>
+              </div>
+              <div>
+                <strong>✓ Access Your Dashboard</strong><br>
+                <span style="font-size: 13px;">Verified accounts get full access to the contractor dashboard and all features.</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Call to Action -->
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${data.verificationLink || '#'}" 
+               style="background-color: #F5DD22; color: #0a4768; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 18px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              VERIFY EMAIL ADDRESS
+            </a>
+          </div>
+          
+          <!-- Alternative Link -->
+          <div style="text-align: center; margin-top: 20px;">
+            <p style="color: #6b7280; font-size: 14px; margin-bottom: 10px;">
+              Button not working? Copy and paste this link into your browser:
+            </p>
+            <p style="color: #0a4768; font-size: 12px; word-break: break-all; margin: 0;">
+              ${data.verificationLink || '#'}
+            </p>
+          </div>
+          
+          <!-- Expiration Notice -->
+          <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 25px; border-left: 4px solid #f59e0b;">
+            <p style="color: #856404; margin: 0; font-size: 14px; line-height: 1.5;">
+              ⏰ <strong>Important:</strong> This verification link will expire in 24 hours. If you didn't register for InsulationPal, please ignore this email.
+            </p>
+          </div>
+          
+          <!-- Contact Information -->
+          <div style="text-align: center; margin-top: 30px;">
+            <p style="color: #6b7280; font-size: 14px; margin-bottom: 10px;">
+              Need help or have questions?
+            </p>
+            <p style="color: #0a4768; font-size: 14px; margin: 0;">
+              Contact us at <a href="mailto:info@majesticwarrior.com" style="color: #0a4768; text-decoration: none;">info@majesticwarrior.com</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div style="background-color: #0a4768; padding: 20px; text-align: center;">
+        <p style="color: white; font-size: 14px; margin: 0 0 10px 0;">InsulationPal - Professional Insulation Services</p>
+        <p style="color: white; font-size: 12px; margin: 0;">Serving those that serve others</p>
+      </div>
+      
+    </body>
+    </html>
+    `
   }
 }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -8,9 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
-import bcrypt from 'bcryptjs'
+import { Eye, EyeOff } from 'lucide-react'
 
 const contractorSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -34,6 +33,10 @@ interface ContractorRegistrationProps {
 
 export function ContractorRegistration({ onSuccess }: ContractorRegistrationProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const formStartTimeRef = useRef<number>(Date.now())
+  const [honeypotValue, setHoneypotValue] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const form = useForm<ContractorFormData>({
     resolver: zodResolver(contractorSchema),
@@ -49,142 +52,46 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
     }
   })
 
+  // Track when form is first interacted with
+  useEffect(() => {
+    formStartTimeRef.current = Date.now()
+  }, [])
+
   const onSubmit = async (data: ContractorFormData) => {
     console.log('🚀 Form submission started with data:', data)
     setIsSubmitting(true)
+    
     try {
-      // Hash the password
-      const passwordHash = await bcrypt.hash(data.password, 12)
-
-      // Insert user first
-      const { data: user, error: userError } = await (supabase as any)
-        .from('users')
-        .insert({
-          email: data.email,
-          name: data.name,
-          phone: data.phone,
-          user_type: 'contractor'
+      // Submit to API route with anti-spam measures
+      const response = await fetch('/api/contractor-register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          honeypot: honeypotValue, // Hidden field for bot detection
+          formStartTime: formStartTimeRef.current // Time tracking
         })
-        .select()
-        .single()
+      })
 
-      if (userError) throw userError
+      const result = await response.json()
 
-      // Insert contractor
-      const contractorData = {
-        user_id: user.id,
-        business_name: data.businessName,
-        license_number: data.licenseNumber,
-        business_city: data.city,
-        status: 'pending'
+      if (!response.ok) {
+        throw new Error(result.error || 'Registration failed')
       }
 
-      // Add optional fields that may not exist in all database schemas
-      try {
-        // Try to include email and password fields
-        const contractorWithAuth = {
-          ...contractorData,
-          email: data.email,
-          password_hash: passwordHash,
-          contact_phone: data.phone,
-          contact_email: data.email
-        }
-
-        const { data: contractor, error: contractorError } = await (supabase as any)
-          .from('contractors')
-          .insert(contractorWithAuth)
-          .select()
-          .single()
-
-        if (contractorError) throw contractorError
-      } catch (authFieldError) {
-        // If email/password fields don't exist, try without them
-        console.log('Falling back to basic contractor creation:', authFieldError)
-        
-        const { data: contractor, error: contractorError } = await (supabase as any)
-          .from('contractors')
-          .insert(contractorData)
-          .select()
-          .single()
-
-        if (contractorError) throw contractorError
-      }
-
-      // Send admin notification email
-      try {
-        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
-        const adminEmail = 'info@majesticwarrior.com'
-        
-        // Send admin notification
-        const adminResponse = await fetch('/api/send-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            to: adminEmail,
-            subject: 'New Contractor Registration - InsulationPal',
-            template: 'new-contractor-registration',
-            data: {
-              name: data.name,
-              email: data.email,
-              phone: data.phone,
-              businessName: data.businessName,
-              licenseNumber: data.licenseNumber,
-              city: data.city,
-              adminDashboardLink: `${siteUrl}/admin-dashboard`
-            }
-          })
-        })
-        
-        if (adminResponse.ok) {
-          console.log('✅ Admin notification email sent successfully')
-        } else {
-          console.error('❌ Failed to send admin notification email')
-        }
-        
-        // Send contractor confirmation email
-        const contractorResponse = await fetch('/api/send-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            to: data.email,
-            subject: 'Registration Received - InsulationPal',
-            template: 'contractor-registration-confirmation',
-            data: {
-              name: data.name,
-              email: data.email,
-              businessName: data.businessName,
-              licenseNumber: data.licenseNumber,
-              city: data.city
-            }
-          })
-        })
-        
-        if (contractorResponse.ok) {
-          console.log('✅ Contractor confirmation email sent successfully')
-        } else {
-          console.error('❌ Failed to send contractor confirmation email')
-        }
-      } catch (emailError) {
-        console.error('Error sending emails:', emailError)
-        // Don't throw - registration succeeded even if email failed
-      }
-
-      toast.success('Registration submitted successfully! We will review your application and get back to you soon.')
+      toast.success(result.message || 'Registration submitted successfully! We will review your application and get back to you soon.')
       form.reset()
+      setHoneypotValue('')
+      formStartTimeRef.current = Date.now() // Reset for potential re-submission
       onSuccess?.()
     } catch (error) {
       console.error('Registration error:', error)
       
-      // More detailed error logging
       if (error instanceof Error) {
-        console.error('Error message:', error.message)
-        toast.error(`Registration failed: ${error.message}`)
+        toast.error(error.message || 'Failed to submit registration. Please try again.')
       } else {
-        console.error('Unknown error:', error)
         toast.error('Failed to submit registration. Please try again.')
       }
     } finally {
@@ -311,7 +218,27 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
                       <FormItem>
                         <FormLabel>Password *</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter password" type="password" {...field} />
+                          <div className="relative">
+                            <Input 
+                              placeholder="Enter password" 
+                              type={showPassword ? "text" : "password"} 
+                              {...field} 
+                              className="pr-10"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                              aria-label={showPassword ? "Hide password" : "Show password"}
+                              tabIndex={0}
+                            >
+                              {showPassword ? (
+                                <EyeOff className="h-5 w-5" />
+                              ) : (
+                                <Eye className="h-5 w-5" />
+                              )}
+                            </button>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -325,13 +252,47 @@ export function ContractorRegistration({ onSuccess }: ContractorRegistrationProp
                       <FormItem>
                         <FormLabel>Confirm Password *</FormLabel>
                         <FormControl>
-                          <Input placeholder="Confirm password" type="password" {...field} />
+                          <div className="relative">
+                            <Input 
+                              placeholder="Confirm password" 
+                              type={showConfirmPassword ? "text" : "password"} 
+                              {...field} 
+                              className="pr-10"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                              aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                              tabIndex={0}
+                            >
+                              {showConfirmPassword ? (
+                                <EyeOff className="h-5 w-5" />
+                              ) : (
+                                <Eye className="h-5 w-5" />
+                              )}
+                            </button>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
+              </div>
+
+              {/* Honeypot field - hidden from users but bots will fill it */}
+              <div style={{ position: 'absolute', left: '-9999px', opacity: 0, pointerEvents: 'none' }} aria-hidden="true">
+                <label htmlFor="website-url">Website URL (leave blank)</label>
+                <input
+                  type="text"
+                  id="website-url"
+                  name="website-url"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={honeypotValue}
+                  onChange={(e) => setHoneypotValue(e.target.value)}
+                />
               </div>
 
               <Button
