@@ -415,7 +415,8 @@ export async function POST(request: NextRequest) {
     </html>
     `
     
-    const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'team@quote.insulationpal.com'
+    // Use dedicated verification email address
+    const fromEmail = process.env.SENDGRID_VERIFICATION_EMAIL || 'verify@quote.insulationpal.com'
     const fromName = process.env.SENDGRID_FROM_NAME || 'Insulation Pal'
     
     const msg = {

@@ -1673,7 +1673,11 @@ export async function POST(request: NextRequest) {
                        '<p>Default email content</p>'
 
     // SendGrid email configuration
-    const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'team@quote.insulationpal.com'
+    // Use dedicated verification email for email verification templates
+    const isVerificationEmail = template === 'contractor-email-verification'
+    const fromEmail = isVerificationEmail 
+      ? (process.env.SENDGRID_VERIFICATION_EMAIL || 'verify@quote.insulationpal.com')
+      : (process.env.SENDGRID_FROM_EMAIL || 'team@quote.insulationpal.com')
     const fromName = process.env.SENDGRID_FROM_NAME || 'Insulation Pal'
     
     const msg = {
