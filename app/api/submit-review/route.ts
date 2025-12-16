@@ -90,12 +90,31 @@ export async function POST(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin()
 
+    // leadAssignmentId is actually the lead_id, need to get the actual assignment ID
+    console.log('🔍 API: Looking up assignment for lead_id:', leadAssignmentId)
+    const { data: assignment, error: assignmentError } = await supabaseAdmin
+      .from('lead_assignments')
+      .select('id')
+      .eq('lead_id', leadAssignmentId)
+      .eq('contractor_id', contractorId)
+      .single()
+
+    if (assignmentError || !assignment) {
+      console.error('❌ API: Assignment not found:', assignmentError)
+      return NextResponse.json(
+        { success: false, error: 'Assignment not found for this lead and contractor' },
+        { status: 404 }
+      )
+    }
+
+    console.log('✅ API: Found assignment ID:', assignment.id)
+
     // Insert review using service role (bypasses RLS)
     const { data: reviewData, error: reviewError } = await supabaseAdmin
       .from('reviews')
       .insert({
         contractor_id: contractorId,
-        lead_assignment_id: leadAssignmentId,
+        lead_assignment_id: assignment.id,
         customer_name: customerName,
         customer_email: customerEmail,
         rating: rating,
