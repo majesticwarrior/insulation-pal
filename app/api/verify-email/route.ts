@@ -94,45 +94,68 @@ export async function GET(request: NextRequest) {
 
           console.log('📧 Sending admin notification after email verification:', {
             contractorEmail: user.email,
-            businessName: contractor.business_name
+            businessName: contractor.business_name,
+            adminEmail: adminEmail
           })
 
-          // Send admin notification using API route (non-blocking)
+          // Send admin notification using API route
           const protocol = request.headers.get('x-forwarded-proto') || 'https'
           const host = request.headers.get('host') || 'insulationpal.com'
           const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`
 
-          fetch(`${baseUrl}/api/send-email`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              to: adminEmail,
-              subject: 'New Contractor Registration - InsulationPal',
-              template: 'new-contractor-registration',
-              data: {
-                name: user.name || 'N/A',
-                email: user.email,
-                phone: user.phone || 'N/A',
-                businessName: contractor.business_name,
-                licenseNumber: contractor.license_number || 'N/A',
-                city: contractor.business_city || 'N/A',
-                adminDashboardLink: `${siteUrl}/admin-dashboard`
-              }
+          console.log('🔍 Admin email configuration:', {
+            baseUrl,
+            protocol,
+            host,
+            siteUrl,
+            fullUrl: `${baseUrl}/api/send-email`
+          })
+
+          try {
+            const emailResponse = await fetch(`${baseUrl}/api/send-email`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                to: adminEmail,
+                subject: 'New Contractor Registration - InsulationPal',
+                template: 'new-contractor-registration',
+                data: {
+                  name: user.name || 'N/A',
+                  email: user.email,
+                  phone: user.phone || 'N/A',
+                  businessName: contractor.business_name,
+                  licenseNumber: contractor.license_number || 'N/A',
+                  city: contractor.business_city || 'N/A',
+                  adminDashboardLink: `${siteUrl}/admin-dashboard`
+                }
+              })
             })
-          })
-          .then(async (res) => {
-            const result = await res.json()
-            if (res.ok) {
-              console.log('✅ Admin notification email sent successfully to:', adminEmail)
+
+            const result = await emailResponse.json()
+            
+            if (emailResponse.ok) {
+              console.log('✅ Admin notification email sent successfully!', {
+                to: adminEmail,
+                statusCode: emailResponse.status,
+                result: result
+              })
             } else {
-              console.error('❌ Failed to send admin email:', result)
+              console.error('❌ Failed to send admin notification email!', {
+                statusCode: emailResponse.status,
+                error: result,
+                to: adminEmail
+              })
             }
-          })
-          .catch(err => {
-            console.error('❌ Error sending admin email:', err)
-          })
+          } catch (fetchError: any) {
+            console.error('❌ Error sending admin notification email (fetch failed):', {
+              error: fetchError.message,
+              stack: fetchError.stack,
+              baseUrl,
+              adminEmail
+            })
+          }
         }
       }
     } catch (emailError) {
