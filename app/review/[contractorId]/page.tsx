@@ -230,7 +230,7 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
               How was your insulation project?
             </h1>
             <p className="text-gray-600 text-lg">
-              Help other homeowners by sharing your experience with {contractorDetails.business_name || 'this contractor'}
+              Help other homeowners by sharing your experience with {contractorDetails.businessName || 'this contractor'}
             </p>
           </div>
           
@@ -246,11 +246,11 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
                   <div className="text-center">
                     <div className="w-16 h-16 bg-[#F5DD22] rounded-full mx-auto mb-3 flex items-center justify-center">
                       <span className="text-2xl font-bold text-[#0a4768]">
-                        {contractorDetails.business_name?.charAt(0) || 'C'}
+                        {contractorDetails.businessName?.charAt(0) || 'C'}
                       </span>
                     </div>
                     <h3 className="text-xl font-bold text-[#0a4768] mb-2">
-                      {contractorDetails.business_name || 'Contractor'}
+                      {contractorDetails.businessName || 'Contractor'}
                     </h3>
                     {contractorDetails.licenseNumber && (
                       <p className="text-sm text-gray-600">
