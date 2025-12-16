@@ -609,7 +609,7 @@ const emailTemplates = {
             </div>
             
             <p style="color: #6b7280; font-size: 14px; text-align: center; margin: 0;">
-              Takes less than 2 minutes • Helps other homeowners
+              Takes less than 30 seconds • Helps other homeowners
             </p>
           </div>
           

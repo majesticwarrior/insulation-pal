@@ -49,10 +49,11 @@ export async function GET(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin()
 
     // Fetch assignment data first
+    // Note: leadId is actually the lead_id, not the assignment id
     const { data: assignment, error: assignmentError } = await supabaseAdmin
       .from('lead_assignments')
       .select('*')
-      .eq('id', leadId)
+      .eq('lead_id', leadId)
       .eq('contractor_id', contractorId)
       .single()
 
