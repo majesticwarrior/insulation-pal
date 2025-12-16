@@ -17,6 +17,13 @@ export interface CreditPackage {
 
 export const creditPackages: CreditPackage[] = [
   {
+    id: 'single',
+    name: 'Single Lead',
+    credits: 1,
+    price: 30,
+    description: '1 lead credit - try it out with one lead'
+  },
+  {
     id: 'starter',
     name: 'Starter Package',
     credits: 5,

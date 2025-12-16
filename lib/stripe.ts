@@ -11,6 +11,15 @@ export const stripe = process.env.STRIPE_SECRET_KEY
 // Lead package pricing structure
 export const leadPackages = [
   {
+    id: 'single',
+    name: 'Single Lead',
+    credits: 1,
+    price: 30, // $30
+    pricePerCredit: 30,
+    description: 'Try it out with one lead',
+    popular: false
+  },
+  {
     id: 'starter',
     name: 'Starter Package',
     credits: 5,
