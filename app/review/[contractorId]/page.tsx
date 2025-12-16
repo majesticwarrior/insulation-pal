@@ -236,7 +236,32 @@ export default function ContractorReview({ params }: { params: Promise<{ contrac
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Project Details */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 space-y-4">
+              {/* Contractor Info Card */}
+              <Card className="border-2 border-[#0a4768]">
+                <CardHeader className="bg-[#0a4768] text-white">
+                  <CardTitle className="text-lg">Reviewing Contractor</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-[#F5DD22] rounded-full mx-auto mb-3 flex items-center justify-center">
+                      <span className="text-2xl font-bold text-[#0a4768]">
+                        {contractorDetails.business_name?.charAt(0) || 'C'}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-[#0a4768] mb-2">
+                      {contractorDetails.business_name || 'Contractor'}
+                    </h3>
+                    {contractorDetails.licenseNumber && (
+                      <p className="text-sm text-gray-600">
+                        License: {contractorDetails.licenseNumber}
+                      </p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Project Details Card */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Project Details</CardTitle>
