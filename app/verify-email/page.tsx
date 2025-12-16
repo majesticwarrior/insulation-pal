@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/button'
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 
-export default function VerifyEmailPage() {
+// Component that uses searchParams - must be wrapped in Suspense
+function VerifyEmailContent() {
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
@@ -47,11 +48,9 @@ export default function VerifyEmailPage() {
   }, [token])
 
   return (
-    <main className="min-h-screen flex flex-col">
-      <Header />
-      <div className="flex-grow flex items-center justify-center bg-[#D8E1FF] py-20 px-4">
-        <Card className="max-w-md w-full">
-          <CardHeader className="text-center">
+    <div className="flex-grow flex items-center justify-center bg-[#D8E1FF] py-20 px-4">
+      <Card className="max-w-md w-full">
+        <CardHeader className="text-center">
             {status === 'loading' && (
               <>
                 <div className="flex justify-center mb-4">
@@ -166,6 +165,33 @@ export default function VerifyEmailPage() {
           </CardContent>
         </Card>
       </div>
+  )
+}
+
+// Main page component with Suspense boundary
+export default function VerifyEmailPage() {
+  return (
+    <main className="min-h-screen flex flex-col">
+      <Header />
+      <Suspense fallback={
+        <div className="flex-grow flex items-center justify-center bg-[#D8E1FF] py-20 px-4">
+          <Card className="max-w-md w-full">
+            <CardHeader className="text-center">
+              <div className="flex justify-center mb-4">
+                <Loader2 className="h-12 w-12 text-[#0a4768] animate-spin" />
+              </div>
+              <CardTitle className="text-2xl text-[#0a4768]">
+                Loading...
+              </CardTitle>
+              <CardDescription>
+                Please wait while we load the verification page...
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      }>
+        <VerifyEmailContent />
+      </Suspense>
       <Footer />
     </main>
   )
