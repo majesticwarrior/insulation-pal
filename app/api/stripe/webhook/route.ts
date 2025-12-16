@@ -45,11 +45,17 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Missing metadata' }, { status: 400 })
       }
 
-      // Add credits to contractor
-      const { error: updateError } = await supabaseAdmin.rpc('add_contractor_credits', {
-        contractor_id: contractorId,
-        credits_to_add: parseInt(credits)
-      })
+    // Add credits to contractor using the correct function signature
+    const { error: updateError } = await supabaseAdmin.rpc('add_contractor_credits', {
+      contractor_uuid: contractorId,
+      credits_amount: parseInt(credits),
+      transaction_type: 'purchase',
+      reference_info: {
+        stripe_session_id: session.id,
+        package_id: packageId,
+        payment_amount: session.amount_total
+      }
+    })
 
       if (updateError) {
         console.error('Failed to add credits to contractor:', updateError)
