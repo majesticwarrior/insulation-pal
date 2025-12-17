@@ -2,6 +2,15 @@
 // Articles are ordered with newest first
 export const articles = [
   {
+    title: 'Faced or Unfaced Attic Insulation: How to Choose',
+    slug: 'faced-or-unfaced-attic-insulation',
+    description:
+      'Learn the key differences between faced and unfaced attic insulation. Discover when to use each type, how vapor barriers work, and which option is best for your climate and existing insulation.',
+    image: '/faced-vs-unfaced-insulation.jpg',
+    readTime: '12 min read',
+    category: 'Attic Insulation'
+  },
+  {
     title: 'Best Attic Insulation for Dry, Cold and Humid Climates',
     slug: 'best-attic-insulation-for-dry-cold-and-humid-climates',
     description:

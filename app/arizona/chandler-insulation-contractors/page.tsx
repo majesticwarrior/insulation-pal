@@ -1182,11 +1182,13 @@ export default async function ChandlerInsulationContractors() {
                           </span>
                         </div>
                       </div>
-                      <CardContent className="p-6 flex flex-col justify-between h-48">
+                      <CardContent className="p-6 flex flex-col justify-between min-h-[240px]">
                         <div>
-                          <h3 className="text-lg font-bold text-[#0a4768] mb-3 line-clamp-2">
-                            {article.title}
-                          </h3>
+                          <Link href={`/resources/articles/${article.slug}`}>
+                            <h3 className="text-lg font-bold text-[#0a4768] mb-3 line-clamp-2 hover:underline cursor-pointer">
+                              {article.title}
+                            </h3>
+                          </Link>
                           <p className="text-gray-600 text-sm line-clamp-3 mb-4">
                             {article.description}
                           </p>
@@ -1194,12 +1196,11 @@ export default async function ChandlerInsulationContractors() {
                         <Button 
                           asChild 
                           variant="outline" 
-                          size="sm"
                           className="w-full border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white"
                         >
-                          <Link href={`/resources/articles/${article.slug}`} className="flex items-center">
+                          <Link href={`/resources/articles/${article.slug}`} className="flex items-center justify-center">
                             Read Article
-                            <ExternalLink className="w-3 h-3 ml-1" />
+                            <ExternalLink className="w-4 h-4 ml-2" />
                           </Link>
                         </Button>
                       </CardContent>

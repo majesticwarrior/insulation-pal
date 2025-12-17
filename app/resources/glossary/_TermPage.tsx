@@ -57,9 +57,16 @@ export default function TermPage({ term }: Props) {
       description: 'Choose the best attic insulation based on your climate zone, covering R-values, moisture control, and material selection'
     }
 
+    const facedUnfacedArticleLink = {
+      href: '/resources/articles/faced-or-unfaced-attic-insulation',
+      label: 'Faced or Unfaced Attic Insulation Guide',
+      description: 'Learn when to use faced vs unfaced insulation, how vapor barriers work, and which option is best for your climate'
+    }
+
     // Map common glossary slugs to relevant services
     const map: Record<string, Array<{ href: string, label: string, description: string }>> = {
       attic: [
+        facedUnfacedArticleLink,
         atticClimateArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink,
@@ -128,6 +135,7 @@ export default function TermPage({ term }: Props) {
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Acoustic wall upgrades with mineral wool' }
       ],
       'vapor-barrier': [
+        facedUnfacedArticleLink,
         atticClimateArticleLink,
         { href: '/services/crawl-space-insulation', label: 'Crawl Space Insulation', description: 'Vapor control and encapsulation systems' }
       ],
@@ -142,6 +150,7 @@ export default function TermPage({ term }: Props) {
         { href: '/services/garage-insulation', label: 'Garage Insulation', description: 'Professional garage wall, ceiling, and door insulation' }
       ],
       'r-value': [
+        facedUnfacedArticleLink,
         atticClimateArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink
@@ -156,10 +165,25 @@ export default function TermPage({ term }: Props) {
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Mineral wool insulation for attics' }
       ],
       'batt-roll': [
+        facedUnfacedArticleLink,
         atticClimateArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink,
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Batt and roll installation for walls' }
+      ],
+      'faced': [
+        facedUnfacedArticleLink,
+        atticClimateArticleLink,
+        battVsBlownInArticleLink,
+        { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Professional attic insulation with vapor barriers' },
+        { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Faced insulation for exterior walls' }
+      ],
+      'unfaced': [
+        facedUnfacedArticleLink,
+        atticClimateArticleLink,
+        battVsBlownInArticleLink,
+        { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Add unfaced insulation layers to existing attic insulation' },
+        { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Unfaced insulation for interior walls' }
       ]
     }
 
