@@ -52,7 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseDescription = 'Find the best insulation contractors in Tucson, AZ'
     
     return {
-      title: `Insulation Contractors in Tucson, AZ, Find Top Rated Local Companies Near You`,
+      title: 'Insulation Contractors in Tucson, AZ, Expert Licensed Companies - InsulationPal',
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
         'Tucson insulation contractors',
@@ -598,7 +598,7 @@ export default async function TucsonInsulationContractors() {
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
-              Tucson Insulation Contractors
+              Hire a Licensed Insulation Contractor in Tucson
             </h1>
             <p className="text-xl text-gray-700 mb-8">
               Find the best insulation contractors in Tucson, Arizona. Get free quotes from local, 
@@ -820,6 +820,45 @@ export default async function TucsonInsulationContractors() {
         </div>
       </section>
 
+      {/* Finding Reliable Insulation Contractors in Tucson */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
+            Finding Reliable Insulation Contractors in Tucson
+          </h2>
+          
+          <div className="space-y-6">
+            <p className="text-gray-700 leading-relaxed">
+              Finding reliable insulation contractors in Tucson can be challenging when you're trying to sort through countless listings, verify licenses, and compare pricing on your own. InsulationPal has launched a digital platform that connects Tucson homeowners with licensed and verified local insulation contractors, allowing you to receive up to three competitive bids for your insulation project. The online platform streamlines the entire process by pre-screening professionals and providing transparent access to credentials and customer reviews.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              Whether you're upgrading attic insulation to reduce energy costs or tackling a new home addition, you need contractors you can trust. InsulationPal removes the guesswork by serving as a centralized hub where verified contractors come to you. The platform ensures each professional is properly licensed, insured, and experienced in handling residential and commercial insulation projects throughout Tucson and surrounding areas.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              By partnering with local insulation contractors, InsulationPal gives you the tools to make informed decisions without the typical hassles of contractor shopping. You'll learn how the platform vets professionals, how to effectively compare multiple bids, and what factors to consider when reviewing contractor profiles and customer feedback.
+            </p>
+            
+            <Card className="bg-[#D8E1FF] border-[#0a4768] shadow-lg mt-8">
+              <CardContent className="p-6 text-center">
+                <CheckCircle className="w-12 h-12 text-[#0a4768] mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-[#0a4768] mb-3">Ready to Find Your Tucson Contractor?</h3>
+                <p className="text-lg text-gray-700 mb-2">
+                  Connect with pre-screened, licensed, and insured insulation professionals in Tucson, AZ.
+                </p>
+                <p className="text-lg text-gray-700 mb-6">
+                  Get up to 3 free quotes today!
+                </p>
+                <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+                  See Prices
+                </QuoteButton>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Phoenix Area Cities */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4 max-w-[1400px]">
@@ -975,7 +1014,7 @@ export default async function TucsonInsulationContractors() {
               
               <div className="text-center mt-8">
                 <p className="text-gray-600 text-sm">
-                  Showing {phoenixReviews.length} of the latest reviews from Phoenix customers
+                  Showing {phoenixReviews.length} of the latest reviews from Tucson customers
                 </p>
               </div>
             </div>
@@ -991,12 +1030,12 @@ export default async function TucsonInsulationContractors() {
         </div>
       </section>
 
-      {/* Recent Tucson Completed Insulation Projects */}
+      {/* Recent Tucson Completed Projects */}
       <section className="py-12 bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6]">
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Recent Tucson Completed Insulation Projects
+              Recent Tucson Completed Projects
             </h2>
             <p className="text-lg text-gray-600 mb-8">
               See the quality work performed by our verified contractors in the Tucson area

@@ -44,6 +44,8 @@ export function ImageUploadManager({ contractorId }: ImageUploadManagerProps) {
     title: '',
     description: '',
     service_type: 'attic',
+    areas_insulated: [] as string[],
+    insulation_types: [] as string[],
     project_size_sqft: '',
     project_city: '',
     project_state: 'AZ',
@@ -185,9 +187,12 @@ export function ImageUploadManager({ contractorId }: ImageUploadManagerProps) {
       // Save to database
       const projectData = {
         contractor_id: contractorId,
+        lead_assignment_id: null, // Null for manually added projects
         title: formData.title,
         description: formData.description,
         service_type: formData.service_type,
+        areas_insulated: formData.areas_insulated.length > 0 ? formData.areas_insulated : [formData.service_type],
+        insulation_types: formData.insulation_types.length > 0 ? formData.insulation_types : [],
         project_size_sqft: formData.project_size_sqft ? parseInt(formData.project_size_sqft) : null,
         completion_date: formData.completion_date,
         before_image_url: beforeImageUrl || null,
@@ -195,6 +200,8 @@ export function ImageUploadManager({ contractorId }: ImageUploadManagerProps) {
         additional_images: [],
         project_city: formData.project_city,
         project_state: formData.project_state,
+        customer_city: formData.project_city, // Same as project city for manually added
+        customer_state: formData.project_state, // Same as project state for manually added
         is_featured: formData.is_featured,
         display_order: images.length
       }
@@ -212,6 +219,8 @@ export function ImageUploadManager({ contractorId }: ImageUploadManagerProps) {
         title: '',
         description: '',
         service_type: 'attic',
+        areas_insulated: [],
+        insulation_types: [],
         project_size_sqft: '',
         project_city: '',
         project_state: 'AZ',

@@ -52,7 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseDescription = 'Find the best insulation contractors in Glendale, AZ'
     
     return {
-      title: `Insulation Contractors in Glendale AZ, Find Top Rated Local Companies Near You`,
+      title: 'Insulation Contractors in Glendale, AZ, Expert Licensed Companies - InsulationPal',
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
         'Glendale insulation contractors',
@@ -510,7 +510,7 @@ export default async function GlendaleInsulationContractors() {
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
-              Glendale Insulation Contractors
+              Hire a Licensed Insulation Contractor in Glendale
             </h1>
             <p className="text-xl text-gray-700 mb-8">
               Find the best insulation contractors in Glendale, Arizona. Get free quotes from local, 
@@ -732,6 +732,45 @@ export default async function GlendaleInsulationContractors() {
         </div>
       </section>
 
+      {/* Finding Reliable Insulation Contractors in Glendale */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
+            Finding Reliable Insulation Contractors in Glendale
+          </h2>
+          
+          <div className="space-y-6">
+            <p className="text-gray-700 leading-relaxed">
+              Finding reliable insulation contractors in Glendale can be a real headache for homeowners and businesses hoping to boost energy efficiency and comfort. It often means sifting through endless search results, making calls, and still wondering if you're actually getting a good deal or trustworthy service.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              InsulationPal now partners with local insulation contractors throughout Glendale to make it easier for residents to connect with licensed professionals for their insulation projects. The platform brings together skilled contractors who handle everything from attic insulation to full building retrofits, whether it's for a home or a business.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              We've set up this partnership network to help folks in Glendale skip the usual hassles that come with starting an insulation project. Through our platform, you can browse bids from vetted local insulation pros, compare what they offer, and decide what works best for your needs—without the usual guesswork.
+            </p>
+            
+            <Card className="bg-[#D8E1FF] border-[#0a4768] shadow-lg mt-8">
+              <CardContent className="p-6 text-center">
+                <CheckCircle className="w-12 h-12 text-[#0a4768] mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-[#0a4768] mb-3">Ready to Find Your Glendale Contractor?</h3>
+                <p className="text-lg text-gray-700 mb-2">
+                  Connect with pre-screened, licensed, and insured insulation professionals in Glendale, AZ.
+                </p>
+                <p className="text-lg text-gray-700 mb-6">
+                  Get up to 3 free quotes today!
+                </p>
+                <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+                  See Prices
+                </QuoteButton>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Phoenix Area Cities */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4 max-w-[1400px]">
@@ -887,7 +926,7 @@ export default async function GlendaleInsulationContractors() {
               
               <div className="text-center mt-8">
                 <p className="text-gray-600 text-sm">
-                  Showing {phoenixReviews.length} of the latest reviews from Phoenix customers
+                  Showing {phoenixReviews.length} of the latest reviews from Glendale customers
                 </p>
               </div>
             </div>
@@ -903,12 +942,12 @@ export default async function GlendaleInsulationContractors() {
         </div>
       </section>
 
-      {/* Recent Glendale Completed Insulation Projects */}
+      {/* Recent Glendale Completed Projects */}
       <section className="py-12 bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6]">
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Recent Glendale Completed Insulation Projects
+              Recent Glendale Completed Projects
             </h2>
             <p className="text-lg text-gray-600 mb-8">
               See the quality work performed by our verified contractors in the Glendale area

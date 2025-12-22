@@ -44,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseDescription = 'Find the best insulation contractors in Surprise, AZ'
     
     return {
-      title: `Insulation Contractors in Surprise, AZ, Find Top Rated Local Companies Near You`,
+      title: 'Insulation Contractors in Surprise, AZ, Expert Licensed Companies - InsulationPal',
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
         'Surprise insulation contractors',
@@ -501,7 +501,7 @@ export default async function SurpriseInsulationContractors() {
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
-              Surprise Insulation Contractors
+              Hire a Licensed Insulation Contractor in Surprise
             </h1>
             <p className="text-xl text-gray-700 mb-8">
               Find the best insulation contractors in Surprise, Arizona. Get free quotes from local, 
@@ -725,6 +725,45 @@ export default async function SurpriseInsulationContractors() {
         </div>
       </section>
 
+      {/* Finding Reliable Insulation Contractors in Surprise */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
+            Finding Reliable Insulation Contractors in Surprise
+          </h2>
+          
+          <div className="space-y-6">
+            <p className="text-gray-700 leading-relaxed">
+              Finding reliable insulation contractors in Surprise isn't always as easy as it should be—especially if you're trying to juggle good work and fair prices. Most homeowners just want a simple way to find pros who actually know the local building codes and get how the climate works here. But who wants to spend hours digging around online or calling random companies?
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              InsulationPal now connects Surprise residents with pre-screened, licensed insulation contractors who specialize in everything from spray foam to fiberglass installation. Our platform takes the hassle out of the search by matching you with up to three qualified local businesses, all based on your specific project. We handle the background checks, so you can just compare quotes and pick whichever contractor feels right for your home.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              We team up with insulation contractors across Surprise who've shown they can handle both residential and commercial jobs. Whether it's attic insulation, wall upgrades, or making your place more energy efficient, our network's got folks ready for projects big or small—with clear pricing and actual quality guarantees. Honestly, it's just easier this way.
+            </p>
+            
+            <Card className="bg-[#D8E1FF] border-[#0a4768] shadow-lg mt-8">
+              <CardContent className="p-6 text-center">
+                <CheckCircle className="w-12 h-12 text-[#0a4768] mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-[#0a4768] mb-3">Ready to Find Your Surprise Contractor?</h3>
+                <p className="text-lg text-gray-700 mb-2">
+                  Connect with pre-screened, licensed, and insured insulation professionals in Surprise, AZ.
+                </p>
+                <p className="text-lg text-gray-700 mb-6">
+                  Get up to 3 free quotes today!
+                </p>
+                <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+                  See Prices
+                </QuoteButton>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Phoenix Area Cities */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4 max-w-[1400px]">
@@ -874,7 +913,7 @@ export default async function SurpriseInsulationContractors() {
               
               <div className="text-center mt-8">
                 <p className="text-gray-600 text-sm">
-                  Showing {phoenixReviews.length} of the latest reviews from Phoenix customers
+                  Showing {phoenixReviews.length} of the latest reviews from Surprise customers
                 </p>
               </div>
             </div>
@@ -890,12 +929,12 @@ export default async function SurpriseInsulationContractors() {
         </div>
       </section>
 
-      {/* Recent Phoenix Completed Insulation Projects */}
+      {/* Recent Surprise Completed Projects */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Recent Phoenix Completed Insulation Projects
+              Recent Surprise Completed Projects
             </h2>
             <p className="text-lg text-gray-600 mb-8">
               See the quality work performed by our verified contractors in the Phoenix metro area

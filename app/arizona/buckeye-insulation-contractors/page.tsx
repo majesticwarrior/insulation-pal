@@ -44,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseDescription = 'Find the best insulation contractors in Buckeye, AZ'
     
     return {
-      title: `Insulation Contractors in Buckeye, AZ, Find Top Rated Local Companies Near You`,
+      title: 'Insulation Contractors in Buckeye, AZ, Expert Licensed Companies - InsulationPal',
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
         'Buckeye insulation contractors',
@@ -500,7 +500,7 @@ export default async function BuckeyeInsulationContractors() {
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
-              Buckeye Insulation Contractors
+              Hire a Licensed Insulation Contractor in Buckeye
             </h1>
             <p className="text-xl text-gray-700 mb-8">
               Find the best insulation contractors in Buckeye, Arizona. Get free quotes from local, 
@@ -724,6 +724,45 @@ export default async function BuckeyeInsulationContractors() {
         </div>
       </section>
 
+      {/* Finding Qualified Insulation Contractors in Buckeye */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
+            Finding Qualified Insulation Contractors in Buckeye
+          </h2>
+          
+          <div className="space-y-6">
+            <p className="text-gray-700 leading-relaxed">
+              Finding qualified insulation contractors in Buckeye isn't always straightforward—most homeowners just want someone reliable, but the search can get frustrating fast. InsulationPal now connects Buckeye residents with verified local insulation contractors through a streamlined platform that takes the hassle out of finding and hiring trusted pros. We built this service because, honestly, nobody likes second-guessing home improvement choices.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              Our platform makes insulation services more accessible for Buckeye homeowners. We've teamed up with local contractors who actually have the right licenses and hands-on experience for residential jobs. By working directly with folks in the area, we cut out a lot of wasted time and uncertainty—no more endless scrolling or calling around just to check if someone's legit.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              Homeowners get matched with trusted professionals through a straightforward system offering competitive quotes and verified credentials. The whole setup was designed with Buckeye in mind, especially as demand for insulation keeps growing with the community.
+            </p>
+            
+            <Card className="bg-[#D8E1FF] border-[#0a4768] shadow-lg mt-8">
+              <CardContent className="p-6 text-center">
+                <CheckCircle className="w-12 h-12 text-[#0a4768] mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-[#0a4768] mb-3">Ready to Find Your Buckeye Contractor?</h3>
+                <p className="text-lg text-gray-700 mb-2">
+                  Connect with pre-screened, licensed, and insured insulation professionals in Buckeye, AZ.
+                </p>
+                <p className="text-lg text-gray-700 mb-6">
+                  Get up to 3 free quotes today!
+                </p>
+                <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+                  See Prices
+                </QuoteButton>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Phoenix Area Cities */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4 max-w-[1400px]">
@@ -879,7 +918,7 @@ export default async function BuckeyeInsulationContractors() {
               
               <div className="text-center mt-8">
                 <p className="text-gray-600 text-sm">
-                  Showing {phoenixReviews.length} of the latest reviews from Phoenix customers
+                  Showing {phoenixReviews.length} of the latest reviews from Buckeye customers
                 </p>
               </div>
             </div>
@@ -895,12 +934,12 @@ export default async function BuckeyeInsulationContractors() {
         </div>
       </section>
 
-      {/* Recent Phoenix Completed Insulation Projects */}
+      {/* Recent Buckeye Completed Projects */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Recent Phoenix Completed Insulation Projects
+              Recent Buckeye Completed Projects
             </h2>
             <p className="text-lg text-gray-600 mb-8">
               See the quality work performed by our verified contractors in the Phoenix metro area

@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
     console.log('🔍 API: Looking up assignment for lead_id:', leadAssignmentId)
     const { data: assignment, error: assignmentError } = await supabaseAdmin
       .from('lead_assignments')
-      .select('id')
+      .select('id, lead_id')
       .eq('lead_id', leadAssignmentId)
       .eq('contractor_id', contractorId)
       .single()
@@ -109,6 +109,26 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ API: Found assignment ID:', assignment.id)
 
+    // Fetch lead data to get customer location
+    const { data: leadData, error: leadError } = await supabaseAdmin
+      .from('leads')
+      .select('city, state')
+      .eq('id', assignment.lead_id)
+      .single()
+
+    let customerCity = null
+    let customerState = null
+    let location = null
+
+    if (leadData && !leadError) {
+      customerCity = leadData.city
+      customerState = leadData.state
+      location = `${leadData.city}, ${leadData.state}`
+      console.log('✅ API: Found customer location from lead:', location)
+    } else {
+      console.log('⚠️ API: Could not fetch lead location data:', leadError)
+    }
+
     // Insert review using service role (bypasses RLS)
     const { data: reviewData, error: reviewError } = await supabaseAdmin
       .from('reviews')
@@ -119,6 +139,9 @@ export async function POST(request: NextRequest) {
         customer_email: customerEmail,
         rating: rating,
         comment: comments,
+        customer_city: customerCity,
+        customer_state: customerState,
+        location: location,
         verified: true // Mark as verified since it's from a completed project
       })
       .select()

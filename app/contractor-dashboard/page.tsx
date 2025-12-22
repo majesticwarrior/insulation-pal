@@ -101,6 +101,26 @@ function ContractorDashboardContent() {
     console.log('🔍 Dashboard useEffect triggered')
     
     try {
+      // Check for admin login in new window
+      const tempLoginData = localStorage.getItem('contractor_temp_login')
+      if (tempLoginData) {
+        console.log('🔐 Found temp login data from admin')
+        try {
+          const { key, data } = JSON.parse(tempLoginData)
+          
+          // Store in regular contractor key
+          localStorage.setItem('contractor', JSON.stringify(data))
+          
+          // Clean up temp data
+          localStorage.removeItem('contractor_temp_login')
+          localStorage.removeItem(key)
+          
+          console.log('✅ Admin login data transferred successfully')
+        } catch (e) {
+          console.error('Error parsing temp login data:', e)
+        }
+      }
+      
       const contractorData = localStorage.getItem('contractor')
       console.log('📱 localStorage contractor data:', contractorData)
       

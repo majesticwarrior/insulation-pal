@@ -44,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseDescription = 'Find the best insulation contractors in Sun City, AZ'
     
     return {
-      title: `Insulation Contractors in Sun City, AZ, Find Top Rated Local Companies Near You`,
+      title: 'Insulation Contractors in Sun City, AZ, Expert Licensed Companies - InsulationPal',
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
         'Sun City insulation contractors',
@@ -500,7 +500,7 @@ export default async function SunCityInsulationContractors() {
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
-              Sun City Insulation Contractors
+              Hire a Licensed Insulation Contractor in Sun City
             </h1>
             <p className="text-xl text-gray-700 mb-8">
               Find the best insulation contractors in Sun City, Arizona. Get free quotes from local, 
@@ -722,6 +722,45 @@ export default async function SunCityInsulationContractors() {
         </div>
       </section>
 
+      {/* Finding Licensed Insulation Professionals in Sun City */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
+            Finding Licensed Insulation Professionals in Sun City
+          </h2>
+          
+          <div className="space-y-6">
+            <p className="text-gray-700 leading-relaxed">
+              InsulationPal has expanded its network of licensed insulation professionals to Sun City, Arizona, so local homeowners can finally skip the hassle and connect with contractors they can actually trust. The platform lets folks request and compare up to three bids from verified local businesses—no more endless phone calls or guesswork.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              We connect Sun City homeowners with pre-screened, licensed insulation contractors through a simple digital platform that puts transparency and quality front and center. Let's be honest, it's tough to find reliable pros for attic, wall, or crawl space insulation. Our service is here to make that headache a thing of the past.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              Arizona's wild temperature swings mean insulation isn't just a nice-to-have—it's a must for comfort and sane energy bills. By working with Sun City's local contractors, we help residents tap into real expertise. These pros actually get the unique climate quirks and building challenges in the area, so you're not left with a cookie-cutter solution that doesn't quite fit.
+            </p>
+            
+            <Card className="bg-[#D8E1FF] border-[#0a4768] shadow-lg mt-8">
+              <CardContent className="p-6 text-center">
+                <CheckCircle className="w-12 h-12 text-[#0a4768] mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-[#0a4768] mb-3">Ready to Find Your Sun City Contractor?</h3>
+                <p className="text-lg text-gray-700 mb-2">
+                  Connect with pre-screened, licensed, and insured insulation professionals in Sun City, AZ.
+                </p>
+                <p className="text-lg text-gray-700 mb-6">
+                  Get up to 3 free quotes today!
+                </p>
+                <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+                  See Prices
+                </QuoteButton>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Phoenix Area Cities */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4 max-w-[1400px]">
@@ -877,7 +916,7 @@ export default async function SunCityInsulationContractors() {
               
               <div className="text-center mt-8">
                 <p className="text-gray-600 text-sm">
-                  Showing {phoenixReviews.length} of the latest reviews from Phoenix customers
+                  Showing {phoenixReviews.length} of the latest reviews from Sun City customers
                 </p>
               </div>
             </div>
@@ -893,12 +932,12 @@ export default async function SunCityInsulationContractors() {
         </div>
       </section>
 
-      {/* Recent Phoenix Completed Insulation Projects */}
+      {/* Recent Sun City Completed Projects */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Recent Phoenix Completed Insulation Projects
+              Recent Sun City Completed Projects
             </h2>
             <p className="text-lg text-gray-600 mb-8">
               See the quality work performed by our verified contractors in the Phoenix metro area

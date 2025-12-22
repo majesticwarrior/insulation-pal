@@ -19,7 +19,8 @@ export function ReviewForm({ contractorId, leadAssignmentId }: ReviewFormProps) 
   const [comment, setComment] = useState('')
   const [customerName, setCustomerName] = useState('')
   const [customerEmail, setCustomerEmail] = useState('')
-  const [location, setLocation] = useState('')
+  const [customerCity, setCustomerCity] = useState('')
+  const [customerState, setCustomerState] = useState('')
   const [serviceType, setServiceType] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -58,7 +59,11 @@ export function ReviewForm({ contractorId, leadAssignmentId }: ReviewFormProps) 
         customerId = (newUser as { id: string }).id
       }
 
-      // Insert review
+      // Insert review with customer location data
+      const locationString = customerCity && customerState 
+        ? `${customerCity}, ${customerState}` 
+        : ''
+      
       const { error: reviewError } = await (supabase as any)
         .from('reviews')
         .insert({
@@ -67,7 +72,9 @@ export function ReviewForm({ contractorId, leadAssignmentId }: ReviewFormProps) 
           lead_assignment_id: leadAssignmentId,
           rating,
           comment,
-          location,
+          customer_city: customerCity || null,
+          customer_state: customerState || null,
+          location: locationString || null, // Keep for backward compatibility
           service_type: serviceType,
           verified: !!leadAssignmentId // Verified if from a real lead
         })
@@ -173,15 +180,28 @@ export function ReviewForm({ contractorId, leadAssignmentId }: ReviewFormProps) 
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Location
+                Your City *
               </label>
               <Input
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="Phoenix, AZ"
+                value={customerCity}
+                onChange={(e) => setCustomerCity(e.target.value)}
+                placeholder="Phoenix"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                State *
+              </label>
+              <Input
+                value={customerState}
+                onChange={(e) => setCustomerState(e.target.value.toUpperCase())}
+                placeholder="AZ"
+                maxLength={2}
+                required
               />
             </div>
             <div>
@@ -215,7 +235,7 @@ export function ReviewForm({ contractorId, leadAssignmentId }: ReviewFormProps) 
 
           <Button
             type="submit"
-            disabled={rating === 0 || !customerName || !customerEmail || submitting}
+            disabled={rating === 0 || !customerName || !customerEmail || !customerCity || !customerState || submitting}
             className="w-full bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold"
           >
             {submitting ? 'Submitting...' : 'Submit Review'}

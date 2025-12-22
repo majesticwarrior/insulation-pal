@@ -250,34 +250,79 @@ export interface Database {
           id: string
           contractor_id: string
           lead_id: string | null
+          lead_assignment_id: string | null
+          customer_id: string | null
           customer_name: string
           customer_email: string | null
+          customer_city: string | null
+          customer_state: string | null
           rating: number
+          title: string | null
           comment: string | null
+          service_type: string | null
+          project_cost: number | null
+          project_duration_days: number | null
+          location: string | null
           verified: boolean
+          helpful_votes: number
+          quality_rating: number | null
+          timeliness_rating: number | null
+          communication_rating: number | null
+          value_rating: number | null
           created_at: string
+          updated_at: string
         }
         Insert: {
           id?: string
           contractor_id: string
           lead_id?: string | null
+          lead_assignment_id?: string | null
+          customer_id?: string | null
           customer_name: string
           customer_email?: string | null
+          customer_city?: string | null
+          customer_state?: string | null
           rating: number
+          title?: string | null
           comment?: string | null
+          service_type?: string | null
+          project_cost?: number | null
+          project_duration_days?: number | null
+          location?: string | null
           verified?: boolean
+          helpful_votes?: number
+          quality_rating?: number | null
+          timeliness_rating?: number | null
+          communication_rating?: number | null
+          value_rating?: number | null
           created_at?: string
+          updated_at?: string
         }
         Update: {
           id?: string
           contractor_id?: string
           lead_id?: string | null
+          lead_assignment_id?: string | null
+          customer_id?: string | null
           customer_name?: string
           customer_email?: string | null
+          customer_city?: string | null
+          customer_state?: string | null
           rating?: number
+          title?: string | null
           comment?: string | null
+          service_type?: string | null
+          project_cost?: number | null
+          project_duration_days?: number | null
+          location?: string | null
           verified?: boolean
+          helpful_votes?: number
+          quality_rating?: number | null
+          timeliness_rating?: number | null
+          communication_rating?: number | null
+          value_rating?: number | null
           created_at?: string
+          updated_at?: string
         }
       }
       payments: {

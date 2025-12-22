@@ -30,6 +30,7 @@ import { getContractorLogo } from '@/lib/contractor-utils'
 import { calculateContractorRating } from '@/lib/contractor-rating'
 import { ContractorReviewsSection } from '@/components/pages/ContractorReviewsSection'
 import { DirectQuoteButton } from '@/components/contractor/DirectQuoteButton'
+import { getContractorReviews } from '@/lib/city-reviews'
 
 // Dynamic route - will be rendered on demand
 import type { Metadata } from 'next'
@@ -163,35 +164,16 @@ async function getContractorProjects(contractorId: string): Promise<ContractorPr
   }
 }
 
-// Fetch contractor reviews
-async function getContractorReviews(contractorId: string) {
+// Fetch contractor reviews using the new utility
+// This will show all verified reviews for the contractor regardless of location
+async function fetchContractorReviews(contractorId: string) {
   try {
     console.log('🔍 Fetching contractor reviews for ID:', contractorId)
     
-    const { data: reviews, error } = await (supabase as any)
-      .from('reviews')
-      .select(`
-        id,
-        customer_name,
-        customer_email,
-        rating,
-        title,
-        comment,
-        service_type,
-        location,
-        verified,
-        created_at
-      `)
-      .eq('contractor_id', contractorId)
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      console.error('Database error fetching contractor reviews:', error)
-      return []
-    }
+    const reviews = await getContractorReviews(contractorId, 50)
     
-    console.log(`✅ Found ${reviews?.length || 0} reviews for contractor`)
-    return reviews || []
+    console.log(`✅ Found ${reviews.length} verified reviews for contractor`)
+    return reviews
   } catch (error) {
     console.error('Error fetching contractor reviews:', error)
     return []
@@ -277,7 +259,7 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
 
   // Fetch real contractor projects and reviews
   const contractorProjects = await getContractorProjects(contractorData.id)
-  const contractorReviews = await getContractorReviews(contractorData.id)
+  const contractorReviews = await fetchContractorReviews(contractorData.id)
   const ratingSummary = await calculateContractorRating(contractorData.id)
 
   const formatResponseTime = (minutes: number | null) => {
@@ -392,7 +374,9 @@ export default async function ContractorProfilePage({ params }: ContractorPagePr
   const recentReviews = contractorReviews.map((review: any) => ({
     id: review.id,
     name: review.customer_name,
-    location: review.location || `${contractorData.business_city}, ${contractorData.business_state}`,
+    location: review.customer_city && review.customer_state 
+      ? `${review.customer_city}, ${review.customer_state}`
+      : review.location || `${contractorData.business_city}, ${contractorData.business_state}`,
     rating: review.rating,
     date: new Date(review.created_at).toLocaleDateString('en-US', { 
       year: 'numeric', 

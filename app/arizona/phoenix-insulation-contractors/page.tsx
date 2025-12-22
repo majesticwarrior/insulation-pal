@@ -52,7 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseDescription = 'Find the best insulation contractors in Phoenix, AZ'
     
     return {
-      title: `Insulation Contractors in Phoenix, AZ, Find Top Rated Local Companies Near You`,
+      title: 'Insulation Contractors in Phoenix, AZ, Expert Licensed Companies - InsulationPal',
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
         'Phoenix insulation contractors',
@@ -69,7 +69,7 @@ export async function generateMetadata(): Promise<Metadata> {
       ],
       openGraph: {
         title: `${baseTitle} - ${contractorCount} Top-Rated Professionals`,
-        description: `Connect with ${contractorCount} licensed insulation contractors in Phoenix, Arizona. Get free quotes for all types of insulation services.`,
+        description: `Connect with trusted insulation contractors in Phoenix, AZ. Get free quotes for all types of insulation services.`,
         type: 'website',
         locale: 'en_US',
         siteName: 'InsulationPal',
@@ -83,7 +83,7 @@ export async function generateMetadata(): Promise<Metadata> {
       twitter: {
         card: 'summary_large_image',
         title: `${baseTitle} - ${contractorCount} Top-Rated Professionals`,
-        description: `Connect with ${contractorCount} licensed insulation contractors in Phoenix, Arizona. Get free quotes today!`,
+        description: `Connect with trusted insulation contractors in Phoenix, AZ. Get free quotes today!`,
         images: topContractor?.profile_image ? [topContractor.profile_image] : undefined,
       },
       alternates: {
@@ -584,7 +584,7 @@ export default async function PhoenixInsulationContractors() {
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
-              Phoenix Insulation Contractors
+              Hire a Licensed Insulation Contractor in Phoenix
             </h1>
             <p className="text-xl text-gray-700 mb-8">
               Find the best insulation contractors in Phoenix, Arizona. Get free quotes from local, 
@@ -806,6 +806,65 @@ export default async function PhoenixInsulationContractors() {
         </div>
       </section>
 
+      {/* Finding Qualified Insulation Contractors in Phoenix */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
+            Finding Qualified Insulation Contractors in Phoenix
+          </h2>
+          
+          <div className="space-y-6">
+            <p className="text-gray-700 leading-relaxed">
+              Finding a qualified insulation contractor in Phoenix can be challenging for homeowners who need to verify licenses, compare pricing, and ensure quality service. We launched InsulationPal in Arizona to address this problem by creating a centralized platform that connects residents with pre-screened, licensed insulation professionals.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              Our platform allows Phoenix homeowners to receive up to three competitive bids from verified local contractors, making it easier to compare credentials, pricing, and customer reviews in one place. We designed this service to remove the burden of searching through multiple listings and dealing with inconsistent information.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              We focus on transparency and trust by ensuring every contractor in our network is licensed, insured, and vetted for experience. Whether you need attic insulation, spray foam installation, or commercial property services, our platform simplifies the process of finding the right professional for your project.
+            </p>
+            
+            <h3 className="text-2xl font-semibold text-[#0a4768] mt-8 mb-4">
+              The Platform Operates at No Cost to Homeowners
+            </h3>
+            
+            <p className="text-gray-700 leading-relaxed">
+              Phoenix homeowners access a network of pre-screened, licensed professionals without spending hours researching individual companies or making multiple phone calls. We provide instant matching with up to three local insulation contractors who specialize in specific project types, whether attic insulation, spray foam insulation, or commercial insulation solutions.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              Contractor profiles include verified customer reviews from previous Arizona homeowners. These reviews cover work quality, communication, punctuality, and overall satisfaction. We display both ratings and detailed feedback to support informed decisions.
+            </p>
+            
+            <h3 className="text-2xl font-semibold text-[#0a4768] mt-8 mb-4">
+              Professional Insulation Services Impact Energy Efficiency
+            </h3>
+            
+            <p className="text-gray-700 leading-relaxed">
+              Professional insulation services directly impact energy efficiency in Phoenix homes. Proper attic insulation reduces heat transfer during Arizona's extreme summers, decreasing cooling demands and lowering energy bills year-round. Quality insulation installation improves indoor air quality by creating effective thermal barriers and reducing dust infiltration.
+            </p>
+            
+            <Card className="bg-[#D8E1FF] border-[#0a4768] shadow-lg mt-8">
+              <CardContent className="p-6 text-center">
+                <CheckCircle className="w-12 h-12 text-[#0a4768] mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-[#0a4768] mb-3">Ready to Find Your Phoenix Contractor?</h3>
+                <p className="text-lg text-gray-700 mb-2">
+                  Connect with pre-screened, licensed, and insured insulation professionals in Phoenix, AZ.
+                </p>
+                <p className="text-lg text-gray-700 mb-6">
+                  Get up to 3 free quotes today!
+                </p>
+                <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+                  See Prices
+                </QuoteButton>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Phoenix Area Cities */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4 max-w-[1400px]">
@@ -971,12 +1030,12 @@ export default async function PhoenixInsulationContractors() {
         </div>
       </section>
 
-      {/* Recent Phoenix Completed Insulation Projects */}
+      {/* Recent Phoenix Completed Projects */}
       <section className="py-12 bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6]">
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Recent Phoenix Completed Insulation Projects
+              Recent Phoenix Completed Projects
             </h2>
             <p className="text-lg text-gray-600 mb-8">
               See the quality work performed by our verified contractors in the Phoenix metro area

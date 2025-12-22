@@ -9,7 +9,7 @@ import Header from '@/components/layout/Header'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Professional Insulation Services Made Simple, Free Contractor Quotes - InsulationPal',
+  title: 'InsulationPal:Professional Insulation Services Made Simple',
   description: 'Connect with trusted insulation contractors in your area. Get free quotes for attic insulation, wall insulation, spray foam, and more. Save up to 30% on energy bills.',
   keywords: 'insulation contractors, insulation services, attic insulation, spray foam, wall insulation, energy efficiency, home insulation quotes',
   openGraph: {

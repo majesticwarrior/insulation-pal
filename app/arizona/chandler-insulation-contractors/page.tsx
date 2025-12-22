@@ -52,7 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseDescription = 'Find the best insulation contractors in Chandler, AZ'
     
     return {
-      title: `Insulation Contractors in Chandler, AZ, Find Top Rated Local Companies Near You`,
+      title: 'Insulation Contractors in Chandler, AZ, Expert Licensed Companies - InsulationPal',
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
         'Chandler insulation contractors',
@@ -570,7 +570,7 @@ export default async function ChandlerInsulationContractors() {
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
-              Chandler Insulation Contractors
+              Hire a Licensed Insulation Contractor in Chandler
             </h1>
             <p className="text-xl text-gray-700 mb-8">
               Find the best insulation contractors in Chandler, Arizona. Get free quotes from local, 
@@ -792,6 +792,45 @@ export default async function ChandlerInsulationContractors() {
         </div>
       </section>
 
+      {/* Finding Reliable Insulation Contractors in Chandler */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
+            Finding Reliable Insulation Contractors in Chandler
+          </h2>
+          
+          <div className="space-y-6">
+            <p className="text-gray-700 leading-relaxed">
+              Finding reliable insulation contractors in Chandler can be a bit of a headache. Homeowners have to check licenses, juggle prices, and hope they're getting solid service. Usually, it means scrolling through endless listings, making calls, and still feeling unsure about the choices. Wouldn't it be easier if there was a simpler way?
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              InsulationPal has teamed up with local insulation contractors in Chandler to connect homeowners with licensed pros through one easy-to-use digital platform. Now, folks across Arizona can access verified insulation services, request up to three competitive bids, and actually compare trusted local businesses side by side. We take the guesswork out of hiring by checking licensing, insurance, and experience up front, so you can skip the stress.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              Our network covers attic insulation, spray foam, or even commercial jobs—Chandler residents can find quality work at fair prices, and local contractors get a boost too. It's a win-win, really.
+            </p>
+            
+            <Card className="bg-[#D8E1FF] border-[#0a4768] shadow-lg mt-8">
+              <CardContent className="p-6 text-center">
+                <CheckCircle className="w-12 h-12 text-[#0a4768] mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-[#0a4768] mb-3">Ready to Find Your Chandler Contractor?</h3>
+                <p className="text-lg text-gray-700 mb-2">
+                  Connect with pre-screened, licensed, and insured insulation professionals in Chandler, AZ.
+                </p>
+                <p className="text-lg text-gray-700 mb-6">
+                  Get up to 3 free quotes today!
+                </p>
+                <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+                  See Prices
+                </QuoteButton>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Phoenix Area Cities */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4 max-w-[1400px]">
@@ -941,7 +980,7 @@ export default async function ChandlerInsulationContractors() {
               
               <div className="text-center mt-8">
                 <p className="text-gray-600 text-sm">
-                  Showing {phoenixReviews.length} of the latest reviews from Phoenix customers
+                  Showing {phoenixReviews.length} of the latest reviews from Chandler customers
                 </p>
               </div>
             </div>
@@ -957,12 +996,12 @@ export default async function ChandlerInsulationContractors() {
         </div>
       </section>
 
-      {/* Recent Chandler Completed Insulation Projects */}
+      {/* Recent Chandler Completed Projects */}
       <section className="py-12 bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6]">
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Recent Chandler Completed Insulation Projects
+              Recent Chandler Completed Projects
             </h2>
             <p className="text-lg text-gray-600 mb-8">
               See the quality work performed by our verified contractors in the Chandler area

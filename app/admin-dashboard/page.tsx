@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Shield, Users, Clock, CheckCircle, XCircle, Eye, DollarSign, LogOut, Edit, Plus, Star, UserCog, Key, Copy, MoreVertical } from 'lucide-react'
+import { Shield, Users, Clock, CheckCircle, XCircle, Eye, DollarSign, LogOut, Edit, Plus, Star, UserCog, Key, Copy, MoreVertical, LogIn } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 
@@ -598,6 +598,73 @@ export default function AdminDashboard() {
     setSelectedContractorForPasswordReset(contractor)
     setNewPassword('')
     setIsPasswordResetDialogOpen(true)
+  }
+
+  const loginAsContractor = async (contractor: Contractor) => {
+    try {
+      console.log('🔐 Admin logging in as contractor:', contractor.business_name)
+      
+      // Prepare contractor data
+      const contractorData = {
+        id: contractor.id,
+        user_id: contractor.user_id,
+        email: contractor.email || contractor.contact_email,
+        business_name: contractor.business_name,
+        license_number: contractor.license_number,
+        status: contractor.status,
+        credits: contractor.credits,
+        contact_phone: contractor.contact_phone,
+        contact_email: contractor.contact_email,
+        business_address: contractor.business_address,
+        business_city: contractor.business_city,
+        business_state: contractor.business_state,
+        business_zip: contractor.business_zip,
+        total_reviews: contractor.total_reviews,
+        average_rating: contractor.average_rating,
+        total_completed_projects: contractor.total_completed_projects,
+        profile_image: contractor.profile_image,
+        bio: contractor.bio,
+        founded_year: contractor.founded_year,
+        employee_count: contractor.employee_count,
+        license_verified: contractor.license_verified,
+        insurance_verified: contractor.insurance_verified,
+        bbb_accredited: contractor.bbb_accredited,
+        certifications: contractor.certifications
+      }
+      
+      // Store contractor data with a special key for the new window
+      const tempKey = `contractor_login_${contractor.id}_${Date.now()}`
+      localStorage.setItem(tempKey, JSON.stringify(contractorData))
+      
+      // Open contractor dashboard in a new window
+      const newWindow = window.open('/contractor-dashboard', '_blank')
+      
+      if (newWindow) {
+        // Wait a bit for the new window to load, then set the contractor data
+        setTimeout(() => {
+          try {
+            // The new window will read from this temp key and move it to 'contractor'
+            localStorage.setItem('contractor_temp_login', JSON.stringify({
+              key: tempKey,
+              data: contractorData
+            }))
+          } catch (e) {
+            console.error('Error setting temp login data:', e)
+          }
+        }, 100)
+        
+        toast.success(`Opening ${contractor.business_name}'s dashboard in new window`)
+      } else {
+        // Popup blocked, fallback to same window
+        toast.error('Popup blocked. Please allow popups and try again.')
+        localStorage.setItem('contractor', JSON.stringify(contractorData))
+        router.push('/contractor-dashboard')
+      }
+      
+    } catch (error) {
+      console.error('Error logging in as contractor:', error)
+      toast.error('Failed to log in as contractor')
+    }
   }
 
   const deleteContractor = async (contractorId: string, businessName: string) => {
@@ -1502,6 +1569,16 @@ export default function AdminDashboard() {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="w-48">
+                                <DropdownMenuItem
+                                  onClick={() => loginAsContractor(contractor)}
+                                  className="cursor-pointer text-blue-600"
+                                >
+                                  <LogIn className="h-4 w-4 mr-2" />
+                                  Login as Contractor
+                                </DropdownMenuItem>
+                                
+                                <DropdownMenuSeparator />
+                                
                                 <DropdownMenuItem
                                   onClick={() => openEditDialog(contractor)}
                                   className="cursor-pointer"

@@ -52,7 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseDescription = 'Find the best insulation contractors in Flagstaff, AZ'
     
     return {
-      title: `Insulation Contractors in Flagstaff AZ, Find Top Rated Local Companies Near You`,
+      title: 'Insulation Contractors in Flagstaff, AZ, Expert Licensed Companies - InsulationPal',
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
         'Flagstaff insulation contractors',
@@ -508,7 +508,7 @@ export default async function FlagstaffInsulationContractors() {
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
-              Flagstaff Insulation Contractors
+              Hire a Licensed Insulation Contractor in Flagstaff
             </h1>
             <p className="text-xl text-gray-700 mb-8">
               Find the best insulation contractors in Flagstaff, Arizona. Get free quotes from local, 
@@ -730,6 +730,45 @@ export default async function FlagstaffInsulationContractors() {
         </div>
       </section>
 
+      {/* Finding Qualified Insulation Contractors in Flagstaff */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
+            Finding Qualified Insulation Contractors in Flagstaff
+          </h2>
+          
+          <div className="space-y-6">
+            <p className="text-gray-700 leading-relaxed">
+              Finding qualified insulation contractors in Flagstaff can be a real headache. Most folks end up spending way too much time scrolling through companies, making endless calls, and sorting through confusing pricing. We saw how frustrating that was and figured—why not fix it?
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              InsulationPal has teamed up with local insulation contractors in Flagstaff, giving Arizona homeowners a digital shortcut to licensed pros they can actually trust. With our platform, you just send in your project details once and get up to three competitive bids from vetted local contractors. No more repeating yourself or chasing down callbacks.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              We've built connections with Flagstaff contractors who know their stuff—attic insulation, crawl spaces, wall insulation, you name it, for both homes and businesses. It's about time hiring insulation help was this simple, right?
+            </p>
+            
+            <Card className="bg-[#D8E1FF] border-[#0a4768] shadow-lg mt-8">
+              <CardContent className="p-6 text-center">
+                <CheckCircle className="w-12 h-12 text-[#0a4768] mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-[#0a4768] mb-3">Ready to Find Your Flagstaff Contractor?</h3>
+                <p className="text-lg text-gray-700 mb-2">
+                  Connect with pre-screened, licensed, and insured insulation professionals in Flagstaff, AZ.
+                </p>
+                <p className="text-lg text-gray-700 mb-6">
+                  Get up to 3 free quotes today!
+                </p>
+                <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+                  See Prices
+                </QuoteButton>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Phoenix Area Cities */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4 max-w-[1400px]">
@@ -899,7 +938,7 @@ export default async function FlagstaffInsulationContractors() {
               
               <div className="text-center mt-8">
                 <p className="text-gray-600 text-sm">
-                  Showing {phoenixReviews.length} of the latest reviews from Phoenix customers
+                  Showing {phoenixReviews.length} of the latest reviews from Flagstaff customers
                 </p>
               </div>
             </div>
@@ -915,12 +954,12 @@ export default async function FlagstaffInsulationContractors() {
         </div>
       </section>
 
-      {/* Recent Flagstaff Completed Insulation Projects */}
+      {/* Recent Flagstaff Completed Projects */}
       <section className="py-12 bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6]">
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Recent Flagstaff Completed Insulation Projects
+              Recent Flagstaff Completed Projects
             </h2>
             <p className="text-lg text-gray-600 mb-8">
               See the quality work performed by our verified contractors in the Flagstaff area

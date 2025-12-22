@@ -127,14 +127,19 @@ export function ProjectImageUpload({
           .from('contractor_portfolio')
           .insert({
             contractor_id: contractorId,
+            lead_assignment_id: leadAssignmentId, // Track the originating lead
             title: projectTitle,
             description: captions[i] || `Completed ${projectDetails.areasNeeded.join(' and ')} insulation project`,
             service_type: projectDetails.areasNeeded[0]?.toLowerCase() || 'attic',
+            areas_insulated: projectDetails.areasNeeded.map((area: string) => area.toLowerCase()), // Store all areas
+            insulation_types: projectDetails.insulationTypes?.map((type: string) => type.toLowerCase()) || [], // Store insulation types
             project_size_sqft: projectDetails.homeSize,
             completion_date: new Date().toISOString(),
             after_image_url: publicUrl, // Use as "after" image
-            project_city: projectDetails.city,
+            project_city: projectDetails.city, // Where the project was completed
             project_state: projectDetails.state,
+            customer_city: projectDetails.city, // Where the customer lives (from lead)
+            customer_state: projectDetails.state, // Customer's state (from lead)
             is_featured: false,
             display_order: 999 + i // Put at end of gallery
           })

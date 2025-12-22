@@ -29,6 +29,8 @@ import { articles } from '@/lib/articles-data'
 import { getContractorLogo } from '@/lib/contractor-utils'
 import { createCitySchemas } from '@/lib/city-schema'
 import { getCityMapUrl } from '@/lib/city-maps'
+import { getCityReviews } from '@/lib/city-reviews'
+import { getCityProjects, formatAreasInsulated, formatInsulationTypes } from '@/lib/city-projects'
 
 // Revalidate this page every 60 seconds to show updated contractor data
 export const revalidate = 60
@@ -44,7 +46,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseDescription = 'Find the best insulation contractors in Peoria, AZ'
     
     return {
-      title: `Insulation Contractors in Peoria, AZ, Find Top Rated Local Companies Near You`,
+      title: 'Insulation Contractors in Peoria, AZ, Expert Licensed Companies - InsulationPal',
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
         'Peoria insulation contractors',
@@ -308,194 +310,42 @@ async function getPeoriaContractors() {
   }
 }
 
-// Fetch recent insulation projects completed in Peoria
+// Fetch recent insulation projects from Peoria customers
 async function getPeoriaRecentProjects() {
   try {
-    const { data: projects, error } = await (supabase as any)
-      .from('contractor_portfolio')
-      .select(`
-        id,
-        title,
-        service_type,
-        after_image_url,
-        project_city,
-        project_state,
-        completion_date,
-        contractor_id,
-        contractors!inner(
-          business_name,
-          status
-        )
-      `)
-      .eq('project_state', 'AZ')
-      .ilike('project_city', 'peoria')
-      .neq('after_image_url', null)
-      .eq('contractors.status', 'approved')
-      .order('completion_date', { ascending: false })
-      .limit(12)
-
-    if (error) {
-      return []
+    // Use the new city projects utility which filters by customer location
+    // Priority: 1) Peoria customers, 2) Nearby cities, 3) All AZ
+    const result = await getCityProjects('Peoria', 'AZ', 12)
+    
+    console.log(`✅ Fetched ${result.projects.length} projects for Peoria from source: ${result.source}`)
+    if (result.source === 'nearby') {
+      console.log(`   Including projects from: ${result.citiesIncluded.join(', ')}`)
     }
-
-    return projects || []
+    
+    return result.projects
   } catch (error) {
+    console.error('Error fetching Peoria projects:', error)
     return []
   }
 }
 
-// Fetch Peoria contractor reviews (fallback to Phoenix if none found)
-async function getPhoenixReviews() {
+// Fetch Peoria customer reviews with intelligent fallback
+async function getPeoriaReviews() {
   try {
-    // Try to fetch reviews with location containing Peoria
-    const { data: locationReviews, error: locationError } = await (supabase as any)
-      .from('reviews')
-      .select(`
-        id,
-        customer_name,
-        rating,
-        title,
-        comment,
-        service_type,
-        location,
-        verified,
-        created_at,
-        contractors!inner(
-          business_name,
-          business_city,
-          business_state,
-          status
-        )
-      `)
-      .eq('contractors.status', 'approved')
-      .ilike('location', '%Peoria%')
-      .order('created_at', { ascending: false })
-      .limit(10)
-
-    // Try to fetch reviews from contractors based in Peoria
-    const { data: contractorReviews, error: contractorError } = await (supabase as any)
-      .from('reviews')
-      .select(`
-        id,
-        customer_name,
-        rating,
-        title,
-        comment,
-        service_type,
-        location,
-        verified,
-        created_at,
-        contractors!inner(
-          business_name,
-          business_city,
-          business_state,
-          status
-        )
-      `)
-      .eq('contractors.status', 'approved')
-      .ilike('contractors.business_city', '%Peoria%')
-      .order('created_at', { ascending: false })
-      .limit(10)
-
-    // Combine and deduplicate results
-    const allReviews = []
-    const seenIds = new Set()
-
-    // Add location-based reviews
-    if (locationReviews) {
-      for (const review of locationReviews) {
-        if (!seenIds.has(review.id)) {
-          allReviews.push(review)
-          seenIds.add(review.id)
-        }
-      }
+    // Use the new city reviews utility which handles:
+    // 1. Reviews from customers in Peoria
+    // 2. Fallback to nearby cities (Phoenix, Glendale, Surprise, etc.)
+    // 3. Ultimate fallback to all AZ reviews
+    const result = await getCityReviews('Peoria', 'AZ', 15)
+    
+    console.log(`✅ Fetched ${result.reviews.length} reviews for Peoria from source: ${result.source}`)
+    if (result.source === 'nearby') {
+      console.log(`   Including reviews from: ${result.citiesIncluded.join(', ')}`)
     }
-
-    // Add contractor-based reviews
-    if (contractorReviews) {
-      for (const review of contractorReviews) {
-        if (!seenIds.has(review.id)) {
-          allReviews.push(review)
-          seenIds.add(review.id)
-        }
-      }
-    }
-
-    // If no Peoria reviews found, fallback to Phoenix reviews
-    if (allReviews.length === 0) {
-      const { data: phoenixLocationReviews } = await (supabase as any)
-        .from('reviews')
-        .select(`
-          id,
-          customer_name,
-          rating,
-          title,
-          comment,
-          service_type,
-          location,
-          verified,
-          created_at,
-          contractors!inner(
-            business_name,
-            business_city,
-            business_state,
-            status
-          )
-        `)
-        .eq('contractors.status', 'approved')
-        .ilike('location', '%Phoenix%')
-        .order('created_at', { ascending: false })
-        .limit(10)
-
-      const { data: phoenixContractorReviews } = await (supabase as any)
-        .from('reviews')
-        .select(`
-          id,
-          customer_name,
-          rating,
-          title,
-          comment,
-          service_type,
-          location,
-          verified,
-          created_at,
-          contractors!inner(
-            business_name,
-            business_city,
-            business_state,
-            status
-          )
-        `)
-        .eq('contractors.status', 'approved')
-        .ilike('contractors.business_city', '%Phoenix%')
-        .order('created_at', { ascending: false })
-        .limit(10)
-
-      if (phoenixLocationReviews) {
-        for (const review of phoenixLocationReviews) {
-          if (!seenIds.has(review.id)) {
-            allReviews.push(review)
-            seenIds.add(review.id)
-          }
-        }
-      }
-
-      if (phoenixContractorReviews) {
-        for (const review of phoenixContractorReviews) {
-          if (!seenIds.has(review.id)) {
-            allReviews.push(review)
-            seenIds.add(review.id)
-          }
-        }
-      }
-    }
-
-    // Sort by created_at descending and limit to 15
-    allReviews.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    const finalReviews = allReviews.slice(0, 15)
-
-    return finalReviews
+    
+    return result.reviews
   } catch (error) {
+    console.error('Error fetching Peoria reviews:', error)
     return []
   }
 }
@@ -519,7 +369,7 @@ export default async function PeoriaInsulationContractors() {
 
   const peoriaContractors = await getPeoriaContractors()
   const recentProjects = await getPeoriaRecentProjects()
-  const phoenixReviews = await getPhoenixReviews()
+  const peoriaReviews = await getPeoriaReviews()
   
   const cityStats = {
     totalReviews: peoriaContractors.reduce((sum: number, contractor: any) => sum + contractor.reviewCount, 0),
@@ -560,7 +410,7 @@ export default async function PeoriaInsulationContractors() {
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
-              Peoria Insulation Contractors
+              Hire a Licensed Insulation Contractor in Peoria
             </h1>
             <p className="text-xl text-gray-700 mb-8">
               Find the best insulation contractors in Peoria, Arizona. Get free quotes from local, 
@@ -782,6 +632,45 @@ export default async function PeoriaInsulationContractors() {
         </div>
       </section>
 
+      {/* Finding a Qualified Insulation Contractor in Peoria */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
+            Finding a Qualified Insulation Contractor in Peoria
+          </h2>
+          
+          <div className="space-y-6">
+            <p className="text-gray-700 leading-relaxed">
+              InsulationPal has brought more licensed insulation contractors into its network, now serving the Peoria area. That means local homeowners can find qualified pros for their insulation projects without the usual hassle. We connect folks with contractors who know their stuff—attic insulation, spray foam, wall insulation, you name it. The idea? Make it less of a headache to get quotes and line up installation.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              Our platform matches Peoria homeowners with up to three licensed and insured insulation contractors who can provide free estimates for their specific projects. We take care of the initial screening and matching, so you're not stuck scrolling through endless company listings or dialing numbers all afternoon. Every contractor in our network has to meet licensing and insurance standards—no shortcuts there.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              This collaboration gives people in Peoria a way to access a broad range of insulation services, whether they just want a basic attic upgrade or something more involved for the whole house. We built this network because, honestly, finding reliable contractors shouldn't be such a pain. Our goal? Transparent pricing and solid workmanship, every time.
+            </p>
+            
+            <Card className="bg-[#D8E1FF] border-[#0a4768] shadow-lg mt-8">
+              <CardContent className="p-6 text-center">
+                <CheckCircle className="w-12 h-12 text-[#0a4768] mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-[#0a4768] mb-3">Ready to Find Your Peoria Contractor?</h3>
+                <p className="text-lg text-gray-700 mb-2">
+                  Connect with pre-screened, licensed, and insured insulation professionals in Peoria, AZ.
+                </p>
+                <p className="text-lg text-gray-700 mb-6">
+                  Get up to 3 free quotes today!
+                </p>
+                <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+                  See Prices
+                </QuoteButton>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Phoenix Area Cities */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4 max-w-[1400px]">
@@ -860,19 +749,19 @@ export default async function PeoriaInsulationContractors() {
 
 
 
-      {/* Phoenix Reviews Carousel */}
+      {/* Peoria Customer Reviews Carousel */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Latest Peoria Reviews
+              Latest Customer Reviews
             </h2>
             <p className="text-lg text-gray-600">
-              See what customers are saying about our Peoria insulation contractors
+              See what Peoria area customers are saying about their insulation projects
             </p>
           </div>
           
-          {phoenixReviews.length > 0 ? (
+          {peoriaReviews.length > 0 ? (
             <div className="max-w-[1400px] mx-auto">
               <Carousel
                 opts={{
@@ -882,7 +771,7 @@ export default async function PeoriaInsulationContractors() {
                 className="w-full"
               >
                 <CarouselContent className="-ml-2 md:-ml-4">
-                  {phoenixReviews.map((review: any) => (
+                  {peoriaReviews.map((review: any) => (
                     <CarouselItem key={review.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
                       <Card className="border-l-4 border-l-[#F5DD22] h-full">
                         <CardContent className="p-6 flex flex-col h-full">
@@ -912,6 +801,11 @@ export default async function PeoriaInsulationContractors() {
                           
                           <div className="text-xs text-gray-600 mt-auto">
                             <div className="font-medium">{review.customer_name}</div>
+                            {review.customer_city && review.customer_state && (
+                              <div className="text-gray-500">
+                                {review.customer_city}, {review.customer_state}
+                              </div>
+                            )}
                             <div className="text-[#0a4768]">{review.contractors.business_name}</div>
                             <div>{new Date(review.created_at).toLocaleDateString()}</div>
                             {review.service_type && (
@@ -931,7 +825,7 @@ export default async function PeoriaInsulationContractors() {
               
               <div className="text-center mt-8">
                 <p className="text-gray-600 text-sm">
-                  Showing {phoenixReviews.length} of the latest reviews from Phoenix customers
+                  Showing {peoriaReviews.length} verified customer reviews from Peoria and nearby areas
                 </p>
               </div>
             </div>
@@ -940,22 +834,22 @@ export default async function PeoriaInsulationContractors() {
               <Star className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h4 className="text-lg font-semibold text-gray-900 mb-2">No Reviews Yet</h4>
               <p className="text-gray-600">
-                Phoenix contractor reviews will appear here as customers share their experiences.
+                Customer reviews will appear here as homeowners share their experiences.
               </p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Recent Phoenix Completed Insulation Projects */}
+      {/* Recent Peoria Completed Projects */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Recent Phoenix Completed Insulation Projects
+              Recent Peoria Area Projects
             </h2>
             <p className="text-lg text-gray-600 mb-8">
-              See the quality work performed by our verified contractors in the Phoenix metro area
+              See completed insulation projects from Peoria homeowners
             </p>
           </div>
 
@@ -975,18 +869,27 @@ export default async function PeoriaInsulationContractors() {
                     />
                   </div>
                   <CardContent className="p-4">
-                    <h3 className="font-semibold text-[#0a4768] mb-2 text-sm">
+                    <h3 className="font-semibold text-[#0a4768] mb-2 text-sm line-clamp-2">
                       {project.title || 'Insulation Project'}
                     </h3>
                     <div className="space-y-1 text-xs text-gray-600">
+                      {project.areas_insulated && project.areas_insulated.length > 0 && (
+                        <div>
+                          <span className="font-medium">Areas:</span> {formatAreasInsulated(project.areas_insulated)}
+                        </div>
+                      )}
+                      {project.insulation_types && project.insulation_types.length > 0 && (
+                        <div>
+                          <span className="font-medium">Insulation:</span> {formatInsulationTypes(project.insulation_types)}
+                        </div>
+                      )}
+                      {project.customer_city && project.customer_state && (
+                        <div>
+                          <span className="font-medium">Customer:</span> {project.customer_city}, {project.customer_state}
+                        </div>
+                      )}
                       <div>
-                        <span className="font-medium">Service:</span> {project.service_type || 'Insulation'}
-                      </div>
-                      <div>
-                        <span className="font-medium">Location:</span> {project.project_city}, AZ
-                      </div>
-                      <div>
-                        <span className="font-medium">Contractor:</span> {project.contractors.business_name}
+                        <span className="font-medium">By:</span> {project.contractors.business_name}
                       </div>
                     </div>
                   </CardContent>
@@ -996,7 +899,7 @@ export default async function PeoriaInsulationContractors() {
           ) : (
             <div className="text-center py-12">
               <p className="text-gray-600">
-                Project portfolio coming soon. Contractors are adding their recent work to showcase quality installations.
+                Project portfolio coming soon. Contractors are adding their recent work from Peoria customers.
               </p>
             </div>
           )}

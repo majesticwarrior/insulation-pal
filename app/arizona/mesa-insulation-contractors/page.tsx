@@ -52,7 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseDescription = 'Find the best insulation contractors in Mesa, AZ'
     
     return {
-      title: `Insulation Contractors in Mesa, AZ, Find Top Rated Local Companies Near You`,
+      title: 'Insulation Contractors in Mesa, AZ, Expert Licensed Companies - InsulationPal',
       description: `${baseDescription}. ${contractorCount} licensed professionals available. Get free quotes for attic, wall, spray foam, and basement insulation services.`,
       keywords: [
         'Mesa insulation contractors',
@@ -407,7 +407,7 @@ export default async function MesaInsulationContractors() {
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#0a4768] mb-6">
-              Mesa Insulation Contractors
+              Hire a Licensed Insulation Contractor in Mesa
             </h1>
             <p className="text-xl text-gray-700 mb-8">
               Find the best insulation contractors in Mesa, Arizona. Get free quotes from local, 
@@ -629,6 +629,45 @@ export default async function MesaInsulationContractors() {
         </div>
       </section>
 
+      {/* Finding a Qualified Insulation Contractor in Mesa */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-3xl font-bold text-[#0a4768] mb-8 text-center">
+            Finding a Qualified Insulation Contractor in Mesa
+          </h2>
+          
+          <div className="space-y-6">
+            <p className="text-gray-700 leading-relaxed">
+              Trying to find a reliable insulation contractor in Mesa? Yeah, it can be a real headache—verifying licenses, sorting through prices, and figuring out who actually does good work. InsulationPal has expanded its network to include local insulation contractors in Mesa, so folks in Arizona can get connected with vetted pros and snag up to three solid bids for their projects. No more second-guessing who to hire; every contractor goes through checks for licensing and insurance.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              We get it—good insulation isn't just about comfort, it's about keeping those energy bills from spiraling out of control, especially with Arizona's wild weather. Our platform is basically a shortcut for Mesa homeowners: you get access to pre-screened contractors, minus the endless research and credential-checking rabbit holes.
+            </p>
+            
+            <p className="text-gray-700 leading-relaxed">
+              By teaming up with established local pros across Mesa and Arizona, we're aiming for a system that actually works for everyone. Homeowners find quality help, and licensed contractors meet real customers. It's free for homeowners, pretty simple, and matches each project with the right person for the job.
+            </p>
+            
+            <Card className="bg-[#D8E1FF] border-[#0a4768] shadow-lg mt-8">
+              <CardContent className="p-6 text-center">
+                <CheckCircle className="w-12 h-12 text-[#0a4768] mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-[#0a4768] mb-3">Ready to Find Your Mesa Contractor?</h3>
+                <p className="text-lg text-gray-700 mb-2">
+                  Connect with pre-screened, licensed, and insured insulation professionals in Mesa, AZ.
+                </p>
+                <p className="text-lg text-gray-700 mb-6">
+                  Get up to 3 free quotes today!
+                </p>
+                <QuoteButton className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg">
+                  See Prices
+                </QuoteButton>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Mesa Area Cities */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4 max-w-[1400px]">
@@ -798,12 +837,12 @@ export default async function MesaInsulationContractors() {
         </div>
       </section>
 
-      {/* Recent Mesa Completed Insulation Projects */}
+      {/* Recent Mesa Completed Projects */}
       <section className="py-12 bg-gradient-to-br from-[#D8E1FF] to-[#D6D6D6]">
         <div className="container mx-auto px-4 max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#0a4768] mb-4">
-              Recent Mesa Completed Insulation Projects
+              Recent Mesa Completed Projects
             </h2>
             <p className="text-lg text-gray-600 mb-8">
               See the quality work performed by our verified contractors in the Mesa metro area
