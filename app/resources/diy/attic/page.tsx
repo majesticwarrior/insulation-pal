@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { ArrowLeft, CheckCircle2, Wrench, Wind, Calculator, FileText, Quote } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { QuoteButton } from '@/components/ui/quote-button'
-import CostCalculatorDialog from '@/components/pages/CostCalculatorDialog'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -131,12 +130,12 @@ export default function AtticDIYGuidePage() {
                       <Quote className="mr-2 h-4 w-4" />
                       Get a Quote
                     </QuoteButton>
-                    <CostCalculatorDialog>
-                      <Button className="w-full bg-[#0a4768] hover:bg-[#0a4768]/90 text-white">
+                    <Button asChild className="w-full bg-[#0a4768] hover:bg-[#0a4768]/90 text-white">
+                      <Link href="/resources/insulation-calculator">
                         <Calculator className="mr-2 h-4 w-4" />
                         Cost Calculator
-                      </Button>
-                    </CostCalculatorDialog>
+                      </Link>
+                    </Button>
                   </div>
                 </div>
 

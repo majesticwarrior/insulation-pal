@@ -232,7 +232,7 @@ export default function ResourcesPage() {
                   Estimate the cost of your DIY insulation project with our interactive calculator.
                 </p>
                 <Button asChild variant="outline" className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white">
-                  <Link href="/resources/diy">Learn More</Link>
+                  <Link href="/resources/insulation-calculator">Learn More</Link>
                 </Button>
               </CardContent>
             </Card>

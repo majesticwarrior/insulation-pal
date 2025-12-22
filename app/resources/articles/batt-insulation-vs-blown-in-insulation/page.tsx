@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { ArrowLeft, FileText, Wrench, Calculator, Quote } from 'lucide-react'
 import { QuoteButton } from '@/components/ui/quote-button'
 import { Button } from '@/components/ui/button'
-import CostCalculatorDialog from '@/components/pages/CostCalculatorDialog'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -661,12 +660,12 @@ export default function BattInsulationVsBlownInArticlePage() {
                         <Quote className="mr-2 h-4 w-4" />
                         Request Contractor Quotes
                       </QuoteButton>
-                      <CostCalculatorDialog>
-                        <Button className="w-full bg-[#0a4768] hover:bg-[#0a4768]/90 text-white">
+                      <Button asChild className="w-full bg-[#0a4768] hover:bg-[#0a4768]/90 text-white">
+                        <Link href="/resources/insulation-calculator">
                           <Calculator className="mr-2 h-4 w-4" />
                           Estimate Project Cost
-                        </Button>
-                      </CostCalculatorDialog>
+                        </Link>
+                      </Button>
                     </div>
                   </div>
 

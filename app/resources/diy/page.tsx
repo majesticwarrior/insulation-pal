@@ -10,7 +10,6 @@ import { Calculator, Wrench, Shield, ArrowLeft, Play, Wind, Scissors, Zap, Ruler
 import type { LucideIcon } from 'lucide-react'
 import type { Metadata } from 'next'
 import DIYVideosGrid from '@/components/pages/DIYVideosGrid'
-import CostCalculatorDialog from '@/components/pages/CostCalculatorDialog'
 
 export const metadata: Metadata = {
   title: 'DIY Insulation Guides, How-To Videos & Tutorials - InsulationPal',
@@ -164,7 +163,7 @@ export default function DIYPage() {
                 variant="outline"
                 className="border-[#0a4768] text-[#0a4768] hover:bg-[#0a4768] hover:text-white px-8 py-3 text-lg"
               >
-                <Link href="#calculator">
+                <Link href="/resources/insulation-calculator">
                   <Calculator className="mr-2 h-5 w-5" />
                   Cost Calculator
                 </Link>
@@ -263,14 +262,15 @@ export default function DIYPage() {
             Use our interactive calculator to estimate the cost of materials and tools for your insulation project.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <CostCalculatorDialog>
-              <Button 
-                className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg"
-              >
+            <Button 
+              asChild
+              className="bg-[#F5DD22] hover:bg-[#f0d000] text-[#0a4768] font-semibold px-8 py-3 text-lg"
+            >
+              <Link href="/resources/insulation-calculator">
                 <Calculator className="mr-2 h-5 w-5" />
                 Open Calculator
-              </Button>
-            </CostCalculatorDialog>
+              </Link>
+            </Button>
             <QuoteButton className="bg-[#0a4768] hover:bg-[#0a4768]/90 text-white px-8 py-3 text-lg">
               Get Professional Quote
             </QuoteButton>
