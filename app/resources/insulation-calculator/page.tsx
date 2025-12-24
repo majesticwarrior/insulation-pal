@@ -10,7 +10,7 @@ import { ArrowLeft, FileText, Wrench, Quote } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Insulation Calculator: Accurate Estimates for Your Project - InsulationPal',
+  title: 'Insulation Calculator: Estimate Insulation Needed and Costs for Your Project - InsulationPal',
   description: 'Calculate exactly how much insulation you need for your project using our free insulation calculator. Get accurate estimates for walls, attics, crawl spaces, and more.',
 }
 

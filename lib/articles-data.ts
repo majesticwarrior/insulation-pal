@@ -11,10 +11,28 @@ export const articles = [
     category: 'Attic Insulation'
   },
   {
-    title: 'Best Attic Insulation for Dry, Cold and Humid Climates',
-    slug: 'best-attic-insulation-for-dry-cold-and-humid-climates',
+    title: 'Best Attic Insulation for Dry (Hot) Climates',
+    slug: 'best-attic-insulation-for-dry-hot-climates',
     description:
-      'Choose the best attic insulation for your climate. Learn about R-values, moisture control, ventilation, and which materials work best in dry, cold, and humid climates.',
+      'Discover the best attic insulation for dry, hot climates. Learn about spray foam, radiant barriers, blown-in cellulose, and optimal R-values for hot weather regions.',
+    image: '/energy-consumption-and-r-value-insulation.jpg',
+    readTime: '12 min read',
+    category: 'Attic Insulation'
+  },
+  {
+    title: 'Best Attic Insulation for Humid Climates',
+    slug: 'best-attic-insulation-for-humid-climates',
+    description:
+      'Discover the best attic insulation for humid climates. Learn about closed-cell spray foam, fiberglass with vapor barriers, rigid foam boards, and mineral wool for moisture control.',
+    image: '/energy-consumption-and-r-value-insulation.jpg',
+    readTime: '13 min read',
+    category: 'Attic Insulation'
+  },
+  {
+    title: 'Best Attic Insulation for Cold (Wet) Climates',
+    slug: 'best-attic-insulation-for-cold-wet-climates',
+    description:
+      'Discover the best attic insulation for cold, wet climates. Learn about spray foam, dense-pack cellulose, reflective barriers, and strategies for moisture control and heat retention.',
     image: '/energy-consumption-and-r-value-insulation.jpg',
     readTime: '14 min read',
     category: 'Attic Insulation'

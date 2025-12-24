@@ -51,10 +51,22 @@ export default function TermPage({ term }: Props) {
       description: 'Compare batt and blown-in insulation installation methods, R-values, costs, and best applications'
     }
 
-    const atticClimateArticleLink = {
-      href: '/resources/articles/best-attic-insulation-for-dry-cold-and-humid-climates',
-      label: 'Best Attic Insulation for Different Climates',
-      description: 'Choose the best attic insulation based on your climate zone, covering R-values, moisture control, and material selection'
+    const atticDryHotArticleLink = {
+      href: '/resources/articles/best-attic-insulation-for-dry-hot-climates',
+      label: 'Best Attic Insulation for Dry (Hot) Climates',
+      description: 'Discover the best attic insulation for hot, dry climates with spray foam, radiant barriers, and optimal R-values'
+    }
+
+    const atticHumidArticleLink = {
+      href: '/resources/articles/best-attic-insulation-for-humid-climates',
+      label: 'Best Attic Insulation for Humid Climates',
+      description: 'Learn about moisture-resistant attic insulation options for humid climates, including spray foam and vapor barriers'
+    }
+
+    const atticColdWetArticleLink = {
+      href: '/resources/articles/best-attic-insulation-for-cold-wet-climates',
+      label: 'Best Attic Insulation for Cold (Wet) Climates',
+      description: 'Find the best attic insulation for cold, wet climates with strategies for moisture control and heat retention'
     }
 
     const facedUnfacedArticleLink = {
@@ -67,7 +79,9 @@ export default function TermPage({ term }: Props) {
     const map: Record<string, Array<{ href: string, label: string, description: string }>> = {
       attic: [
         facedUnfacedArticleLink,
-        atticClimateArticleLink,
+        atticDryHotArticleLink,
+        atticHumidArticleLink,
+        atticColdWetArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Professional attic insulation and air sealing' }
@@ -78,15 +92,18 @@ export default function TermPage({ term }: Props) {
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Upgrade wall cavities for better comfort' }
       ],
       'spray-foam': [
-        atticClimateArticleLink,
+        atticDryHotArticleLink,
+        atticHumidArticleLink,
+        atticColdWetArticleLink,
         { href: '/services/spray-foam-insulation', label: 'Spray Foam Insulation', description: 'Closed-cell and open-cell spray foam installation' }
       ],
       'open-cell': [
-        atticClimateArticleLink,
+        atticHumidArticleLink,
         { href: '/services/spray-foam-insulation', label: 'Spray Foam Insulation', description: 'Open-cell spray foam for interior applications' }
       ],
       'closed-cell': [
-        atticClimateArticleLink,
+        atticHumidArticleLink,
+        atticColdWetArticleLink,
         { href: '/services/spray-foam-insulation', label: 'Spray Foam Insulation', description: 'Closed-cell spray foam for high performance' }
       ],
       'crawl-space': [
@@ -111,7 +128,9 @@ export default function TermPage({ term }: Props) {
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Continuous insulation with foam board options' }
       ],
       'fiberglass': [
-        atticClimateArticleLink,
+        atticDryHotArticleLink,
+        atticHumidArticleLink,
+        atticColdWetArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink,
         garageArticleLink,
@@ -119,14 +138,17 @@ export default function TermPage({ term }: Props) {
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Batt and dense-pack options' }
       ],
       'cellulose': [
-        atticClimateArticleLink,
+        atticDryHotArticleLink,
+        atticColdWetArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Blown-in cellulose for complete coverage' },
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Dense-pack cellulose for walls' }
       ],
       'blown-in': [
-        atticClimateArticleLink,
+        atticDryHotArticleLink,
+        atticHumidArticleLink,
+        atticColdWetArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Blown-in upgrades for attics and more' }
@@ -136,11 +158,13 @@ export default function TermPage({ term }: Props) {
       ],
       'vapor-barrier': [
         facedUnfacedArticleLink,
-        atticClimateArticleLink,
+        atticHumidArticleLink,
+        atticColdWetArticleLink,
         { href: '/services/crawl-space-insulation', label: 'Crawl Space Insulation', description: 'Vapor control and encapsulation systems' }
       ],
       'radiant-barrier': [
-        atticClimateArticleLink,
+        atticDryHotArticleLink,
+        atticColdWetArticleLink,
         garageArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Attic radiant barrier and insulation' }
       ],
@@ -151,36 +175,47 @@ export default function TermPage({ term }: Props) {
       ],
       'r-value': [
         facedUnfacedArticleLink,
-        atticClimateArticleLink,
+        atticDryHotArticleLink,
+        atticHumidArticleLink,
+        atticColdWetArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink
       ],
       'loose-fill': [
-        atticClimateArticleLink,
+        atticDryHotArticleLink,
+        atticHumidArticleLink,
+        atticColdWetArticleLink,
         battVsBlownInArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Loose-fill insulation for attics' }
       ],
       'rockwool': [
-        atticClimateArticleLink,
+        atticHumidArticleLink,
+        atticColdWetArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Mineral wool insulation for attics' }
       ],
       'batt-roll': [
         facedUnfacedArticleLink,
-        atticClimateArticleLink,
+        atticDryHotArticleLink,
+        atticHumidArticleLink,
+        atticColdWetArticleLink,
         battVsBlownInArticleLink,
         comparisonArticleLink,
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Batt and roll installation for walls' }
       ],
       'faced': [
         facedUnfacedArticleLink,
-        atticClimateArticleLink,
+        atticDryHotArticleLink,
+        atticHumidArticleLink,
+        atticColdWetArticleLink,
         battVsBlownInArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Professional attic insulation with vapor barriers' },
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Faced insulation for exterior walls' }
       ],
       'unfaced': [
         facedUnfacedArticleLink,
-        atticClimateArticleLink,
+        atticDryHotArticleLink,
+        atticHumidArticleLink,
+        atticColdWetArticleLink,
         battVsBlownInArticleLink,
         { href: '/services/attic-insulation', label: 'Attic Insulation', description: 'Add unfaced insulation layers to existing attic insulation' },
         { href: '/services/wall-insulation', label: 'Wall Insulation', description: 'Unfaced insulation for interior walls' }
