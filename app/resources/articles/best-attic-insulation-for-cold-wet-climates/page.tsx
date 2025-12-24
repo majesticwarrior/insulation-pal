@@ -282,6 +282,26 @@ export default function BestAtticInsulationColdWetClimatesArticle() {
                     <h3 className="text-lg font-semibold text-[#0a4768]">More to Explore</h3>
                     <div className="space-y-3">
                       <Link
+                        href="/resources/articles/best-attic-insulation-for-dry-hot-climates"
+                        className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex items-center text-[#0a4768]">
+                          <FileText className="h-4 w-4 mr-2" />
+                          Attic Insulation for Dry (Hot) Climates
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">Top options and guidance for hot, dry regions</p>
+                      </Link>
+                      <Link
+                        href="/resources/articles/best-attic-insulation-for-humid-climates"
+                        className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex items-center text-[#0a4768]">
+                          <FileText className="h-4 w-4 mr-2" />
+                          Attic Insulation for Humid Climates
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">Best materials and methods for humid regions</p>
+                      </Link>
+                      <Link
                         href="/resources/articles"
                         className="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                       >
